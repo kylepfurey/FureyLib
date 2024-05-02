@@ -7,9 +7,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// Example class script.
+/// Example structure script.
 /// </summary>
-public class Class
+public struct Struct
 {
     // VARIABLES
 
@@ -21,20 +21,12 @@ public class Class
     /// <summary>
     /// Default constructor
     /// </summary>
-    public Class()
+    public Struct()
     {
 
     }
 
     // New constructors here
-
-    /// <summary>
-    /// Deconstructor
-    /// </summary>
-    ~Class()
-    {
-
-    }
 
 
     // FUNCTIONS

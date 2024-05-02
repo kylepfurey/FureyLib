@@ -7,11 +7,11 @@
 #include <string>
 #include <vector>
 
-// Include this heading to use the class
-#include "Class.h"
+// Include this heading to use the structure
+#include "Struct.h"
 
-// Example class script.
-class Class
+// Example structure script.
+struct Struct
 {
 public:		// Public variables and functions
 
@@ -23,7 +23,7 @@ public:		// Public variables and functions
 	// CONSTRUCTORS AND DECONSTRUCTOR
 
 	// Default constructor
-	Class()
+	Struct()
 	{
 
 	}
@@ -31,7 +31,7 @@ public:		// Public variables and functions
 	// New constructors here
 
 	// Deconstructor
-	~Class()
+	~Struct()
 	{
 
 	}

@@ -1,16 +1,23 @@
-﻿using System;
+﻿
+// Program Main Entry Point Script
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Application
 {
-    internal class Program
+    public class Program
     {
-        static void Main(string[] args)
+        /// <summary>
+        /// Entry point of the program
+        /// </summary>
+        /// <param name="args"></param>
+        public static void Main(string[] args)
         {
             Console.WriteLine("Hello, Dinner!");
 
-            // New Code Here
+            // New code here
         }
     }
 }

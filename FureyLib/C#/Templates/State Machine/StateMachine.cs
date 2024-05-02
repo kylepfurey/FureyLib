@@ -2,29 +2,43 @@
 // Template State Machine Script
 // by Kyle Furey
 
-// State machine states enum
+/// <summary>
+/// State machine states enum
+/// </summary>
 public enum StateType
 {
     NULL = 0,
     State = 1
 };
 
-// Base for building an state machine.
+/// <summary>
+/// Base for building an state machine.
+/// </summary>
 public class StateMachine
 {
-    // The current state of this state machine
+    /// <summary>
+    /// The current state of this state machine
+    /// </summary>
     public StateBase currentState = null;
 
-    // The current state of this state machine
+    /// <summary>
+    /// The current state of this state machine
+    /// </summary>
     public States currentStateType = StateType.NULL;
 
-    // Starting state constructor
+    /// <summary>
+    /// Starting state constructor
+    /// </summary>
+    /// <param name="newState"></param>
     public StateMachine(StateBase newState)
     {
         SwitchState(newState);
     }
 
-    // Properly switches the state machine's current state
+    /// <summary>
+    /// Properly switches the state machine's current state
+    /// </summary>
+    /// <param name="newState"></param>
     public void SwitchState(StateBase newState)
     {
         // Exit the current state
@@ -43,7 +57,9 @@ public class StateMachine
         }
     }
 
-    // Updates the current state (should be called each tick)
+    /// <summary>
+    /// Updates the current state (should be called each tick)
+    /// </summary>
     public void Tick()
     {
         // Call the current state's update function
@@ -54,25 +70,35 @@ public class StateMachine
     }
 }
 
-// The base class for each state. All states should inherit from this class.
+/// <summary>
+/// The base class for each state. All states should inherit from this class.
+/// </summary>
 public abstract class StateBase
 {
-    // The inherited state machine from the owner
+    /// <summary>
+    /// The inherited state machine from the owner
+    /// </summary>
     protected StateMachine stateMachine = null;
 
-    // Called when this state is set as the state machine's current state
+    /// <summary>
+    /// Called when this state is set as the state machine's current state
+    /// </summary>
     public virtual void OnStateEnter()
     {
         // Note: Logic applies to all inherited states
     }
 
-    // Called when this state machine's current state is no longer this state
+    /// <summary>
+    /// Called when this state machine's current state is no longer this state
+    /// </summary>
     public virtual void OnStateExit()
     {
         // Note: Logic applies to all inherited states
     }
 
-    // Called every frame while this state is the state machine's current state
+    /// <summary>
+    /// Called every frame while this state is the state machine's current state
+    /// </summary>
     public virtual void StateUpdate()
     {
         // Note: Logic applies to all inherited states

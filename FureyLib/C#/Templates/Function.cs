@@ -9,10 +9,14 @@ using System.Collections.Generic;
 // Include this heading to use the class
 using static Function;
 
-// Static function library.
+/// <summary>
+/// Static function library.
+/// </summary>
 public static class Function
 {
-    // Example function
+    /// <summary>
+    /// Example function
+    /// </summary>
     public static void Function()
     {
         Console.WriteLine("Function inserted!");

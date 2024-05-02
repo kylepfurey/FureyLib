@@ -5,6 +5,8 @@
 #pragma once
 #include "SDL.h"
 
+// Inherit from this interface to implement it
+
 // Include this heading to use the class
 #include "SDL Interface.h"
 

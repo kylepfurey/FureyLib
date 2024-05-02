@@ -95,7 +95,7 @@ public:
 	bool equals(list<DataType> compared_list)
 	{
 		// Check if the sizes are equal
-		if (list_size != compared_list.list_size())
+		if (list_size != compared_list.list_size)
 		{
 			return false;
 		}
@@ -117,19 +117,19 @@ public:
 	// Check if another list is equal to this list
 	bool operator==(list<DataType> compared_list)
 	{
-		return equals();
+		return equals(compared_list);
 	}
 
 	// Check if another list is not equal to this list
 	bool not_equals(list<DataType> compared_list)
 	{
-		return !equals();
+		return !equals(compared_list);
 	}
 
 	// Check if another list is not equal to this list
 	bool operator!=(list<DataType> compared_list)
 	{
-		return !equals();
+		return !equals(compared_list);
 	}
 
 
@@ -145,12 +145,6 @@ public:
 
 	// Return a pointer to the beginning
 	DataType* ptr()
-	{
-		return begin();
-	}
-
-	// Return a pointer to the beginning
-	DataType* pointer()
 	{
 		return begin();
 	}
@@ -175,24 +169,12 @@ public:
 		return end();
 	}
 
-	// Return a pointer to the end
-	DataType* pointer_end()
-	{
-		return end();
-	}
-
 	// Return a pointer to the given index
-	DataType* ptr(int index)
+	DataType* pointer(int index)
 	{
 		DataType* pointer = &list_data[index];
 
 		return pointer;
-	}
-
-	// Return a pointer to the given index
-	DataType* pointer(int index)
-	{
-		return ptr(index);
 	}
 
 
@@ -458,12 +440,6 @@ public:
 	}
 
 	// Assigns this list's elements and capacity to the elements and capacity of another list
-	list<DataType>& set(list<DataType> new_data)
-	{
-		return assign(new_data);
-	}
-
-	// Assigns this list's elements and capacity to the elements and capacity of another list
 	list<DataType>& operator=(list<DataType> new_data)
 	{
 		return assign(new_data);
@@ -525,12 +501,6 @@ public:
 
 	// Adds a new element at the end of the list
 	list<DataType>& add(DataType new_data)
-	{
-		return push_back(new_data);
-	}
-
-	// Adds a new element at the end of the list
-	list<DataType>& operator+(DataType new_data)
 	{
 		return push_back(new_data);
 	}
@@ -680,7 +650,7 @@ public:
 		return *this;
 	}
 
-	// Adds a new element in the list at a given index and shift following elements forward
+	// Adds an existing variable to the list at a given index and shift following elements forward
 	list<DataType>& emplace(int index, DataType& new_data)
 	{
 		// Check for out of bounds
@@ -710,7 +680,7 @@ public:
 		return *this;
 	}
 
-	// Adds a new element at the front of the list
+	// Adds an existing variable to the front of the list
 	list<DataType>& emplace(DataType& new_data)
 	{
 		// Expand the list if needed
@@ -734,7 +704,7 @@ public:
 		return *this;
 	}
 
-	// Adds a new element at the end of the list
+	// Adds an existing variable to the end of the list
 	list<DataType>& emplace_back(DataType& new_data)
 	{
 		// Expand the list if needed
@@ -844,12 +814,6 @@ public:
 		return erase(find_last(removed_data));
 	}
 
-	// Removes the last of a given element in the list
-	list<DataType>& operator-(DataType new_data)
-	{
-		return remove_last(new_data);
-	}
-
 	// Removes all of the given element in the list
 	list<DataType>& remove_all(DataType removed_data)
 	{
@@ -866,7 +830,7 @@ public:
 	}
 
 	// Replaces the data at the given index with the given data
-	list<DataType>& fill(int index, DataType new_data)
+	list<DataType>& set(int index, DataType new_data)
 	{
 		// Check for out of bounds
 		if (index < 0 || index >= list_size)
@@ -883,7 +847,7 @@ public:
 	// Replaces the data at the given index with the given data
 	list<DataType>& overwrite(int index, DataType new_data)
 	{
-		return fill(index, new_data);
+		return set(index, new_data);
 	}
 
 	// Replaces the first of the found data with the given data
@@ -955,12 +919,6 @@ public:
 		return *this;
 	}
 
-	// Reverse the list elements
-	list<DataType>& operator~()
-	{
-		return reverse();
-	}
-
 	// Shifts the list elements right
 	list<DataType>& shift_right(int number_of_shifts)
 	{
@@ -1006,20 +964,8 @@ public:
 		return shift_right(number_of_shifts);
 	}
 
-	// Shifts the list elements right
-	list<DataType>& operator>>(int number_of_shifts)
-	{
-		return shift_right(number_of_shifts);
-	}
-
 	// Shifts the list elements left
 	list<DataType>& shift_left(int number_of_shifts)
-	{
-		return shift_right(-number_of_shifts);
-	}
-
-	// Shifts the list elements left
-	list<DataType>& operator<<(int number_of_shifts)
 	{
 		return shift_right(-number_of_shifts);
 	}
@@ -1058,41 +1004,7 @@ public:
 	// Safely bubble sorts the elements of the list relative to the given sort order
 	list<DataType>& sort(list<SORT_TYPE> sort_order)
 	{
-		DataType* new_sort_order = sort_order.to_new_array();
-
-		sort(new_sort_order);
-
-		delete[] new_sort_order;
-
-		return *this;
-	}
-
-	// Bubble sorts the elements of the list relative to the given sort order (converts the sort order to the given sort type)
-	template<class SortData> list<DataType>& sort(SortData sort_order[])
-	{
-		SORT_TYPE* new_sort_order = new SORT_TYPE[list_size];
-
-		for (int i = 0; i < list_size; i++)
-		{
-			new_sort_order[i] = static_cast<SORT_TYPE>(sort_order[i]);
-		}
-
-		sort(new_sort_order);
-
-		delete[] new_sort_order;
-
-		return *this;
-	}
-
-	// Safely bubble sorts the elements of the list relative to the given sort order (converts the sort order to the given sort type)
-	template<class SortData> list<DataType>& sort(list<SortData> sort_order)
-	{
-		SORT_TYPE* new_sort_order = new SORT_TYPE[list_size];
-
-		for (int i = 0; i < list_size; i++)
-		{
-			new_sort_order[i] = static_cast<SORT_TYPE>(sort_order[i]);
-		}
+		SORT_TYPE* new_sort_order = sort_order.to_new_array();
 
 		sort(new_sort_order);
 
@@ -1308,7 +1220,7 @@ public:
 	bool Equals(List<DataType> compared_list)
 	{
 		// Check if the sizes are equal
-		if (listSize != compared_list.listSize())
+		if (listSize != compared_list.listSize)
 		{
 			return false;
 		}
@@ -1330,19 +1242,19 @@ public:
 	// Check if another list is equal to this list
 	bool operator==(List<DataType> compared_list)
 	{
-		return Equals();
+		return Equals(compared_list);
 	}
 
 	// Check if another list is not equal to this list
 	bool NotEquals(List<DataType> compared_list)
 	{
-		return !Equals();
+		return !Equals(compared_list);
 	}
 
 	// Check if another list is not equal to this list
 	bool operator!=(List<DataType> compared_list)
 	{
-		return !Equals();
+		return !Equals(compared_list);
 	}
 
 
@@ -1354,12 +1266,6 @@ public:
 		DataType* pointer = &listData[0];
 
 		return pointer;
-	}
-
-	// Return a pointer to the beginning
-	DataType* Pointer()
-	{
-		return Begin();
 	}
 
 	// Return a pointer to the beginning
@@ -1383,29 +1289,17 @@ public:
 	}
 
 	// Return a pointer to the end
-	DataType* PointerEnd()
-	{
-		return End();
-	}
-
-	// Return a pointer to the end
 	DataType* PtrEnd()
 	{
 		return End();
 	}
 
 	// Return a pointer to the given index
-	DataType* Pointer(int index)
+	DataType* Ptr(int index)
 	{
 		DataType* pointer = &listData[index];
 
 		return pointer;
-	}
-
-	// Return a pointer to the given index
-	DataType* Ptr(int index)
-	{
-		return Pointer(index);
 	}
 
 
@@ -1639,7 +1533,7 @@ public:
 	// Return a pointer to the given index
 	DataType* Data(int index)
 	{
-		return Pointer(index);
+		return Ptr(index);
 	}
 
 
@@ -1668,12 +1562,6 @@ public:
 		}
 
 		return *this;
-	}
-
-	// Assigns this list's elements and capacity to the elements and capacity of another list
-	List<DataType>& Set(List<DataType> new_data)
-	{
-		return Assign(new_data);
 	}
 
 	// Assigns this list's elements and capacity to the elements and capacity of another list
@@ -1738,12 +1626,6 @@ public:
 
 	// Adds a new element at the end of the list
 	List<DataType>& Add(DataType new_data)
-	{
-		return PushBack(new_data);
-	}
-
-	// Adds a new element at the end of the list
-	List<DataType>& operator+(DataType new_data)
 	{
 		return PushBack(new_data);
 	}
@@ -1893,7 +1775,7 @@ public:
 		return *this;
 	}
 
-	// Adds a new element in the list at a given index and shift following elements forward
+	// Adds an existing variable to the list at a given index and shift following elements forward
 	List<DataType>& Emplace(int index, DataType& new_data)
 	{
 		// Check for out of bounds
@@ -1923,7 +1805,7 @@ public:
 		return *this;
 	}
 
-	// Adds a new element at the front of the list
+	// Adds an existing variable to the front of the list
 	List<DataType>& Emplace(DataType& new_data)
 	{
 		// Expand the list if needed
@@ -1947,7 +1829,7 @@ public:
 		return *this;
 	}
 
-	// Adds a new element at the end of the list
+	// Adds an existing variable to the end of the list
 	List<DataType>& EmplaceBack(DataType& new_data)
 	{
 		// Expand the list if needed
@@ -2057,12 +1939,6 @@ public:
 		return Erase(FindLast(removed_data));
 	}
 
-	// Removes the last of a given element in the list
-	List<DataType>& operator-(DataType new_data)
-	{
-		return RemoveLast(new_data);
-	}
-
 	// Removes all of the given element in the list
 	List<DataType>& RemoveAll(DataType removed_data)
 	{
@@ -2079,7 +1955,7 @@ public:
 	}
 
 	// Replaces the data at the given index with the given data
-	List<DataType>& Fill(int index, DataType new_data)
+	List<DataType>& Set(int index, DataType new_data)
 	{
 		// Check for out of bounds
 		if (index < 0 || index >= listSize)
@@ -2096,7 +1972,7 @@ public:
 	// Replaces the data at the given index with the given data
 	List<DataType>& Overwrite(int index, DataType new_data)
 	{
-		return Fill(index, new_data);
+		return Set(index, new_data);
 	}
 
 	// Replaces the first of the found data with the given data
@@ -2168,12 +2044,6 @@ public:
 		return *this;
 	}
 
-	// Reverse the list elements
-	List<DataType>& operator~()
-	{
-		return Reverse();
-	}
-
 	// Shifts the list elements right
 	List<DataType>& ShiftRight(int number_of_shifts)
 	{
@@ -2219,20 +2089,8 @@ public:
 		return ShiftRight(number_of_shifts);
 	}
 
-	// Shifts the list elements right
-	List<DataType>& operator>>(int number_of_shifts)
-	{
-		return ShiftRight(number_of_shifts);
-	}
-
 	// Shifts the list elements left
 	List<DataType>& ShiftLeft(int number_of_shifts)
-	{
-		return ShiftRight(-number_of_shifts);
-	}
-
-	// Shifts the list elements left
-	List<DataType>& operator<<(int number_of_shifts)
 	{
 		return ShiftRight(-number_of_shifts);
 	}
@@ -2271,43 +2129,9 @@ public:
 	// Safely bubble sorts the elements of the list relative to the given sort order
 	List<DataType>& Sort(List<SORT_TYPE> sort_order)
 	{
-		DataType* new_sort_order = sort_order.ToNewArray();
+		SORT_TYPE* new_sort_order = sort_order.ToNewArray();
 
-		sort(new_sort_order);
-
-		delete[] new_sort_order;
-
-		return *this;
-	}
-
-	// Bubble sorts the elements of the list relative to the given sort order (converts the sort order to the given sort type)
-	template<class SortData> List<DataType>& Sort(SortData sort_order[])
-	{
-		SORT_TYPE* new_sort_order = new SORT_TYPE[listSize];
-
-		for (int i = 0; i < listSize; i++)
-		{
-			new_sort_order[i] = static_cast<SORT_TYPE>(sort_order[i]);
-		}
-
-		sort(new_sort_order);
-
-		delete[] new_sort_order;
-
-		return *this;
-	}
-
-	// Safely bubble sorts the elements of the list relative to the given sort order (converts the sort order to the given sort type)
-	template<class SortData> List<DataType>& Sort(List<SortData> sort_order)
-	{
-		SORT_TYPE* new_sort_order = new SORT_TYPE[listSize];
-
-		for (int i = 0; i < listSize; i++)
-		{
-			new_sort_order[i] = static_cast<SORT_TYPE>(sort_order[i]);
-		}
-
-		sort(new_sort_order);
+		Sort(new_sort_order);
 
 		delete[] new_sort_order;
 

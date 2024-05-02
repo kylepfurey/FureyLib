@@ -54,7 +54,7 @@ public class Event : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // Array constructor
@@ -69,7 +69,7 @@ public class Event : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // List constructor
@@ -79,26 +79,26 @@ public class Event : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // Delegate constructor
     public Event(Event newDelegate)
     {
-        for (int i = 0; i < newDelegate.functions.Count; i++)
+        for (int i = 0; i < newDelegate.functions.Count(); i++)
         {
             functions.Add(newDelegate.functions[i]);
         }
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // Deconstructor
     ~Event()
     {
-        for (int i = index + 1; i < allDelegates.Count; i++)
+        for (int i = index + 1; i < allDelegates.Count(); i++)
         {
             allDelegates[i].index--;
         }
@@ -118,7 +118,7 @@ public class Event : IEnumerable
 
         invokeIndex = index;
 
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             functions[i].Invoke();
 
@@ -134,7 +134,7 @@ public class Event : IEnumerable
     // Invokes every delegate
     public static bool InvokeAll()
     {
-        for (int i = 0; i < allDelegates.Count; i++)
+        for (int i = 0; i < allDelegates.Count(); i++)
         {
             if (!allDelegates[i].Invoke())
             {
@@ -208,7 +208,7 @@ public class Event : IEnumerable
     // Adds new functions to the delegate
     public Event Add(List<Method> functions)
     {
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             this.functions.Add(functions[i]);
         }
@@ -219,7 +219,7 @@ public class Event : IEnumerable
     // Adds another delegate to the delegate
     public Event Add(Event newDelegate)
     {
-        for (int i = 0; i < newDelegate.functions.Count; i++)
+        for (int i = 0; i < newDelegate.functions.Count(); i++)
         {
             functions.Add(newDelegate.functions[i]);
         }
@@ -246,7 +246,7 @@ public class Event : IEnumerable
     // Removes a delegate's functions from the delegate
     public Event Remove(Event removedDelegate)
     {
-        for (int i = 0; i < removedDelegate.functions.Count; i++)
+        for (int i = 0; i < removedDelegate.functions.Count(); i++)
         {
             functions.Remove(removedDelegate.functions[i]);
         }
@@ -265,7 +265,7 @@ public class Event : IEnumerable
     // Return the number of functions in the delegate
     public int Count()
     {
-        return functions.Count;
+        return functions.Count();
     }
 
     // Returns if the delegate contains a function
@@ -277,7 +277,7 @@ public class Event : IEnumerable
     // Returns the index of the function in the delegate, or -1 if it was not found
     public int Find(Method function)
     {
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             if (functions[i].Equals(function))
             {
@@ -356,7 +356,7 @@ public class Delegate : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // Array constructor
@@ -380,13 +380,13 @@ public class Delegate : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // List constructor
     public Delegate(List<Function> functions)
     {
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             if (parameterTypes != null && !CheckParameters(parameterTypes, functions[i].Method.GetParameters()))
             {
@@ -402,13 +402,13 @@ public class Delegate : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // Delegate constructor
     public Delegate(Delegate newDelegate)
     {
-        for (int i = 0; i < newDelegate.functions.Count; i++)
+        for (int i = 0; i < newDelegate.functions.Count(); i++)
         {
             if (parameterTypes != null && !CheckParameters(parameterTypes, functions[i].Method.GetParameters()))
             {
@@ -424,13 +424,13 @@ public class Delegate : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // Deconstructor
     ~Delegate()
     {
-        for (int i = index + 1; i < allDelegates.Count; i++)
+        for (int i = index + 1; i < allDelegates.Count(); i++)
         {
             allDelegates[i].index--;
         }
@@ -450,7 +450,7 @@ public class Delegate : IEnumerable
 
         invokeIndex = index;
 
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             try
             {
@@ -473,7 +473,7 @@ public class Delegate : IEnumerable
     // Invokes every delegate
     public static bool InvokeAll(params object[] parameters)
     {
-        for (int i = 0; i < allDelegates.Count; i++)
+        for (int i = 0; i < allDelegates.Count(); i++)
         {
             if (!allDelegates[i].Invoke(parameters))
             {
@@ -574,7 +574,7 @@ public class Delegate : IEnumerable
     // Adds new functions to the delegate
     public Delegate Add(List<Function> functions)
     {
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             if (parameterTypes != null && !CheckParameters(parameterTypes, functions[i].Method.GetParameters()))
             {
@@ -594,7 +594,7 @@ public class Delegate : IEnumerable
     // Adds another delegate to the delegate
     public Delegate Add(Delegate newDelegate)
     {
-        for (int i = 0; i < newDelegate.functions.Count; i++)
+        for (int i = 0; i < newDelegate.functions.Count(); i++)
         {
             if (parameterTypes != null && !CheckParameters(parameterTypes, functions[i].Method.GetParameters()))
             {
@@ -630,7 +630,7 @@ public class Delegate : IEnumerable
     // Removes a delegate's functions from the delegate
     public Delegate Remove(Delegate removedDelegate)
     {
-        for (int i = 0; i < removedDelegate.functions.Count; i++)
+        for (int i = 0; i < removedDelegate.functions.Count(); i++)
         {
             functions.Remove(removedDelegate.functions[i]);
         }
@@ -651,7 +651,7 @@ public class Delegate : IEnumerable
     // Return the number of functions in the delegate
     public int Count()
     {
-        return functions.Count;
+        return functions.Count();
     }
 
     // Returns if the delegate contains a function
@@ -663,7 +663,7 @@ public class Delegate : IEnumerable
     // Returns the index of the function in the delegate, or -1 if it was not found
     public int Find(Function function)
     {
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             if (functions[i].Equals(function))
             {
@@ -686,7 +686,7 @@ public class Delegate : IEnumerable
     // Set the parameters of this delegate if they have not been assigned yet
     public bool SetParameters(Type[] newParameters)
     {
-        if (parameterTypes == null || functions.Count == 0)
+        if (parameterTypes == null || functions.Count() == 0)
         {
             parameterTypes = newParameters;
 
@@ -699,7 +699,7 @@ public class Delegate : IEnumerable
     // Set the parameters of this delegate if they have not been assigned yet
     public bool SetParameters(ParameterInfo[] newParameters)
     {
-        if (parameterTypes == null || functions.Count == 0)
+        if (parameterTypes == null || functions.Count() == 0)
         {
             parameterTypes = new Type[newParameters.Length];
 
@@ -839,7 +839,7 @@ public class Delegate<ReturnType> : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // Array constructor
@@ -867,7 +867,7 @@ public class Delegate<ReturnType> : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // List constructor
@@ -875,7 +875,7 @@ public class Delegate<ReturnType> : IEnumerable
     {
         this.functions = functions;
 
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             if (typeof(ReturnType) != functions[i].Method.ReturnType)
             {
@@ -893,13 +893,13 @@ public class Delegate<ReturnType> : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // Delegate constructor
     public Delegate(Delegate<ReturnType> newDelegate)
     {
-        for (int i = 0; i < newDelegate.functions.Count; i++)
+        for (int i = 0; i < newDelegate.functions.Count(); i++)
         {
             if (typeof(ReturnType) != functions[i].Method.ReturnType)
             {
@@ -919,13 +919,13 @@ public class Delegate<ReturnType> : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // Deconstructor
     ~Delegate()
     {
-        for (int i = index + 1; i < allDelegates.Count; i++)
+        for (int i = index + 1; i < allDelegates.Count(); i++)
         {
             allDelegates[i].index--;
         }
@@ -945,9 +945,9 @@ public class Delegate<ReturnType> : IEnumerable
 
         invokeIndex = index;
 
-        Dictionary<Function, ReturnType> returns = new Dictionary<Function, ReturnType>(functions.Count);
+        Dictionary<Function, ReturnType> returns = new Dictionary<Function, ReturnType>(functions.Count());
 
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             try
             {
@@ -960,7 +960,7 @@ public class Delegate<ReturnType> : IEnumerable
 
             if (cancel)
             {
-                for (int j = i + 1; j < functions.Count; j++)
+                for (int j = i + 1; j < functions.Count(); j++)
                 {
                     returns[functions[i]] = default(ReturnType);
                 }
@@ -975,9 +975,9 @@ public class Delegate<ReturnType> : IEnumerable
     // Invokes every delegate
     public static Dictionary<Delegate<ReturnType>, Dictionary<Function, ReturnType>> InvokeAll(params object[] parameters)
     {
-        Dictionary<Delegate<ReturnType>, Dictionary<Function, ReturnType>> returns = new Dictionary<Delegate<ReturnType>, Dictionary<Function, ReturnType>>(allDelegates.Count);
+        Dictionary<Delegate<ReturnType>, Dictionary<Function, ReturnType>> returns = new Dictionary<Delegate<ReturnType>, Dictionary<Function, ReturnType>>(allDelegates.Count());
 
-        for (int i = 0; i < allDelegates.Count; i++)
+        for (int i = 0; i < allDelegates.Count(); i++)
         {
             returns[allDelegates[i]] = allDelegates[i].Invoke(parameters);
 
@@ -1092,7 +1092,7 @@ public class Delegate<ReturnType> : IEnumerable
     // Adds new functions to the delegate
     public Delegate<ReturnType> Add(List<Function> functions)
     {
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             if (typeof(ReturnType) != functions[i].Method.ReturnType)
             {
@@ -1116,7 +1116,7 @@ public class Delegate<ReturnType> : IEnumerable
     // Adds another delegate to the delegate
     public Delegate<ReturnType> Add(Delegate<ReturnType> newDelegate)
     {
-        for (int i = 0; i < newDelegate.functions.Count; i++)
+        for (int i = 0; i < newDelegate.functions.Count(); i++)
         {
             if (typeof(ReturnType) != functions[i].Method.ReturnType)
             {
@@ -1156,7 +1156,7 @@ public class Delegate<ReturnType> : IEnumerable
     // Removes a delegate's functions from the delegate
     public Delegate<ReturnType> Remove(Delegate<ReturnType> removedDelegate)
     {
-        for (int i = 0; i < removedDelegate.functions.Count; i++)
+        for (int i = 0; i < removedDelegate.functions.Count(); i++)
         {
             functions.Remove(removedDelegate.functions[i]);
         }
@@ -1177,7 +1177,7 @@ public class Delegate<ReturnType> : IEnumerable
     // Return the number of functions in the delegate
     public int Count()
     {
-        return functions.Count;
+        return functions.Count();
     }
 
     // Returns if the delegate contains a function
@@ -1189,7 +1189,7 @@ public class Delegate<ReturnType> : IEnumerable
     // Returns the index of the function in the delegate, or -1 if it was not found
     public int Find(Function function)
     {
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             if (functions[i].Equals(function))
             {
@@ -1212,7 +1212,7 @@ public class Delegate<ReturnType> : IEnumerable
     // Set the parameters of this delegate if they have not been assigned yet
     public bool SetParameters(Type[] newParameters)
     {
-        if (parameterTypes == null || functions.Count == 0)
+        if (parameterTypes == null || functions.Count() == 0)
         {
             parameterTypes = newParameters;
 
@@ -1225,7 +1225,7 @@ public class Delegate<ReturnType> : IEnumerable
     // Set the parameters of this delegate if they have not been assigned yet
     public bool SetParameters(ParameterInfo[] newParameters)
     {
-        if (parameterTypes == null || functions.Count == 0)
+        if (parameterTypes == null || functions.Count() == 0)
         {
             parameterTypes = new Type[newParameters.Length];
 
@@ -1362,7 +1362,7 @@ public class DynamicDelegate : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // Array constructor
@@ -1377,7 +1377,7 @@ public class DynamicDelegate : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // List constructor
@@ -1387,26 +1387,26 @@ public class DynamicDelegate : IEnumerable
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // Delegate constructor
     public DynamicDelegate(DynamicDelegate newDelegate)
     {
-        for (int i = 0; i < newDelegate.functions.Count; i++)
+        for (int i = 0; i < newDelegate.functions.Count(); i++)
         {
             functions.Add(newDelegate.functions[i]);
         }
 
         allDelegates.Add(this);
 
-        index = allDelegates.Count - 1;
+        index = allDelegates.Count() - 1;
     }
 
     // Deconstructor
     ~DynamicDelegate()
     {
-        for (int i = index + 1; i < allDelegates.Count; i++)
+        for (int i = index + 1; i < allDelegates.Count(); i++)
         {
             allDelegates[i].index--;
         }
@@ -1426,9 +1426,9 @@ public class DynamicDelegate : IEnumerable
 
         invokeIndex = index;
 
-        Dictionary<Function, object> returns = new Dictionary<Function, object>(functions.Count);
+        Dictionary<Function, object> returns = new Dictionary<Function, object>(functions.Count());
 
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             if (CheckObjectParameters(parameters, functions[i].Method.GetParameters()))
             {
@@ -1451,9 +1451,9 @@ public class DynamicDelegate : IEnumerable
     // Invokes every delegate
     public static Dictionary<DynamicDelegate, Dictionary<Function, object>> InvokeAll(params object[] parameters)
     {
-        Dictionary<DynamicDelegate, Dictionary<Function, object>> returns = new Dictionary<DynamicDelegate, Dictionary<Function, object>>(allDelegates.Count);
+        Dictionary<DynamicDelegate, Dictionary<Function, object>> returns = new Dictionary<DynamicDelegate, Dictionary<Function, object>>(allDelegates.Count());
 
-        for (int i = 0; i < allDelegates.Count; i++)
+        for (int i = 0; i < allDelegates.Count(); i++)
         {
             returns[allDelegates[i]] = allDelegates[i].Invoke(parameters);
 
@@ -1529,7 +1529,7 @@ public class DynamicDelegate : IEnumerable
     // Adds new functions to the delegate
     public DynamicDelegate Add(List<Function> functions)
     {
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             this.functions.Add(functions[i]);
         }
@@ -1540,7 +1540,7 @@ public class DynamicDelegate : IEnumerable
     // Adds another delegate to the delegate
     public DynamicDelegate Add(DynamicDelegate newDelegate)
     {
-        for (int i = 0; i < newDelegate.functions.Count; i++)
+        for (int i = 0; i < newDelegate.functions.Count(); i++)
         {
             functions.Add(newDelegate.functions[i]);
         }
@@ -1567,7 +1567,7 @@ public class DynamicDelegate : IEnumerable
     // Removes a delegate's functions from the delegate
     public DynamicDelegate Remove(DynamicDelegate removedDelegate)
     {
-        for (int i = 0; i < removedDelegate.functions.Count; i++)
+        for (int i = 0; i < removedDelegate.functions.Count(); i++)
         {
             functions.Remove(removedDelegate.functions[i]);
         }
@@ -1586,7 +1586,7 @@ public class DynamicDelegate : IEnumerable
     // Return the number of functions in the delegate
     public int Count()
     {
-        return functions.Count;
+        return functions.Count();
     }
 
     // Returns if the delegate contains a function
@@ -1598,7 +1598,7 @@ public class DynamicDelegate : IEnumerable
     // Returns the index of the function in the delegate, or -1 if it was not found
     public int Find(Function function)
     {
-        for (int i = 0; i < functions.Count; i++)
+        for (int i = 0; i < functions.Count(); i++)
         {
             if (functions[i].Equals(function))
             {

@@ -95,7 +95,7 @@ public:
 	bool equals(vector<DataType> compared_vector)
 	{
 		// Check if the sizes are equal
-		if (vector_size != compared_vector.vector_size())
+		if (vector_size != compared_vector.vector_size)
 		{
 			return false;
 		}
@@ -117,19 +117,19 @@ public:
 	// Check if another vector is equal to this vector
 	bool operator==(vector<DataType> compared_vector)
 	{
-		return equals();
+		return equals(compared_vector);
 	}
 
 	// Check if another vector is not equal to this vector
 	bool not_equals(vector<DataType> compared_vector)
 	{
-		return !equals();
+		return !equals(compared_vector);
 	}
 
 	// Check if another vector is not equal to this vector
 	bool operator!=(vector<DataType> compared_vector)
 	{
-		return !equals();
+		return !equals(compared_vector);
 	}
 
 
@@ -145,12 +145,6 @@ public:
 
 	// Return a pointer to the beginning
 	DataType* ptr()
-	{
-		return begin();
-	}
-
-	// Return a pointer to the beginning
-	DataType* pointer()
 	{
 		return begin();
 	}
@@ -175,24 +169,12 @@ public:
 		return end();
 	}
 
-	// Return a pointer to the end
-	DataType* pointer_end()
-	{
-		return end();
-	}
-
 	// Return a pointer to the given index
 	DataType* ptr(int index)
 	{
 		DataType* pointer = &vector_data[index];
 
 		return pointer;
-	}
-
-	// Return a pointer to the given index
-	DataType* pointer(int index)
-	{
-		return ptr(index);
 	}
 
 
@@ -458,12 +440,6 @@ public:
 	}
 
 	// Assigns this vector's elements and capacity to the elements and capacity of another vector
-	vector<DataType>& set(vector<DataType> new_data)
-	{
-		return assign(new_data);
-	}
-
-	// Assigns this vector's elements and capacity to the elements and capacity of another vector
 	vector<DataType>& operator=(vector<DataType> new_data)
 	{
 		return assign(new_data);
@@ -525,12 +501,6 @@ public:
 
 	// Adds a new element at the end of the vector
 	vector<DataType>& add(DataType new_data)
-	{
-		return push_back(new_data);
-	}
-
-	// Adds a new element at the end of the vector
-	vector<DataType>& operator+(DataType new_data)
 	{
 		return push_back(new_data);
 	}
@@ -680,7 +650,7 @@ public:
 		return *this;
 	}
 
-	// Adds a new element in the vector at a given index and shift following elements forward
+	// Adds an existing variable to a given index and shift following elements forward
 	vector<DataType>& emplace(int index, DataType& new_data)
 	{
 		// Check for out of bounds
@@ -710,7 +680,7 @@ public:
 		return *this;
 	}
 
-	// Adds a new element at the front of the vector
+	// Adds an existing variable to the front of the vector
 	vector<DataType>& emplace(DataType& new_data)
 	{
 		// Expand the vector if needed
@@ -734,7 +704,7 @@ public:
 		return *this;
 	}
 
-	// Adds a new element at the end of the vector
+	// Adds an existing variable to the end of the vector
 	vector<DataType>& emplace_back(DataType& new_data)
 	{
 		// Expand the vector if needed
@@ -844,12 +814,6 @@ public:
 		return erase(find_last(removed_data));
 	}
 
-	// Removes the last of a given element in the vector
-	vector<DataType>& operator-(DataType new_data)
-	{
-		return remove_last(new_data);
-	}
-
 	// Removes all of the given element in the vector
 	vector<DataType>& remove_all(DataType removed_data)
 	{
@@ -866,7 +830,7 @@ public:
 	}
 
 	// Replaces the data at the given index with the given data
-	vector<DataType>& fill(int index, DataType new_data)
+	vector<DataType>& set(int index, DataType new_data)
 	{
 		// Check for out of bounds
 		if (index < 0 || index >= vector_size)
@@ -883,7 +847,7 @@ public:
 	// Replaces the data at the given index with the given data
 	vector<DataType>& overwrite(int index, DataType new_data)
 	{
-		return fill(index, new_data);
+		return set(index, new_data);
 	}
 
 	// Replaces the first of the found data with the given data
@@ -955,12 +919,6 @@ public:
 		return *this;
 	}
 
-	// Reverse the vector elements
-	vector<DataType>& operator~()
-	{
-		return reverse();
-	}
-
 	// Shifts the vector elements right
 	vector<DataType>& shift_right(int number_of_shifts)
 	{
@@ -1006,20 +964,8 @@ public:
 		return shift_right(number_of_shifts);
 	}
 
-	// Shifts the vector elements right
-	vector<DataType>& operator>>(int number_of_shifts)
-	{
-		return shift_right(number_of_shifts);
-	}
-
 	// Shifts the vector elements left
 	vector<DataType>& shift_left(int number_of_shifts)
-	{
-		return shift_right(-number_of_shifts);
-	}
-
-	// Shifts the vector elements left
-	vector<DataType>& operator<<(int number_of_shifts)
 	{
 		return shift_right(-number_of_shifts);
 	}
@@ -1058,41 +1004,7 @@ public:
 	// Safely bubble sorts the elements of the vector relative to the given sort order
 	vector<DataType>& sort(vector<SORT_TYPE> sort_order)
 	{
-		DataType* new_sort_order = sort_order.to_new_array();
-
-		sort(new_sort_order);
-
-		delete[] new_sort_order;
-
-		return *this;
-	}
-
-	// Bubble sorts the elements of the vector relative to the given sort order (converts the sort order to the given sort type)
-	template<class SortData> vector<DataType>& sort(SortData sort_order[])
-	{
-		SORT_TYPE* new_sort_order = new SORT_TYPE[vector_size];
-
-		for (int i = 0; i < vector_size; i++)
-		{
-			new_sort_order[i] = static_cast<SORT_TYPE>(sort_order[i]);
-		}
-
-		sort(new_sort_order);
-
-		delete[] new_sort_order;
-
-		return *this;
-	}
-
-	// Safely bubble sorts the elements of the vector relative to the given sort order (converts the sort order to the given sort type)
-	template<class SortData> vector<DataType>& sort(vector<SortData> sort_order)
-	{
-		SORT_TYPE* new_sort_order = new SORT_TYPE[vector_size];
-
-		for (int i = 0; i < vector_size; i++)
-		{
-			new_sort_order[i] = static_cast<SORT_TYPE>(sort_order[i]);
-		}
+		SORT_TYPE* new_sort_order = sort_order.to_new_array();
 
 		sort(new_sort_order);
 
@@ -1308,7 +1220,7 @@ public:
 	bool Equals(Vector<DataType> compared_vector)
 	{
 		// Check if the sizes are equal
-		if (vectorSize != compared_vector.vectorSize())
+		if (vectorSize != compared_vector.vectorSize)
 		{
 			return false;
 		}
@@ -1357,12 +1269,6 @@ public:
 	}
 
 	// Return a pointer to the beginning
-	DataType* Pointer()
-	{
-		return Begin();
-	}
-
-	// Return a pointer to the beginning
 	DataType* Ptr()
 	{
 		return Begin();
@@ -1383,29 +1289,17 @@ public:
 	}
 
 	// Return a pointer to the end
-	DataType* PointerEnd()
-	{
-		return End();
-	}
-
-	// Return a pointer to the end
 	DataType* PtrEnd()
 	{
 		return End();
 	}
 
 	// Return a pointer to the given index
-	DataType* Pointer(int index)
+	DataType* Ptr(int index)
 	{
 		DataType* pointer = &vectorData[index];
 
 		return pointer;
-	}
-
-	// Return a pointer to the given index
-	DataType* Ptr(int index)
-	{
-		return Pointer(index);
 	}
 
 
@@ -1639,7 +1533,7 @@ public:
 	// Return a pointer to the given index
 	DataType* Data(int index)
 	{
-		return Pointer(index);
+		return Ptr(index);
 	}
 
 
@@ -1668,12 +1562,6 @@ public:
 		}
 
 		return *this;
-	}
-
-	// Assigns this vector's elements and capacity to the elements and capacity of another vector
-	Vector<DataType>& Set(Vector<DataType> new_data)
-	{
-		return Assign(new_data);
 	}
 
 	// Assigns this vector's elements and capacity to the elements and capacity of another vector
@@ -1738,12 +1626,6 @@ public:
 
 	// Adds a new element at the end of the vector
 	Vector<DataType>& Add(DataType new_data)
-	{
-		return PushBack(new_data);
-	}
-
-	// Adds a new element at the end of the vector
-	Vector<DataType>& operator+(DataType new_data)
 	{
 		return PushBack(new_data);
 	}
@@ -1893,7 +1775,7 @@ public:
 		return *this;
 	}
 
-	// Adds a new element in the vector at a given index and shift following elements forward
+	// Adds an existing variable to a given index and shift following elements forward
 	Vector<DataType>& Emplace(int index, DataType& new_data)
 	{
 		// Check for out of bounds
@@ -1923,7 +1805,7 @@ public:
 		return *this;
 	}
 
-	// Adds a new element at the front of the vector
+	// Adds an existing variable to the front of the vector
 	Vector<DataType>& Emplace(DataType& new_data)
 	{
 		// Expand the vector if needed
@@ -1947,7 +1829,7 @@ public:
 		return *this;
 	}
 
-	// Adds a new element at the end of the vector
+	// Adds an existing variable to the end of the vector
 	Vector<DataType>& EmplaceBack(DataType& new_data)
 	{
 		// Expand the vector if needed
@@ -2057,12 +1939,6 @@ public:
 		return Erase(FindLast(removed_data));
 	}
 
-	// Removes the last of a given element in the vector
-	Vector<DataType>& operator-(DataType new_data)
-	{
-		return RemoveLast(new_data);
-	}
-
 	// Removes all of the given element in the vector
 	Vector<DataType>& RemoveAll(DataType removed_data)
 	{
@@ -2079,7 +1955,7 @@ public:
 	}
 
 	// Replaces the data at the given index with the given data
-	Vector<DataType>& Fill(int index, DataType new_data)
+	Vector<DataType>& Set(int index, DataType new_data)
 	{
 		// Check for out of bounds
 		if (index < 0 || index >= vectorSize)
@@ -2096,7 +1972,7 @@ public:
 	// Replaces the data at the given index with the given data
 	Vector<DataType>& Overwrite(int index, DataType new_data)
 	{
-		return Fill(index, new_data);
+		return Set(index, new_data);
 	}
 
 	// Replaces the first of the found data with the given data
@@ -2168,12 +2044,6 @@ public:
 		return *this;
 	}
 
-	// Reverse the vector elements
-	Vector<DataType>& operator~()
-	{
-		return Reverse();
-	}
-
 	// Shifts the vector elements right
 	Vector<DataType>& ShiftRight(int number_of_shifts)
 	{
@@ -2219,20 +2089,8 @@ public:
 		return ShiftRight(number_of_shifts);
 	}
 
-	// Shifts the vector elements right
-	Vector<DataType>& operator>>(int number_of_shifts)
-	{
-		return ShiftRight(number_of_shifts);
-	}
-
 	// Shifts the vector elements left
 	Vector<DataType>& ShiftLeft(int number_of_shifts)
-	{
-		return ShiftRight(-number_of_shifts);
-	}
-
-	// Shifts the vector elements left
-	Vector<DataType>& operator<<(int number_of_shifts)
 	{
 		return ShiftRight(-number_of_shifts);
 	}
@@ -2271,43 +2129,9 @@ public:
 	// Safely bubble sorts the elements of the vector relative to the given sort order
 	Vector<DataType>& Sort(Vector<SORT_TYPE> sort_order)
 	{
-		DataType* new_sort_order = sort_order.ToNewArray();
+		SORT_TYPE* new_sort_order = sort_order.ToNewArray();
 
-		sort(new_sort_order);
-
-		delete[] new_sort_order;
-
-		return *this;
-	}
-
-	// Bubble sorts the elements of the vector relative to the given sort order (converts the sort order to the given sort type)
-	template<class SortData> Vector<DataType>& Sort(SortData sort_order[])
-	{
-		SORT_TYPE* new_sort_order = new SORT_TYPE[vectorSize];
-
-		for (int i = 0; i < vectorSize; i++)
-		{
-			new_sort_order[i] = static_cast<SORT_TYPE>(sort_order[i]);
-		}
-
-		sort(new_sort_order);
-
-		delete[] new_sort_order;
-
-		return *this;
-	}
-
-	// Safely bubble sorts the elements of the vector relative to the given sort order (converts the sort order to the given sort type)
-	template<class SortData> Vector<DataType>& Sort(Vector<SortData> sort_order)
-	{
-		SORT_TYPE* new_sort_order = new SORT_TYPE[vectorSize];
-
-		for (int i = 0; i < vectorSize; i++)
-		{
-			new_sort_order[i] = static_cast<SORT_TYPE>(sort_order[i]);
-		}
-
-		sort(new_sort_order);
+		Sort(new_sort_order);
 
 		delete[] new_sort_order;
 

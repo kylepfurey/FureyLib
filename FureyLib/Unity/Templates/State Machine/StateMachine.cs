@@ -4,11 +4,21 @@
 
 using UnityEngine;
 
-// Base for building an state machine.
+// State machine states enum
+public enum StateType
+{
+    NULL = 0,
+    State = 1
+};
+
+// Base for building a state machine.
 public class StateMachine : MonoBehaviour
 {
     // The current state of this state machine
     public StateBase currentState = null;
+
+    // The current state of this state machine
+    public StateType currentStateType = StateType.NULL;
 
     // Properly switches the state machine's current state
     public void SwitchState(StateBase newState)
@@ -54,7 +64,7 @@ public abstract class StateBase
     protected StateMachine stateMachine = null;
 
     // The inherited gameobject from the state machine's owner
-    protected GameObject gameObject = null;
+    protected GameObject gameObject => stateMachine.gameObject;
 
     // Called when this state is set as the state machine's current state
     public virtual void OnStateEnter()

@@ -2,16 +2,26 @@
 // Template State Machine Script
 // by Kyle Furey
 
+// State machine states enum
+public enum StateType
+{
+    NULL = 0,
+    State = 1
+};
+
 // Base for building an state machine.
 public class StateMachine
 {
     // The current state of this state machine
     public StateBase currentState = null;
 
+    // The current state of this state machine
+    public States currentStateType = StateType.NULL;
+
     // Starting state constructor
-    public StateMachine(StateBase newState = null)
+    public StateMachine(StateBase newState)
     {
-        Start(newState);
+        SwitchState(newState);
     }
 
     // Properly switches the state machine's current state
@@ -35,19 +45,6 @@ public class StateMachine
 
     // Updates the current state (should be called each tick)
     public void Tick()
-    {
-        Update();
-    }
-
-    // Instantiates the starting state
-    private void Start(StateBase newState)
-    {
-        // Sets the current state as the starting state (should be changed from template state)
-        SwitchState(newState);
-    }
-
-    // Calls the update function based on the current state
-    private void Update()
     {
         // Call the current state's update function
         if (currentState != null)

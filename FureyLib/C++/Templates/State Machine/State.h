@@ -5,7 +5,7 @@
 #pragma once
 #include "StateMachine.h"
 
-// Include this header at the bottom of StateMachine.h
+// Include this header at the bottom of StateMachine.h!
 #include "State.h"
 
 // Base class macro
@@ -19,7 +19,10 @@ public:
 	// Constructor (sets state machine)
 	state(state_machine* state_machine)
 	{
-		my_state_machine = state_machine;
+		sm = state_machine;
+
+		// Change the state type enum here!
+		sm->current_state_type = state_type::State;
 	}
 
 	// Called when this state is set as the state machine's current state

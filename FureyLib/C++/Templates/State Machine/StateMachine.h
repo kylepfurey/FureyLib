@@ -9,6 +9,13 @@
 
 // INCLUDE YOUR STATE HEADERS AT THE BOTTOM OF THIS SCRIPT!
 
+// State machine states enum
+enum state_type
+{
+	Null = 0,
+	State = 1
+};
+
 // Forward declaration of state machine
 class state_machine;
 
@@ -18,7 +25,7 @@ class state_base
 protected:
 
 	// The inherited state machine from the owner
-	state_machine* my_state_machine = nullptr;
+	state_machine* sm = nullptr;
 
 public:
 
@@ -41,7 +48,7 @@ public:
 	}
 };
 
-// Base for building an state machine.
+// Base for building a state machine.
 class state_machine
 {
 public:
@@ -49,16 +56,20 @@ public:
 	// The current state of this state machine
 	state_base* current_state = nullptr;
 
+	// The current state of this state machine
+	state_type current_state_type = state_type::Null;
+
 	// Starting state constructor
-	state_machine(state_base* new_state = nullptr)
+	state_machine(state_base* new_state)
 	{
-		start(new_state);
+		switch_state(new_state);
 	}
 
 	// Deconstructor
 	~state_machine()
 	{
 		delete current_state;
+
 		current_state = nullptr;
 	}
 
@@ -86,21 +97,6 @@ public:
 
 	// Updates the current state (should be called each tick)
 	void tick()
-	{
-		update();
-	}
-
-private:
-
-	// Instantiates the starting state
-	void start(state_base* new_state)
-	{
-		// Sets the current state as the starting state (should be changed from template state)
-		switch_state(new_state);
-	}
-
-	// Calls the update function based on the current state
-	void update()
 	{
 		// Call the current state's update function
 		if (current_state != nullptr)

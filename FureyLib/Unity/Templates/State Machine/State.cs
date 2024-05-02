@@ -11,7 +11,9 @@ public class State : StateBase
     public State(StateMachine StateMachine, GameObject GameObject)
     {
         stateMachine = StateMachine;
-        gameObject = GameObject;
+
+        // Change the state type enum here!
+        stateMachine.currentStateType = StateType.State;
     }
 
     // Called when this state is set as the state machine's current state

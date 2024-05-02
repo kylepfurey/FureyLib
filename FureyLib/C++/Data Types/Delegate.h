@@ -11,15 +11,15 @@
 #include "Delegate.h"
 
 // Define the method data type
-#define METHOD(variable) void (*variable) (void)
+#define METHOD(variable) void (*variable) (ParameterTypes...)
 
 // Define the function data type
 #define FUNCTION(variable) ReturnType (*variable) (ParameterTypes...)
 
 // Wrapper class for a collection of functions.
-// All stored functions must have no parameters.
+// All stored functions must share the same parameters.
 // All stored functions must return void.
-class event
+template <typename ... ParameterTypes> class event
 {
 private:
 
@@ -189,7 +189,7 @@ public:
 	}
 
 	// Delegate constructor
-	event(event&& new_delegate) noexcept
+	event(event<ParameterTypes...>&& new_delegate) noexcept
 	{
 		for (int i = 0; i < new_delegate.functions.size(); i++)
 		{
@@ -212,13 +212,13 @@ public:
 	// DELEGATE FUNCTIONS
 
 	// Call each function in the delegate and return if the invoke was successful
-	bool invoke()
+	bool invoke(ParameterTypes... parameters)
 	{
 		cancel_invoke = false;
 
 		for (int i = 0; i < functions.size(); i++)
 		{
-			functions[i]();
+			functions[i](parameters...);
 
 			if (cancel_invoke)
 			{
@@ -245,7 +245,7 @@ public:
 	}
 
 	// Sets a function in the delegate
-	event& set(int index, METHOD(function))
+	event<ParameterTypes...>& set(int index, METHOD(function))
 	{
 		functions[index] = function;
 
@@ -253,7 +253,7 @@ public:
 	}
 
 	// Add a new function to the delegate
-	event& add(METHOD(function))
+	event<ParameterTypes...>& add(METHOD(function))
 	{
 		functions.push_back(function);
 
@@ -261,7 +261,7 @@ public:
 	}
 
 	// Adds new functions to the delegate
-	event& add(int number_of_functions, METHOD(functions[]))
+	event<ParameterTypes...>& add(int number_of_functions, METHOD(functions[]))
 	{
 		for (int i = 0; i < number_of_functions; i++)
 		{
@@ -272,7 +272,7 @@ public:
 	}
 
 	// Adds new functions to the delegate
-	event& add(std::vector<METHOD()> functions)
+	event<ParameterTypes...>& add(std::vector<METHOD()> functions)
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -283,7 +283,7 @@ public:
 	}
 
 	// Adds another delegate to the delegate
-	event& add(event&& new_delegate)
+	event<ParameterTypes...>& add(event<ParameterTypes...>&& new_delegate)
 	{
 		for (int i = 0; i < new_delegate.functions.size(); i++)
 		{
@@ -294,7 +294,7 @@ public:
 	}
 
 	// Remove a function from the delegate
-	event& remove(METHOD(function))
+	event<ParameterTypes...>& remove(METHOD(function))
 	{
 		functions.erase(std::find(functions.begin(), functions.end(), function));
 
@@ -302,7 +302,7 @@ public:
 	}
 
 	// Remove a function from the delegate
-	event& remove_at(int index)
+	event<ParameterTypes...>& remove_at(int index)
 	{
 		functions.erase(functions.begin() + index);
 
@@ -310,7 +310,7 @@ public:
 	}
 
 	// Removes a delegate's functions from the delegate
-	event& remove(event&& removed_delegate)
+	event<ParameterTypes...>& remove(event<ParameterTypes...>&& removed_delegate)
 	{
 		for (int i = 0; i < removed_delegate.functions.size(); i++)
 		{
@@ -321,7 +321,7 @@ public:
 	}
 
 	// Clear all functions from the delegate
-	event& clear()
+	event<ParameterTypes...>& clear()
 	{
 		functions.clear();
 
@@ -366,25 +366,25 @@ public:
 	// COLLECTION OPERATORS
 
 	// Adding a function
-	event& operator+(METHOD(function))
+	event<ParameterTypes...>& operator+(METHOD(function))
 	{
 		return add(function);
 	}
 
 	// Adding a function
-	event& operator+=(METHOD(function))
+	event<ParameterTypes...>& operator+=(METHOD(function))
 	{
 		return add(function);
 	}
 
 	// Removing a function
-	event& operator-(METHOD(function))
+	event<ParameterTypes...>& operator-(METHOD(function))
 	{
 		return remove(function);
 	}
 
 	// Removing a function
-	event& operator-=(METHOD(function))
+	event<ParameterTypes...>& operator-=(METHOD(function))
 	{
 		return remove(function);
 	}
@@ -772,9 +772,9 @@ public:
 };
 
 // Wrapper class for a collection of functions.
-// All stored functions must have no parameters.
+// All stored functions must share the same parameters.
 // All stored functions must return void.
-class Event
+template <typename ... ParameterTypes> class Event
 {
 private:
 
@@ -784,7 +784,7 @@ private:
 	std::vector<METHOD()> functions = std::vector<METHOD()>();
 
 	// Delegate cancellation token
-	bool cancelInvoke = false;
+	bool cancel_invoke = false;
 
 public:
 
@@ -944,7 +944,7 @@ public:
 	}
 
 	// Delegate constructor
-	Event(Event&& new_delegate) noexcept
+	Event(Event<ParameterTypes...>&& new_delegate) noexcept
 	{
 		for (int i = 0; i < new_delegate.functions.size(); i++)
 		{
@@ -967,15 +967,15 @@ public:
 	// DELEGATE FUNCTIONS
 
 	// Call each function in the delegate and return if the invoke was successful
-	bool Invoke()
+	bool Invoke(ParameterTypes... parameters)
 	{
-		cancelInvoke = false;
+		cancel_invoke = false;
 
 		for (int i = 0; i < functions.size(); i++)
 		{
-			functions[i]();
+			functions[i](parameters...);
 
-			if (cancelInvoke)
+			if (cancel_invoke)
 			{
 				return false;
 			}
@@ -987,7 +987,7 @@ public:
 	// Cancel an invoke
 	void Cancel()
 	{
-		cancelInvoke = true;
+		cancel_invoke = true;
 	}
 
 
@@ -1000,7 +1000,7 @@ public:
 	}
 
 	// Sets a function in the delegate
-	Event& Set(int index, METHOD(function))
+	Event<ParameterTypes...>& Set(int index, METHOD(function))
 	{
 		functions[index] = function;
 
@@ -1008,7 +1008,7 @@ public:
 	}
 
 	// Add a new function to the delegate
-	Event& Add(METHOD(function))
+	Event<ParameterTypes...>& Add(METHOD(function))
 	{
 		functions.push_back(function);
 
@@ -1016,7 +1016,7 @@ public:
 	}
 
 	// Adds new functions to the delegate
-	Event& Add(int number_of_functions, METHOD(functions[]))
+	Event<ParameterTypes...>& Add(int number_of_functions, METHOD(functions[]))
 	{
 		for (int i = 0; i < number_of_functions; i++)
 		{
@@ -1027,7 +1027,7 @@ public:
 	}
 
 	// Adds new functions to the delegate
-	Event& Add(std::vector<METHOD()> functions)
+	Event<ParameterTypes...>& Add(std::vector<METHOD()> functions)
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -1038,7 +1038,7 @@ public:
 	}
 
 	// Adds another delegate to the delegate
-	Event& Add(Event&& new_delegate)
+	Event<ParameterTypes...>& Add(Event<ParameterTypes...>&& new_delegate)
 	{
 		for (int i = 0; i < new_delegate.functions.size(); i++)
 		{
@@ -1049,7 +1049,7 @@ public:
 	}
 
 	// Remove a function from the delegate
-	Event& Remove(METHOD(function))
+	Event<ParameterTypes...>& Remove(METHOD(function))
 	{
 		functions.erase(std::find(functions.begin(), functions.end(), function));
 
@@ -1057,7 +1057,7 @@ public:
 	}
 
 	// Remove a function from the delegate
-	Event& RemoveAt(int index)
+	Event<ParameterTypes...>& RemoveAt(int index)
 	{
 		functions.erase(functions.begin() + index);
 
@@ -1065,7 +1065,7 @@ public:
 	}
 
 	// Removes a delegate's functions from the delegate
-	Event& Remove(Event&& removed_delegate)
+	Event<ParameterTypes...>& Remove(Event<ParameterTypes...>&& removed_delegate)
 	{
 		for (int i = 0; i < removed_delegate.functions.size(); i++)
 		{
@@ -1076,7 +1076,7 @@ public:
 	}
 
 	// Clear all functions from the delegate
-	Event& Clear()
+	Event<ParameterTypes...>& Clear()
 	{
 		functions.clear();
 
@@ -1121,27 +1121,27 @@ public:
 	// COLLECTION OPERATORS
 
 	// Adding a function
-	Event& operator+(METHOD(function))
+	Event<ParameterTypes...>& operator+(METHOD(function))
 	{
-		return Add(function);
+		return add(function);
 	}
 
 	// Adding a function
-	Event& operator+=(METHOD(function))
+	Event<ParameterTypes...>& operator+=(METHOD(function))
 	{
-		return Add(function);
+		return add(function);
 	}
 
 	// Removing a function
-	Event& operator-(METHOD(function))
+	Event<ParameterTypes...>& operator-(METHOD(function))
 	{
-		return Remove(function);
+		return remove(function);
 	}
 
 	// Removing a function
-	Event& operator-=(METHOD(function))
+	Event<ParameterTypes...>& operator-=(METHOD(function))
 	{
-		return Remove(function);
+		return remove(function);
 	}
 };
 

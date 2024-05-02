@@ -17,7 +17,6 @@ using Function = System.Delegate;
 /// <summary>
 /// Wrapper class for a collection of functions.
 /// All stored functions must have no parameters.
-/// All stored functions must return void.
 /// </summary>
 public class Event : IEnumerable
 {
@@ -315,8 +314,723 @@ public class Event : IEnumerable
 
 /// <summary>
 /// Wrapper class for a collection of functions.
+/// All stored functions must have no parameters.
+/// All stored functions must share the same return type.
+/// </summary>
+public class Event<ReturnType> : IEnumerable
+{
+    // STATIC DELEGATE DATA
+
+    // Global list of all delegates
+    private static List<Event<ReturnType>> allDelegates = new List<Event<ReturnType>>();
+
+    // Global delegate cancellation token
+    private static bool cancelAll = false;
+
+    // Index of current invoked delegate
+    private static int invokeIndex = 0;
+
+
+    // DELEGATE DATA
+
+    // List of functions included in the delegate
+    private List<Function> functions = new List<Function>();
+
+    // Delegate cancellation token
+    private bool cancel = false;
+
+    // Index of current delegate
+    private int index = 0;
+
+
+    // DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
+
+    // Default constructor
+    public Event()
+    {
+        functions = new List<Function>();
+
+        allDelegates.Add(this);
+
+        index = allDelegates.Count() - 1;
+    }
+
+    // Array constructor
+    public Event(params Function[] functions)
+    {
+        this.functions = new List<Function>(functions.Length);
+
+        for (int i = 0; i < functions.Length; i++)
+        {
+            if (typeof(ReturnType) != functions[i].Method.ReturnType)
+            {
+                Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's return type does not match the delegate's return type!");
+            }
+
+            this.functions.Add(functions[i]);
+        }
+
+        allDelegates.Add(this);
+
+        index = allDelegates.Count() - 1;
+    }
+
+    // List constructor
+    public Event(List<Function> functions)
+    {
+        this.functions = functions;
+
+        for (int i = 0; i < functions.Count(); i++)
+        {
+            if (typeof(ReturnType) != functions[i].Method.ReturnType)
+            {
+                Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's return type does not match the delegate's return type!");
+            }
+        }
+
+        allDelegates.Add(this);
+
+        index = allDelegates.Count() - 1;
+    }
+
+    // Delegate constructor
+    public Event(Event<ReturnType> newDelegate)
+    {
+        for (int i = 0; i < newDelegate.functions.Count(); i++)
+        {
+            if (typeof(ReturnType) != functions[i].Method.ReturnType)
+            {
+                Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's return type does not match the delegate's return type!");
+            }
+
+            functions.Add(newDelegate.functions[i]);
+        }
+
+        allDelegates.Add(this);
+
+        index = allDelegates.Count() - 1;
+    }
+
+    // Deconstructor
+    ~Event()
+    {
+        for (int i = index + 1; i < allDelegates.Count(); i++)
+        {
+            allDelegates[i].index--;
+        }
+
+        allDelegates.Remove(this);
+    }
+
+
+    // DELEGATE FUNCTIONS
+
+    /// <summary> Returns a Dictionary with each key representing the function and the value being the returned data. </summary>
+    public Dictionary<Function, ReturnType> Invoke()
+    {
+        cancel = false;
+
+        cancelAll = false;
+
+        invokeIndex = index;
+
+        Dictionary<Function, ReturnType> returns = new Dictionary<Function, ReturnType>(functions.Count());
+
+        for (int i = 0; i < functions.Count(); i++)
+        {
+            try
+            {
+                returns[functions[i]] = (ReturnType)functions[i].DynamicInvoke();
+            }
+            catch
+            {
+                Debug.Assert(false, "DELEGATE ERROR: Could not invoke the given delegate! Invoked parameters did not match the delegate type!");
+            }
+
+            if (cancel || cancelAll)
+            {
+                for (int j = i + 1; j < functions.Count(); j++)
+                {
+                    returns[functions[i]] = default(ReturnType);
+                }
+
+                break;
+            }
+        }
+
+        return returns;
+    }
+
+    // Invokes every delegate
+    public static Dictionary<Event<ReturnType>, Dictionary<Function, ReturnType>> InvokeAll()
+    {
+        Dictionary<Event<ReturnType>, Dictionary<Function, ReturnType>> returns = new Dictionary<Event<ReturnType>, Dictionary<Function, ReturnType>>(allDelegates.Count());
+
+        for (int i = 0; i < allDelegates.Count(); i++)
+        {
+            returns[allDelegates[i]] = allDelegates[i].Invoke();
+
+            if (allDelegates[i].cancel || cancelAll)
+            {
+                break;
+            }
+        }
+
+        return returns;
+    }
+
+    // Reinvokes the current delegate
+    public static Dictionary<Function, ReturnType> InvokeCurrent()
+    {
+        return allDelegates[invokeIndex].Invoke();
+    }
+
+    // Cancel an invoke
+    public void Cancel()
+    {
+        cancel = true;
+    }
+
+    // Cancel all invokes
+    public static void CancelAll()
+    {
+        cancelAll = true;
+    }
+
+    // Cancel the current invoke
+    public static void CancelCurrent()
+    {
+        allDelegates[invokeIndex].cancel = true;
+    }
+
+
+    // COLLECTION FUNCTIONS
+
+    // Gets a function in the delegate
+    public Function Get(int index)
+    {
+        return functions[index];
+    }
+
+    // Sets a function in the delegate
+    public Event<ReturnType> Set(int index, Function function)
+    {
+        if (typeof(ReturnType) != function.Method.ReturnType)
+        {
+            Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's return type does not match the delegate's return type!");
+        }
+
+        functions[index] = function;
+
+        return this;
+    }
+
+    // Add a new function to the delegate
+    public Event<ReturnType> Add(Function function)
+    {
+        if (typeof(ReturnType) != function.Method.ReturnType)
+        {
+            Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's return type does not match the delegate's return type!");
+        }
+
+        functions.Add(function);
+
+        return this;
+    }
+
+    // Adds new functions to the delegate
+    public Event<ReturnType> Add(params Function[] functions)
+    {
+        for (int i = 0; i < functions.Length; i++)
+        {
+            if (typeof(ReturnType) != functions[i].Method.ReturnType)
+            {
+                Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's return type does not match the delegate's return type!");
+            }
+
+            this.functions.Add(functions[i]);
+        }
+
+        return this;
+    }
+
+    // Adds new functions to the delegate
+    public Event<ReturnType> Add(List<Function> functions)
+    {
+        for (int i = 0; i < functions.Count(); i++)
+        {
+            if (typeof(ReturnType) != functions[i].Method.ReturnType)
+            {
+                Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's return type does not match the delegate's return type!");
+            }
+
+            this.functions.Add(functions[i]);
+        }
+
+        return this;
+    }
+
+    // Adds another delegate to the delegate
+    public Event<ReturnType> Add(Event<ReturnType> newDelegate)
+    {
+        for (int i = 0; i < newDelegate.functions.Count(); i++)
+        {
+            if (typeof(ReturnType) != functions[i].Method.ReturnType)
+            {
+                Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's return type does not match the delegate's return type!");
+            }
+
+            functions.Add(newDelegate.functions[i]);
+        }
+
+        return this;
+    }
+
+    // Remove a function from the delegate
+    public Event<ReturnType> Remove(Function function)
+    {
+        functions.Remove(function);
+
+        return this;
+    }
+
+    // Remove a function from the delegate
+    public Event<ReturnType> RemoveAt(int index)
+    {
+        functions.RemoveAt(index);
+
+        return this;
+    }
+
+    // Removes a delegate's functions from the delegate
+    public Event<ReturnType> Remove(Event<ReturnType> removedDelegate)
+    {
+        for (int i = 0; i < removedDelegate.functions.Count(); i++)
+        {
+            functions.Remove(removedDelegate.functions[i]);
+        }
+
+        return this;
+    }
+
+    // Clear all functions from the delegate
+    public Event<ReturnType> Clear()
+    {
+        functions.Clear();
+
+        return this;
+    }
+
+    // Return the number of functions in the delegate
+    public int Count()
+    {
+        return functions.Count();
+    }
+
+    // Returns if the delegate contains a function
+    public bool Contains(Function function)
+    {
+        return functions.Contains(function);
+    }
+
+    // Returns the index of the function in the delegate, or -1 if it was not found
+    public int Find(Function function)
+    {
+        for (int i = 0; i < functions.Count(); i++)
+        {
+            if (functions[i].Equals(function))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+
+    // COLLECTION OPERATORS
+
+    // Adding a function
+    public static Event<ReturnType> operator +(Event<ReturnType> Delegate, Function function)
+    {
+        return Delegate.Add(function);
+    }
+
+    // Removing a function
+    public static Event<ReturnType> operator -(Event<ReturnType> Delegate, Function function)
+    {
+        return Delegate.Remove(function);
+    }
+
+
+    // ENUMERATOR FUNCTION
+
+    // Enumerator implementation
+    public IEnumerator GetEnumerator()
+    {
+        return functions.GetEnumerator();
+    }
+}
+
+/// <summary>
+/// Wrapper class for a collection of functions.
+/// Any function can be stored in this delegate.
+/// Only stores functions that have no parameters.
+/// </summary>
+public class DynamicEvent : IEnumerable
+{
+    // STATIC DELEGATE DATA
+
+    // Global list of all delegates
+    private static List<DynamicEvent> allDelegates = new List<DynamicEvent>();
+
+    // Global delegate cancellation token
+    private static bool cancelAll = false;
+
+    // Index of current invoked delegate
+    private static int invokeIndex = 0;
+
+
+    // DELEGATE DATA
+
+    // List of functions included in the delegate
+    private List<Function> functions = new List<Function>();
+
+    // Delegate cancellation token
+    private bool cancel = false;
+
+    // Index of current delegate
+    private int index = 0;
+
+
+    // DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
+
+    // Default constructor
+    public DynamicEvent()
+    {
+        functions = new List<Function>();
+
+        allDelegates.Add(this);
+
+        index = allDelegates.Count() - 1;
+    }
+
+    // Array constructor
+    public DynamicEvent(params Function[] functions)
+    {
+        this.functions = new List<Function>(functions.Length);
+
+        for (int i = 0; i < functions.Length; i++)
+        {
+            if (functions[i].Method.GetParameters().Length == 0)
+            {
+                this.functions.Add(functions[i]);
+            }
+        }
+
+        allDelegates.Add(this);
+
+        index = allDelegates.Count() - 1;
+    }
+
+    // List constructor
+    public DynamicEvent(List<Function> functions)
+    {
+        this.functions = new List<Function>(functions.Count());
+
+        for (int i = 0; i < functions.Count(); i++)
+        {
+            if (functions[i].Method.GetParameters().Length == 0)
+            {
+                this.functions.Add(functions[i]);
+            }
+        }
+
+        allDelegates.Add(this);
+
+        index = allDelegates.Count() - 1;
+    }
+
+    // Delegate constructor
+    public DynamicEvent(DynamicEvent newDelegate)
+    {
+        for (int i = 0; i < newDelegate.functions.Count(); i++)
+        {
+            if (newDelegate.functions[i].Method.GetParameters().Length == 0)
+            {
+                functions.Add(newDelegate.functions[i]);
+            }
+        }
+
+        allDelegates.Add(this);
+
+        index = allDelegates.Count() - 1;
+    }
+
+    // Deconstructor
+    ~DynamicEvent()
+    {
+        for (int i = index + 1; i < allDelegates.Count(); i++)
+        {
+            allDelegates[i].index--;
+        }
+
+        allDelegates.Remove(this);
+    }
+
+
+    // DELEGATE FUNCTIONS
+
+    /// <summary> Returns a Dictionary with each key representing the function and the value being the returned data. </summary>
+    public Dictionary<Function, object> Invoke()
+    {
+        cancel = false;
+
+        cancelAll = false;
+
+        invokeIndex = index;
+
+        Dictionary<Function, object> returns = new Dictionary<Function, object>(functions.Count());
+
+        for (int i = 0; i < functions.Count(); i++)
+        {
+            returns[functions[i]] = functions[i].DynamicInvoke();
+
+            if (cancel || cancelAll)
+            {
+                break;
+            }
+        }
+
+        return returns;
+    }
+
+    // Invokes every delegate
+    public static Dictionary<DynamicEvent, Dictionary<Function, object>> InvokeAll()
+    {
+        Dictionary<DynamicEvent, Dictionary<Function, object>> returns = new Dictionary<DynamicEvent, Dictionary<Function, object>>(allDelegates.Count());
+
+        for (int i = 0; i < allDelegates.Count(); i++)
+        {
+            returns[allDelegates[i]] = allDelegates[i].Invoke();
+
+            if (allDelegates[i].cancel || cancelAll)
+            {
+                break;
+            }
+        }
+
+        return returns;
+    }
+
+    // Reinvokes the current delegate
+    public static Dictionary<Function, object> InvokeCurrent()
+    {
+        return allDelegates[invokeIndex].Invoke();
+    }
+
+    // Cancel an invoke
+    public void Cancel()
+    {
+        cancel = true;
+    }
+
+    // Cancel all invokes
+    public static void CancelAll()
+    {
+        cancelAll = true;
+    }
+
+    // Cancel the current invoke
+    public static void CancelCurrent()
+    {
+        allDelegates[invokeIndex].cancel = true;
+    }
+
+
+    // COLLECTION FUNCTIONS
+
+    // Gets a function in the delegate
+    public Function Get(int index)
+    {
+        return functions[index];
+    }
+
+    // Sets a function in the delegate
+    public DynamicEvent Set(int index, Function function)
+    {
+        if (function.Method.GetParameters().Length == 0)
+        {
+            functions[index] = function;
+        }
+
+        return this;
+    }
+
+    // Add a new function to the delegate
+    public DynamicEvent Add(Function function)
+    {
+        if (function.Method.GetParameters().Length == 0)
+        {
+            functions.Add(function);
+        }
+
+        return this;
+    }
+
+    // Adds new functions to the delegate
+    public DynamicEvent Add(params Function[] functions)
+    {
+        for (int i = 0; i < functions.Length; i++)
+        {
+            if (functions[i].Method.GetParameters().Length == 0)
+            {
+                this.functions.Add(functions[i]);
+            }
+        }
+
+        return this;
+    }
+
+    // Adds new functions to the delegate
+    public DynamicEvent Add(List<Function> functions)
+    {
+        for (int i = 0; i < functions.Count(); i++)
+        {
+            if (functions[i].Method.GetParameters().Length == 0)
+            {
+                this.functions.Add(functions[i]);
+            }
+        }
+
+        return this;
+    }
+
+    // Adds another delegate to the delegate
+    public DynamicEvent Add(DynamicEvent newDelegate)
+    {
+        for (int i = 0; i < newDelegate.functions.Count(); i++)
+        {
+            if (newDelegate.functions[i].Method.GetParameters().Length == 0)
+            {
+                functions.Add(newDelegate.functions[i]);
+            }
+        }
+
+        return this;
+    }
+
+    // Remove a function from the delegate
+    public DynamicEvent Remove(Function function)
+    {
+        functions.Remove(function);
+
+        return this;
+    }
+
+    // Remove a function from the delegate
+    public DynamicEvent RemoveAt(int index)
+    {
+        functions.RemoveAt(index);
+
+        return this;
+    }
+
+    // Removes a delegate's functions from the delegate
+    public DynamicEvent Remove(DynamicEvent removedDelegate)
+    {
+        for (int i = 0; i < removedDelegate.functions.Count(); i++)
+        {
+            functions.Remove(removedDelegate.functions[i]);
+        }
+
+        return this;
+    }
+
+    // Clear all functions from the delegate
+    public DynamicEvent Clear()
+    {
+        functions.Clear();
+
+        return this;
+    }
+
+    // Return the number of functions in the delegate
+    public int Count()
+    {
+        return functions.Count();
+    }
+
+    // Returns if the delegate contains a function
+    public bool Contains(Function function)
+    {
+        return functions.Contains(function);
+    }
+
+    // Returns the index of the function in the delegate, or -1 if it was not found
+    public int Find(Function function)
+    {
+        for (int i = 0; i < functions.Count(); i++)
+        {
+            if (functions[i].Equals(function))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+
+    // PARAMETER FUNCTIONS
+
+    // Returns whether the given types match with the given parameters
+    public static bool CheckObjectParameters(object[] objects, ParameterInfo[] parameters)
+    {
+        if (objects.Length != parameters.Length)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            if (objects[i].GetType() != parameters[i].ParameterType)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    // COLLECTION OPERATORS
+
+    // Adding a function
+    public static DynamicEvent operator +(DynamicEvent Delegate, Function function)
+    {
+        return Delegate.Add(function);
+    }
+
+    // Removing a function
+    public static DynamicEvent operator -(DynamicEvent Delegate, Function function)
+    {
+        return Delegate.Remove(function);
+    }
+
+
+    // ENUMERATOR FUNCTION
+
+    // Enumerator implementation
+    public IEnumerator GetEnumerator()
+    {
+        return functions.GetEnumerator();
+    }
+}
+
+/// <summary>
+/// Wrapper class for a collection of functions.
 /// All stored functions must share the same parameters.
-/// All stored functions must return void.
 /// </summary>
 public class Delegate : IEnumerable
 {
@@ -461,7 +1175,7 @@ public class Delegate : IEnumerable
                 Debug.Assert(false, "DELEGATE ERROR: Could not invoke the given delegate! Invoked parameters did not match the delegate type!");
             }
 
-            if (cancel)
+            if (cancel || cancelAll)
             {
                 return false;
             }
@@ -958,7 +1672,7 @@ public class Delegate<ReturnType> : IEnumerable
                 Debug.Assert(false, "DELEGATE ERROR: Could not invoke the given delegate! Invoked parameters did not match the delegate type!");
             }
 
-            if (cancel)
+            if (cancel || cancelAll)
             {
                 for (int j = i + 1; j < functions.Count(); j++)
                 {
@@ -1439,7 +2153,7 @@ public class DynamicDelegate : IEnumerable
                 returns[functions[i]] = functions[i].Method.ReturnType.IsValueType ? Activator.CreateInstance(functions[i].Method.ReturnType) : null;
             }
 
-            if (cancel)
+            if (cancel || cancelAll)
             {
                 break;
             }

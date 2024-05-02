@@ -6,7 +6,6 @@
 #include <cstdarg> 
 
 // Include this heading to use the class
-#include "Select.h"
 
 // Select statements.
 

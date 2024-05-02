@@ -7,6 +7,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <cstdarg>
 #include <initializer_list>
 
 // Include this heading to use the class
@@ -1122,6 +1123,29 @@ public:
 		{
 			vector_data[i] = array[i];
 		}
+
+		vector_size = array_length;
+
+		vector_capacity = vector_size;
+
+		vector_expansions = 0;
+	}
+
+	// List constructor
+	vector(int array_length, DataType data...)
+	{
+		vector_data = new DataType[array_length];
+
+		va_list list;
+
+		va_start(list, 1);
+
+		for (int i = 0; i < array_length; i++)
+		{
+			vector_data[i] = va_arg(list, DataType);
+		}
+
+		va_end(list);
 
 		vector_size = array_length;
 
@@ -2247,6 +2271,29 @@ public:
 		{
 			vectorData[i] = array[i];
 		}
+
+		vectorSize = array_length;
+
+		vectorCapacity = vectorSize;
+
+		vectorExpansions = 0;
+	}
+
+	// List constructor
+	Vector(int array_length, DataType data...)
+	{
+		vectorData = new DataType[array_length];
+
+		va_list list;
+
+		va_start(list, 1);
+
+		for (int i = 0; i < array_length; i++)
+		{
+			vectorData[i] = va_arg(list, DataType);
+		}
+
+		va_end(list);
 
 		vectorSize = array_length;
 

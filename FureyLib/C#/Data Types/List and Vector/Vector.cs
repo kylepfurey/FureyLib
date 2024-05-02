@@ -7,17 +7,17 @@
 using System.Collections;
 
 // Data type used for sorting
-using SortType = float;
+using SortType = System.Single;
 
 // Vector Class
 public class Vector<DataType> : IEnumerable
 {
     // LIST VARIABLES
 
-    // The array of pointers representing the vector's data
+    // The array of the vector's data
     private DataType[] vectorData = new DataType[0];
 
-    // The current number of pointers in the array holding data
+    // The current number of elements in the array holding data
     private int vectorCount = 0;
 
     // The current maximum size of the array before needing to expand
@@ -25,6 +25,15 @@ public class Vector<DataType> : IEnumerable
 
     // The number of array expansions
     private int vectorExpansions = 0;
+
+    // Readonly count variable
+    public int Count
+    {
+        get
+        {
+            return vectorCount;
+        }
+    }
 
 
     // REALLOCATE MEMORY
@@ -60,7 +69,7 @@ public class Vector<DataType> : IEnumerable
 
     // TO ARRAY
 
-    // Returns a pointer to a new array of the current vector
+    // Returns an array of the current vector
     public DataType[] ToArray()
     {
         // Copy the vector into an array
@@ -138,12 +147,6 @@ public class Vector<DataType> : IEnumerable
 
     // Return the current size of the vector
     public int Size()
-    {
-        return vectorCount;
-    }
-
-    // Return the current size of the vector
-    public int Count()
     {
         return vectorCount;
     }
@@ -329,6 +332,12 @@ public class Vector<DataType> : IEnumerable
     }
 
     // Returns the element at the given index
+    public DataType Data(int index)
+    {
+        return At(index);
+    }
+
+    // Returns the element at the given index
     public DataType this[int index]
     {
         get => Get(index);
@@ -345,12 +354,6 @@ public class Vector<DataType> : IEnumerable
     public DataType Back()
     {
         return vectorData[vectorCount - 1];
-    }
-
-    // Return a pointer to the given index
-    public DataType Data(int index)
-    {
-        return At(index);
     }
 
 

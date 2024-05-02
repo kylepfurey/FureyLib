@@ -75,7 +75,7 @@ public:
 
 	// TO ARRAY
 
-	// Returns a pointer to a new array of the current list
+	// Returns a new pointer to a new array of the current list (must be deallocated)
 	DataType* to_new_array()
 	{
 		// Copy the list into an array

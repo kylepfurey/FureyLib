@@ -7,17 +7,17 @@
 using System.Collections;
 
 // Data type used for sorting
-using SortType = float;
+using SortType = System.Single;
 
 // List Class
 public class List<DataType> : IEnumerable
 {
     // LIST VARIABLES
 
-    // The array of pointers representing the list's data
+    // The array of the list's data
     private DataType[] listData = new DataType[0];
 
-    // The current number of pointers in the array holding data
+    // The current number of elements in the array holding data
     private int listCount = 0;
 
     // The current maximum size of the array before needing to expand
@@ -25,6 +25,15 @@ public class List<DataType> : IEnumerable
 
     // The number of array expansions
     private int listExpansions = 0;
+
+    // Readonly count variable
+    public int Count
+    {
+        get
+        {
+            return listCount;
+        }
+    }
 
 
     // REALLOCATE MEMORY
@@ -60,7 +69,7 @@ public class List<DataType> : IEnumerable
 
     // TO ARRAY
 
-    // Returns a pointer to a new array of the current list
+    // Returns an array of the current list
     public DataType[] ToArray()
     {
         // Copy the list into an array
@@ -138,12 +147,6 @@ public class List<DataType> : IEnumerable
 
     // Return the current size of the list
     public int Size()
-    {
-        return listCount;
-    }
-
-    // Return the current size of the list
-    public int Count()
     {
         return listCount;
     }
@@ -329,6 +332,12 @@ public class List<DataType> : IEnumerable
     }
 
     // Returns the element at the given index
+    public DataType Data(int index)
+    {
+        return At(index);
+    }
+
+    // Returns the element at the given index
     public DataType this[int index]
     {
         get => Get(index);
@@ -345,12 +354,6 @@ public class List<DataType> : IEnumerable
     public DataType Back()
     {
         return listData[listCount - 1];
-    }
-
-    // Return a pointer to the given index
-    public DataType Data(int index)
-    {
-        return At(index);
     }
 
 

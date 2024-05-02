@@ -75,7 +75,7 @@ public:
 
 	// TO ARRAY
 
-	// Returns a pointer to a new array of the current vector
+	// Returns a new pointer to a new array of the current vector (must be deallocated)
 	DataType* to_new_array()
 	{
 		// Copy the vector into an array

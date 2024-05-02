@@ -362,6 +362,25 @@ public:
 		return -1;
 	}
 
+	// Returns a new pointer to a new array of the current functions (must be deallocated)
+	auto to_new_array()
+	{
+		auto functions = new void[this->functions.size()](ParameterTypes...);
+
+		for (int i = 0; i < this->functions.size(); i++)
+		{
+			functions[i] = this->functions[i];
+		}
+
+		return functions;
+	}
+
+	// Returns a vector of the functions
+	auto to_vector()
+	{
+		return functions;
+	}
+
 
 	// COLLECTION OPERATORS
 
@@ -585,7 +604,7 @@ public:
 
 	// DELEGATE FUNCTIONS
 
-	// Returns a Dictionary with each key representing the function and the value being the returned data
+	// Returns a dictionary with each key representing the function and the value being the returned data
 	std::map<FUNCTION(), ReturnType> invoke(ParameterTypes... parameters)
 	{
 		cancel_invoke = false;
@@ -741,6 +760,25 @@ public:
 		}
 
 		return -1;
+	}
+
+	// Returns a new pointer to a new array of the current functions (must be deallocated)
+	auto to_new_array()
+	{
+		auto functions = new ReturnType[this->functions.size()](ParameterTypes...);
+
+		for (int i = 0; i < this->functions.size(); i++)
+		{
+			functions[i] = this->functions[i];
+		}
+
+		return functions;
+	}
+
+	// Returns a vector of the functions
+	auto to_vector()
+	{
+		return functions;
 	}
 
 
@@ -1117,6 +1155,25 @@ public:
 		return -1;
 	}
 
+	// Returns a new pointer to a new array of the current functions (must be deallocated)
+	auto ToNewArray()
+	{
+		auto functions = new void[this->functions.size()](ParameterTypes...);
+
+		for (int i = 0; i < this->functions.size(); i++)
+		{
+			functions[i] = this->functions[i];
+		}
+
+		return functions;
+	}
+
+	// Returns a vector of the functions
+	auto ToVector()
+	{
+		return functions;
+	}
+
 
 	// COLLECTION OPERATORS
 
@@ -1340,7 +1397,7 @@ public:
 
 	// DELEGATE FUNCTIONS
 
-	// Returns a Dictionary with each key representing the function and the value being the returned data
+	// Returns a dictionary with each key representing the function and the value being the returned data
 	std::map<FUNCTION(), ReturnType> Invoke(ParameterTypes... parameters)
 	{
 		cancelInvoke = false;
@@ -1496,6 +1553,25 @@ public:
 		}
 
 		return -1;
+	}
+
+	// Returns a new pointer to a new array of the current functions (must be deallocated)
+	auto ToNewArray()
+	{
+		auto functions = new ReturnType[this->functions.size()](ParameterTypes...);
+
+		for (int i = 0; i < this->functions.size(); i++)
+		{
+			functions[i] = this->functions[i];
+		}
+
+		return functions;
+	}
+
+	// Returns a vector of the functions
+	auto ToVector()
+	{
+		return functions;
 	}
 
 

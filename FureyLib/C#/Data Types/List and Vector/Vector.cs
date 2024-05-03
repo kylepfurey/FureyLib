@@ -12,7 +12,7 @@ using SortType = System.Single;
 // Vector Class
 public class Vector<DataType> : IEnumerable
 {
-    // LIST VARIABLES
+    // VECTOR VARIABLES
 
     // The array of the vector's data
     private DataType[] vectorData = new DataType[0];
@@ -84,7 +84,7 @@ public class Vector<DataType> : IEnumerable
     }
 
 
-    // LIST EQUALITY
+    // VECTOR EQUALITY
 
     // Check if another vector is equal to this vector
     public bool Equals(Vector<DataType> comparedVector)

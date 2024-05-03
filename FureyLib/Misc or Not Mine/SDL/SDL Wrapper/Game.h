@@ -1,3 +1,7 @@
+
+// SDL Game Wrapper Class
+// by Allen Cantin
+
 #pragma once
 #include "SDL.h"
 #include "SDL_ttf.h"

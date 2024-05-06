@@ -8,7 +8,6 @@
 #include "SDL_mixer.h"
 #include <vector>
 #include <chrono>
-#include <ctime>  
 
 // Include this heading to use the library
 #include "SDL Macros.h"

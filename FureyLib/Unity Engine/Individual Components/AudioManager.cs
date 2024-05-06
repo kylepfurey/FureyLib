@@ -3,17 +3,27 @@
 // by Kyle Furey
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-// A component that allows easy access to play sounds.
+/// <summary>
+/// A component that allows easy access to play sounds.
+/// </summary>
 public class AudioManager : MonoBehaviour
 {
     [Header("A component that allows easy access to play sounds.")]
 
-    public List<AudioCategory> audioCategories = new List<AudioCategory>();
+    [Header("Each category for this audio manager's sounds:")]
+    [SerializeField] private List<AudioCategory> audioCategories = new List<AudioCategory>();
 
-    private List<AudioInstance> audio = new List<AudioInstance>();
+    /// <summary>
+    /// The compiled list of all sound instances
+    /// </summary>
+    private Dictionary<string, AudioInstance> audio = new Dictionary<string, AudioInstance>();
 
+    /// <summary>
+    /// Compile the sounds at the start of the component's creation
+    /// </summary>
     private void Awake()
     {
         // Compile all audio categories into one list of audio instances
@@ -21,210 +31,384 @@ public class AudioManager : MonoBehaviour
         {
             foreach (AudioInstance audioInstance in audioCategory.audio)
             {
-                audio.Add(audioInstance);
+                audio[audioInstance.name.ToLower()] = audioInstance;
             }
         }
+
+        audioCategories.Clear();
     }
 
-    // Get a sound instance by name
-    public AudioSource Get(string sound)
+
+    // GET SOURCE
+
+    /// <summary>
+    /// Get a sound instance by name
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <returns></returns>
+    public AudioSource GetSource(string sound)
     {
-        for (int i = 0; i < audio.Count; i++)
-        {
-            if (sound.ToLower() == audio[i].name.ToLower() && audio[i] != null)
-            {
-                return audio[i].source;
-            }
-        }
-
-        return null;
+        return audio[sound.ToLower()].source;
     }
 
-    // Start playing a sound
+
+    // PLAYING SOUND
+
+    /// <summary>
+    /// Start playing a sound
+    /// </summary>
+    /// <param name="sound"></param>
     public void Play(string sound)
     {
-        for (int i = 0; i < audio.Count; i++)
-        {
-            if (sound.ToLower() == audio[i].name.ToLower() && audio[i] != null && audio[i].source.clip != null)
-            {
-                audio[i].source.Stop();
-                audio[i].source.time = 0;
-                audio[i].source.Play();
-                break;
-            }
-        }
+        audio[sound.ToLower()].source.Stop();
+        audio[sound.ToLower()].source.time = 0;
+        audio[sound.ToLower()].source.Play();
     }
 
+    /// <summary>
+    /// Start playing a sound at the given start time
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="startTime"></param>
     public void Play(string sound, float startTime)
     {
-        for (int i = 0; i < audio.Count; i++)
-        {
-            if (sound.ToLower() == audio[i].name.ToLower() && audio[i] != null && audio[i].source.clip != null)
-            {
-                audio[i].source.Stop();
-                audio[i].source.time = startTime;
-                audio[i].source.Play();
-                break;
-            }
-        }
+        audio[sound.ToLower()].source.Stop();
+        audio[sound.ToLower()].source.time = startTime;
+        audio[sound.ToLower()].source.Play();
     }
 
-    // Stop playing a designated sound
+    /// <summary>
+    /// Start playing a sound at the given start time and volume
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="startTime"></param>
+    /// <param name="volume"></param>
+    public void Play(string sound, float startTime, float volume)
+    {
+        audio[sound.ToLower()].source.Stop();
+        audio[sound.ToLower()].source.volume = volume;
+        audio[sound.ToLower()].source.time = startTime;
+        audio[sound.ToLower()].source.Play();
+    }
+
+
+    // STOPPING SOUND
+
+    /// <summary>
+    /// Stop playing a designated sound
+    /// </summary>
+    /// <param name="sound"></param>
     public void Stop(string sound)
     {
-        for (int i = 0; i < audio.Count; i++)
+        if (audio[sound.ToLower()].source.isPlaying)
         {
-            if (sound.ToLower() == audio[i].name.ToLower() && audio[i] != null && audio[i].source.clip != null)
-            {
-                if (audio[i].source.isPlaying)
-                {
-                    audio[i].source.Stop();
-                    audio[i].source.time = 0;
-                }
-                break;
-            }
+            audio[sound.ToLower()].source.Stop();
+            audio[sound.ToLower()].source.time = 0;
         }
     }
 
-    // Play a sound once
+
+    // PLAYING SOUND ONCE
+
+    /// <summary>
+    /// Play a sound once
+    /// </summary>
+    /// <param name="sound"></param>
     public void PlayOnce(string sound)
     {
-        for (int i = 0; i < audio.Count; i++)
-        {
-            if (sound.ToLower() == audio[i].name.ToLower() && audio[i] != null && audio[i].source.clip != null)
-            {
-                audio[i].source.PlayOneShot(audio[i].source.clip);
-                break;
-            }
-        }
+        audio[sound.ToLower()].source.PlayOneShot(audio[sound.ToLower()].source.clip);
     }
 
+    /// <summary>
+    /// Play a sound once at the given volume
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="volume"></param>
     public void PlayOnce(string sound, float volume)
     {
-        for (int i = 0; i < audio.Count; i++)
-        {
-            if (sound.ToLower() == audio[i].name.ToLower() && audio[i] != null && audio[i].source.clip != null)
-            {
-                audio[i].source.PlayOneShot(audio[i].source.clip, volume);
-                break;
-            }
-        }
+        audio[sound.ToLower()].source.PlayOneShot(audio[sound.ToLower()].source.clip, volume);
     }
 
-    // Play a sound after another sound ends
-    public void PlayMusic(string opening, string music)
-    {
-        for (int i = 0; i < audio.Count; i++)
-        {
-            if (opening.ToLower() == audio[i].name.ToLower() && audio[i] != null && audio[i].source.clip != null)
-            {
-                audio[i].source.Stop();
-                audio[i].source.time = 0;
-                audio[i].source.Play();
 
-                for (int j = 0; j < audio.Count; j++)
-                {
-                    if (music.ToLower() == audio[j].name.ToLower() && audio[j] != null && audio[j].source.clip != null)
-                    {
-                        audio[j].source.Stop();
-                        audio[j].source.time = 0;
-                        audio[j].source.PlayDelayed(audio[i].source.clip.length);
-                        break;
-                    }
-                }
-                break;
-            }
-        }
+    // PLAYING MUSIC
+
+    /// <summary>
+    /// Play a sound after another sound ends (for music)
+    /// </summary>
+    /// <param name="opening"></param>
+    /// <param name="track"></param>
+    public void PlayMusic(string opening, string track)
+    {
+        audio[opening.ToLower()].source.Stop();
+        audio[opening.ToLower()].source.time = 0;
+        audio[opening.ToLower()].source.Play();
+
+        audio[track.ToLower()].source.Stop();
+        audio[track.ToLower()].source.time = 0;
+        audio[track.ToLower()].source.PlayDelayed(audio[opening.ToLower()].source.clip.length);
     }
 
-    public void PlayMusic(string opening, float openingStartTime, string music)
+    /// <summary>
+    /// Play a sound at the given start time after another sound ends (for music)
+    /// </summary>
+    /// <param name="opening"></param>
+    /// <param name="openingStartTime"></param>
+    /// <param name="track"></param>
+    public void PlayMusic(string opening, float openingStartTime, string track)
     {
-        for (int i = 0; i < audio.Count; i++)
-        {
-            if (opening.ToLower() == audio[i].name.ToLower() && audio[i] != null && audio[i].source.clip != null)
-            {
-                audio[i].source.Stop();
-                audio[i].source.time = openingStartTime;
-                audio[i].source.Play();
+        audio[opening.ToLower()].source.Stop();
+        audio[opening.ToLower()].source.time = openingStartTime;
+        audio[opening.ToLower()].source.Play();
 
-                for (int j = 0; j < audio.Count; j++)
-                {
-                    if (music.ToLower() == audio[j].name.ToLower() && audio[j] != null && audio[j].source.clip != null)
-                    {
-                        audio[j].source.Stop();
-                        audio[j].source.time = 0;
-                        audio[j].source.PlayDelayed(audio[i].source.clip.length - openingStartTime);
-                        break;
-                    }
-                }
-                break;
-            }
-        }
+        audio[track.ToLower()].source.Stop();
+        audio[track.ToLower()].source.time = 0;
+        audio[track.ToLower()].source.PlayDelayed(audio[opening.ToLower()].source.clip.length - openingStartTime);
     }
 
-    public void PlayMusic(string opening, string music, float musicStartTime)
+    /// <summary>
+    /// Play a sound at the given start time and volume after another sound ends (for music)
+    /// </summary>
+    /// <param name="opening"></param>
+    /// <param name="openingStartTime"></param>
+    /// <param name="openingVolume"></param>
+    /// <param name="track"></param>
+    public void PlayMusic(string opening, float openingStartTime, float openingVolume, string track)
     {
-        for (int i = 0; i < audio.Count; i++)
-        {
-            if (opening.ToLower() == audio[i].name.ToLower() && audio[i] != null && audio[i].source.clip != null)
-            {
-                audio[i].source.Stop();
-                audio[i].source.time = 0;
-                audio[i].source.Play();
+        audio[opening.ToLower()].source.Stop();
+        audio[opening.ToLower()].source.volume = openingVolume;
+        audio[opening.ToLower()].source.time = openingStartTime;
+        audio[opening.ToLower()].source.Play();
 
-                for (int j = 0; j < audio.Count; j++)
-                {
-                    if (music.ToLower() == audio[j].name.ToLower() && audio[j] != null && audio[j].source.clip != null)
-                    {
-                        audio[j].source.Stop();
-                        audio[j].source.time = musicStartTime;
-                        audio[j].source.PlayDelayed(audio[i].source.clip.length);
-                        break;
-                    }
-                }
-                break;
-            }
-        }
+        audio[track.ToLower()].source.Stop();
+        audio[track.ToLower()].source.time = 0;
+        audio[track.ToLower()].source.PlayDelayed(audio[opening.ToLower()].source.clip.length - openingStartTime);
     }
 
-    public void PlayMusic(string opening, float openingStartTime, string music, float musicStartTime)
+    /// <summary>
+    /// Play a sound after another sound ends starting at the given start time (for music)
+    /// </summary>
+    /// <param name="opening"></param>
+    /// <param name="track"></param>
+    /// <param name="trackStartTime"></param>
+    public void PlayMusic(string opening, string track, float trackStartTime)
     {
-        for (int i = 0; i < audio.Count; i++)
-        {
-            if (opening.ToLower() == audio[i].name.ToLower() && audio[i] != null && audio[i].source.clip != null)
-            {
-                audio[i].source.Stop();
-                audio[i].source.time = openingStartTime;
-                audio[i].source.Play();
+        audio[opening.ToLower()].source.Stop();
+        audio[opening.ToLower()].source.time = 0;
+        audio[opening.ToLower()].source.Play();
 
-                for (int j = 0; j < audio.Count; j++)
-                {
-                    if (music.ToLower() == audio[j].name.ToLower() && audio[j] != null && audio[j].source.clip != null)
-                    {
-                        audio[j].source.Stop();
-                        audio[j].source.time = musicStartTime;
-                        audio[j].source.PlayDelayed(audio[i].source.clip.length - openingStartTime);
-                        break;
-                    }
-                }
-                break;
-            }
-        }
+        audio[track.ToLower()].source.Stop();
+        audio[track.ToLower()].source.time = trackStartTime;
+        audio[track.ToLower()].source.PlayDelayed(audio[opening.ToLower()].source.clip.length);
+    }
+
+    /// <summary>
+    /// Play a sound after another sound ends starting at the given start time and volume (for music)
+    /// </summary>
+    /// <param name="opening"></param>
+    /// <param name="track"></param>
+    /// <param name="trackStartTime"></param>
+    /// <param name="trackVolume"></param>
+    public void PlayMusic(string opening, string track, float trackStartTime, float trackVolume)
+    {
+        audio[opening.ToLower()].source.Stop();
+        audio[opening.ToLower()].source.time = 0;
+        audio[opening.ToLower()].source.Play();
+
+        audio[track.ToLower()].source.Stop();
+        audio[track.ToLower()].source.volume = trackVolume;
+        audio[track.ToLower()].source.time = trackStartTime;
+        audio[track.ToLower()].source.PlayDelayed(audio[opening.ToLower()].source.clip.length);
+    }
+
+    /// <summary>
+    /// Play a sound at the given start time after another sound ends starting at the given start time (for music)
+    /// </summary>
+    /// <param name="opening"></param>
+    /// <param name="openingStartTime"></param>
+    /// <param name="track"></param>
+    /// <param name="trackStartTime"></param>
+    public void PlayMusic(string opening, float openingStartTime, string track, float trackStartTime)
+    {
+        audio[opening.ToLower()].source.Stop();
+        audio[opening.ToLower()].source.time = openingStartTime;
+        audio[opening.ToLower()].source.Play();
+
+        audio[track.ToLower()].source.Stop();
+        audio[track.ToLower()].source.time = trackStartTime;
+        audio[track.ToLower()].source.PlayDelayed(audio[opening.ToLower()].source.clip.length - openingStartTime);
+    }
+
+    /// <summary>
+    /// Play a sound at the given start time and volume after another sound ends starting at the given start time and volume (for music)
+    /// </summary>
+    /// <param name="opening"></param>
+    /// <param name="openingStartTime"></param>
+    /// <param name="openingVolume"></param>
+    /// <param name="track"></param>
+    /// <param name="trackStartTime"></param>
+    /// <param name="trackVolume"></param>
+    public void PlayMusic(string opening, float openingStartTime, float openingVolume, string track, float trackStartTime, float trackVolume)
+    {
+        audio[opening.ToLower()].source.Stop();
+        audio[opening.ToLower()].source.volume = openingVolume;
+        audio[opening.ToLower()].source.time = openingStartTime;
+        audio[opening.ToLower()].source.Play();
+
+        audio[track.ToLower()].source.Stop();
+        audio[track.ToLower()].source.volume = trackVolume;
+        audio[track.ToLower()].source.time = trackStartTime;
+        audio[track.ToLower()].source.PlayDelayed(audio[opening.ToLower()].source.clip.length - openingStartTime);
+    }
+
+    /// <summary>
+    /// Play a sound at the given start time after another sound ends starting at the given start time both at the given volume (for music)
+    /// </summary>
+    /// <param name="opening"></param>
+    /// <param name="openingStartTime"></param>
+    /// <param name="track"></param>
+    /// <param name="trackStartTime"></param>
+    /// <param name="volume"></param>
+    public void PlayMusic(string opening, float openingStartTime, string track, float trackStartTime, float volume)
+    {
+        audio[opening.ToLower()].source.Stop();
+        audio[opening.ToLower()].source.volume = volume;
+        audio[opening.ToLower()].source.time = openingStartTime;
+        audio[opening.ToLower()].source.Play();
+
+        audio[track.ToLower()].source.Stop();
+        audio[track.ToLower()].source.volume = volume;
+        audio[track.ToLower()].source.time = trackStartTime;
+        audio[track.ToLower()].source.PlayDelayed(audio[opening.ToLower()].source.clip.length - openingStartTime);
+    }
+
+
+    // PLAYING SOUND AT LOCATION
+
+    /// <summary>
+    /// Play a sound at a specific location
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="position"></param>
+    public void PlayAt(string sound, Vector3 position)
+    {
+        AudioSource.PlayClipAtPoint(audio[sound.ToLower()].source.clip, position);
+    }
+
+    /// <summary>
+    /// Play a sound at a specific location and volume
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="position"></param>
+    /// <param name="volume"></param>
+    public void PlayAt(string sound, Vector3 position, float volume)
+    {
+        audio[sound.ToLower()].source.volume = volume;
+        AudioSource.PlayClipAtPoint(audio[sound.ToLower()].source.clip, position);
+    }
+
+    /// <summary>
+    /// Play the sound at the audio manager component's location
+    /// </summary>
+    /// <param name="sound"></param>
+    public void PlayHere(string sound)
+    {
+        AudioSource.PlayClipAtPoint(audio[sound.ToLower()].source.clip, transform.position);
+    }
+
+    /// <summary>
+    /// Play the sound at the audio manager component's location at the given volume
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="volume"></param>
+    public void PlayHere(string sound, float volume)
+    {
+        audio[sound.ToLower()].source.volume = volume;
+        AudioSource.PlayClipAtPoint(audio[sound.ToLower()].source.clip, transform.position);
+    }
+
+
+    // PLAYING SOUND FOR DURATION
+
+    /// <summary>
+    /// Start playing a sound for a specific time
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="duration"></param>
+    public void PlayFor(string sound, float duration)
+    {
+        audio[sound.ToLower()].source.Stop();
+        audio[sound.ToLower()].source.Play();
+        StopPlay(audio[sound.ToLower()].source, duration);
+    }
+
+    /// <summary>
+    /// Start playing a sound for a specific time starting at the start time
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="duration"></param>
+    /// <param name="startTime"></param>
+    public void PlayFor(string sound, float duration, float startTime)
+    {
+        audio[sound.ToLower()].source.Stop();
+        audio[sound.ToLower()].source.time = startTime;
+        audio[sound.ToLower()].source.Play();
+        StopPlay(audio[sound.ToLower()].source, duration);
+    }
+
+    /// <summary>
+    /// Start playing a sound for a specific time starting at the start time and volume
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="duration"></param>
+    /// <param name="startTime"></param>
+    /// <param name="volume"></param>
+    public void PlayFor(string sound, float duration, float startTime, float volume)
+    {
+        audio[sound.ToLower()].source.Stop();
+        audio[sound.ToLower()].source.time = startTime;
+        audio[sound.ToLower()].source.volume = volume;
+        audio[sound.ToLower()].source.Play();
+        StopPlay(audio[sound.ToLower()].source, duration);
+    }
+
+    /// <summary>
+    /// Used to stop playing a sound at a duration
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="seconds"></param>
+    private async void StopPlay(AudioSource source, float seconds)
+    {
+        await Task.Delay((int)(1000 * seconds));
+
+        source.Stop();
     }
 }
 
-// Audio Instance Class
+
+// AUDIO CLASSES
+
+/// <summary>
+/// Audio Instance Class
+/// </summary>
 [System.Serializable]
 public class AudioInstance
 {
+    [Header("The referenced name of this audio instance:")]
     public string name = "New Audio Clip";
+
+    [Header("The source of this audio instance:")]
     public AudioSource source = null;
 }
 
-// Audio Category Class
+/// <summary>
+/// Audio Category Class
+/// </summary>
 [System.Serializable]
 public class AudioCategory
 {
+    [Header("The name of this audio category:")]
     public string name = "New Audio Category";
+
+    [Header("The sounds owned by this audio category:")]
     public List<AudioInstance> audio = new List<AudioInstance>();
 }

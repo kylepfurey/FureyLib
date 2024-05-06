@@ -56,7 +56,7 @@ public class StateMachine : MonoBehaviour
     private void Start()
     {
         // Sets the current state as the starting state (should be changed from template state)
-        SwitchState(new State(this, gameObject));
+        SwitchState(new State(this));
     }
 
     /// <summary>
@@ -81,11 +81,6 @@ public abstract class StateBase
     /// The inherited state machine from the owner
     /// </summary>
     protected StateMachine stateMachine = null;
-
-    /// <summary>
-    /// The inherited gameobject from the state machine's owner
-    /// </summary>
-    protected GameObject gameObject => stateMachine.gameObject;
 
     /// <summary>
     /// Called when this state is set as the state machine's current state

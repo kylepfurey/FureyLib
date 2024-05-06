@@ -10,11 +10,10 @@ using UnityEngine;
 public class State : StateBase
 {
     /// <summary>
-    /// Constructor (sets state machine and gameobject)
+    /// Constructor (sets state machine)
     /// </summary>
     /// <param name="StateMachine"></param>
-    /// <param name="GameObject"></param>
-    public State(StateMachine StateMachine, GameObject GameObject)
+    public State(StateMachine StateMachine)
     {
         stateMachine = StateMachine;
 

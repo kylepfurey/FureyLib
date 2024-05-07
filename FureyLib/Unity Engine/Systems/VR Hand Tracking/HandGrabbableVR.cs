@@ -1,5 +1,6 @@
 
 // VR Hand Grabbing and Throwing Script
+// by Kyle Furey
 
 using System.Collections.Generic;
 using UnityEngine;

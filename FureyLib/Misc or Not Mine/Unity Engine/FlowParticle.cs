@@ -1,9 +1,11 @@
 
 // Flow Particle Object Script
+// by Kyle Furey for NASA VR Project
 
 using System.Collections.Generic;
 using UnityEngine;
 
+// Movable rigidbody that is affected by particle field data.
 public class FlowParticle : MonoBehaviour
 {
     // The flow data file

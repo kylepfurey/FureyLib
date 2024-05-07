@@ -1,5 +1,6 @@
 
 // Flow Data Particles Script
+// by Kyle Furey for NASA VR Project
 
 using UnityEngine;
 

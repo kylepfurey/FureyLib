@@ -79,7 +79,7 @@ public static class Math
     }
 
     /// <summary>
-    /// Rotate a vector by a euler rotation
+    /// Rotate a direction by a euler rotation
     /// </summary>
     /// <param name="direction"></param>
     /// <param name="rotation"></param>
@@ -90,7 +90,7 @@ public static class Math
     }
 
     /// <summary>
-    /// Rotate a vector by a quaternion rotation
+    /// Rotate a direction by a quaternion rotation
     /// </summary>
     /// <param name="direction"></param>
     /// <param name="rotation"></param>
@@ -152,10 +152,12 @@ public static class Math
     /// <param name="position"></param>
     /// <param name="transform"></param>
     /// <returns></returns>
-    public static Vector3 GetLocalPosition(Vector3 position, Transform transform)
+    public static Vector3 GetLocalPosition(Vector3 position)
     {
+        // TODO: FIX ME
+
         position = transform.position - position;
-        position = (position.x * transform.right + position.y * transform.up + position.z * transform.forward) * -1;
+        position = transform.rotation * -position;
         position = new Vector3(position.x / transform.lossyScale.x, position.y / transform.lossyScale.y, position.z / transform.lossyScale.z);
 
         return position;
@@ -167,10 +169,12 @@ public static class Math
     /// <param name="position"></param>
     /// <param name="transform"></param>
     /// <returns></returns>
-    public static Vector3 GetWorldPosition(Vector3 position, Transform transform)
+    public static Vector3 GetWorldPosition(Vector3 position)
     {
+        // TODO: FIX ME
+
         position += transform.position;
-        position = (position.x * transform.right - position.y * transform.up - position.z * transform.forward) * -1;
+        position = transform.rotation * position;
         position = new Vector3(position.x * transform.lossyScale.x, position.y * transform.lossyScale.y, position.z * transform.lossyScale.z);
 
         return position;

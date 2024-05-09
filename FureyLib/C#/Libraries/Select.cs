@@ -27,18 +27,6 @@ public static class Select
         }
     }
 
-    // Select from a byte and return the chosen data
-    public static DataType select<DataType>(byte n, params DataType[] nData)
-    {
-        return nData[n];
-    }
-
-    // Select from a byte and return the chosen data
-    public static ref DataType selectref<DataType>(byte n, params DataType[] nData)
-    {
-        return ref nData[n];
-    }
-
     // Select from an integer and return the chosen data
     public static DataType select<DataType>(int n, params DataType[] nData)
     {

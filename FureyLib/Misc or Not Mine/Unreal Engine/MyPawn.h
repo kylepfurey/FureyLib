@@ -49,7 +49,7 @@ public:
 	// New constructors here
 
 	// Deconstructor
-	~AMyPawn()
+	virtual ~AMyPawn()
 	{
 
 	}

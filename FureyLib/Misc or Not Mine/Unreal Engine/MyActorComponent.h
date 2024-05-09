@@ -52,7 +52,7 @@ public:
 	// New constructors here
 
 	// Deconstructor
-	~UMyActorComponent()
+	virtual ~UMyActorComponent()
 	{
 
 	}

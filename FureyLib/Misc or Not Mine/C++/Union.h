@@ -45,7 +45,7 @@ public:
 	// New constructors here
 
 	// Deconstructor
-	~Union()
+	virtual ~Union()
 	{
 
 	}

@@ -27,9 +27,11 @@ public:
 	SDL_Interface() { }
 
 	// Deconstructor
-	~SDL_Interface()
+	virtual ~SDL_Interface()
 	{
-		Destroy();
+		delete transform;
+
+		transform = nullptr;
 	}
 
 
@@ -42,6 +44,7 @@ public:
 	virtual void Destroy()
 	{
 		delete transform;
+
 		transform = nullptr;
 	}
 };

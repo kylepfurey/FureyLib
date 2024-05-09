@@ -43,7 +43,7 @@ public:
 	// New constructors here
 
 	// Deconstructor
-	~Class()
+	virtual ~Class()
 	{
 
 	}

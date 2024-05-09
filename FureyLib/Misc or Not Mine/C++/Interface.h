@@ -45,7 +45,7 @@ public:
 	// New constructors here
 
 	// Deconstructor
-	~Interface()
+	virtual ~Interface()
 	{
 
 	}

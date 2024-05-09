@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
-// Creates a simple slingshot for use in VR.
+/// <summary>
+/// Creates a simple slingshot for use in VR.
+/// </summary>
 public class SlingshotVR : MonoBehaviour
 {
     [Header("Creates a simple slingshot for use in VR.")]

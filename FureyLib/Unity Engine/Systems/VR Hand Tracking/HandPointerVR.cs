@@ -7,7 +7,9 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine;
 
-// Used to detect when the player is pointing using hand tracking in VR, as well as specific interactions through pointing.
+/// <summary>
+/// Used to detect when the player is pointing using hand tracking in VR, as well as specific interactions through pointing.
+/// </summary>
 public class HandPointerVR : MonoBehaviour
 {
     [Header("Used to detect when the player is pointing using hand tracking in VR, as well as specific interactions through pointing.")]

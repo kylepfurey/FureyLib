@@ -4,8 +4,8 @@
 
 using UnityEngine;
 
-[RequireComponent(typeof(ParticleSystem))]
 // Creates particles and controls their visibility to accurately represent the flow data.
+[RequireComponent(typeof(ParticleSystem))]
 public class ParticleVisibility : MonoBehaviour
 {
     [Header("Creates particles and controls their visibility to accurately represent the flow data.")]

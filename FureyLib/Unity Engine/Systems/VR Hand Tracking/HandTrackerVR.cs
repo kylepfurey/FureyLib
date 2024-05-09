@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine;
 
-// Tracks a player's hands in VR through the hand's joints.
+/// <summary>
+/// Tracks a player's hands in VR through the hand's joints.
+/// </summary>
 public class HandTrackerVR : MonoBehaviour
 {
     [Header("Tracks a player's hands in VR through the hand's joints.")]
@@ -34,6 +36,10 @@ public class HandTrackerVR : MonoBehaviour
 
     [Header("The name of the right hand to search for:")]
     public string rightHandName = "Right Hand Object Name";
+
+    [Header("Whether to add collision to the hands:")]
+    public bool addCollision = true;
+    public bool collisionIsTrigger = false;
 
     [Header("Events to call when hands are set:")]
     public UnityEvent onHandSet = null;
@@ -63,9 +69,9 @@ public class HandTrackerVR : MonoBehaviour
     {
         if (leftHand == null || rightHand == null)
         {
-            leftHand = new HandVR(leftHandName, false);
+            leftHand = new HandVR(leftHandName, false, addCollision, collisionIsTrigger);
 
-            rightHand = new HandVR(rightHandName, true);
+            rightHand = new HandVR(rightHandName, true, addCollision, collisionIsTrigger);
 
             if (leftHand.hand != null && rightHand.hand != null)
             {
@@ -108,15 +114,21 @@ public class HandTrackerVR : MonoBehaviour
     }
 }
 
+/// <summary>
+/// Data for an individual hand in VR.
+/// </summary>
 public class HandVR
 {
     // Constructor
-    public HandVR() { }
+    public HandVR()
+    {
+
+    }
 
     // Constructor
-    public HandVR(string name, bool isRight)
+    public HandVR(string name, bool isRight, bool addCollision = true, bool collisionIsTrigger = false)
     {
-        SetHand(name, isRight);
+        SetHand(name, isRight, addCollision, collisionIsTrigger);
     }
 
     // Type of hand
@@ -127,6 +139,9 @@ public class HandVR
 
     // Wrist
     public GameObject wrist = null;
+
+    // Palm
+    public GameObject palm = null;
 
     // Thumb
     public GameObject thumb = null;
@@ -152,6 +167,10 @@ public class HandVR
     public GameObject pinkyMiddle = null;
     public GameObject pinkyTip = null;
 
+    // Collision
+    public CapsuleCollider collider = null;
+    public Rigidbody rigidbody = null;
+
     // Finger maximum and minimum values (using relative rotation)
     public const float thumbMin = 0; public const float thumbMax = 10;
     public const float fingerMin = 0; public const float fingerMax = 90;
@@ -164,44 +183,74 @@ public class HandVR
 
     // Sets this hand to a found hand object based on the given name. Make sure the name exactly matches the parent of the intended hand.
     // Note: The hierarchy of joints may also need to be changed depending on your hand prefab.
-    public bool SetHand(string name, bool isRight)
+    public bool SetHand(string name, bool isRight, bool addCollision = true, bool collisionIsTrigger = false)
     {
         GameObject handParent = GameObject.Find(name);
 
         if (handParent != null)
         {
             this.isRight = isRight;
-            Debug.Log(isRight ? "Right" : "Left" + " hand of name " + name + " was found.");
+            Debug.Log((isRight ? "Right" : "Left") + " hand of name " + name + " was found.");
 
             hand = handParent;
-            Debug.Log(isRight ? "Right" : "Left" + " Hand: " + hand.name);
+            Debug.Log((isRight ? "Right" : "Left") + " Hand: " + hand.name);
 
             wrist = handParent.transform.GetChild(0).gameObject;
-            Debug.Log(isRight ? "Right" : "Left" + " Wrist: " + wrist.name);
+            Debug.Log((isRight ? "Right" : "Left") + " Wrist: " + wrist.name);
+
+            palm = handParent.transform.GetChild(0).GetChild(3).gameObject;
+            Debug.Log((isRight ? "Right" : "Left") + " Palm: " + palm.name);
 
             thumb = wrist.transform.GetChild(5).transform.GetChild(0).gameObject;
             thumbTip = thumb.transform.GetChild(0).gameObject;
-            Debug.Log(isRight ? "Right" : "Left" + " Thumb: " + thumb.name);
+            Debug.Log((isRight ? "Right" : "Left") + " Thumb: " + thumb.name);
 
             index = wrist.transform.GetChild(0).transform.GetChild(0).gameObject;
             indexMiddle = index.transform.GetChild(0).gameObject;
             indexTip = indexMiddle.transform.GetChild(0).gameObject;
-            Debug.Log(isRight ? "Right" : "Left" + " Index Finger: " + index.name);
+            Debug.Log((isRight ? "Right" : "Left") + " Index Finger: " + index.name);
 
             middle = wrist.transform.GetChild(2).transform.GetChild(0).gameObject;
             middleMiddle = middle.transform.GetChild(0).gameObject;
             middleTip = middleMiddle.transform.GetChild(0).gameObject;
-            Debug.Log(isRight ? "Right" : "Left" + " Middle Finger: " + middle.name);
+            Debug.Log((isRight ? "Right" : "Left") + " Middle Finger: " + middle.name);
 
             ring = wrist.transform.GetChild(4).transform.GetChild(0).gameObject;
             ringMiddle = ring.transform.GetChild(0).gameObject;
             ringTip = ringMiddle.transform.GetChild(0).gameObject;
-            Debug.Log(isRight ? "Right" : "Left" + " Ring Finger: " + ring.name);
+            Debug.Log((isRight ? "Right" : "Left") + " Ring Finger: " + ring.name);
 
             pinky = wrist.transform.GetChild(1).transform.GetChild(0).gameObject;
             pinkyMiddle = pinky.transform.GetChild(0).gameObject;
             pinkyTip = pinkyMiddle.transform.GetChild(0).gameObject;
-            Debug.Log(isRight ? "Right" : "Left" + " Pinky Finger: " + pinky.name);
+            Debug.Log((isRight ? "Right" : "Left") + " Pinky Finger: " + pinky.name);
+
+            collider = palm.AddComponent<CapsuleCollider>();
+            collider.isTrigger = collisionIsTrigger;
+            collider.providesContacts = false;
+            collider.sharedMaterial = null;
+            collider.center = new Vector3(0, 0, -0.1f);
+            collider.radius = 0.05f;
+            collider.height = 0.4f;
+            collider.direction = 2;
+
+            rigidbody = palm.AddComponent<Rigidbody>();
+            rigidbody.mass = 1;
+            rigidbody.drag = 0;
+            rigidbody.angularDrag = 0.05f;
+            rigidbody.automaticCenterOfMass = true;
+            rigidbody.automaticInertiaTensor = true;
+            rigidbody.useGravity = false;
+            rigidbody.isKinematic = true;
+            rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+            rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+            if (!addCollision)
+            {
+                collider.enabled = false;
+
+                rigidbody.detectCollisions = false;
+            }
 
             return true;
         }

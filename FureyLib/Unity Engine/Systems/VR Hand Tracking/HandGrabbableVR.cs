@@ -5,7 +5,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Allows this game object to be picked up and possibly thrown when in range.
+/// <summary>
+/// Allows this game object to be picked up and thrown when in range.
+/// </summary>
 public class HandGrabbableVR : MonoBehaviour
 {
     [Header("Allows this game object to be picked up and possibly thrown when in range.")]
@@ -21,7 +23,7 @@ public class HandGrabbableVR : MonoBehaviour
     private static GameObject heldRightObject = null;
 
     [Header("The maximum distance to this object where it can be grabbed:")]
-    [SerializeField] private float grabDistance = 1;
+    [SerializeField] private float grabDistance = 0.5f;
 
     [Header("The position offset for grabbed objects:")]
     [SerializeField] private Vector3 grabOffset = new Vector3(0, -0.07f, 0.07f);
@@ -36,7 +38,7 @@ public class HandGrabbableVR : MonoBehaviour
     private float rightGrabTime = 0;
 
     [Header("The gestures allowed to be used to grab this item:")]
-    [SerializeField] private List<HandVR.Gesture> allowedGestures = new List<HandVR.Gesture>() { HandVR.Gesture.Fist, HandVR.Gesture.Pinch };
+    [SerializeField] private List<HandVR.Gesture> allowedGestures = new List<HandVR.Gesture>() { HandVR.Gesture.Fist };
 
     // The rigidbody of the grabbed object
     private Rigidbody rigidbody = null;
@@ -68,6 +70,9 @@ public class HandGrabbableVR : MonoBehaviour
     [Header("The offset applied to this thrown object's direction:")]
     [SerializeField] private Vector3 thrownOffset = Vector3.zero;
 
+    [Header("The delay before reenabling collision for the player's hands (to prevent the hands bumping the object):")]
+    [SerializeField] private float collisionDelay = 0.5f;
+
     // The previous position of this object
     private Vector3 previousPosition = Vector3.zero;
 
@@ -84,6 +89,8 @@ public class HandGrabbableVR : MonoBehaviour
         // Check the player's hands
         if (HandTrackerVR.leftHand != null && HandTrackerVR.rightHand != null)
         {
+            Debug.DrawLine(previousPosition, transform.position, Color.yellow);
+
             // Grabbing with left hand
             Grab(false);
 
@@ -95,6 +102,9 @@ public class HandGrabbableVR : MonoBehaviour
 
             // Increment grab time for right hand
             GrabTime(true);
+
+            // Update our previous position
+            previousPosition = transform.position;
         }
     }
 
@@ -129,7 +139,7 @@ public class HandGrabbableVR : MonoBehaviour
         if (selectref(isRight, ref heldRightObject, ref heldLeftObject) == null && selectref(isRight, ref heldLeftObject, ref heldRightObject) != gameObject)
         {
             // Check if the object is grabbable, if the hand is within grab distance of this object, if the grab time is within the grab buffer, and that the player is currently gesturing
-            if (selectref(isRight, ref grabbableRight, ref grabbableLeft) && DistanceSquared(transform.position, selectref(isRight, ref HandTrackerVR.rightHand.hand, ref HandTrackerVR.leftHand.hand).transform.position) <= grabDistance * grabDistance && selectref(isRight, ref rightGrabTime, ref leftGrabTime) <= grabBuffer && selectref(isRight, ref grabbingRight, ref grabbingLeft))
+            if (selectref(isRight, ref grabbableRight, ref grabbableLeft) && DistanceSquared(transform.position, selectref(isRight, ref HandTrackerVR.rightHand.palm, ref HandTrackerVR.leftHand.palm).transform.position) <= grabDistance * grabDistance && selectref(isRight, ref rightGrabTime, ref leftGrabTime) <= grabBuffer && selectref(isRight, ref grabbingRight, ref grabbingLeft))
             {
                 // Set this hand's grabbed object to this
                 selectref(isRight, ref heldRightObject, ref heldLeftObject) = gameObject;
@@ -154,9 +164,6 @@ public class HandGrabbableVR : MonoBehaviour
             {
                 // Hold the item in the player's hand
                 transform.position = TranslateRelative(selectref(isRight, ref HandTrackerVR.rightHand.wrist, ref HandTrackerVR.leftHand.wrist).transform, grabOffset);
-
-                // Update our previous position
-                previousPosition = transform.position;
 
                 // Check if the rigidbody exists
                 if (rigidbody != null)
@@ -202,6 +209,8 @@ public class HandGrabbableVR : MonoBehaviour
                 if (throwable)
                 {
                     Throw();
+
+                    LoseCollision(isRight);
                 }
             }
         }
@@ -221,6 +230,8 @@ public class HandGrabbableVR : MonoBehaviour
             if (throwable)
             {
                 Throw();
+
+                LoseCollision(isRight);
             }
         }
     }
@@ -251,6 +262,43 @@ public class HandGrabbableVR : MonoBehaviour
 
         // Set the velocity of the object to the thrown direction
         rigidbody.velocity = direction;
+
+        Debug.Log("Thrown Velocity: " + rigidbody.velocity);
+    }
+
+    // Losing hand collision after throwing
+    private void LoseCollision(bool isRight)
+    {
+        if (isRight)
+        {
+            if (HandTrackerVR.rightHand.collider.enabled)
+            {
+                HandTrackerVR.rightHand.collider.enabled = false;
+
+                Invoke("RegainLeftCollision", collisionDelay);
+            }
+        }
+        else
+        {
+            if (HandTrackerVR.leftHand.collider.enabled)
+            {
+                HandTrackerVR.leftHand.collider.enabled = false;
+
+                Invoke("RegainRightCollision", collisionDelay);
+            }
+        }
+    }
+
+    // Regaining left hand collision after throwing
+    private void RegainLeftCollision()
+    {
+        HandTrackerVR.leftHand.collider.enabled = false;
+    }
+
+    // Regaining right hand collision after throwing
+    private void RegainRightCollision()
+    {
+        HandTrackerVR.rightHand.collider.enabled = false;
     }
 
     // Select from a boolean and return the chosen data

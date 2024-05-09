@@ -116,12 +116,6 @@ public class Vector<DataType> : IEnumerable
     }
 
     // Check if another vector is not equal to this vector
-    public bool NotEquals(Vector<DataType> comparedVector)
-    {
-        return !Equals(comparedVector);
-    }
-
-    // Check if another vector is not equal to this vector
     public static bool operator !=(Vector<DataType> vector, Vector<DataType> comparedVector)
     {
         return !vector.Equals(comparedVector);

@@ -122,12 +122,6 @@ public:
 	}
 
 	// Check if another list is not equal to this list
-	bool not_equals(list<DataType> compared_list)
-	{
-		return !equals(compared_list);
-	}
-
-	// Check if another list is not equal to this list
 	bool operator!=(list<DataType> compared_list)
 	{
 		return !equals(compared_list);
@@ -1267,12 +1261,6 @@ public:
 	bool operator==(List<DataType> compared_list)
 	{
 		return Equals(compared_list);
-	}
-
-	// Check if another list is not equal to this list
-	bool NotEquals(List<DataType> compared_list)
-	{
-		return !Equals(compared_list);
 	}
 
 	// Check if another list is not equal to this list

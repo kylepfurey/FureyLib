@@ -116,12 +116,6 @@ public class List<DataType> : IEnumerable
     }
 
     // Check if another list is not equal to this list
-    public bool NotEquals(List<DataType> comparedList)
-    {
-        return !Equals(comparedList);
-    }
-
-    // Check if another list is not equal to this list
     public static bool operator !=(List<DataType> list, List<DataType> comparedList)
     {
         return !list.Equals(comparedList);

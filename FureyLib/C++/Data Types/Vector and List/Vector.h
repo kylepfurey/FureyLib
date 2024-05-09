@@ -122,12 +122,6 @@ public:
 	}
 
 	// Check if another vector is not equal to this vector
-	bool not_equals(vector<DataType> compared_vector)
-	{
-		return !equals(compared_vector);
-	}
-
-	// Check if another vector is not equal to this vector
 	bool operator!=(vector<DataType> compared_vector)
 	{
 		return !equals(compared_vector);
@@ -1267,12 +1261,6 @@ public:
 	bool operator==(Vector<DataType> compared_vector)
 	{
 		return Equals();
-	}
-
-	// Check if another vector is not equal to this vector
-	bool NotEquals(Vector<DataType> compared_vector)
-	{
-		return !Equals();
 	}
 
 	// Check if another vector is not equal to this vector

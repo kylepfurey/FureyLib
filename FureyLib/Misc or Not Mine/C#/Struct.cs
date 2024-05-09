@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// Example structure script.
+/// Template structure script.
 /// </summary>
 public struct Struct
 {
@@ -22,6 +22,15 @@ public struct Struct
     /// Default constructor
     /// </summary>
     public Struct()
+    {
+
+    }
+
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    /// <param name="copied"></param>
+    public Struct(Struct copied)
     {
 
     }

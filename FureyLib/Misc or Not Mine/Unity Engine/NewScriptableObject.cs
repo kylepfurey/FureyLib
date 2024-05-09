@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Example Unity ScriptableObject script.
+/// Template Unity scriptable object.
 /// </summary>
 [CreateAssetMenu(fileName = "New Scriptable Object", menuName = "Scriptable Objects", order = 0)]
 public class NewScriptableObject : ScriptableObject
@@ -25,6 +25,15 @@ public class NewScriptableObject : ScriptableObject
     /// Default constructor
     /// </summary>
     public NewScriptableObject()
+    {
+
+    }
+
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    /// <param name="copied"></param>
+    public NewScriptableObject(NewScriptableObject copied)
     {
 
     }

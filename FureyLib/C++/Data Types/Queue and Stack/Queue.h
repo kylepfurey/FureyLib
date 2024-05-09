@@ -739,12 +739,6 @@ public:
 			queue.push_back(data[i]);
 		}
 	}
-
-	// Queue constructor
-	Queue(Queue<DataType>&& data)
-	{
-		queue = data.queue;
-	}
 };
 
 // Priority Queue Class
@@ -1051,13 +1045,5 @@ public:
 		{
 			Enqueue(data[i], priority[i]);
 		}
-	}
-
-	// Queue constructor
-	PriorityQueue(PriorityQueue<DataType>&& data)
-	{
-		queue = data.queue;
-
-		priority = data.priority;
 	}
 };

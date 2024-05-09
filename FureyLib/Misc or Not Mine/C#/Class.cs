@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// Example class script.
+/// Template class script.
 /// </summary>
 public class Class
 {
@@ -22,6 +22,15 @@ public class Class
     /// Default constructor
     /// </summary>
     public Class()
+    {
+
+    }
+
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    /// <param name="copied"></param>
+    public Class(Class copied)
     {
 
     }

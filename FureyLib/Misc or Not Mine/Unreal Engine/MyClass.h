@@ -10,10 +10,10 @@
 // Include this heading to use the class
 #include "MyClass.h"
 
-// Example Unreal Class script.
+// Template Unreal class script.
 class GAME_API MyClass
 {
-public:		// Public variables and functions
+public:
 
 	// VARIABLES
 
@@ -24,6 +24,18 @@ public:		// Public variables and functions
 
 	// Default constructor
 	MyClass()
+	{
+
+	}
+
+	// Copy constructor
+	MyClass(const MyClass& Copied)
+	{
+
+	}
+
+	// Move constructor
+	MyClass(MyClass&& Moved) noexcept
 	{
 
 	}
@@ -41,25 +53,20 @@ public:		// Public variables and functions
 
 	// New functions here
 
-private:	// Private variables and functions
 
-	// VARIABLES
+	// OPERATORS
 
-	// New variables here
+	// Copy assignment operator
+	MyClass& operator=(const MyClass& Copied)
+	{
+		return *this;
+	}
 
+	// Move assignment operator
+	MyClass& operator=(MyClass&& Moved) noexcept
+	{
+		return *this;
+	}
 
-	// FUNCTIONS
-
-	// New functions here
-
-protected:	// Protected variables and functions
-
-	// VARIABLES
-
-	// New variables here
-
-
-	// FUNCTIONS
-
-	// New functions here
+	// New overloaded operators here
 };

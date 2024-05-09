@@ -6,15 +6,15 @@
 
 #pragma once
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "MyActor.generated.h"
+#include "GameFramework/Pawn.h"
+#include "MyPawn.generated.h"
 
 // Include this heading to use the class
-#include "MyActor.h"
+#include "MyPawn.h"
 
-// Template Unreal actor script.
+// Template Unreal pawn script.
 UCLASS()
-class GAME_API AMyActor : public AActor
+class GAME_API AMyPawn : public APawn
 {
 	GENERATED_BODY()
 
@@ -23,25 +23,25 @@ public:
 	// CONSTRUCTORS AND DECONSTRUCTOR
 
 	// Default constructor
-	AMyActor()
+	AMyPawn()
 	{
-		// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+		// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 		PrimaryActorTick.bCanEverTick = true;
 
 	}
 
 	// Copy constructor
-	AMyActor(const AMyActor& Copied)
+	AMyPawn(const AMyPawn& Copied)
 	{
-		// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+		// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 		PrimaryActorTick.bCanEverTick = true;
 
 	}
 
 	// Move constructor
-	AMyActor(AMyActor&& Moved) noexcept
+	AMyPawn(AMyPawn&& Moved) noexcept
 	{
-		// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+		// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 		PrimaryActorTick.bCanEverTick = true;
 
 	}
@@ -49,7 +49,7 @@ public:
 	// New constructors here
 
 	// Deconstructor
-	~AMyActor()
+	~AMyPawn()
 	{
 
 	}
@@ -88,19 +88,26 @@ public:
 
 	}
 
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override
+	{
+		Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	}
+
 	// New functions here
 
 
 	// OPERATORS
 
 	// Copy assignment operator
-	AMyActor& operator=(const AMyActor& Copied)
+	AMyPawn& operator=(const AMyPawn& Copied)
 	{
 		return *this;
 	}
 
 	// Move assignment operator
-	AMyActor& operator=(AMyActor&& Moved) noexcept
+	AMyPawn& operator=(AMyPawn&& Moved) noexcept
 	{
 		return *this;
 	}

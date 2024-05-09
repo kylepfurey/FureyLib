@@ -21,8 +21,8 @@ public:
 
 	// CONSTRUCTORS AND DECONSTRUCTOR
 
-	// Constructor
-	explicit smart_ptr(DataType* new_ptr = nullptr)
+	// Default onstructor
+	smart_ptr(DataType* new_ptr = nullptr)
 	{
 		// Set the pointer
 		ptr = new_ptr;
@@ -31,8 +31,8 @@ public:
 	// Remove copy constructor
 	smart_ptr(const smart_ptr<DataType>& new_ptr) = delete;
 
-	// Move construtor
-	explicit smart_ptr(smart_ptr<DataType>&& new_ptr)
+	// Move constructor
+	smart_ptr(smart_ptr<DataType>&& new_ptr) noexcept
 	{
 		ptr = new_ptr.ptr;
 
@@ -71,7 +71,7 @@ public:
 	}
 
 	// Delete function
-	smart_ptr<DataType>& del()
+	smart_ptr<DataType>& destroy()
 	{
 		return reset(nullptr);
 	}
@@ -83,7 +83,7 @@ public:
 	smart_ptr<DataType>& operator=(DataType* new_ptr) = delete;
 
 	// Assignment operator
-	smart_ptr<DataType>& operator=(smart_ptr<DataType>&& new_ptr)
+	smart_ptr<DataType>& operator=(smart_ptr<DataType>&& new_ptr) noexcept
 	{
 		if (this != &new_ptr)
 		{
@@ -108,12 +108,6 @@ public:
 	{
 		return ptr;
 	}
-
-	// Null check operator
-	explicit operator bool()
-	{
-		return ptr != nullptr;
-	}
 };
 
 // Smart Pointer Class
@@ -128,8 +122,8 @@ public:
 
 	// CONSTRUCTORS AND DECONSTRUCTOR
 
-	// Constructor
-	explicit SmartPtr(DataType* new_ptr = nullptr)
+	// Default constructor
+	SmartPtr(DataType* new_ptr = nullptr)
 	{
 		// Set the pointer
 		Ptr = new_ptr;
@@ -139,7 +133,7 @@ public:
 	SmartPtr(const SmartPtr<DataType>& new_ptr) = delete;
 
 	// Move construtor
-	explicit SmartPtr(SmartPtr<DataType>&& new_ptr)
+	SmartPtr(SmartPtr<DataType>&& new_ptr) noexcept
 	{
 		Ptr = new_ptr.Ptr;
 
@@ -178,7 +172,7 @@ public:
 	}
 
 	// Delete function
-	SmartPtr<DataType>& Delete()
+	SmartPtr<DataType>& Destroy()
 	{
 		return Reset(nullptr);
 	}
@@ -190,7 +184,7 @@ public:
 	SmartPtr<DataType>& operator=(DataType* new_ptr) = delete;
 
 	// Assignment operator
-	SmartPtr<DataType>& operator=(SmartPtr<DataType>&& new_ptr)
+	SmartPtr<DataType>& operator=(SmartPtr<DataType>&& new_ptr) noexcept
 	{
 		if (this != &new_ptr)
 		{
@@ -214,11 +208,5 @@ public:
 	DataType* operator->()
 	{
 		return Ptr;
-	}
-
-	// Null check operator
-	explicit operator bool()
-	{
-		return Ptr != nullptr;
 	}
 };

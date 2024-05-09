@@ -12,37 +12,37 @@
 #define base __super::
 
 // A template for a new state machine state.
-class state : public state_base
+class State : public StateBase
 {
 public:
 
 	// Constructor (sets state machine)
-	state(state_machine* state_machine)
+	State(StateMachine* stateMachine)
 	{
-		sm = state_machine;
+		this->stateMachine = stateMachine;
 
 		// Change the state type enum here!
-		sm->current_state_type = state_type::State;
+		this->stateMachine->currentStateType = StateType::State;
 	}
 
 	// Called when this state is set as the state machine's current state
-	void on_state_enter() override
+	void OnStateEnter() override
 	{
 		// Calls the base class's function
-		base on_state_enter();
+		base OnStateEnter();
 	}
 
 	// Called when this state machine's current state is no longer this state
-	void on_state_exit() override
+	void OnStateExit() override
 	{
 		// Calls the base class's function
-		base on_state_enter();
+		base OnStateEnter();
 	}
 
 	// Called every frame while this state is the state machine's current state
-	void state_update() override
+	void StateUpdate() override
 	{
 		// Calls the base class's function
-		base on_state_enter();
+		base OnStateEnter();
 	}
 };

@@ -10,98 +10,98 @@
 // INCLUDE YOUR STATE HEADERS AT THE BOTTOM OF THIS SCRIPT!
 
 // State machine states enum
-enum state_type
+enum StateType
 {
 	Null = 0,
 	State = 1
 };
 
 // Forward declaration of state machine
-class state_machine;
+class StateMachine;
 
 // The base class for each state. All states should inherit from this class.
-class state_base
+class StateBase
 {
 protected:
 
 	// The inherited state machine from the owner
-	state_machine* sm = nullptr;
+	StateMachine* stateMachine = nullptr;
 
 public:
 
 	// Called when this state is set as the state machine's current state
-	virtual void on_state_enter()
+	virtual void OnStateEnter()
 	{
 		// Note: Logic applies to all inherited states
 	}
 
 	// Called when this state machine's current state is no longer this state
-	virtual void on_state_exit()
+	virtual void OnStateExit()
 	{
 		// Note: Logic applies to all inherited states
 	}
 
 	// Called every frame while this state is the state machine's current state
-	virtual void state_update()
+	virtual void StateUpdate()
 	{
 		// Note: Logic applies to all inherited states
 	}
 };
 
 // Base for building a state machine.
-class state_machine
+class StateMachine
 {
 public:
 
 	// The current state of this state machine
-	state_base* current_state = nullptr;
+	StateBase* currentState = nullptr;
 
 	// The current state of this state machine
-	state_type current_state_type = state_type::Null;
+	StateType currentStateType = StateType::Null;
 
 	// Starting state constructor
-	state_machine(state_base* new_state)
+	StateMachine(state_base* new_state)
 	{
-		switch_state(new_state);
+		SwitchState(new_state);
 	}
 
 	// Deconstructor
-	~state_machine()
+	~StateMachine()
 	{
-		delete current_state;
+		delete currentState;
 
-		current_state = nullptr;
+		currentState = nullptr;
 	}
 
 	// Properly switches the state machine's current state
-	void switch_state(state_base* new_state)
+	void SwitchState(StateBase* newState)
 	{
 		// Exit the current state
-		if (current_state != nullptr)
+		if (currentState != nullptr)
 		{
-			current_state->on_state_exit();
+			currentState->OnStateExit();
 		}
 
 		// Deallocate state memory
-		delete current_state;
+		delete currentState;
 
 		// Switch the current state to the new state
-		current_state = new_state;
+		currentState = newState;
 
 		// Enter the new state
-		if (current_state != nullptr)
+		if (currentState != nullptr)
 		{
-			current_state->on_state_enter();
+			currentState->OnStateEnter();
 		}
 	}
 
 	// Updates the current state (should be called each tick)
-	void tick()
+	void Tick()
 	{
 		// Call the current state's update function
-		if (current_state != nullptr)
+		if (currentState != nullptr)
 		{
-			current_state->state_update();
+			currentState->StateUpdate();
 		}
 	}
 };

@@ -10,10 +10,10 @@
 // Include this heading to use the class
 #include "Class.h"
 
-// Example class script.
+// Template class script.
 class Class
 {
-public:		// Public variables and functions
+public:
 
 	// VARIABLES
 
@@ -24,6 +24,18 @@ public:		// Public variables and functions
 
 	// Default constructor
 	Class()
+	{
+
+	}
+
+	// Copy constructor
+	Class(const Class& copied)
+	{
+
+	}
+
+	// Move constructor
+	Class(Class&& moved) noexcept
 	{
 
 	}
@@ -41,25 +53,20 @@ public:		// Public variables and functions
 
 	// New functions here
 
-private:	// Private variables and functions
 
-	// VARIABLES
+	// OPERATORS
 
-	// New variables here
+	// Copy assignment operator
+	Class& operator=(const Class& copied)
+	{
+		return *this;
+	}
 
+	// Move assignment operator
+	Class& operator=(Class&& moved) noexcept
+	{
+		return *this;
+	}
 
-	// FUNCTIONS
-
-	// New functions here
-
-protected:	// Protected variables and functions
-
-	// VARIABLES
-
-	// New variables here
-
-
-	// FUNCTIONS
-
-	// New functions here
+	// New overloaded operators here
 };

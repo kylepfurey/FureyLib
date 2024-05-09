@@ -7,37 +7,37 @@
 #include <string>
 #include <vector>
 
-// Inherit from this interface to implement it
+// Only one of the union's variables may be stored at a time
 
-// Include this heading to use the interface
-#include "Interface.h"
+// Include this heading to use the class
+#include "Union.h"
 
-// Template interface script.
-class Interface
+// Template union script.
+union Union
 {
 public:
 
-	// PROPERTIES
+	// VARIABLES
 
-	// New properties here
+	// New variables here
 
 
 	// CONSTRUCTORS AND DECONSTRUCTOR
 
 	// Default constructor
-	Interface()
+	Union()
 	{
 
 	}
 
 	// Copy constructor
-	Interface(const Interface& copied)
+	Union(const Union& copied)
 	{
 
 	}
 
 	// Move constructor
-	Interface(Interface&& moved) noexcept
+	Union(Union&& moved) noexcept
 	{
 
 	}
@@ -45,7 +45,7 @@ public:
 	// New constructors here
 
 	// Deconstructor
-	~Interface()
+	~Union()
 	{
 
 	}
@@ -53,25 +53,19 @@ public:
 
 	// FUNCTIONS
 
-	// Contracted function
-	virtual void Function()
-	{
-
-	}
-
 	// New functions here
 
 
 	// OPERATORS
 
 	// Copy assignment operator
-	Interface& operator=(const Interface& copied)
+	Union& operator=(const Union& copied)
 	{
 		return *this;
 	}
 
 	// Move assignment operator
-	Interface& operator=(Interface&& moved) noexcept
+	Union& operator=(Union&& moved) noexcept
 	{
 		return *this;
 	}

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 // Inherit from this interface to implement it
 
 /// <summary>
-/// Example interface script.
+/// Template interface script.
 /// </summary>
 public interface IInterface
 {

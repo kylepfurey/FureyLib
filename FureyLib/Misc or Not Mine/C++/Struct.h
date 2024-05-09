@@ -10,10 +10,10 @@
 // Include this heading to use the structure
 #include "Struct.h"
 
-// Example structure script.
+// Template structure script.
 struct Struct
 {
-public:		// Public variables and functions
+public:
 
 	// VARIABLES
 
@@ -24,6 +24,18 @@ public:		// Public variables and functions
 
 	// Default constructor
 	Struct()
+	{
+
+	}
+
+	// Copy constructor
+	Struct(const Struct& copied)
+	{
+
+	}
+
+	// Move constructor
+	Struct(Struct&& moved) noexcept
 	{
 
 	}
@@ -41,25 +53,20 @@ public:		// Public variables and functions
 
 	// New functions here
 
-private:	// Private variables and functions
 
-	// VARIABLES
+	// OPERATORS
 
-	// New variables here
+	// Copy assignment operator
+	Struct& operator=(const Struct& copied)
+	{
+		return *this;
+	}
 
+	// Move assignment operator
+	Struct& operator=(Struct&& moved) noexcept
+	{
+		return *this;
+	}
 
-	// FUNCTIONS
-
-	// New functions here
-
-protected:	// Protected variables and functions
-
-	// VARIABLES
-
-	// New variables here
-
-
-	// FUNCTIONS
-
-	// New functions here
+	// New overloaded operators here
 };

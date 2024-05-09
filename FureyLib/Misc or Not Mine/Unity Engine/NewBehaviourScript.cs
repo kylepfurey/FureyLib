@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Example Unity MonoBehaviour script.
+/// Template Unity behaviour script.
 /// </summary>
 public class NewBehaviourScript : MonoBehaviour
 {
@@ -24,6 +24,15 @@ public class NewBehaviourScript : MonoBehaviour
     /// Default constructor
     /// </summary>
     public NewBehaviourScript()
+    {
+
+    }
+
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    /// <param name="copied"></param>
+    public NewBehaviourScript(NewBehaviourScript copied)
     {
 
     }

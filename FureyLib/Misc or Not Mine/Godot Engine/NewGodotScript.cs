@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Godot;
 
 /// <summary>
-/// Example Godot Node script.
+/// Template Godot node script.
 /// </summary>
 public partial class NewGodotScript : Node
 {
@@ -24,6 +24,15 @@ public partial class NewGodotScript : Node
     /// Default constructor
     /// </summary>
     public NewGodotScript()
+    {
+
+    }
+
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    /// <param name="copied"></param>
+    public NewGodotScript(NewGodotScript copied)
     {
 
     }

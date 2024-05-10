@@ -64,6 +64,20 @@ public class HandTrackerVR : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        // Update the gestures both hands are making
+        if (leftHand != null && rightHand != null)
+        {
+            for (int i = 0; i < System.Enum.GetNames(typeof(HandVR.Gesture)).Length; i++)
+            {
+                leftGestures[(HandVR.Gesture)i] = leftHand.GetGesture((HandVR.Gesture)i);
+
+                rightGestures[(HandVR.Gesture)i] = rightHand.GetGesture((HandVR.Gesture)i);
+            }
+        }
+    }
+
     // Sets the left and right hand
     public void SetHands()
     {
@@ -96,20 +110,6 @@ public class HandTrackerVR : MonoBehaviour
         else
         {
             return rightGestures[gesture];
-        }
-    }
-
-    private void Update()
-    {
-        // Update the gestures both hands are making
-        if (leftHand != null && rightHand != null)
-        {
-            for (int i = 0; i < System.Enum.GetNames(typeof(HandVR.Gesture)).Length; i++)
-            {
-                leftGestures[(HandVR.Gesture)i] = leftHand.GetGesture((HandVR.Gesture)i);
-
-                rightGestures[(HandVR.Gesture)i] = rightHand.GetGesture((HandVR.Gesture)i);
-            }
         }
     }
 }
@@ -168,7 +168,7 @@ public class HandVR
     public GameObject pinkyTip = null;
 
     // Collision
-    // public CapsuleCollider collider = null;
+    //public CapsuleCollider collider = null;
     public BoxCollider collider = null;
     public Rigidbody rigidbody = null;
 
@@ -276,12 +276,6 @@ public class HandVR
         }
     }
 
-    // Returns a percentage relative to a value of a minimum and maximum
-    private static float Percentage(float value, float min, float max)
-    {
-        return (value - min) / (max - min);
-    }
-
     // Returns the percentage of a finger's value based on their maximums and minimums. 1 = finger pointing outward, 0 = finger pointing inward.
     // Note: You may need to adjust the minimum and maximum constants Depending on your hand prefab.
     public float GetFinger(Finger finger)
@@ -339,26 +333,6 @@ public class HandVR
         }
     }
 
-    // Returns the squared distance between two vector 3s
-    private static float DistanceSquared(Vector3 pointA, Vector3 pointB)
-    {
-        float xDistance = pointA.x - pointB.x;
-        float yDistance = pointA.y - pointB.y;
-        float zDistance = pointA.z - pointB.z;
-
-        return xDistance * xDistance + yDistance * yDistance + zDistance * zDistance;
-    }
-
-    // Returns an offset vector3 based on the relative transform and given offset values
-    private static Vector3 TranslateRelative(Transform transform, Vector3 offset)
-    {
-        Vector3 directionX = transform.right * offset.x;
-        Vector3 directionY = transform.up * offset.y;
-        Vector3 directionZ = transform.forward * offset.z;
-
-        return transform.position + directionX + directionY + directionZ;
-    }
-
     // Returns if the hand matches the selected gesture. Add more gestures if needed.
     // Note: You may need to adjust the values that check the gesture for accuracy and leniency.
     public bool GetGesture(Gesture gesture)
@@ -405,5 +379,31 @@ public class HandVR
 
                 return (index < 0.4f) && (middle >= 0.7f) && (ring < 0.4f) && (pinky < 0.4f);
         }
+    }
+
+    // Returns a percentage relative to a value of a minimum and maximum
+    private static float Percentage(float value, float min, float max)
+    {
+        return (value - min) / (max - min);
+    }
+
+    // Returns the squared distance between two vector 3s
+    private static float DistanceSquared(Vector3 pointA, Vector3 pointB)
+    {
+        float xDistance = pointA.x - pointB.x;
+        float yDistance = pointA.y - pointB.y;
+        float zDistance = pointA.z - pointB.z;
+
+        return xDistance * xDistance + yDistance * yDistance + zDistance * zDistance;
+    }
+
+    // Returns an offset vector3 based on the relative transform and given offset values
+    private static Vector3 TranslateRelative(Transform transform, Vector3 offset)
+    {
+        Vector3 directionX = transform.right * offset.x;
+        Vector3 directionY = transform.up * offset.y;
+        Vector3 directionZ = transform.forward * offset.z;
+
+        return transform.position + directionX + directionY + directionZ;
     }
 }

@@ -3,12 +3,14 @@
 // by Kyle Furey
 
 using System.Collections.Generic;
-using UnityEngine.UI;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
-// Allows communication and events between the game and the user through commands.
+/// <summary>
+/// Allows communication and events between the game and the user through commands.
+/// </summary>
 public class Commander : MonoBehaviour
 {
     [Header("Allows communication and events between the game and the user through commands.")]
@@ -22,14 +24,16 @@ public class Commander : MonoBehaviour
     [SerializeField] private bool pauseGame = false;
 
     [Header("The script sending commands (defaults to this if no script is set):")]
-    public MonoBehaviour commanderScript = null;
+    public static MonoBehaviour commanderScript = null;
 
-    // Whether the commander is currently open
+    /// <summary>
+    /// Whether the commander is currently open
+    /// </summary>
     private bool commanderOpen = false;
 
     [Header("Commander keyboard settings:")]
     [SerializeField] private KeyCode open = KeyCode.Slash;
-    [SerializeField] private KeyCode close = KeyCode.Escape;
+    [SerializeField] private KeyCode close = KeyCode.Slash;
     [SerializeField] private KeyCode send = KeyCode.Return;
 
     [Header("The commander's input field and components:")]
@@ -37,12 +41,22 @@ public class Commander : MonoBehaviour
     [SerializeField] private Image inputFieldImage = null;
     [SerializeField] private GameObject inputFieldTextArea = null;
 
-    // The current command that invokes the corresponding function by name
+    /// <summary>
+    /// The current command that invokes the corresponding function by name
+    /// </summary>
     private string command = "";
 
-    // A list of arguments that can be accessed by any of the command functions
+    /// <summary>
+    /// A list of arguments that can be accessed by any of the command functions
+    /// </summary>
     private List<string> arguments = new List<string>();
 
+
+    // INITIALIZATION AND INPUT
+
+    /// <summary>
+    /// Initializes the commander
+    /// </summary>
     private void Start()
     {
         // Set the commander object to itself is none is present
@@ -50,12 +64,21 @@ public class Commander : MonoBehaviour
         {
             commanderScript = this;
         }
+
         // Close the commander
         CloseCommander();
     }
 
+    /// <summary>
+    /// Checks for input
+    /// </summary>
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            exit();
+        }
+
         // Commander active
         if (commanderActive)
         {
@@ -90,7 +113,12 @@ public class Commander : MonoBehaviour
         }
     }
 
-    // Opening the commander
+
+    // COMMANDER FUNCTIONS
+
+    /// <summary>
+    /// Opening the commander
+    /// </summary>
     public void OpenCommander()
     {
         commanderOpen = true;
@@ -109,7 +137,9 @@ public class Commander : MonoBehaviour
         }
     }
 
-    // Closing the commander
+    /// <summary>
+    /// Closing the commander
+    /// </summary>
     public void CloseCommander()
     {
         commanderOpen = false;
@@ -128,7 +158,12 @@ public class Commander : MonoBehaviour
         }
     }
 
-    // Convert a string to a command and arguments
+    /// <summary>
+    /// Convert a string to a command and arguments
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="arguments"></param>
+    /// <returns></returns>
     public static string ConvertTextToCommand(string text, out List<string> arguments)
     {
         arguments = new List<string>();
@@ -182,7 +217,11 @@ public class Commander : MonoBehaviour
         return command;
     }
 
-    // Sending a command
+    /// <summary>
+    /// Sending a command
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="arguments"></param>
     public void SendCommand(string command, List<string> arguments)
     {
         string log = "Command: " + command;
@@ -211,7 +250,10 @@ public class Commander : MonoBehaviour
         CloseCommander();
     }
 
-    // Sending a command through text
+    /// <summary>
+    /// Sending a command through text
+    /// </summary>
+    /// <param name="text"></param>
     public void SendCommand(string text)
     {
         string command = ConvertTextToCommand(text, out List<string> arguments);
@@ -223,31 +265,69 @@ public class Commander : MonoBehaviour
     // ALL COMMAND FUNCTIONS
     // NOTE: THE NAME OF EACH FUNCTION MUST BE LOWERCASE
 
-    // Help command
+
+    // HELP COMMAND
+
+    /// <summary>
+    /// Help command
+    /// </summary>
     private void help()
     {
         print("Please enter a command followed by any arguments for that command.");
     }
 
-    // Quit game
+
+    // QUIT COMMANDS
+
+    /// <summary>
+    /// Quit game
+    /// </summary>
     private void quit()
     {
         Application.Quit();
     }
 
+    /// <summary>
+    /// Quit game
+    /// </summary>
     private void exit()
     {
         Application.Quit();
     }
 
 
-    // Restart scene
+    // RESTART COMMANDS
+
+    /// <summary>
+    /// Restart scene
+    /// </summary>
     private void restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    // Load a new scene (argument 0 is scene name)
+    /// <summary>
+    /// Restart scene
+    /// </summary>
+    private void reload()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    /// <summary>
+    /// Restart scene
+    /// </summary>
+    private void reset()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+
+    // LOAD COMMAND
+
+    /// <summary>
+    /// Load a new scene (argument 0 is scene name)
+    /// </summary>
     private void load()
     {
         if (arguments.Count > 0)
@@ -260,8 +340,35 @@ public class Commander : MonoBehaviour
         }
     }
 
-    // Print arguments
+
+    // PRINT COMMANDS
+
+    /// <summary>
+    /// Print arguments
+    /// </summary>
     private void print()
+    {
+        if (arguments.Count == 0)
+        {
+            Debug.LogWarning("No arguments were given to print!");
+
+            return;
+        }
+
+        string log = "";
+
+        foreach (string argument in arguments)
+        {
+            log += argument + " ";
+        }
+
+        print(log);
+    }
+
+    /// <summary>
+    /// Print arguments
+    /// </summary>
+    private void log()
     {
         if (arguments.Count == 0)
         {

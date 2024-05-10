@@ -129,11 +129,8 @@ public class HandPointerVR : MonoBehaviour
         // Is the player pointing
         if (isPointing && !isTeleporting)
         {
-            // Draw the pointing direction
-            Debug.DrawRay(aimPosition, aimRotation * Vector3.forward, Color.green);
-
             // Does the player hit something
-            if (Physics.Raycast(aimPosition, aimRotation * Vector3.forward, out hit, 100, ~(0 >> 1), QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(aimPosition, aimRotation * Vector3.forward, out hit, 100, ~(1 << 2), QueryTriggerInteraction.Collide))
             {
                 // Update the pointer
                 if (pointer != null)
@@ -175,25 +172,27 @@ public class HandPointerVR : MonoBehaviour
                     {
                         sliderImages[i].color = new Vector4(sliderImages[i].color.r, sliderImages[i].color.g, sliderImages[i].color.b, Mathf.Max(sliderImages[i].color.a + (sliderFadeSpeed * Time.deltaTime / 255), 0));
                     }
-
-                    return;
                 }
+
+                return;
             }
-
-            // Update the pointer
-            if (pointer != null)
+            else
             {
-                pointer.active = true;
+                // Update the pointer
+                if (pointer != null)
+                {
+                    pointer.active = true;
 
-                pointer.transform.parent = null;
+                    pointer.transform.parent = null;
 
-                pointer.transform.position = tip;
+                    pointer.transform.position = tip;
 
-                pointer.transform.LookAt(aimRotation * Vector3.forward * 100);
+                    pointer.transform.LookAt(aimRotation * Vector3.forward * 100);
 
-                pointer.transform.localScale = new Vector3(pointer.transform.localScale.x, pointer.transform.localScale.y, 100);
+                    pointer.transform.localScale = new Vector3(pointer.transform.localScale.x, pointer.transform.localScale.y, 100);
 
-                pointer.transform.position += pointer.transform.localScale.z / 2 * pointer.transform.forward;
+                    pointer.transform.position += pointer.transform.localScale.z / 2 * pointer.transform.forward;
+                }
             }
         }
         else if (isTeleporting)

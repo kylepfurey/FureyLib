@@ -223,26 +223,6 @@ public class SlingshotVR : MonoBehaviour
         }
     }
 
-    // Returns an offset vector3 based on the relative transform and given offset values
-    private static Vector3 TranslateRelative(Transform transform, Vector3 offset)
-    {
-        Vector3 directionX = transform.right * offset.x;
-        Vector3 directionY = transform.up * offset.y;
-        Vector3 directionZ = transform.forward * offset.z;
-
-        return transform.position + directionX + directionY + directionZ;
-    }
-
-    // Returns the squared distance between two vector 3s
-    public static float DistanceSquared(Vector3 pointA, Vector3 pointB)
-    {
-        float xDistance = pointA.x - pointB.x;
-        float yDistance = pointA.y - pointB.y;
-        float zDistance = pointA.z - pointB.z;
-
-        return xDistance * xDistance + yDistance * yDistance + zDistance * zDistance;
-    }
-
     // Whether the player pinching is within range of using the slingshot
     private bool PinchCheck(GameObject pinchHand, GameObject aimHand)
     {
@@ -449,5 +429,25 @@ public class SlingshotVR : MonoBehaviour
         crosshair.active = false;
 
         slingshotState = SlingshotState.Unloaded;
+    }
+
+    // Returns an offset vector3 based on the relative transform and given offset values
+    private static Vector3 TranslateRelative(Transform transform, Vector3 offset)
+    {
+        Vector3 directionX = transform.right * offset.x;
+        Vector3 directionY = transform.up * offset.y;
+        Vector3 directionZ = transform.forward * offset.z;
+
+        return transform.position + directionX + directionY + directionZ;
+    }
+
+    // Returns the squared distance between two vector 3s
+    public static float DistanceSquared(Vector3 pointA, Vector3 pointB)
+    {
+        float xDistance = pointA.x - pointB.x;
+        float yDistance = pointA.y - pointB.y;
+        float zDistance = pointA.z - pointB.z;
+
+        return xDistance * xDistance + yDistance * yDistance + zDistance * zDistance;
     }
 }

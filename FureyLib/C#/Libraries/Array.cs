@@ -5,6 +5,9 @@
 using System;
 using System.Diagnostics;
 
+// Include this heading to use the class
+using static Array;
+
 // New array functions.
 public static class Array<DataType>
 {

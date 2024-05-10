@@ -22,6 +22,9 @@ public class GridGenerator : MonoBehaviour
     public Material yAxisMaterial = null;
     public Material zAxisMaterial = null;
 
+    [Header("Whether to color the entire grid based on the axis:")]
+    public bool colorWholeGrid = false;
+
     [Header("The axis to generate the grid on (first is X, second is Y):")]
     public GridAxis generatedAxis = GridAxis.XZ;
 
@@ -44,7 +47,7 @@ public class GridGenerator : MonoBehaviour
     [Header("\nTESTING")]
 
     [Header("Whether to automatically generate a grid when the game starts:")]
-    [SerializeField] private bool autoGenerate = true;
+    [SerializeField] private bool autoGenerate = false;
 
     [Header("Whether to enable live testing for grid generation:")]
     [SerializeField] private bool liveTesting = false;
@@ -152,7 +155,18 @@ public class GridGenerator : MonoBehaviour
             line.transform.localEulerAngles = Vector3.zero;
             line.transform.localScale = Vector3.one;
 
-            line.GetComponent<Renderer>().material = selectref((int)generatedAxis, xAxisMaterial, xAxisMaterial, zAxisMaterial) == null ? line.GetComponent<Renderer>().material : selectref((int)generatedAxis, xAxisMaterial, xAxisMaterial, zAxisMaterial);
+            if (line.GetComponent<Renderer>() == null)
+            {
+                Debug.LogError("Grid Generation Error: Cube Prefab must have a Renderer and a Mesh to visualize the grid!");
+            }
+            else if (colorWholeGrid)
+            {
+                line.GetComponent<Renderer>().material = selectref((int)generatedAxis, xAxisMaterial, xAxisMaterial, zAxisMaterial) == null ? line.GetComponent<Renderer>().material : selectref((int)generatedAxis, xAxisMaterial, yAxisMaterial, zAxisMaterial);
+            }
+            else
+            {
+                line.GetComponent<Renderer>().material = selectref((int)generatedAxis, xAxisMaterial, xAxisMaterial, zAxisMaterial) == null ? line.GetComponent<Renderer>().material : selectref((int)generatedAxis, xAxisMaterial, xAxisMaterial, zAxisMaterial);
+            }
 
             line.transform.localPosition += x * size.y * selectref((int)generatedAxis, new Vector3(0, 0, 1), new Vector3(0, 1, 0), new Vector3(0, 1, 0));
 
@@ -180,7 +194,18 @@ public class GridGenerator : MonoBehaviour
             line.transform.localEulerAngles = Vector3.zero;
             line.transform.localScale = Vector3.one;
 
-            line.GetComponent<Renderer>().material = selectref((int)generatedAxis, zAxisMaterial, yAxisMaterial, yAxisMaterial) == null ? line.GetComponent<Renderer>().material : selectref((int)generatedAxis, zAxisMaterial, yAxisMaterial, yAxisMaterial);
+            if (line.GetComponent<Renderer>() == null)
+            {
+                Debug.LogError("Grid Generation Error: Cube Prefab must have a Renderer and a Mesh to visualize the grid!");
+            }
+            else if (colorWholeGrid)
+            {
+                line.GetComponent<Renderer>().material = selectref((int)generatedAxis, xAxisMaterial, xAxisMaterial, zAxisMaterial) == null ? line.GetComponent<Renderer>().material : selectref((int)generatedAxis, xAxisMaterial, yAxisMaterial, zAxisMaterial);
+            }
+            else
+            {
+                line.GetComponent<Renderer>().material = selectref((int)generatedAxis, zAxisMaterial, yAxisMaterial, yAxisMaterial) == null ? line.GetComponent<Renderer>().material : selectref((int)generatedAxis, zAxisMaterial, yAxisMaterial, yAxisMaterial);
+            }
 
             line.transform.localPosition += y * size.x * selectref((int)generatedAxis, new Vector3(1, 0, 0), new Vector3(1, 0, 0), new Vector3(0, 0, 1));
 
@@ -248,9 +273,13 @@ public class GridGenerator : MonoBehaviour
     /// <returns></returns>
     public Vector3 GetLocalPosition(Vector3 position)
     {
-        position = transform.position - position;
-        position = (position.x * transform.right + position.y * transform.up + position.z * transform.forward) * -1;
-        position = new Vector3(position.x / transform.localScale.x, position.y / transform.localScale.y, position.z / transform.localScale.z);
+        position -= Quaternion.Euler(-transform.eulerAngles.x, -transform.eulerAngles.y, -transform.eulerAngles.z) * transform.position;
+
+        position = new Vector3(position.x / transform.lossyScale.x, position.y / transform.lossyScale.y, position.z / transform.lossyScale.z);
+
+        position.x /= selectref((int)generatedAxis, size.x, size.x, 1);
+        position.y /= selectref((int)generatedAxis, 1, size.y, size.y);
+        position.z /= selectref((int)generatedAxis, size.y, 1, size.x);
 
         return position;
     }
@@ -263,9 +292,15 @@ public class GridGenerator : MonoBehaviour
     /// <returns></returns>
     public Vector3 GetWorldPosition(Vector3 position)
     {
+        position.x *= selectref((int)generatedAxis, size.x, size.x, 1);
+        position.y *= selectref((int)generatedAxis, 1, size.y, size.y);
+        position.z *= selectref((int)generatedAxis, size.y, 1, size.x);
+
+        position = new Vector3(position.x * transform.lossyScale.x, position.y * transform.lossyScale.y, position.z * transform.lossyScale.z);
+
+        position = transform.rotation * position;
+
         position += transform.position;
-        position = (position.x * transform.right - position.y * transform.up - position.z * transform.forward) * -1;
-        position = new Vector3(position.x * transform.localScale.x, position.y * transform.localScale.y, position.z * transform.localScale.z);
 
         return position;
     }
@@ -278,36 +313,113 @@ public class GridGenerator : MonoBehaviour
     /// <returns></returns>
     public Vector2Int GetGridSpace(Vector3 position)
     {
-        if (position.x < 0)
-        {
-            position.x -= 1;
-        }
-
-        if (position.y < 0)
-        {
-            position.y -= 1;
-        }
-
-        if (position.z < 0)
-        {
-            position.z -= 1;
-        }
-
         position = GetLocalPosition(position);
 
-        Vector2Int gridPosition = new Vector2Int();
+        if (!generatePositive)
+        {
+            if (includeZero)
+            {
+                if (count.x % 2 == 0)
+                {
+                    switch (generatedAxis)
+                    {
+                        case GridAxis.XZ:
 
-        gridPosition.x = (int)selectref((int)generatedAxis,
-            position.x / size.x,
-            position.x / size.x,
-            position.z / size.x);
+                            position.x += size.x * 0.5f;
 
-        gridPosition.y = (int)selectref((int)generatedAxis,
-            position.z / size.y,
-            position.y / size.y,
-            position.y / size.y);
+                            break;
 
-        return gridPosition;
+                        case GridAxis.XY:
+
+                            position.x += size.x * 0.5f;
+
+                            break;
+
+                        case GridAxis.ZY:
+
+                            position.z += size.x * 0.5f;
+
+                            break;
+                    }
+                }
+
+                if (count.y % 2 == 0)
+                {
+                    switch (generatedAxis)
+                    {
+                        case GridAxis.XZ:
+
+                            position.z += size.y * 0.5f;
+
+                            break;
+
+                        case GridAxis.XY:
+
+                            position.y += size.y * 0.5f;
+
+                            break;
+
+                        case GridAxis.ZY:
+
+                            position.y += size.y * 0.5f;
+
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                if (count.x % 2 == 1)
+                {
+                    switch (generatedAxis)
+                    {
+                        case GridAxis.XZ:
+
+                            position.x += size.x * 0.5f;
+
+                            break;
+
+                        case GridAxis.XY:
+
+                            position.x += size.x * 0.5f;
+
+                            break;
+
+                        case GridAxis.ZY:
+
+                            position.z += size.x * 0.5f;
+
+                            break;
+                    }
+                }
+
+                if (count.y % 2 == 1)
+                {
+                    switch (generatedAxis)
+                    {
+                        case GridAxis.XZ:
+
+                            position.z += size.y * 0.5f;
+
+                            break;
+
+                        case GridAxis.XY:
+
+                            position.y += size.y * 0.5f;
+
+                            break;
+
+                        case GridAxis.ZY:
+
+                            position.y += size.y * 0.5f;
+
+                            break;
+                    }
+                }
+            }
+        }
+
+        return new Vector2Int(Mathf.FloorToInt(selectref((int)generatedAxis, position.x, position.x, position.z)), Mathf.FloorToInt(selectref((int)generatedAxis, position.z, position.y, position.y)));
     }
 
     /// <summary>
@@ -319,9 +431,11 @@ public class GridGenerator : MonoBehaviour
     /// <returns></returns>
     public Vector2Int GetGridSpace(Vector3 position, out bool inGrid)
     {
-        inGrid = InGrid(position);
+        Vector2Int gridPosition = GetGridSpace(position);
 
-        return GetGridSpace(position);
+        inGrid = GridSpaceInGrid(gridPosition);
+
+        return gridPosition;
     }
 
     /// <summary>
@@ -332,48 +446,7 @@ public class GridGenerator : MonoBehaviour
     /// <returns></returns>
     public bool InGrid(Vector3 position)
     {
-        position = GetLocalPosition(position);
-
-        bool xIn;
-        bool yIn;
-        bool zIn;
-
-        if (generatePositive)
-        {
-            xIn = selectref((int)generatedAxis,
-                position.x >= 0 && position.x <= count.x * size.x,
-                position.x >= 0 && position.x <= count.x * size.x,
-                true);
-
-            yIn = selectref((int)generatedAxis,
-                true,
-                position.y >= 0 && position.y <= count.y * size.y,
-                position.y >= 0 && position.y <= count.y * size.y);
-
-            zIn = selectref((int)generatedAxis,
-                position.z >= 0 && position.z <= count.y * size.y,
-                true,
-                position.z >= 0 && position.z <= count.x * size.x);
-        }
-        else
-        {
-            xIn = selectref((int)generatedAxis,
-                position.x >= count.x * size.x / -2 && position.x <= count.x * size.x / 2,
-                position.x >= count.x * size.x / -2 && position.x <= count.x * size.x / 2,
-                true);
-
-            yIn = selectref((int)generatedAxis,
-                true,
-                position.y >= count.y * size.y / -2 && position.y <= count.y * size.y / 2,
-                position.y >= count.y * size.y / -2 && position.y <= count.y * size.y / 2);
-
-            zIn = selectref((int)generatedAxis,
-                position.z >= count.y * size.y / -2 && position.z <= count.y * size.y / 2,
-                true,
-                position.z >= count.x * size.x / -2 && position.z <= count.x * size.x / 2);
-        }
-
-        return xIn && yIn && zIn;
+        return GridSpaceInGrid(GetGridSpace(position));
     }
 
     /// <summary>
@@ -387,7 +460,26 @@ public class GridGenerator : MonoBehaviour
     {
         gridPosition = GetGridSpace(position);
 
-        return InGrid(position);
+        return GridSpaceInGrid(gridPosition);
+    }
+
+    /// <summary>
+    /// Calculate whether the given grid position is inside the grid/
+    /// </summary>
+    /// <param name="gridPosition"></param>
+    /// <returns></returns>
+    public bool GridSpaceInGrid(Vector2Int gridPosition)
+    {
+        return generatePositive ?
+        (gridPosition.x >= 0 &&
+        gridPosition.x <= size.x * (includeZero ? count.x : count.x - 1) &&
+        gridPosition.y >= 0 &&
+        gridPosition.y <= size.y * (includeZero ? count.y : count.y - 1))
+        :
+        (gridPosition.x >= size.x * (includeZero ? count.x : count.x - 1) / -2 &&
+        gridPosition.x <= size.x * (includeZero ? count.x : count.x - 1) / 2 &&
+        gridPosition.y >= size.y * (includeZero ? count.y : count.y - 1) / -2 &&
+        gridPosition.y <= size.y * (includeZero ? count.y : count.y - 1) / 2);
     }
 
     /// <summary>
@@ -609,25 +701,19 @@ public struct Grid
     // FUNCTIONS
 
     /// <summary>
-    /// Get a direction from the given euler rotation
-    /// </summary>
-    /// <param name="eulerRotation"></param>
-    /// <returns></returns>
-    private Vector3 GetDirection(Vector3 eulerRotation)
-    {
-        return rotation * eulerRotation;
-    }
-
-    /// <summary>
     /// Using the current settings, return the corresponding local position of the given world position relative to the grid
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
     public Vector3 GetLocalPosition(Vector3 position)
     {
-        position = origin - position;
-        position = (position.x * GetDirection(Vector3.right) + position.y * GetDirection(Vector3.up) + position.z * GetDirection(Vector3.forward)) * -1;
+        position -= Quaternion.Euler(-rotation.eulerAngles.x, -rotation.eulerAngles.y, -rotation.eulerAngles.z) * origin;
+
         position = new Vector3(position.x / scale.x, position.y / scale.y, position.z / scale.z);
+
+        position.x /= selectref((int)axis, size.x, size.x, 1);
+        position.y /= selectref((int)axis, 1, size.y, size.y);
+        position.z /= selectref((int)axis, size.y, 1, size.x);
 
         return position;
     }
@@ -639,9 +725,15 @@ public struct Grid
     /// <returns></returns>
     public Vector3 GetWorldPosition(Vector3 position)
     {
-        position += origin;
-        position = (position.x * GetDirection(Vector3.right) - position.y * GetDirection(Vector3.up) - position.z * GetDirection(Vector3.forward)) * -1;
+        position.x *= selectref((int)axis, size.x, size.x, 1);
+        position.y *= selectref((int)axis, 1, size.y, size.y);
+        position.z *= selectref((int)axis, size.y, 1, size.x);
+
         position = new Vector3(position.x * scale.x, position.y * scale.y, position.z * scale.z);
+
+        position = rotation * position;
+
+        position += origin;
 
         return position;
     }
@@ -653,36 +745,9 @@ public struct Grid
     /// <returns></returns>
     public Vector2Int GetGridSpace(Vector3 position)
     {
-        if (position.x < 0)
-        {
-            position.x -= 1;
-        }
-
-        if (position.y < 0)
-        {
-            position.y -= 1;
-        }
-
-        if (position.z < 0)
-        {
-            position.z -= 1;
-        }
-
         position = GetLocalPosition(position);
 
-        Vector2Int gridPosition = new Vector2Int();
-
-        gridPosition.x = (int)selectref((int)axis,
-        position.x / size.x,
-            position.x / size.x,
-            position.z / size.x);
-
-        gridPosition.y = (int)selectref((int)axis,
-            position.z / size.y,
-            position.y / size.y,
-            position.y / size.y);
-
-        return gridPosition;
+        return new Vector2Int(Mathf.FloorToInt(selectref((int)axis, position.x, position.x, position.z)), Mathf.FloorToInt(selectref((int)axis, position.z, position.y, position.y)));
     }
 
     /// <summary>

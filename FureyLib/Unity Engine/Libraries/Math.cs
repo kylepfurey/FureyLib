@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+// Include this heading to use the class
+using static Math;
+
 /// <summary>
 /// New math functions.
 /// </summary>
@@ -152,12 +155,10 @@ public static class Math
     /// <param name="position"></param>
     /// <param name="transform"></param>
     /// <returns></returns>
-    public static Vector3 GetLocalPosition(Vector3 position)
+    public static Vector3 GetLocalPosition(Vector3 position, Transform transform)
     {
-        // TODO: FIX ME
+        position -= Quaternion.Euler(-transform.eulerAngles.x, -transform.eulerAngles.y, -transform.eulerAngles.z) * transform.position;
 
-        position = transform.position - position;
-        position = transform.rotation * -position;
         position = new Vector3(position.x / transform.lossyScale.x, position.y / transform.lossyScale.y, position.z / transform.lossyScale.z);
 
         return position;
@@ -169,13 +170,13 @@ public static class Math
     /// <param name="position"></param>
     /// <param name="transform"></param>
     /// <returns></returns>
-    public static Vector3 GetWorldPosition(Vector3 position)
+    public static Vector3 GetWorldPosition(Vector3 position, Transform transform)
     {
-        // TODO: FIX ME
+        position = new Vector3(position.x * transform.lossyScale.x, position.y * transform.lossyScale.y, position.z * transform.lossyScale.z);
+
+        position = transform.rotation * position;
 
         position += transform.position;
-        position = transform.rotation * position;
-        position = new Vector3(position.x * transform.lossyScale.x, position.y * transform.lossyScale.y, position.z * transform.lossyScale.z);
 
         return position;
     }

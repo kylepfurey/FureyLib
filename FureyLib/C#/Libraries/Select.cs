@@ -5,16 +5,30 @@
 // Include this heading to use the class
 using static Select;
 
-// Select statements.
+/// Select statements.
 public static class Select
 {
-    // Select from a boolean and return the chosen data
+    /// <summary>
+    /// Select from a boolean and return the chosen data
+    /// </summary>
+    /// <typeparam name="DataType"></typeparam>
+    /// <param name="condition"></param>
+    /// <param name="trueData"></param>
+    /// <param name="falseData"></param>
+    /// <returns></returns>
     public static DataType select<DataType>(bool condition, DataType trueData, DataType falseData)
     {
         return condition ? trueData : falseData;
     }
 
-    // Select from a boolean and return the chosen data
+    /// <summary>
+    /// Select from a boolean and return the chosen data
+    /// </summary>
+    /// <typeparam name="DataType"></typeparam>
+    /// <param name="condition"></param>
+    /// <param name="trueData"></param>
+    /// <param name="falseData"></param>
+    /// <returns></returns>
     public static ref DataType selectref<DataType>(bool condition, ref DataType trueData, ref DataType falseData)
     {
         if (condition)
@@ -27,19 +41,40 @@ public static class Select
         }
     }
 
-    // Select from an integer and return the chosen data
+    /// <summary>
+    /// Select from an integer and return the chosen data
+    /// </summary>
+    /// <typeparam name="DataType"></typeparam>
+    /// <param name="n"></param>
+    /// <param name="nData"></param>
+    /// <returns></returns>
     public static DataType select<DataType>(int n, params DataType[] nData)
     {
         return nData[n];
     }
 
-    // Select from an integer and return the chosen data
+    /// <summary>
+    /// Select from an integer and return the chosen data
+    /// </summary>
+    /// <typeparam name="DataType"></typeparam>
+    /// <param name="n"></param>
+    /// <param name="nData"></param>
+    /// <returns></returns>
     public static ref DataType selectref<DataType>(int n, params DataType[] nData)
     {
         return ref nData[n];
     }
 
-    // Compare two integers and return the chosen data
+    /// <summary>
+    /// Compare two integers and return the chosen data
+    /// </summary>
+    /// <typeparam name="DataType"></typeparam>
+    /// <param name="comparer"></param>
+    /// <param name="compared"></param>
+    /// <param name="greaterThanData"></param>
+    /// <param name="lessThanData"></param>
+    /// <param name="equalToData"></param>
+    /// <returns></returns>
     public static DataType GreaterLessEqual<DataType>(int comparer, int compared, DataType greaterThanData, DataType lessThanData, DataType equalToData)
     {
         if (comparer > compared)
@@ -56,7 +91,16 @@ public static class Select
         }
     }
 
-    // Compare two integers and return the chosen data
+    /// <summary>
+    /// Compare two integers and return the chosen data
+    /// </summary>
+    /// <typeparam name="DataType"></typeparam>
+    /// <param name="comparer"></param>
+    /// <param name="compared"></param>
+    /// <param name="greaterThanData"></param>
+    /// <param name="lessThanData"></param>
+    /// <param name="equalToData"></param>
+    /// <returns></returns>
     public static ref DataType GreaterLessEqualRef<DataType>(int comparer, int compared, ref DataType greaterThanData, ref DataType lessThanData, ref DataType equalToData)
     {
         if (comparer > compared)
@@ -73,7 +117,16 @@ public static class Select
         }
     }
 
-    // Compare two floats and return the chosen data
+    /// <summary>
+    /// Compare two floats and return the chosen data
+    /// </summary>
+    /// <typeparam name="DataType"></typeparam>
+    /// <param name="comparer"></param>
+    /// <param name="compared"></param>
+    /// <param name="greaterThanData"></param>
+    /// <param name="lessThanData"></param>
+    /// <param name="equalToData"></param>
+    /// <returns></returns>
     public static DataType GreaterLessEqual<DataType>(float comparer, float compared, DataType greaterThanData, DataType lessThanData, DataType equalToData)
     {
         if (comparer > compared)
@@ -90,7 +143,16 @@ public static class Select
         }
     }
 
-    // Compare two floats and return the chosen data
+    /// <summary>
+    /// Compare two floats and return the chosen data
+    /// </summary>
+    /// <typeparam name="DataType"></typeparam>
+    /// <param name="comparer"></param>
+    /// <param name="compared"></param>
+    /// <param name="greaterThanData"></param>
+    /// <param name="lessThanData"></param>
+    /// <param name="equalToData"></param>
+    /// <returns></returns>
     public static ref DataType GreaterLessEqualRef<DataType>(float comparer, float compared, ref DataType greaterThanData, ref DataType lessThanData, ref DataType equalToData)
     {
         if (comparer > compared)

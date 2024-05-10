@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Allows this game object to be picked up and thrown when in range.
+/// Allows this game object to be picked up and thrown when in range of a VR hand.
 /// </summary>
 public class HandGrabbableVR : MonoBehaviour
 {
@@ -61,19 +61,25 @@ public class HandGrabbableVR : MonoBehaviour
     [SerializeField] private bool throwable = true;
 
     [Header("The scale applied to thrown object's velocity:")]
-    [SerializeField] private float thrownScale = 1;
+    [SerializeField] private float thrownScale = 10;
     [SerializeField] private VelocityScaleType velocityScalingType = VelocityScaleType.Direction;
 
     // Velocity scaling enum
     public enum VelocityScaleType { Direction, Distance, DistanceSquared };
 
+    [Header("The buffer time before updating the object's previous position:")]
+    [SerializeField] private float previousPositionDelay = 0.5f;
+
     [Header("The offset applied to this thrown object's direction:")]
-    [SerializeField] private Vector3 thrownOffset = Vector3.zero;
+    [SerializeField] private Vector3 thrownOffset = new Vector3(0, 0, 20);
 
     [Header("The delay before reenabling collision for the player's hands (to prevent the hands bumping the object):")]
     [SerializeField] private float collisionDelay = 0.5f;
 
-    // The previous position of this object
+    // The time since last updating the previous position
+    private float previousPositionUpdateTime = 0;
+
+    // The current previous position of this object
     private Vector3 previousPosition = Vector3.zero;
 
     // Find the object's rigidbody
@@ -81,6 +87,9 @@ public class HandGrabbableVR : MonoBehaviour
     {
         // Get rigidbody
         rigidbody = GetComponent<Rigidbody>();
+
+        // Update our previous position
+        previousPosition = transform.position;
     }
 
     // Call the hand grabbing functions
@@ -89,8 +98,6 @@ public class HandGrabbableVR : MonoBehaviour
         // Check the player's hands
         if (HandTrackerVR.leftHand != null && HandTrackerVR.rightHand != null)
         {
-            Debug.DrawLine(previousPosition, transform.position, Color.yellow);
-
             // Grabbing with left hand
             Grab(false);
 
@@ -104,7 +111,13 @@ public class HandGrabbableVR : MonoBehaviour
             GrabTime(true);
 
             // Update our previous position
-            previousPosition = transform.position;
+            previousPositionUpdateTime += Time.deltaTime;
+
+            if (previousPositionUpdateTime >= previousPositionDelay)
+            {
+                previousPosition = transform.position;
+                previousPositionUpdateTime -= previousPositionDelay;
+            }
         }
     }
 
@@ -262,8 +275,6 @@ public class HandGrabbableVR : MonoBehaviour
 
         // Set the velocity of the object to the thrown direction
         rigidbody.velocity = direction;
-
-        Debug.Log("Thrown Velocity: " + rigidbody.velocity);
     }
 
     // Losing hand collision after throwing
@@ -275,7 +286,7 @@ public class HandGrabbableVR : MonoBehaviour
             {
                 HandTrackerVR.rightHand.collider.enabled = false;
 
-                Invoke("RegainLeftCollision", collisionDelay);
+                Invoke("RegainRightCollision", collisionDelay);
             }
         }
         else
@@ -284,7 +295,7 @@ public class HandGrabbableVR : MonoBehaviour
             {
                 HandTrackerVR.leftHand.collider.enabled = false;
 
-                Invoke("RegainRightCollision", collisionDelay);
+                Invoke("RegainLeftCollision", collisionDelay);
             }
         }
     }
@@ -292,13 +303,13 @@ public class HandGrabbableVR : MonoBehaviour
     // Regaining left hand collision after throwing
     private void RegainLeftCollision()
     {
-        HandTrackerVR.leftHand.collider.enabled = false;
+        HandTrackerVR.leftHand.collider.enabled = true;
     }
 
     // Regaining right hand collision after throwing
     private void RegainRightCollision()
     {
-        HandTrackerVR.rightHand.collider.enabled = false;
+        HandTrackerVR.rightHand.collider.enabled = true;
     }
 
     // Select from a boolean and return the chosen data

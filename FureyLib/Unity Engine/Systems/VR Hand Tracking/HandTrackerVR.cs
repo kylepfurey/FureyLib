@@ -168,7 +168,8 @@ public class HandVR
     public GameObject pinkyTip = null;
 
     // Collision
-    public CapsuleCollider collider = null;
+    // public CapsuleCollider collider = null;
+    public BoxCollider collider = null;
     public Rigidbody rigidbody = null;
 
     // Finger maximum and minimum values (using relative rotation)
@@ -225,6 +226,8 @@ public class HandVR
             pinkyTip = pinkyMiddle.transform.GetChild(0).gameObject;
             Debug.Log((isRight ? "Right" : "Left") + " Pinky Finger: " + pinky.name);
 
+            // CAPSULE COLLIDER
+            /*
             collider = palm.AddComponent<CapsuleCollider>();
             collider.isTrigger = collisionIsTrigger;
             collider.providesContacts = false;
@@ -233,6 +236,17 @@ public class HandVR
             collider.radius = 0.05f;
             collider.height = 0.4f;
             collider.direction = 2;
+            */
+
+            // BOX COLLIDER
+            /* */
+            collider = palm.AddComponent<BoxCollider>();
+            collider.isTrigger = collisionIsTrigger;
+            collider.providesContacts = false;
+            collider.material = null;
+            collider.center = new Vector3(0, -0.01f, -0.05f);
+            collider.size = new Vector3(0.1f, 0.05f, 0.3f);
+            /* */
 
             rigidbody = palm.AddComponent<Rigidbody>();
             rigidbody.mass = 1;

@@ -5,17 +5,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Movable rigidbody that is affected by particle field data.
+/// <summary>
+/// Movable rigidbody that is affected by particle field data.
+/// </summary>
 public class FlowParticle : MonoBehaviour
 {
-    // The flow data file
+    /// <summary>
+    /// The flow data file
+    /// </summary>
     [HideInInspector] public static FlowFile flowFile = null;
 
-    // The flow particle's rigidbody
+    /// <summary>
+    /// The flow particle's rigidbody
+    /// </summary>
     private Rigidbody rigidbody = null;
 
-    // Reference to the flow data cube
+    /// <summary>
+    /// Reference to the flow data cube
+    /// </summary>
     private ParticleVisibility flowData = null;
+
+    /// <summary>
+    /// Reference to the flow data cube's parent (used for scaling)
+    /// </summary>
     private GameObject flowDataScaleParent = null;
 
     [Header("Velocity Settings")]
@@ -26,13 +38,19 @@ public class FlowParticle : MonoBehaviour
     [SerializeField] private float maxDistance = 50;
     [SerializeField] private float maxParticles = 5;
 
-    // The number of particles currently spawned
+    /// <summary>
+    /// The number of particles currently spawned
+    /// </summary>
     private static List<GameObject> particles = new List<GameObject>();
 
-    // The stored gravity setting of the rigidbody
+    /// <summary>
+    /// The stored gravity setting of the rigidbody
+    /// </summary>
     private bool gravitySetting = false;
 
-    // Get the flow data and track this particle's number
+    /// <summary>
+    /// Get the flow data and track this particle's number
+    /// </summary>
     private void Awake()
     {
         // Find the data
@@ -61,7 +79,9 @@ public class FlowParticle : MonoBehaviour
         }
     }
 
-    // Distance check
+    /// <summary>
+    /// Distance check
+    /// </summary>
     private void Update()
     {
         // Remove the particle if it is too far from the user
@@ -72,7 +92,10 @@ public class FlowParticle : MonoBehaviour
         }
     }
 
-    // Entering the flow data cube
+    /// <summary>
+    /// Entering the flow data cube
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
         // Check that we do not have flow data stored already
@@ -97,7 +120,10 @@ public class FlowParticle : MonoBehaviour
         }
     }
 
-    // Exiting the flow data cube
+    /// <summary>
+    /// Exiting the flow data cube
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
         // Check if we have flow data stored and if we are leaving the flow data cube
@@ -114,7 +140,9 @@ public class FlowParticle : MonoBehaviour
         }
     }
 
-    // Moving the particle along the data field
+    /// <summary>
+    /// Moving the particle along the data field
+    /// </summary>
     private void FixedUpdate()
     {
         // Check if the particle is in bounds and move it along the path of the flow data
@@ -125,24 +153,20 @@ public class FlowParticle : MonoBehaviour
         }
     }
 
-    // Update the particle count and list of particles
+    /// <summary>
+    /// Update the particle count and list of particles
+    /// </summary>
     private void OnDestroy()
     {
         // Remove this particle
         particles.Remove(gameObject);
     }
 
-    // Returns an offset vector3 based on the relative transform and given offset vector 3
-    private static Vector3 TranslateRelative(Transform transform, Vector3 offset)
-    {
-        Vector3 directionX = transform.right * offset.x;
-        Vector3 directionY = transform.up * offset.y;
-        Vector3 directionZ = transform.forward * offset.z;
-
-        return transform.position + directionX + directionY + directionZ;
-    }
-
-    // Converts a world position to a local position (0 - 100) of the particle bounds
+    /// <summary>
+    /// Converts a world position to a local position (0 - 100) of the particle bounds
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     private Vector3 GetRelativeToBounds(Vector3 position)
     {
         position = position - flowDataScaleParent.transform.position;
@@ -155,5 +179,20 @@ public class FlowParticle : MonoBehaviour
         position.z /= flowDataScaleParent.transform.localScale.z;
 
         return position * ParticleVisibility.particleScale;
+    }
+
+    /// <summary>
+    /// Returns an offset vector3 based on the relative transform and given offset vector 3
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="offset"></param>
+    /// <returns></returns>
+    private static Vector3 TranslateRelative(Transform transform, Vector3 offset)
+    {
+        Vector3 directionX = transform.right * offset.x;
+        Vector3 directionY = transform.up * offset.y;
+        Vector3 directionZ = transform.forward * offset.z;
+
+        return transform.position + directionX + directionY + directionZ;
     }
 }

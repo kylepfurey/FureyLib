@@ -4,7 +4,9 @@
 
 using UnityEngine;
 
-// Creates particles and controls their visibility to accurately represent the flow data.
+/// <summary>
+/// Creates particles and controls their visibility to accurately represent the flow data.
+/// </summary>
 [RequireComponent(typeof(ParticleSystem))]
 public class ParticleVisibility : MonoBehaviour
 {
@@ -13,7 +15,9 @@ public class ParticleVisibility : MonoBehaviour
     [Header("The file containing the data for the particles to represent:")]
     [SerializeField] private FlowFile flowFile;
 
-    // Particle system variables
+    /// <summary>
+    /// Particle system variables
+    /// </summary>
     private ParticleSystem particleSystem;
     private ParticleSystem.Particle[] particles;
 
@@ -21,18 +25,24 @@ public class ParticleVisibility : MonoBehaviour
     public bool boundsAreStatic = true;
 
     [Header("The scale of the bounds for where particles may go:")]
-    public Vector3 particleBounds = Vector3.zero;
+    public Vector3 particleBounds = Vector3.one;
 
     [Header("The relative origin of the particle system:")]
     public Vector3 particleOrigin = new Vector3(0.5f, 0.5f, 0.5f);
 
-    // The scale of a particle's position
+    /// <summary>
+    /// The scale of a particle's position
+    /// </summary>
     public const float particleScale = 100;
 
-    // The flow data cube's collider
+    /// <summary>
+    /// The flow data cube's collider
+    /// </summary>
     private BoxCollider collider = null;
 
-    // Sets particle system variables
+    /// <summary>
+    /// Sets particle system variables
+    /// </summary>
     private void Awake()
     {
         // Gets the particle system
@@ -53,17 +63,9 @@ public class ParticleVisibility : MonoBehaviour
         collider.size = particleBounds;
     }
 
-    // Called when the particle system itself updates
-    private void OnParticleUpdateJobScheduled()
-    {
-        // PARTICLE SYSTEM UPDATE -> UPDATE PARTICLE -> CAMERA RENDER
-
-        // Let the particle system update itself, but manually update the particles immediately after with an invoke call.
-        // This ensures the particles are updated before the camera renders them (to prevent flickering).
-        Invoke("UpdateParticle", 0);
-    }
-
-    // Called every frame
+    /// <summary>
+    /// Called every frame
+    /// </summary>
     private void Update()
     {
         if (!boundsAreStatic)
@@ -81,7 +83,21 @@ public class ParticleVisibility : MonoBehaviour
         //UpdateParticle();
     }
 
-    // Updates the particles
+    /// <summary>
+    /// Called when the particle system itself updates
+    /// </summary>
+    private void OnParticleUpdateJobScheduled()
+    {
+        // PARTICLE SYSTEM UPDATE -> UPDATE PARTICLE -> CAMERA RENDER
+
+        // Let the particle system update itself, but manually update the particles immediately after with an invoke call.
+        // This ensures the particles are updated before the camera renders them (to prevent flickering).
+        Invoke("UpdateParticle", 0);
+    }
+
+    /// <summary>
+    /// Updates the particles
+    /// </summary>
     private void UpdateParticle()
     {
         // Store the number of particles remaining
@@ -110,7 +126,11 @@ public class ParticleVisibility : MonoBehaviour
         particleSystem.SetParticles(particles, totalParticlesAlive);
     }
 
-    // Determine if the position of a particle is in bounds of the scaled set
+    /// <summary>
+    /// Determine if the position of a particle is in bounds of the scaled set
+    /// </summary>
+    /// <param name="particlePosition"></param>
+    /// <returns></returns>
     private bool ParticleInBounds(Vector3 particlePosition)
     {
         return (particlePosition.x / particleScale >= particleOrigin.x - particleBounds.x / 2) && (particlePosition.x / particleScale <= particleOrigin.x + particleBounds.x / 2) &&

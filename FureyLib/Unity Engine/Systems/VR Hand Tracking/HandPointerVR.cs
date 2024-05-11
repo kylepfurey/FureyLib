@@ -3,9 +3,9 @@
 // by Kyle Furey
 
 using System.Collections.Generic;
-using UnityEngine.Events;
-using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Events;
 
 /// <summary>
 /// Used to detect when the player is pointing using hand tracking in VR, as well as specific interactions through pointing.

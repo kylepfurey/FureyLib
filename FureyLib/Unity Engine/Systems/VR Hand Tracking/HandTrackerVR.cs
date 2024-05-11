@@ -3,8 +3,8 @@
 // by Kyle Furey
 
 using System.Collections.Generic;
-using UnityEngine.Events;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Tracks a player's hands in VR through the hand's joints.

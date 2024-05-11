@@ -3,8 +3,8 @@
 // by Kyle Furey
 
 using System.Collections.Generic;
-using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Creates a simple slingshot for use in VR.

@@ -31,20 +31,20 @@ public class State : StateBase
     }
 
     /// <summary>
+    /// Called every frame while this state is the state machine's current state
+    /// </summary>
+    public override void OnStateUpdate()
+    {
+        // Calls the base class's function
+        base.OnStateUpdate();
+    }
+
+    /// <summary>
     /// Called when this state machine's current state is no longer this state
     /// </summary>
     public override void OnStateExit()
     {
         // Calls the base class's function
         base.OnStateExit();
-    }
-
-    /// <summary>
-    /// Called every frame while this state is the state machine's current state
-    /// </summary>
-    public override void StateUpdate()
-    {
-        // Calls the base class's function
-        base.StateUpdate();
     }
 }

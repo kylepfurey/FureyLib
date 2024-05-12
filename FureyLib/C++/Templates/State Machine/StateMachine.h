@@ -12,7 +12,7 @@
 // State machine states enum
 enum StateType
 {
-	Null = 0,
+	None = 0,
 	State = 1
 };
 
@@ -35,14 +35,14 @@ public:
 		// Note: Logic applies to all inherited states
 	}
 
-	// Called when this state machine's current state is no longer this state
-	virtual void OnStateExit()
+	// Called every frame while this state is the state machine's current state
+	virtual void OnStateUpdate()
 	{
 		// Note: Logic applies to all inherited states
 	}
 
-	// Called every frame while this state is the state machine's current state
-	virtual void StateUpdate()
+	// Called when this state machine's current state is no longer this state
+	virtual void OnStateExit()
 	{
 		// Note: Logic applies to all inherited states
 	}
@@ -57,12 +57,12 @@ public:
 	StateBase* currentState = nullptr;
 
 	// The current state of this state machine
-	StateType currentStateType = StateType::Null;
+	StateType currentStateType = StateType::None;
 
 	// Starting state constructor
-	StateMachine(state_base* new_state)
+	StateMachine(StateBase* newState)
 	{
-		SwitchState(new_state);
+		SwitchState(newState);
 	}
 
 	// Deconstructor
@@ -101,7 +101,7 @@ public:
 		// Call the current state's update function
 		if (currentState != nullptr)
 		{
-			currentState->StateUpdate();
+			currentState->OnStateUpdate();
 		}
 	}
 };

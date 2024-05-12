@@ -32,17 +32,17 @@ public:
 		base OnStateEnter();
 	}
 
+	// Called every frame while this state is the state machine's current state
+	void OnStateUpdate() override
+	{
+		// Calls the base class's function
+		base OnStateUpdate();
+	}
+
 	// Called when this state machine's current state is no longer this state
 	void OnStateExit() override
 	{
 		// Calls the base class's function
-		base OnStateEnter();
-	}
-
-	// Called every frame while this state is the state machine's current state
-	void StateUpdate() override
-	{
-		// Calls the base class's function
-		base OnStateEnter();
+		base OnStateExit();
 	}
 };

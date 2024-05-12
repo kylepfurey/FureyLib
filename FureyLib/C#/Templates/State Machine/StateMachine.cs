@@ -7,7 +7,7 @@
 /// </summary>
 public enum StateType
 {
-    NULL = 0,
+    None = 0,
     State = 1
 };
 
@@ -24,7 +24,7 @@ public class StateMachine
     /// <summary>
     /// The current state of this state machine
     /// </summary>
-    public States currentStateType = StateType.NULL;
+    public States currentStateType = StateType.None;
 
     /// <summary>
     /// Starting state constructor
@@ -65,7 +65,7 @@ public class StateMachine
         // Call the current state's update function
         if (currentState != null)
         {
-            currentState.StateUpdate();
+            currentState.OnStateUpdate();
         }
     }
 }
@@ -89,17 +89,17 @@ public abstract class StateBase
     }
 
     /// <summary>
-    /// Called when this state machine's current state is no longer this state
+    /// Called every frame while this state is the state machine's current state
     /// </summary>
-    public virtual void OnStateExit()
+    public virtual void OnStateUpdate()
     {
         // Note: Logic applies to all inherited states
     }
 
     /// <summary>
-    /// Called every frame while this state is the state machine's current state
+    /// Called when this state machine's current state is no longer this state
     /// </summary>
-    public virtual void StateUpdate()
+    public virtual void OnStateExit()
     {
         // Note: Logic applies to all inherited states
     }

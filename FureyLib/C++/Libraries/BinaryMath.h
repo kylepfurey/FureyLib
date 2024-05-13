@@ -1,5 +1,5 @@
 
-// Static Binary Functions Script
+// Static Binary Math Functions Script
 // by Kyle Furey
 
 #pragma once

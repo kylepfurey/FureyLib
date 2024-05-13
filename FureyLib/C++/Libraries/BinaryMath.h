@@ -7,7 +7,7 @@
 // Include this heading to use the class
 #include "BinaryMath.h"
 
-// Binary Class
+// Binary Math Function Libary
 static class binary
 {
 public:

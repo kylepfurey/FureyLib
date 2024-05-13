@@ -5,10 +5,17 @@
 // Include this heading to use the class
 using static Binary;
 
-// Binary Class
+/// <summary>
+/// Binary Math Function Libary
+/// </summary>
 public static class Binary
 {
-    // Binary Addition Function
+    /// <summary>
+    /// Binary Addition Function
+    /// </summary>
+    /// <param name="valueA"></param>
+    /// <param name="valueB"></param>
+    /// <returns></returns>
     public static int Add(int valueA, int valueB)
     {
         // Store our carried variable.
@@ -31,19 +38,32 @@ public static class Binary
         return valueA;
     }
 
-    // Binary ++ Function
+    /// <summary>
+    /// Binary ++ Function
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public static int Increment(int value)
     {
         return Add(value, 1);
     }
 
-    // Binary ++ Function
+    /// <summary>
+    /// Binary ++ Function
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public static int PlusPlus(int value)
     {
         return Add(value, 1);
     }
 
-    // Binary Subtraction Function
+    /// <summary>
+    /// Binary Subtraction Function
+    /// </summary>
+    /// <param name="valueA"></param>
+    /// <param name="valueB"></param>
+    /// <returns></returns>
     public static int Subtract(int valueA, int valueB)
     {
         // Check if we are are subtracting nothing.
@@ -57,19 +77,32 @@ public static class Binary
         return Subtract(valueA ^ valueB, (~valueA & valueB) << 1);
     }
 
-    // Binary -- Function
+    /// <summary>
+    /// Binary -- Function
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public static int MinusMinus(int value)
     {
         return Subtract(value, 1);
     }
 
-    // Binary -- Function
+    /// <summary>
+    /// Binary -- Function
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public static int Decrement(int value)
     {
         return Subtract(value, 1);
     }
 
-    // Binary Multiplication Function
+    /// <summary>
+    /// Binary Multiplication Function
+    /// </summary>
+    /// <param name="valueA"></param>
+    /// <param name="valueB"></param>
+    /// <returns></returns>
     public static int Multiply(int valueA, int valueB)
     {
         // Store our result variable.
@@ -122,13 +155,22 @@ public static class Binary
         }
     }
 
-    // Binary Square Function
+    /// <summary>
+    /// Binary Square Function
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public static int Square(int value)
     {
         return Multiply(value, value);
     }
 
-    // Binary Exponent Function
+    /// <summary>
+    /// Binary Exponent Function
+    /// </summary>
+    /// <param name="valueA"></param>
+    /// <param name="valueB"></param>
+    /// <returns></returns>
     public static int Power(int valueA, int valueB)
     {
         if (valueB == 0)
@@ -146,7 +188,12 @@ public static class Binary
         return product;
     }
 
-    // Binary Division Function
+    /// <summary>
+    /// Binary Division Function
+    /// </summary>
+    /// <param name="valueA"></param>
+    /// <param name="valueB"></param>
+    /// <returns></returns>
     public static int Divide(int valueA, int valueB)
     {
         // Check for division by zero.
@@ -236,7 +283,12 @@ public static class Binary
         return quotient;
     }
 
-    // Binary Modulo Function
+    /// <summary>
+    /// Binary Modulo Function
+    /// </summary>
+    /// <param name="valueA"></param>
+    /// <param name="valueB"></param>
+    /// <returns></returns>
     public static int Modulo(int valueA, int valueB)
     {
         if ((valueA < 0) ^ (valueB < 0))

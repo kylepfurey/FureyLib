@@ -8,9 +8,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Diagnostics;
 
-// Define the method class
-using Method = System.Action;
-
 // Define the function class
 using Function = System.Delegate;
 
@@ -35,7 +32,7 @@ public class Event : IEnumerable
     // DELEGATE DATA
 
     // List of functions included in the delegate
-    private List<Method> functions = new List<Method>();
+    private List<Action> functions = new List<Action>();
 
     // Delegate cancellation token
     private bool cancel = false;
@@ -49,7 +46,7 @@ public class Event : IEnumerable
     // Default constructor
     public Event()
     {
-        functions = new List<Method>();
+        functions = new List<Action>();
 
         allDelegates.Add(this);
 
@@ -57,9 +54,9 @@ public class Event : IEnumerable
     }
 
     // Array constructor
-    public Event(params Method[] functions)
+    public Event(params Action[] functions)
     {
-        this.functions = new List<Method>(functions.Length);
+        this.functions = new List<Action>(functions.Length);
 
         for (int i = 0; i < functions.Length; i++)
         {
@@ -72,7 +69,7 @@ public class Event : IEnumerable
     }
 
     // List constructor
-    public Event(List<Method> functions)
+    public Event(List<Action> functions)
     {
         this.functions = functions;
 
@@ -172,13 +169,13 @@ public class Event : IEnumerable
     // COLLECTION FUNCTIONS
 
     // Gets a function in the delegate
-    public Method Get(int index)
+    public Action Get(int index)
     {
         return functions[index];
     }
 
     // Sets a function in the delegate
-    public Event Set(int index, Method function)
+    public Event Set(int index, Action function)
     {
         functions[index] = function;
 
@@ -186,7 +183,7 @@ public class Event : IEnumerable
     }
 
     // Add a new function to the delegate
-    public Event Add(Method function)
+    public Event Add(Action function)
     {
         functions.Add(function);
 
@@ -194,7 +191,7 @@ public class Event : IEnumerable
     }
 
     // Adds new functions to the delegate
-    public Event Add(params Method[] functions)
+    public Event Add(params Action[] functions)
     {
         for (int i = 0; i < functions.Length; i++)
         {
@@ -205,7 +202,7 @@ public class Event : IEnumerable
     }
 
     // Adds new functions to the delegate
-    public Event Add(List<Method> functions)
+    public Event Add(List<Action> functions)
     {
         for (int i = 0; i < functions.Count; i++)
         {
@@ -227,7 +224,7 @@ public class Event : IEnumerable
     }
 
     // Remove a function from the delegate
-    public Event Remove(Method function)
+    public Event Remove(Action function)
     {
         functions.Remove(function);
 
@@ -268,13 +265,13 @@ public class Event : IEnumerable
     }
 
     // Returns if the delegate contains a function
-    public bool Contains(Method function)
+    public bool Contains(Action function)
     {
         return functions.Contains(function);
     }
 
     // Returns the index of the function in the delegate, or -1 if it was not found
-    public int Find(Method function)
+    public int Find(Action function)
     {
         for (int i = 0; i < functions.Count; i++)
         {
@@ -288,13 +285,13 @@ public class Event : IEnumerable
     }
 
     // Returns an array of the functions
-    public Method[] ToArray()
+    public Action[] ToArray()
     {
         return functions.ToArray();
     }
 
     // Returns a list of the functions
-    public List<Method> ToList()
+    public List<Action> ToList()
     {
         return functions;
     }
@@ -303,13 +300,13 @@ public class Event : IEnumerable
     // COLLECTION OPERATORS
 
     // Adding a function
-    public static Event operator +(Event Delegate, Method function)
+    public static Event operator +(Event Delegate, Action function)
     {
         return Delegate.Add(function);
     }
 
     // Removing a function
-    public static Event operator -(Event Delegate, Method function)
+    public static Event operator -(Event Delegate, Action function)
     {
         return Delegate.Remove(function);
     }
@@ -346,7 +343,7 @@ public class Event<ReturnType> : IEnumerable
     // DELEGATE DATA
 
     // List of functions included in the delegate
-    private List<Method> functions = new List<Method>();
+    private List<Func<ReturnType>> functions = new List<Func<ReturnType>>();
 
     // Delegate cancellation token
     private bool cancel = false;
@@ -360,7 +357,7 @@ public class Event<ReturnType> : IEnumerable
     // Default constructor
     public Event()
     {
-        functions = new List<Method>();
+        functions = new List<Func<ReturnType>>();
 
         allDelegates.Add(this);
 
@@ -368,9 +365,9 @@ public class Event<ReturnType> : IEnumerable
     }
 
     // Array constructor
-    public Event(params Method[] functions)
+    public Event(params Func<ReturnType>[] functions)
     {
-        this.functions = new List<Method>(functions.Length);
+        this.functions = new List<Func<ReturnType>>(functions.Length);
 
         for (int i = 0; i < functions.Length; i++)
         {
@@ -388,7 +385,7 @@ public class Event<ReturnType> : IEnumerable
     }
 
     // List constructor
-    public Event(List<Method> functions)
+    public Event(List<Func<ReturnType>> functions)
     {
         this.functions = functions;
 
@@ -438,7 +435,7 @@ public class Event<ReturnType> : IEnumerable
     // DELEGATE FUNCTIONS
 
     /// <summary> Returns a dictionary with each key representing the function and the value being the returned data. </summary>
-    public Dictionary<Method, ReturnType> Invoke()
+    public Dictionary<Func<ReturnType>, ReturnType> Invoke()
     {
         cancel = false;
 
@@ -446,7 +443,7 @@ public class Event<ReturnType> : IEnumerable
 
         invokeIndex = index;
 
-        Dictionary<Method, ReturnType> returns = new Dictionary<Method, ReturnType>(functions.Count);
+        Dictionary<Func<ReturnType>, ReturnType> returns = new Dictionary<Func<ReturnType>, ReturnType>(functions.Count);
 
         for (int i = 0; i < functions.Count; i++)
         {
@@ -474,9 +471,9 @@ public class Event<ReturnType> : IEnumerable
     }
 
     // Invokes every delegate
-    public static Dictionary<Event<ReturnType>, Dictionary<Method, ReturnType>> InvokeAll()
+    public static Dictionary<Event<ReturnType>, Dictionary<Func<ReturnType>, ReturnType>> InvokeAll()
     {
-        Dictionary<Event<ReturnType>, Dictionary<Method, ReturnType>> returns = new Dictionary<Event<ReturnType>, Dictionary<Method, ReturnType>>(allDelegates.Count);
+        Dictionary<Event<ReturnType>, Dictionary<Func<ReturnType>, ReturnType>> returns = new Dictionary<Event<ReturnType>, Dictionary<Func<ReturnType>, ReturnType>>(allDelegates.Count);
 
         for (int i = 0; i < allDelegates.Count; i++)
         {
@@ -492,7 +489,7 @@ public class Event<ReturnType> : IEnumerable
     }
 
     // Reinvokes the current delegate
-    public static Dictionary<Method, ReturnType> InvokeCurrent()
+    public static Dictionary<Func<ReturnType>, ReturnType> InvokeCurrent()
     {
         return allDelegates[invokeIndex].Invoke();
     }
@@ -519,13 +516,13 @@ public class Event<ReturnType> : IEnumerable
     // COLLECTION FUNCTIONS
 
     // Gets a function in the delegate
-    public Method Get(int index)
+    public Func<ReturnType> Get(int index)
     {
         return functions[index];
     }
 
     // Sets a function in the delegate
-    public Event<ReturnType> Set(int index, Method function)
+    public Event<ReturnType> Set(int index, Func<ReturnType> function)
     {
         if (typeof(ReturnType) != function.Method.ReturnType)
         {
@@ -538,7 +535,7 @@ public class Event<ReturnType> : IEnumerable
     }
 
     // Add a new function to the delegate
-    public Event<ReturnType> Add(Method function)
+    public Event<ReturnType> Add(Func<ReturnType> function)
     {
         if (typeof(ReturnType) != function.Method.ReturnType)
         {
@@ -551,7 +548,7 @@ public class Event<ReturnType> : IEnumerable
     }
 
     // Adds new functions to the delegate
-    public Event<ReturnType> Add(params Method[] functions)
+    public Event<ReturnType> Add(params Func<ReturnType>[] functions)
     {
         for (int i = 0; i < functions.Length; i++)
         {
@@ -567,7 +564,7 @@ public class Event<ReturnType> : IEnumerable
     }
 
     // Adds new functions to the delegate
-    public Event<ReturnType> Add(List<Method> functions)
+    public Event<ReturnType> Add(List<Func<ReturnType>> functions)
     {
         for (int i = 0; i < functions.Count; i++)
         {
@@ -599,7 +596,7 @@ public class Event<ReturnType> : IEnumerable
     }
 
     // Remove a function from the delegate
-    public Event<ReturnType> Remove(Method function)
+    public Event<ReturnType> Remove(Func<ReturnType> function)
     {
         functions.Remove(function);
 
@@ -640,13 +637,13 @@ public class Event<ReturnType> : IEnumerable
     }
 
     // Returns if the delegate contains a function
-    public bool Contains(Method function)
+    public bool Contains(Func<ReturnType> function)
     {
         return functions.Contains(function);
     }
 
     // Returns the index of the function in the delegate, or -1 if it was not found
-    public int Find(Method function)
+    public int Find(Func<ReturnType> function)
     {
         for (int i = 0; i < functions.Count; i++)
         {
@@ -660,13 +657,13 @@ public class Event<ReturnType> : IEnumerable
     }
 
     // Returns an array of the functions
-    public Method[] ToArray()
+    public Func<ReturnType>[] ToArray()
     {
         return functions.ToArray();
     }
 
     // Returns a list of the functions
-    public List<Method> ToList()
+    public List<Func<ReturnType>> ToList()
     {
         return functions;
     }
@@ -675,13 +672,13 @@ public class Event<ReturnType> : IEnumerable
     // COLLECTION OPERATORS
 
     // Adding a function
-    public static Event<ReturnType> operator +(Event<ReturnType> Delegate, Method function)
+    public static Event<ReturnType> operator +(Event<ReturnType> Delegate, Func<ReturnType> function)
     {
         return Delegate.Add(function);
     }
 
     // Removing a function
-    public static Event<ReturnType> operator -(Event<ReturnType> Delegate, Method function)
+    public static Event<ReturnType> operator -(Event<ReturnType> Delegate, Func<ReturnType> function)
     {
         return Delegate.Remove(function);
     }
@@ -717,7 +714,7 @@ public class DynamicEvent : IEnumerable
     // DELEGATE DATA
 
     // List of functions included in the delegate
-    private List<Method> functions = new List<Method>();
+    private List<Function> functions = new List<Function>();
 
     // Delegate cancellation token
     private bool cancel = false;
@@ -731,7 +728,7 @@ public class DynamicEvent : IEnumerable
     // Default constructor
     public DynamicEvent()
     {
-        functions = new List<Method>();
+        functions = new List<Function>();
 
         allDelegates.Add(this);
 
@@ -739,9 +736,9 @@ public class DynamicEvent : IEnumerable
     }
 
     // Array constructor
-    public DynamicEvent(params Method[] functions)
+    public DynamicEvent(params Function[] functions)
     {
-        this.functions = new List<Method>(functions.Length);
+        this.functions = new List<Function>(functions.Length);
 
         for (int i = 0; i < functions.Length; i++)
         {
@@ -757,9 +754,9 @@ public class DynamicEvent : IEnumerable
     }
 
     // List constructor
-    public DynamicEvent(List<Method> functions)
+    public DynamicEvent(List<Function> functions)
     {
-        this.functions = new List<Method>(functions.Count);
+        this.functions = new List<Function>(functions.Count);
 
         for (int i = 0; i < functions.Count; i++)
         {
@@ -805,7 +802,7 @@ public class DynamicEvent : IEnumerable
     // DELEGATE FUNCTIONS
 
     /// <summary> Returns a dictionary with each key representing the function and the value being the returned data. </summary>
-    public Dictionary<Method, object> Invoke()
+    public Dictionary<Function, object> Invoke()
     {
         cancel = false;
 
@@ -813,7 +810,7 @@ public class DynamicEvent : IEnumerable
 
         invokeIndex = index;
 
-        Dictionary<Method, object> returns = new Dictionary<Method, object>(functions.Count);
+        Dictionary<Function, object> returns = new Dictionary<Function, object>(functions.Count);
 
         for (int i = 0; i < functions.Count; i++)
         {
@@ -829,9 +826,9 @@ public class DynamicEvent : IEnumerable
     }
 
     // Invokes every delegate
-    public static Dictionary<DynamicEvent, Dictionary<Method, object>> InvokeAll()
+    public static Dictionary<DynamicEvent, Dictionary<Function, object>> InvokeAll()
     {
-        Dictionary<DynamicEvent, Dictionary<Method, object>> returns = new Dictionary<DynamicEvent, Dictionary<Method, object>>(allDelegates.Count);
+        Dictionary<DynamicEvent, Dictionary<Function, object>> returns = new Dictionary<DynamicEvent, Dictionary<Function, object>>(allDelegates.Count);
 
         for (int i = 0; i < allDelegates.Count; i++)
         {
@@ -847,7 +844,7 @@ public class DynamicEvent : IEnumerable
     }
 
     // Reinvokes the current delegate
-    public static Dictionary<Method, object> InvokeCurrent()
+    public static Dictionary<Function, object> InvokeCurrent()
     {
         return allDelegates[invokeIndex].Invoke();
     }
@@ -874,13 +871,13 @@ public class DynamicEvent : IEnumerable
     // COLLECTION FUNCTIONS
 
     // Gets a function in the delegate
-    public Method Get(int index)
+    public Function Get(int index)
     {
         return functions[index];
     }
 
     // Sets a function in the delegate
-    public DynamicEvent Set(int index, Method function)
+    public DynamicEvent Set(int index, Function function)
     {
         if (function.Method.GetParameters().Length == 0)
         {
@@ -891,7 +888,7 @@ public class DynamicEvent : IEnumerable
     }
 
     // Add a new function to the delegate
-    public DynamicEvent Add(Method function)
+    public DynamicEvent Add(Function function)
     {
         if (function.Method.GetParameters().Length == 0)
         {
@@ -902,7 +899,7 @@ public class DynamicEvent : IEnumerable
     }
 
     // Adds new functions to the delegate
-    public DynamicEvent Add(params Method[] functions)
+    public DynamicEvent Add(params Function[] functions)
     {
         for (int i = 0; i < functions.Length; i++)
         {
@@ -916,7 +913,7 @@ public class DynamicEvent : IEnumerable
     }
 
     // Adds new functions to the delegate
-    public DynamicEvent Add(List<Method> functions)
+    public DynamicEvent Add(List<Function> functions)
     {
         for (int i = 0; i < functions.Count; i++)
         {
@@ -944,7 +941,7 @@ public class DynamicEvent : IEnumerable
     }
 
     // Remove a function from the delegate
-    public DynamicEvent Remove(Method function)
+    public DynamicEvent Remove(Function function)
     {
         functions.Remove(function);
 
@@ -985,13 +982,13 @@ public class DynamicEvent : IEnumerable
     }
 
     // Returns if the delegate contains a function
-    public bool Contains(Method function)
+    public bool Contains(Function function)
     {
         return functions.Contains(function);
     }
 
     // Returns the index of the function in the delegate, or -1 if it was not found
-    public int Find(Method function)
+    public int Find(Function function)
     {
         for (int i = 0; i < functions.Count; i++)
         {
@@ -1005,13 +1002,13 @@ public class DynamicEvent : IEnumerable
     }
 
     // Returns an array of the functions
-    public Method[] ToArray()
+    public Function[] ToArray()
     {
         return functions.ToArray();
     }
 
     // Returns a list of the functions
-    public List<Method> ToList()
+    public List<Function> ToList()
     {
         return functions;
     }
@@ -1042,13 +1039,13 @@ public class DynamicEvent : IEnumerable
     // COLLECTION OPERATORS
 
     // Adding a function
-    public static DynamicEvent operator +(DynamicEvent Delegate, Method function)
+    public static DynamicEvent operator +(DynamicEvent Delegate, Function function)
     {
         return Delegate.Add(function);
     }
 
     // Removing a function
-    public static DynamicEvent operator -(DynamicEvent Delegate, Method function)
+    public static DynamicEvent operator -(DynamicEvent Delegate, Function function)
     {
         return Delegate.Remove(function);
     }

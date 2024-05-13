@@ -13,7 +13,7 @@ public class SlingshotVR : MonoBehaviour, IHandInteractableVR
 {
     [Header("Creates a simple slingshot for use in VR.")]
 
-    [Header("SLINGSHOT SETTINGS")]
+    [Header("\nSLINGSHOT SETTINGS")]
 
     [Header("Whether the player has the slingshot:")]
     [SerializeField] private bool hasSlingshot = true;
@@ -59,7 +59,7 @@ public class SlingshotVR : MonoBehaviour, IHandInteractableVR
     [SerializeField] private int maxNumberOfSlungObjects = 10;
     private Queue<GameObject> slungObjects = new Queue<GameObject>();
 
-    [Header("SLINGSHOT UI")]
+    [Header("\nSLINGSHOT UI")]
 
     [Header("Slingshot and crosshair object settings:")]
     [SerializeField] private GameObject slingshot = null;

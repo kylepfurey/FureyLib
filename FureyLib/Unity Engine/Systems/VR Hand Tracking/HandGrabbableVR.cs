@@ -12,7 +12,7 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
 {
     [Header("Allows this game object to be picked up and possibly thrown when in range.")]
 
-    [Header("GRABBING")]
+    [Header("\nGRABBING")]
 
     [Header("Whether this object is grabbable:")]
     [SerializeField] private bool grabbableLeft = true;
@@ -59,7 +59,7 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     private bool gravitySetting = true;
 
-    [Header("THROWING")]
+    [Header("\nTHROWING")]
 
     [Header("Whether this object can be thrown by the player:")]
     [SerializeField] private bool throwable = true;

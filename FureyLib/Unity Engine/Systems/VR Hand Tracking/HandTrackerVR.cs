@@ -63,6 +63,8 @@ public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
 
     [Header("Tracks a player's hands in VR through the hand's joints.")]
 
+    [Header("\nCONFIGURATION")]
+
     [Header("Whether to set the player's hands on start:")]
     public bool setHandsOnStart = false;
 

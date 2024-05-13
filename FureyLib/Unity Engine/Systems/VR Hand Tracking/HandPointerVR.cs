@@ -14,7 +14,7 @@ public class HandPointerVR : MonoBehaviour, IHandInteractableVR
 {
     [Header("Used to detect when the player is pointing using hand tracking in VR, as well as specific interactions through pointing.")]
 
-    [Header("POINTING SETTINGS")]
+    [Header("\nPOINTING SETTINGS")]
 
     [Header("The player's body GameObject:")]
     [SerializeField] private GameObject player = null;
@@ -25,7 +25,7 @@ public class HandPointerVR : MonoBehaviour, IHandInteractableVR
     // What the player is pointing at
     private RaycastHit hit;
 
-    [Header("TELEPORTATION SETTINGS")]
+    [Header("\nTELEPORTATION SETTINGS")]
 
     // Whether the player is in the middle of teleporting
     private bool isTeleporting = false;
@@ -48,7 +48,7 @@ public class HandPointerVR : MonoBehaviour, IHandInteractableVR
     [Header("Events triggered by teleporting (fading the screen should be one):")]
     [SerializeField] private UnityEvent OnTeleport = null;
 
-    [Header("TELEPORTATION UI")]
+    [Header("\nTELEPORTATION UI")]
 
     [Header("The slider and its components indicating when the player is currently teleporting:")]
     [SerializeField] private Slider slider = null;

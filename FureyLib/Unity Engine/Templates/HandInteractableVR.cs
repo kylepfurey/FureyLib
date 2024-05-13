@@ -2,8 +2,6 @@
 // VR Hand Interactable Object Template Script
 // by Kyle Furey
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +12,14 @@ using UnityEngine.Events;
 /// </summary>
 public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
 {
-    // INTERFACE IMPLEMENTATION
+    [Header("Template for a new object interactable by VR hands.")]
+
+    [Header("\nSETTINGS")]
+
+    [Header("Example setting:")]
+    [SerializeField] private bool setting = false;
+
+    // New variables here
 
     /// <summary>
     /// IHandInteractableVR Interface - Adds the object as an implementation to the interface.
@@ -40,14 +45,6 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
 
     }
 
-
-    // VARIABLES
-
-    // New variables here
-
-
-    // FUNCTIONS
-
     /// <summary>
     /// Called before start
     /// </summary>
@@ -69,7 +66,11 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     private void Update()
     {
-
+        // Check the player's hands
+        if (IHandInteractableVR.handsSet)
+        {
+            // New code here
+        }
     }
 
     // New functions here

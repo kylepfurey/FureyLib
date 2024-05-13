@@ -17,9 +17,9 @@ class Interface
 {
 public:
 
-	// PROPERTIES
+	// VARIABLES
 
-	// New properties here
+	// New variables here
 
 
 	// CONSTRUCTORS AND DECONSTRUCTOR

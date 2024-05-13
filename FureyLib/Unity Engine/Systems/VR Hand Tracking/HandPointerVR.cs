@@ -10,7 +10,7 @@ using UnityEngine.Events;
 /// <summary>
 /// Used to detect when the player is pointing using hand tracking in VR, as well as specific interactions through pointing.
 /// </summary>
-public class HandPointerVR : MonoBehaviour
+public class HandPointerVR : MonoBehaviour, IHandInteractableVR
 {
     [Header("Used to detect when the player is pointing using hand tracking in VR, as well as specific interactions through pointing.")]
 
@@ -19,18 +19,8 @@ public class HandPointerVR : MonoBehaviour
     [Header("The player's body GameObject:")]
     [SerializeField] private GameObject player = null;
 
-    // The hand game objects
-    [HideInInspector] public GameObject leftHand = null;
-    [HideInInspector] public GameObject rightHand = null;
-    private GameObject leftHandTip = null;
-    private GameObject rightHandTip = null;
-
     [Header("A cube \"beam\" indicating where the player is pointing:")]
     [SerializeField] private GameObject pointer = null;
-
-    // Whether the player's hands are currently in a pointing state
-    private bool isPointingLeft = false;
-    private bool isPointingRight = false;
 
     // What the player is pointing at
     private RaycastHit hit;
@@ -65,24 +55,32 @@ public class HandPointerVR : MonoBehaviour
     [SerializeField] private List<Image> sliderImages = new List<Image>();
     [SerializeField] private float sliderFadeSpeed = 300;
 
-    // Set this object's hands
-    public void SetHands()
+    /// <summary>
+    /// IHandInteractableVR Interface - Adds the object as an implementation to the interface.
+    /// </summary>
+    public HandPointerVR()
     {
-        leftHand = HandTrackerVR.leftHand.index;
-
-        leftHandTip = HandTrackerVR.leftHand.indexTip;
-
-        rightHand = HandTrackerVR.rightHand.index;
-
-        rightHandTip = HandTrackerVR.rightHand.indexTip;
+        IHandInteractableVR.implementations.Add(this);
     }
 
+    /// <summary>
+    /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
+    /// </summary>
+    ~HandPointerVR()
+    {
+        IHandInteractableVR.implementations.Remove(this);
+    }
+
+    /// <summary>
+    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
+    /// </summary>
+    public void OnSetHands() { }
+
+    /// <summary>
+    /// Hides the slider
+    /// </summary>
     private void Start()
     {
-        leftHand = null;
-
-        rightHand = null;
-
         // Hide the slider
         for (int i = 0; i < sliderImages.Count; i++)
         {
@@ -90,34 +88,34 @@ public class HandPointerVR : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the teleporation check and pointer beam
+    /// </summary>
     private void Update()
     {
         // Check the player's hands
-        if (leftHand != null && rightHand != null)
+        if (IHandInteractableVR.handsSet)
         {
-            // POINTING INPUT
-
-            isPointingLeft = HandTrackerVR.GetGesture(HandVR.Gesture.Point, false);
-
-            isPointingRight = HandTrackerVR.GetGesture(HandVR.Gesture.Point, true);
-
-
-            // TELEPORTATION
-
             // Teleportation with right hand
-            if (canTeleportRight && isPointingRight)
+            if (canTeleportRight && HandTrackerVR.GetGesture(HandVR.Gesture.Point, true))
             {
-                CheckTeleport(isPointingRight, rightHand.transform.position, rightHand.transform.rotation, rightHandTip.transform.position);
+                CheckTeleport(HandTrackerVR.GetGesture(HandVR.Gesture.Point, true), HandTrackerVR.rightHand.index.transform.position, HandTrackerVR.rightHand.index.transform.rotation, HandTrackerVR.rightHand.indexTip.transform.position);
             }
             // Teleportation with left hand
             else if (canTeleportLeft)
             {
-                CheckTeleport(isPointingLeft, leftHand.transform.position, leftHand.transform.rotation, leftHandTip.transform.position);
+                CheckTeleport(HandTrackerVR.GetGesture(HandVR.Gesture.Point, false), HandTrackerVR.leftHand.index.transform.position, HandTrackerVR.leftHand.index.transform.rotation, HandTrackerVR.leftHand.indexTip.transform.position);
             }
         }
     }
 
-    // Checking if the player is teleporting
+    /// <summary>
+    /// Checking if the player is teleporting
+    /// </summary>
+    /// <param name="isPointing"></param>
+    /// <param name="aimPosition"></param>
+    /// <param name="aimRotation"></param>
+    /// <param name="tip"></param>
     private void CheckTeleport(bool isPointing, Vector3 aimPosition, Quaternion aimRotation, Vector3 tip)
     {
         // Offset the pointer's rotation
@@ -233,7 +231,9 @@ public class HandPointerVR : MonoBehaviour
         }
     }
 
-    // Teleport to the current hit object
+    /// <summary>
+    /// Teleport to the current hit object
+    /// </summary>
     private void Teleport()
     {
         player.transform.position = new Vector3(hit.collider.transform.position.x, player.transform.position.y, hit.collider.transform.position.z);

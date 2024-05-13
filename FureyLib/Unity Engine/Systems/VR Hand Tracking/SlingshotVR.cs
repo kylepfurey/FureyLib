@@ -9,7 +9,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Creates a simple slingshot for use in VR.
 /// </summary>
-public class SlingshotVR : MonoBehaviour
+public class SlingshotVR : MonoBehaviour, IHandInteractableVR
 {
     [Header("Creates a simple slingshot for use in VR.")]
 
@@ -18,13 +18,9 @@ public class SlingshotVR : MonoBehaviour
     [Header("Whether the player has the slingshot:")]
     [SerializeField] private bool hasSlingshot = true;
 
-    // The hand game objects
-    [HideInInspector] public GameObject leftHand = null;
-    [HideInInspector] public GameObject rightHand = null;
-
-    [Header("The pivots of the player's tracked hands:")]
-    public GameObject leftHandPivot = null;
-    public GameObject rightHandPivot = null;
+    // Objects to be used as pivots of the player's tracked hands
+    private GameObject leftHandPivot = null;
+    private GameObject rightHandPivot = null;
 
     [Header("The offset position and rotation to add to the hand's position and rotation:")]
     [SerializeField] private Vector3 offsetPosition = new Vector3(0, -0.05f, 0.1f);
@@ -77,37 +73,59 @@ public class SlingshotVR : MonoBehaviour
     [SerializeField] private float sliderFadeSpeed = 1500;
     [SerializeField] private Vector3 sliderOffset = new Vector3(0, -0.1f, -0.15f);
 
-    // The current slingshot state
+    /// <summary>
+    /// The current slingshot state
+    /// </summary>
     public enum SlingshotState { Unloaded, LoadedRight, LoadedLeft };
 
-    // Set this object's hands
-    public void SetHands()
+    /// <summary>
+    /// IHandInteractableVR Interface - Adds the object as an implementation to the interface.
+    /// </summary>
+    public SlingshotVR()
     {
-        leftHand = HandTrackerVR.leftHand.wrist;
-
-        leftHandPivot.transform.parent = leftHand.transform;
-
-        rightHand = HandTrackerVR.rightHand.wrist;
-
-        rightHandPivot.transform.parent = rightHand.transform;
+        IHandInteractableVR.implementations.Add(this);
     }
 
+    /// <summary>
+    /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
+    /// </summary>
+    ~SlingshotVR()
+    {
+        IHandInteractableVR.implementations.Remove(this);
+    }
+
+    /// <summary>
+    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
+    /// </summary>
+    public void OnSetHands()
+    {
+        leftHandPivot = new GameObject("Left Slingshot Pivot");
+
+        leftHandPivot.transform.parent = HandTrackerVR.leftHand.wrist.transform;
+
+        rightHandPivot = new GameObject("Right Slingshot Pivot");
+
+        rightHandPivot.transform.parent = HandTrackerVR.rightHand.wrist.transform;
+    }
+
+    /// <summary>
+    /// Disables the UI icons
+    /// </summary>
     private void Start()
     {
-        leftHand = null;
-
-        rightHand = null;
-
         // Disable slingshot and crosshair
         slingshot.active = false;
 
         crosshair.active = false;
     }
 
+    /// <summary>
+    /// Updates the slingshot's state
+    /// </summary>
     private void Update()
     {
         // Check the player's hands
-        if (leftHand != null && rightHand != null)
+        if (IHandInteractableVR.handsSet)
         {
             // PINCHING INPUT
 
@@ -223,13 +241,22 @@ public class SlingshotVR : MonoBehaviour
         }
     }
 
-    // Whether the player pinching is within range of using the slingshot
+    /// <summary>
+    /// Whether the player pinching is within range of using the slingshot
+    /// </summary>
+    /// <param name="pinchHand"></param>
+    /// <param name="aimHand"></param>
+    /// <returns></returns>
     private bool PinchCheck(GameObject pinchHand, GameObject aimHand)
     {
         return DistanceSquared(pinchHand.transform.position, aimHand.transform.position) <= pinchGrabDistance * pinchGrabDistance;
     }
 
-    // Creating the slingshot object
+    /// <summary>
+    /// Creating the slingshot object
+    /// </summary>
+    /// <param name="pinchHand"></param>
+    /// <param name="loadRight"></param>
     private void LoadSlingshot(GameObject pinchHand, bool loadRight)
     {
         GameObject slungObject = Instantiate(slungPrefab);
@@ -254,7 +281,10 @@ public class SlingshotVR : MonoBehaviour
         }
     }
 
-    // Updating slider value and color
+    /// <summary>
+    /// Updating slider value and color
+    /// </summary>
+    /// <param name="aimHand"></param>
     private void UpdateSlider(GameObject aimHand)
     {
         // Slider color
@@ -303,7 +333,11 @@ public class SlingshotVR : MonoBehaviour
         slider.transform.position = TranslateRelative(slider.transform, sliderOffset);
     }
 
-    // Aiming the slingshot
+    /// <summary>
+    /// Aiming the slingshot
+    /// </summary>
+    /// <param name="pinchHand"></param>
+    /// <param name="aimHand"></param>
     private void AimSlingshot(GameObject pinchHand, GameObject aimHand)
     {
         float distance = Vector3.Distance(pinchHand.transform.position, TranslateRelative(aimHand.transform, shootOffset));
@@ -389,13 +423,22 @@ public class SlingshotVR : MonoBehaviour
         }
     }
 
-    // Returns the direction between two vector 3s
+    /// <summary>
+    /// Returns the direction between two vector 3s
+    /// </summary>
+    /// <param name="pointA"></param>
+    /// <param name="pointB"></param>
+    /// <returns></returns>
     private static Vector3 Direction(Vector3 pointA, Vector3 pointB)
     {
         return pointB - pointA;
     }
 
-    // Shooting the slingshot
+    /// <summary>
+    /// Shooting the slingshot
+    /// </summary>
+    /// <param name="pinchHand"></param>
+    /// <param name="aimHand"></param>
     private void ShootSlingshot(GameObject pinchHand, GameObject aimHand)
     {
         AimSlingshot(pinchHand, aimHand);
@@ -431,7 +474,12 @@ public class SlingshotVR : MonoBehaviour
         slingshotState = SlingshotState.Unloaded;
     }
 
-    // Returns an offset vector3 based on the relative transform and given offset values
+    /// <summary>
+    /// Returns an offset vector3 based on the relative transform and given offset values
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="offset"></param>
+    /// <returns></returns>
     private static Vector3 TranslateRelative(Transform transform, Vector3 offset)
     {
         Vector3 directionX = transform.right * offset.x;
@@ -441,7 +489,12 @@ public class SlingshotVR : MonoBehaviour
         return transform.position + directionX + directionY + directionZ;
     }
 
-    // Returns the squared distance between two vector 3s
+    /// <summary>
+    /// Returns the squared distance between two vector 3s
+    /// </summary>
+    /// <param name="pointA"></param>
+    /// <param name="pointB"></param>
+    /// <returns></returns>
     public static float DistanceSquared(Vector3 pointA, Vector3 pointB)
     {
         float xDistance = pointA.x - pointB.x;

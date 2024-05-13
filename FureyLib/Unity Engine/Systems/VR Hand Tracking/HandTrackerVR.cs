@@ -6,27 +6,62 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+// Inherit from this interface to configure hand tracking functionality with a component.
+
+/// <summary>
+/// Indicates interaction with VR hands.
+/// Inherit from this interface to configure hand tracking functionality with a component.
+/// </summary>
+public interface IHandInteractableVR
+{
+    /// <summary>
+    /// A list of all objects that implement this interface. Each new implemented interface should be added to this.
+    /// OnSetHands() is automatically called when hands are initialized.
+    /// </summary>
+    public static List<IHandInteractableVR> implementations = new List<IHandInteractableVR>();
+
+    /// <summary>
+    /// Whether the VR hands have been successfully configured.
+    /// </summary>
+    public static bool handsSet = false;
+
+    /// <summary>
+    /// Automatically called when the VR hands are successfully initialized on the implemented interface.
+    /// </summary>
+    public abstract void OnSetHands();
+}
+
 /// <summary>
 /// Tracks a player's hands in VR through the hand's joints.
 /// </summary>
-public class HandTrackerVR : MonoBehaviour
+public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
 {
-    [Header("Tracks a player's hands in VR through the hand's joints.")]
+    /// <summary>
+    /// The instance of this class
+    /// </summary>
+    [HideInInspector] public static HandTrackerVR instance;
 
-    // The instance of this class
-    [HideInInspector] public static HandTrackerVR Instance;
-
-    // The player's left hand
+    /// <summary>
+    /// The player's left hand
+    /// </summary>
     [HideInInspector] public static HandVR leftHand = null;
 
-    // The player's right hand
+    /// <summary>
+    /// The player's right hand
+    /// </summary>
     [HideInInspector] public static HandVR rightHand = null;
 
-    // The current gestures the left hand is making
+    /// <summary>
+    /// The current gestures the left hand is making
+    /// </summary>
     [HideInInspector] public static Dictionary<HandVR.Gesture, bool> leftGestures = new Dictionary<HandVR.Gesture, bool>();
 
-    // The current gestures the right hand is making
+    /// <summary>
+    /// The current gestures the right hand is making
+    /// </summary>
     [HideInInspector] public static Dictionary<HandVR.Gesture, bool> rightGestures = new Dictionary<HandVR.Gesture, bool>();
+
+    [Header("Tracks a player's hands in VR through the hand's joints.")]
 
     [Header("Whether to set the player's hands on start:")]
     public bool setHandsOnStart = false;
@@ -42,7 +77,7 @@ public class HandTrackerVR : MonoBehaviour
     public bool collisionIsTrigger = false;
 
     [Header("Events to call when hands are set:")]
-    public UnityEvent onHandSet = null;
+    public UnityEvent onHandsSet = null;
 
     private void Awake()
     {
@@ -50,7 +85,7 @@ public class HandTrackerVR : MonoBehaviour
 
         rightHand = null;
 
-        Instance = this;
+        instance = this;
 
         for (int i = 0; i < System.Enum.GetNames(typeof(HandVR.Gesture)).Length; i++)
         {
@@ -60,7 +95,7 @@ public class HandTrackerVR : MonoBehaviour
 
         if (setHandsOnStart)
         {
-            SetHands();
+            OnSetHands();
         }
     }
 
@@ -78,8 +113,10 @@ public class HandTrackerVR : MonoBehaviour
         }
     }
 
-    // Sets the left and right hand
-    public void SetHands()
+    /// <summary>
+    /// IHandInteractableVR Interface - Configures and sets the VR hands of each object that has implemented the IHandInteractableVR interface.
+    /// </summary>
+    public void OnSetHands()
     {
         if (leftHand == null || rightHand == null)
         {
@@ -91,7 +128,14 @@ public class HandTrackerVR : MonoBehaviour
             {
                 Debug.Log("Successfully found both hands!");
 
-                onHandSet.Invoke();
+                IHandInteractableVR.handsSet = true;
+
+                for (int i = 0; i < IHandInteractableVR.implementations.Count; i++)
+                {
+                    IHandInteractableVR.implementations[i].OnSetHands();
+                }
+
+                onHandsSet.Invoke();
             }
             else
             {
@@ -100,7 +144,12 @@ public class HandTrackerVR : MonoBehaviour
         }
     }
 
-    // Whether the given hand is making the given gesture
+    /// <summary>
+    /// Whether the given hand is making the given gesture
+    /// </summary>
+    /// <param name="gesture"></param>
+    /// <param name="isRight"></param>
+    /// <returns></returns>
     public static bool GetGesture(HandVR.Gesture gesture, bool isRight)
     {
         if (!isRight)
@@ -119,13 +168,21 @@ public class HandTrackerVR : MonoBehaviour
 /// </summary>
 public class HandVR
 {
-    // Constructor
+    /// <summary>
+    /// Default constructor
+    /// </summary>
     public HandVR()
     {
 
     }
 
-    // Constructor
+    /// <summary>
+    /// Hand constructor
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="isRight"></param>
+    /// <param name="addCollision"></param>
+    /// <param name="collisionIsTrigger"></param>
     public HandVR(string name, bool isRight, bool addCollision = true, bool collisionIsTrigger = false)
     {
         SetHand(name, isRight, addCollision, collisionIsTrigger);
@@ -176,10 +233,14 @@ public class HandVR
     public const float thumbMin = 0; public const float thumbMax = 10;
     public const float fingerMin = 0; public const float fingerMax = 90;
 
-    // Finger type enum
+    /// <summary>
+    /// Finger type enum
+    /// </summary>
     public enum Finger { Thumb, Index, Middle, Ring, Pinky };
 
-    // Gesture type enum (add more if needed)
+    /// <summary>
+    /// Gesture type enum (add more if needed)
+    /// </summary>
     public enum Gesture { Open, Fist, Point, Pinch, ThumbsUp, FingerGun, FlipOff };
 
     // Sets this hand to a found hand object based on the given name. Make sure the name exactly matches the parent of the intended hand.
@@ -381,13 +442,24 @@ public class HandVR
         }
     }
 
-    // Returns a percentage relative to a value of a minimum and maximum
+    /// <summary>
+    /// Returns a percentage relative to a value of a minimum and maximum
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
     private static float Percentage(float value, float min, float max)
     {
         return (value - min) / (max - min);
     }
 
-    // Returns the squared distance between two vector 3s
+    /// <summary>
+    /// Returns the squared distance between two vector 3s
+    /// </summary>
+    /// <param name="pointA"></param>
+    /// <param name="pointB"></param>
+    /// <returns></returns>
     private static float DistanceSquared(Vector3 pointA, Vector3 pointB)
     {
         float xDistance = pointA.x - pointB.x;
@@ -397,7 +469,12 @@ public class HandVR
         return xDistance * xDistance + yDistance * yDistance + zDistance * zDistance;
     }
 
-    // Returns an offset vector3 based on the relative transform and given offset values
+    /// <summary>
+    /// Returns an offset vector3 based on the relative transform and given offset values
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="offset"></param>
+    /// <returns></returns>
     private static Vector3 TranslateRelative(Transform transform, Vector3 offset)
     {
         Vector3 directionX = transform.right * offset.x;

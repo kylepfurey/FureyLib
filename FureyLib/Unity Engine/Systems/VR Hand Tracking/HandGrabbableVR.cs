@@ -8,7 +8,7 @@ using UnityEngine;
 /// <summary>
 /// Allows this game object to be picked up and thrown when in range of a VR hand.
 /// </summary>
-public class HandGrabbableVR : MonoBehaviour
+public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
 {
     [Header("Allows this game object to be picked up and possibly thrown when in range.")]
 
@@ -40,7 +40,9 @@ public class HandGrabbableVR : MonoBehaviour
     [Header("The gestures allowed to be used to grab this item:")]
     [SerializeField] private List<HandVR.Gesture> allowedGestures = new List<HandVR.Gesture>() { HandVR.Gesture.Fist };
 
-    // The rigidbody of the grabbed object
+    /// <summary>
+    /// The rigidbody of the grabbed object
+    /// </summary>
     private Rigidbody rigidbody = null;
 
     [Header("Whether to assign a rigidbody when this object is let go of:")]
@@ -52,7 +54,9 @@ public class HandGrabbableVR : MonoBehaviour
     [Header("The new gravity setting for this object if it is not keeping its old gravity setting:")]
     [SerializeField] private bool newGravity = true;
 
-    // The setting for gravity of this object
+    /// <summary>
+    /// The setting for gravity of this object
+    /// </summary>
     private bool gravitySetting = true;
 
     [Header("THROWING")]
@@ -64,7 +68,9 @@ public class HandGrabbableVR : MonoBehaviour
     [SerializeField] private float thrownScale = 10;
     [SerializeField] private VelocityScaleType velocityScalingType = VelocityScaleType.Direction;
 
-    // Velocity scaling enum
+    /// <summary>
+    /// Velocity scaling enum
+    /// </summary>
     public enum VelocityScaleType { Direction, Distance, DistanceSquared };
 
     [Header("The buffer time before updating the object's previous position:")]
@@ -76,13 +82,40 @@ public class HandGrabbableVR : MonoBehaviour
     [Header("The delay before reenabling collision for the player's hands (to prevent the hands bumping the object):")]
     [SerializeField] private float collisionDelay = 0.5f;
 
-    // The time since last updating the previous position
+    /// <summary>
+    /// The time since last updating the previous position
+    /// </summary>
     private float previousPositionUpdateTime = 0;
 
-    // The current previous position of this object
+    /// <summary>
+    /// The current previous position of this object
+    /// </summary>
     private Vector3 previousPosition = Vector3.zero;
 
-    // Find the object's rigidbody
+    /// <summary>
+    /// IHandInteractableVR Interface - Adds the object as an implementation to the interface.
+    /// </summary>
+    public HandGrabbableVR()
+    {
+        IHandInteractableVR.implementations.Add(this);
+    }
+
+    /// <summary>
+    /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
+    /// </summary>
+    ~HandGrabbableVR()
+    {
+        IHandInteractableVR.implementations.Remove(this);
+    }
+
+    /// <summary>
+    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
+    /// </summary>
+    public void OnSetHands() { }
+
+    /// <summary>
+    /// Find the object's rigidbody
+    /// </summary>
     private void Awake()
     {
         // Get rigidbody
@@ -92,11 +125,13 @@ public class HandGrabbableVR : MonoBehaviour
         previousPosition = transform.position;
     }
 
-    // Call the hand grabbing functions
+    /// <summary>
+    /// Call the hand grabbing functions
+    /// </summary>
     private void Update()
     {
         // Check the player's hands
-        if (HandTrackerVR.leftHand != null && HandTrackerVR.rightHand != null)
+        if (IHandInteractableVR.handsSet)
         {
             // Grabbing with left hand
             Grab(false);
@@ -121,7 +156,10 @@ public class HandGrabbableVR : MonoBehaviour
         }
     }
 
-    // Increment or reset grab time
+    /// <summary>
+    /// Increment or reset grab time
+    /// </summary>
+    /// <param name="isRight"></param>
     private void GrabTime(bool isRight)
     {
         // Loop through all the allowed gestures
@@ -145,7 +183,10 @@ public class HandGrabbableVR : MonoBehaviour
         selectref(isRight, ref grabbingRight, ref grabbingLeft) = false;
     }
 
-    // Grabbing the object
+    /// <summary>
+    /// Grabbing the object
+    /// </summary>
+    /// <param name="isRight"></param>
     private void Grab(bool isRight)
     {
         // Check if the player is grabbing something
@@ -190,7 +231,10 @@ public class HandGrabbableVR : MonoBehaviour
         }
     }
 
-    // Dropping the object
+    /// <summary>
+    /// Dropping the object
+    /// </summary>
+    /// <param name="isRight"></param>
     private void Drop(bool isRight)
     {
         // Set this hand's grabbed object to null
@@ -249,7 +293,9 @@ public class HandGrabbableVR : MonoBehaviour
         }
     }
 
-    // Throwing the object
+    /// <summary>
+    /// Throwing the object
+    /// </summary>
     private void Throw()
     {
         // Calculate the direction of the throw in world space
@@ -277,7 +323,10 @@ public class HandGrabbableVR : MonoBehaviour
         rigidbody.velocity = direction;
     }
 
-    // Losing hand collision after throwing
+    /// <summary>
+    /// Losing hand collision after throwing
+    /// </summary>
+    /// <param name="isRight"></param>
     private void LoseCollision(bool isRight)
     {
         if (isRight)
@@ -300,19 +349,30 @@ public class HandGrabbableVR : MonoBehaviour
         }
     }
 
-    // Regaining left hand collision after throwing
+    /// <summary>
+    /// Regaining left hand collision after throwing
+    /// </summary>
     private void RegainLeftCollision()
     {
         HandTrackerVR.leftHand.collider.enabled = true;
     }
 
-    // Regaining right hand collision after throwing
+    /// <summary>
+    /// Regaining right hand collision after throwing
+    /// </summary>
     private void RegainRightCollision()
     {
         HandTrackerVR.rightHand.collider.enabled = true;
     }
 
-    // Select from a boolean and return the chosen data
+    /// <summary>
+    /// Select from a boolean and return the chosen data
+    /// </summary>
+    /// <typeparam name="DataType"></typeparam>
+    /// <param name="condition"></param>
+    /// <param name="trueData"></param>
+    /// <param name="falseData"></param>
+    /// <returns></returns>
     private static ref DataType selectref<DataType>(bool condition, ref DataType trueData, ref DataType falseData)
     {
         if (condition)
@@ -325,7 +385,12 @@ public class HandGrabbableVR : MonoBehaviour
         }
     }
 
-    // Returns the squared distance between two vector 3s
+    /// <summary>
+    /// Returns the squared distance between two vector 3s
+    /// </summary>
+    /// <param name="pointA"></param>
+    /// <param name="pointB"></param>
+    /// <returns></returns>
     private static float DistanceSquared(Vector3 pointA, Vector3 pointB)
     {
         float xDistance = pointA.x - pointB.x;
@@ -335,7 +400,12 @@ public class HandGrabbableVR : MonoBehaviour
         return xDistance * xDistance + yDistance * yDistance + zDistance * zDistance;
     }
 
-    // Returns an offset vector3 based on the relative transform and given offset vector 3
+    /// <summary>
+    /// Returns an offset vector3 based on the relative transform and given offset vector 3
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="offset"></param>
+    /// <returns></returns>
     private static Vector3 TranslateRelative(Transform transform, Vector3 offset)
     {
         Vector3 directionX = transform.right * offset.x;
@@ -345,7 +415,12 @@ public class HandGrabbableVR : MonoBehaviour
         return transform.position + directionX + directionY + directionZ;
     }
 
-    // Rotate a vector 3 by a euler rotation
+    /// <summary>
+    /// Rotate a vector 3 by a euler rotation
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <param name="rotation"></param>
+    /// <returns></returns>
     private static Vector3 Rotate(Vector3 direction, Vector3 rotation)
     {
         return Quaternion.Euler(rotation) * direction;

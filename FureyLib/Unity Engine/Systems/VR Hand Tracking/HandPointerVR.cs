@@ -1,5 +1,5 @@
 
-// VR Hand Pointing and Teleporter Script
+// VR Hand Pointer and Teleportation Script
 // by Kyle Furey
 
 using System.Collections.Generic;
@@ -99,12 +99,12 @@ public class HandPointerVR : MonoBehaviour, IHandInteractableVR
             // Teleportation with right hand
             if (canTeleportRight && HandTrackerVR.GetGesture(HandVR.Gesture.Point, true))
             {
-                CheckTeleport(HandTrackerVR.GetGesture(HandVR.Gesture.Point, true), HandTrackerVR.rightHand.index.transform.position, HandTrackerVR.rightHand.index.transform.rotation, HandTrackerVR.rightHand.indexTip.transform.position);
+                CheckTeleport(HandTrackerVR.GetGesture(HandVR.Gesture.Point, true), HandTrackerVR.rightHand.indexTip.transform.position, HandTrackerVR.rightHand.indexTip.transform.rotation, HandTrackerVR.rightHand.indexTip.transform.position);
             }
             // Teleportation with left hand
             else if (canTeleportLeft)
             {
-                CheckTeleport(HandTrackerVR.GetGesture(HandVR.Gesture.Point, false), HandTrackerVR.leftHand.index.transform.position, HandTrackerVR.leftHand.index.transform.rotation, HandTrackerVR.leftHand.indexTip.transform.position);
+                CheckTeleport(HandTrackerVR.GetGesture(HandVR.Gesture.Point, false), HandTrackerVR.leftHand.indexTip.transform.position, HandTrackerVR.leftHand.indexTip.transform.rotation, HandTrackerVR.leftHand.indexTip.transform.position);
             }
         }
     }
@@ -169,6 +169,18 @@ public class HandPointerVR : MonoBehaviour, IHandInteractableVR
                     for (int i = 0; i < sliderImages.Count; i++)
                     {
                         sliderImages[i].color = new Vector4(sliderImages[i].color.r, sliderImages[i].color.g, sliderImages[i].color.b, Mathf.Max(sliderImages[i].color.a + (sliderFadeSpeed * Time.deltaTime / 255), 0));
+                    }
+                }
+                else
+                {
+                    // Reset the teleport timer
+                    teleportTimer -= Time.deltaTime;
+                    teleportTimer = Mathf.Max(teleportTimer, 0);
+
+                    // Fade the slider out
+                    for (int i = 0; i < sliderImages.Count; i++)
+                    {
+                        sliderImages[i].color = new Vector4(sliderImages[i].color.r, sliderImages[i].color.g, sliderImages[i].color.b, Mathf.Min(sliderImages[i].color.a - (sliderFadeSpeed * Time.deltaTime / 255), 1));
                     }
                 }
 

@@ -226,14 +226,20 @@ public class HandVR
     public GameObject pinkyMiddle = null;
     public GameObject pinkyTip = null;
 
-    // Collision
-    //public CapsuleCollider collider = null;
-    public BoxCollider collider = null;
-    public Rigidbody rigidbody = null;
-
     // Finger maximum and minimum values (using relative rotation)
     public const float thumbMin = 0; public const float thumbMax = 10;
     public const float fingerMin = 0; public const float fingerMax = 90;
+
+    /// <summary>
+    /// Collider dictionary where KEY = FINGER GAME OBJECT and VALUE = FINGER COLLIDER.
+    /// Note: colliders[Palm] is a BoxCollider where all other colliders are SphereColliders.
+    /// </summary>
+    public Dictionary<GameObject, Collider> colliders = new Dictionary<GameObject, Collider>();
+
+    /// <summary>
+    /// Rigidbody dictionary where KEY = FINGER GAME OBJECT and VALUE = FINGER RIGIDBODY.
+    /// </summary>
+    public Dictionary<GameObject, Rigidbody> rigidbodies = new Dictionary<GameObject, Rigidbody>();
 
     /// <summary>
     /// Finger type enum
@@ -266,67 +272,32 @@ public class HandVR
             Debug.Log((isRight ? "Right" : "Left") + " Palm: " + palm.name);
 
             thumb = wrist.transform.GetChild(5).transform.GetChild(0).gameObject;
-            thumbTip = thumb.transform.GetChild(0).gameObject;
+            thumbTip = thumb.transform.GetChild(0).GetChild(0).gameObject;
             Debug.Log((isRight ? "Right" : "Left") + " Thumb: " + thumb.name);
 
             index = wrist.transform.GetChild(0).transform.GetChild(0).gameObject;
             indexMiddle = index.transform.GetChild(0).gameObject;
-            indexTip = indexMiddle.transform.GetChild(0).gameObject;
+            indexTip = indexMiddle.transform.GetChild(0).GetChild(0).gameObject;
             Debug.Log((isRight ? "Right" : "Left") + " Index Finger: " + index.name);
 
             middle = wrist.transform.GetChild(2).transform.GetChild(0).gameObject;
             middleMiddle = middle.transform.GetChild(0).gameObject;
-            middleTip = middleMiddle.transform.GetChild(0).gameObject;
+            middleTip = middleMiddle.transform.GetChild(0).GetChild(0).gameObject;
             Debug.Log((isRight ? "Right" : "Left") + " Middle Finger: " + middle.name);
 
             ring = wrist.transform.GetChild(4).transform.GetChild(0).gameObject;
             ringMiddle = ring.transform.GetChild(0).gameObject;
-            ringTip = ringMiddle.transform.GetChild(0).gameObject;
+            ringTip = ringMiddle.transform.GetChild(0).GetChild(0).gameObject;
             Debug.Log((isRight ? "Right" : "Left") + " Ring Finger: " + ring.name);
 
             pinky = wrist.transform.GetChild(1).transform.GetChild(0).gameObject;
             pinkyMiddle = pinky.transform.GetChild(0).gameObject;
-            pinkyTip = pinkyMiddle.transform.GetChild(0).gameObject;
+            pinkyTip = pinkyMiddle.transform.GetChild(0).GetChild(0).gameObject;
             Debug.Log((isRight ? "Right" : "Left") + " Pinky Finger: " + pinky.name);
 
-            // CAPSULE COLLIDER
-            /*
-            collider = palm.AddComponent<CapsuleCollider>();
-            collider.isTrigger = collisionIsTrigger;
-            collider.providesContacts = false;
-            collider.sharedMaterial = null;
-            collider.center = new Vector3(0, 0, -0.1f);
-            collider.radius = 0.05f;
-            collider.height = 0.4f;
-            collider.direction = 2;
-            */
-
-            // BOX COLLIDER
-            /* */
-            collider = palm.AddComponent<BoxCollider>();
-            collider.isTrigger = collisionIsTrigger;
-            collider.providesContacts = false;
-            collider.material = null;
-            collider.center = new Vector3(0, -0.01f, -0.05f);
-            collider.size = new Vector3(0.1f, 0.05f, 0.3f);
-            /* */
-
-            rigidbody = palm.AddComponent<Rigidbody>();
-            rigidbody.mass = 1;
-            rigidbody.drag = 0;
-            rigidbody.angularDrag = 0.05f;
-            rigidbody.automaticCenterOfMass = true;
-            rigidbody.automaticInertiaTensor = true;
-            rigidbody.useGravity = false;
-            rigidbody.isKinematic = true;
-            rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-            rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
-
-            if (!addCollision)
+            if (addCollision)
             {
-                collider.enabled = false;
-
-                rigidbody.detectCollisions = false;
+                GenerateHandCollision(collisionIsTrigger);
             }
 
             return true;
@@ -337,6 +308,170 @@ public class HandVR
 
             return false;
         }
+    }
+
+    /// <summary>
+    /// Generates collision for the hands
+    /// </summary>
+    public void GenerateHandCollision(bool isTrigger)
+    {
+        colliders.Clear();
+        rigidbodies.Clear();
+
+
+        // PALM
+
+        // Palm collider
+        BoxCollider boxCollider = palm.AddComponent<BoxCollider>();
+        boxCollider.isTrigger = isTrigger;
+        boxCollider.providesContacts = false;
+        boxCollider.material = null;
+        boxCollider.center = new Vector3(0, -0.01f, -0.05f);
+        boxCollider.size = new Vector3(0.1f, 0.05f, 0.3f);
+        colliders[palm] = boxCollider;
+
+        // Palm rigidbody
+        Rigidbody rigidbody = palm.AddComponent<Rigidbody>();
+        rigidbody.mass = 1;
+        rigidbody.drag = 0;
+        rigidbody.angularDrag = 0.05f;
+        rigidbody.automaticCenterOfMass = true;
+        rigidbody.automaticInertiaTensor = true;
+        rigidbody.useGravity = false;
+        rigidbody.isKinematic = true;
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+        rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rigidbodies[palm] = rigidbody;
+
+
+        // THUMB
+
+        // Thumb collider
+        SphereCollider sphereCollider = thumbTip.AddComponent<SphereCollider>();
+        sphereCollider.isTrigger = isTrigger;
+        sphereCollider.providesContacts = false;
+        sphereCollider.material = null;
+        sphereCollider.center = Vector3.zero;
+        sphereCollider.radius = 0.01f;
+        colliders[thumb] = sphereCollider;
+        thumbTip.layer = 2;
+
+        // Thumb rigidbody
+        rigidbody = thumbTip.AddComponent<Rigidbody>();
+        rigidbody.mass = 1;
+        rigidbody.drag = 0;
+        rigidbody.angularDrag = 0.05f;
+        rigidbody.automaticCenterOfMass = true;
+        rigidbody.automaticInertiaTensor = true;
+        rigidbody.useGravity = false;
+        rigidbody.isKinematic = true;
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+        rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rigidbodies[thumb] = rigidbody;
+
+
+        // INDEX
+
+        // Index collider
+        sphereCollider = indexTip.AddComponent<SphereCollider>();
+        sphereCollider.isTrigger = isTrigger;
+        sphereCollider.providesContacts = false;
+        sphereCollider.material = null;
+        sphereCollider.center = Vector3.zero;
+        sphereCollider.radius = 0.01f;
+        colliders[index] = sphereCollider;
+        indexTip.layer = 2;
+
+        // Index rigidbody
+        rigidbody = indexTip.AddComponent<Rigidbody>();
+        rigidbody.mass = 1;
+        rigidbody.drag = 0;
+        rigidbody.angularDrag = 0.05f;
+        rigidbody.automaticCenterOfMass = true;
+        rigidbody.automaticInertiaTensor = true;
+        rigidbody.useGravity = false;
+        rigidbody.isKinematic = true;
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+        rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rigidbodies[index] = rigidbody;
+
+
+        // MIDDLE
+
+        // Middle collider
+        sphereCollider = middleTip.AddComponent<SphereCollider>();
+        sphereCollider.isTrigger = isTrigger;
+        sphereCollider.providesContacts = false;
+        sphereCollider.material = null;
+        sphereCollider.center = Vector3.zero;
+        sphereCollider.radius = 0.01f;
+        colliders[middle] = sphereCollider;
+        middleTip.layer = 2;
+
+        // Middle rigidbody
+        rigidbody = middleTip.AddComponent<Rigidbody>();
+        rigidbody.mass = 1;
+        rigidbody.drag = 0;
+        rigidbody.angularDrag = 0.05f;
+        rigidbody.automaticCenterOfMass = true;
+        rigidbody.automaticInertiaTensor = true;
+        rigidbody.useGravity = false;
+        rigidbody.isKinematic = true;
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+        rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rigidbodies[middle] = rigidbody;
+
+
+        // RING
+
+        // Ring collider
+        sphereCollider = ringTip.AddComponent<SphereCollider>();
+        sphereCollider.isTrigger = isTrigger;
+        sphereCollider.providesContacts = false;
+        sphereCollider.material = null;
+        sphereCollider.center = Vector3.zero;
+        sphereCollider.radius = 0.01f;
+        colliders[ring] = sphereCollider;
+        ringTip.layer = 2;
+
+        // Ring rigidbody
+        rigidbody = ringTip.AddComponent<Rigidbody>();
+        rigidbody.mass = 1;
+        rigidbody.drag = 0;
+        rigidbody.angularDrag = 0.05f;
+        rigidbody.automaticCenterOfMass = true;
+        rigidbody.automaticInertiaTensor = true;
+        rigidbody.useGravity = false;
+        rigidbody.isKinematic = true;
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+        rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rigidbodies[ring] = rigidbody;
+
+
+        // PINKY
+
+        // Pinky collider
+        sphereCollider = pinkyTip.AddComponent<SphereCollider>();
+        sphereCollider.isTrigger = isTrigger;
+        sphereCollider.providesContacts = false;
+        sphereCollider.material = null;
+        sphereCollider.center = Vector3.zero;
+        sphereCollider.radius = 0.01f;
+        colliders[pinky] = sphereCollider;
+        pinkyTip.layer = 2;
+
+        // Pinky rigidbody
+        rigidbody = pinkyTip.AddComponent<Rigidbody>();
+        rigidbody.mass = 1;
+        rigidbody.drag = 0;
+        rigidbody.angularDrag = 0.05f;
+        rigidbody.automaticCenterOfMass = true;
+        rigidbody.automaticInertiaTensor = true;
+        rigidbody.useGravity = false;
+        rigidbody.isKinematic = true;
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+        rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rigidbodies[pinky] = rigidbody;
     }
 
     // Returns the percentage of a finger's value based on their maximums and minimums. 1 = finger pointing outward, 0 = finger pointing inward.

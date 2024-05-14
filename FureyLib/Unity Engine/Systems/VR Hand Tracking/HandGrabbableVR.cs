@@ -331,21 +331,21 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     {
         if (isRight)
         {
-            if (HandTrackerVR.rightHand.collider.enabled)
+            foreach (GameObject finger in HandTrackerVR.rightHand.colliders.Keys)
             {
-                HandTrackerVR.rightHand.collider.enabled = false;
-
-                Invoke("RegainRightCollision", collisionDelay);
+                HandTrackerVR.rightHand.colliders[finger].enabled = false;
             }
+
+            Invoke("RegainRightCollision", collisionDelay);
         }
         else
         {
-            if (HandTrackerVR.leftHand.collider.enabled)
+            foreach (GameObject finger in HandTrackerVR.leftHand.colliders.Keys)
             {
-                HandTrackerVR.leftHand.collider.enabled = false;
-
-                Invoke("RegainLeftCollision", collisionDelay);
+                HandTrackerVR.leftHand.colliders[finger].enabled = false;
             }
+
+            Invoke("RegainLeftCollision", collisionDelay);
         }
     }
 
@@ -354,7 +354,10 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     private void RegainLeftCollision()
     {
-        HandTrackerVR.leftHand.collider.enabled = true;
+        foreach (GameObject finger in HandTrackerVR.leftHand.colliders.Keys)
+        {
+            HandTrackerVR.leftHand.colliders[finger].enabled = true;
+        }
     }
 
     /// <summary>
@@ -362,7 +365,10 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     private void RegainRightCollision()
     {
-        HandTrackerVR.rightHand.collider.enabled = true;
+        foreach (GameObject finger in HandTrackerVR.rightHand.colliders.Keys)
+        {
+            HandTrackerVR.rightHand.colliders[finger].enabled = true;
+        }
     }
 
     /// <summary>

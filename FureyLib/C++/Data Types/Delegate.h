@@ -189,13 +189,24 @@ public:
 	}
 
 	// List constructor
-	event(const std::initializer_list< METHOD()> functions)
+	event(const std::initializer_list<METHOD()> functions)
 	{
 		this->functions = std::vector<METHOD()>();
 
 		for (int i = 0; i < functions.size(); i++)
 		{
 			this->functions.push_back(*(functions.begin() + i));
+		}
+	}
+
+	// Delegate constructor
+	event(event<ParameterTypes...>& functions)
+	{
+		this->functions = std::vector<METHOD()>();
+
+		for (int i = 0; i < functions.count(); i++)
+		{
+			this->functions.push_back(functions[i]);
 		}
 	}
 
@@ -273,10 +284,32 @@ public:
 		return *this;
 	}
 
+	// Add a delegate to the delegate
+	event<ParameterTypes...>& add(event<ParameterTypes...>& functions)
+	{
+		for (int i = 0; i < functions.count(); i++)
+		{
+			this->functions.push_back(functions[i]);
+		}
+
+		return *this;
+	}
+
 	// Remove a function from the delegate
 	event<ParameterTypes...>& remove(METHOD(function))
 	{
 		functions.erase(std::find(functions.begin(), functions.end(), function));
+
+		return *this;
+	}
+
+	// Remove a delegate from the delegate
+	event<ParameterTypes...>& remove(event<ParameterTypes...>& functions)
+	{
+		for (int i = 0; i < functions.count(); i++)
+		{
+			functions.erase(std::find(this->functions.begin(), this->functions.end(), functions[i]));
+		}
 
 		return *this;
 	}
@@ -561,6 +594,17 @@ public:
 		}
 	}
 
+	// Delegate constructor
+	delegate(delegate<ReturnType, ParameterTypes...>& functions)
+	{
+		this->functions = std::vector<FUNCTION()>();
+
+		for (int i = 0; i < functions.count(); i++)
+		{
+			this->functions.push_back(functions[i]);
+		}
+	}
+
 
 	// DELEGATE FUNCTIONS
 
@@ -642,10 +686,32 @@ public:
 		return *this;
 	}
 
+	// Add a delegate to the delegate
+	delegate<ReturnType, ParameterTypes...>& add(delegate<ReturnType, ParameterTypes...>& functions)
+	{
+		for (int i = 0; i < functions.count(); i++)
+		{
+			this->functions.push_back(functions[i]);
+		}
+
+		return *this;
+	}
+
 	// Remove a function from the delegate
 	delegate<ReturnType, ParameterTypes...>& remove(FUNCTION(function))
 	{
 		functions.erase(std::find(functions.begin(), functions.end(), function));
+
+		return *this;
+	}
+
+	// Remove a delegate from the delegate
+	delegate<ReturnType, ParameterTypes...>& remove(delegate<ReturnType, ParameterTypes...>& functions)
+	{
+		for (int i = 0; i < functions.count(); i++)
+		{
+			this->functions.erase(std::find(this->functions.begin(), this->functions.end(), functions[i]));
+		}
 
 		return *this;
 	}
@@ -920,13 +986,24 @@ public:
 	}
 
 	// List constructor
-	Event(const std::initializer_list< METHOD()> functions)
+	Event(const std::initializer_list<METHOD()> functions)
 	{
 		this->functions = std::vector<METHOD()>();
 
 		for (int i = 0; i < functions.size(); i++)
 		{
 			this->functions.push_back(*(functions.begin() + i));
+		}
+	}
+
+	// Delegate constructor
+	Event(Event<ParameterTypes...>& functions)
+	{
+		this->functions = std::vector<METHOD()>();
+
+		for (int i = 0; i < functions.count(); i++)
+		{
+			this->functions.push_back(functions[i]);
 		}
 	}
 
@@ -1004,10 +1081,32 @@ public:
 		return *this;
 	}
 
+	// Add a delegate to the delegate
+	Event<ParameterTypes...>& Add(Event<ParameterTypes...>& functions)
+	{
+		for (int i = 0; i < functions.Count(); i++)
+		{
+			this->functions.push_back(functions[i]);
+		}
+
+		return *this;
+	}
+
 	// Remove a function from the delegate
 	Event<ParameterTypes...>& Remove(METHOD(function))
 	{
 		functions.erase(std::find(functions.begin(), functions.end(), function));
+
+		return *this;
+	}
+
+	// Remove a delegate from the delegate
+	Event<ParameterTypes...>& Remove(Event<ParameterTypes...>& functions)
+	{
+		for (int i = 0; i < functions.Count(); i++)
+		{
+			this->functions.erase(std::find(this->functions.begin(), this->functions.end(), functions[i]));
+		}
 
 		return *this;
 	}
@@ -1292,6 +1391,17 @@ public:
 		}
 	}
 
+	// Delegate constructor
+	Delegate(Delegate<ReturnType, ParameterTypes...>& functions)
+	{
+		this->functions = std::vector<FUNCTION()>();
+
+		for (int i = 0; i < functions.count(); i++)
+		{
+			this->functions.push_back(functions[i]);
+		}
+	}
+
 
 	// DELEGATE FUNCTIONS
 
@@ -1373,10 +1483,32 @@ public:
 		return *this;
 	}
 
+	// Add a delegate to the delegate
+	Delegate<ReturnType, ParameterTypes...>& Add(Delegate<ReturnType, ParameterTypes...>& functions)
+	{
+		for (int i = 0; i < functions.Count(); i++)
+		{
+			this->functions.push_back(functions[i]);
+		}
+
+		return *this;
+	}
+
 	// Remove a function from the delegate
 	Delegate<ReturnType, ParameterTypes...>& Remove(FUNCTION(function))
 	{
 		functions.erase(std::find(functions.begin(), functions.end(), function));
+
+		return *this;
+	}
+
+	// Remove a delegate from the delegate
+	Delegate<ReturnType, ParameterTypes...>& Remove(Delegate<ReturnType, ParameterTypes...>& functions)
+	{
+		for (int i = 0; i < functions.Count(); i++)
+		{
+			this->functions.erase(std::find(this->functions.begin(), this->functions.end(), functions[i]));
+		}
 
 		return *this;
 	}

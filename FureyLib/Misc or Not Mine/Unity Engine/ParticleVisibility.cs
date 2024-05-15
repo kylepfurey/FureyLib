@@ -243,4 +243,14 @@ public class ParticleVisibility : MonoBehaviour
                (particlePosition.y / particleScale >= particleOrigin.y - particleBounds.y / 2) && (particlePosition.y / particleScale <= particleOrigin.y + particleBounds.y / 2) &&
                (particlePosition.z / particleScale >= particleOrigin.z - particleBounds.z / 2) && (particlePosition.z / particleScale <= particleOrigin.z + particleBounds.z / 2);
     }
+
+    /// <summary>
+    /// Sets whether to display the X Y and Z planes
+    /// </summary>
+    public void ShowPlanes(bool show)
+    {
+        xPlane.gameObject.active = show;
+        yPlane.gameObject.active = show;
+        zPlane.gameObject.active = show;
+    }
 }

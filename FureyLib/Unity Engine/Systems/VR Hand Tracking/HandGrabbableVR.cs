@@ -1,7 +1,3 @@
-
-// VR Hand Grabbing and Throwing Script
-// by Kyle Furey
-
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +19,7 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     private static GameObject heldRightObject = null;
 
     [Header("The maximum distance to this object where it can be grabbed:")]
-    [SerializeField] private float grabDistance = 0.5f;
+    [SerializeField] private float grabDistance = 0.25f;
 
     [Header("The position offset for grabbed objects:")]
     [SerializeField] private Vector3 grabOffset = new Vector3(0, -0.07f, 0.07f);
@@ -209,8 +205,8 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
         }
         else if (selectref(isRight, ref heldRightObject, ref heldLeftObject) == gameObject)
         {
-            // Check if the player is no longer grabbing the object or if they can no longer grab
-            if (!selectref(isRight, ref grabbingRight, ref grabbingLeft) || !selectref(isRight, ref grabbableRight, ref grabbableLeft))
+            // Check if the player is no longer grabbing the object, if they can no longer grab, or if the object is out of reach
+            if (!selectref(isRight, ref grabbingRight, ref grabbingLeft) || !selectref(isRight, ref grabbableRight, ref grabbableLeft) || DistanceSquared(transform.position, selectref(isRight, ref HandTrackerVR.rightHand.palm, ref HandTrackerVR.leftHand.palm).transform.position) > grabDistance * grabDistance)
             {
                 Drop(isRight);
             }
@@ -369,6 +365,33 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
         {
             HandTrackerVR.rightHand.colliders[finger].enabled = true;
         }
+    }
+
+    /// <summary>
+    /// Returns if the object is currently being grabbed
+    /// </summary>
+    /// <returns></returns>
+    public bool IsGrabbed()
+    {
+        return heldLeftObject == gameObject || heldRightObject == gameObject;
+    }
+
+    /// <summary>
+    /// Returns if the object is currently grabbed with the player's left hand
+    /// </summary>
+    /// <returns></returns>
+    public bool IsGrabbedLeft()
+    {
+        return heldLeftObject == gameObject;
+    }
+
+    /// <summary>
+    /// Returns if the object is currently grabbed with the player's right hand
+    /// </summary>
+    /// <returns></returns>
+    public bool IsGrabbedRight()
+    {
+        return heldRightObject == gameObject;
     }
 
     /// <summary>

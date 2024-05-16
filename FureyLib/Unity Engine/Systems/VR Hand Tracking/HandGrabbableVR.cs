@@ -1,3 +1,7 @@
+
+// VR Grabbable Object Script
+// by Kyle Furey
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,8 +15,8 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     [Header("\nGRABBING")]
 
     [Header("Whether this object is grabbable:")]
-    [SerializeField] private bool grabbableLeft = true;
-    [SerializeField] private bool grabbableRight = true;
+    public bool grabbableLeft = true;
+    public bool grabbableRight = true;
 
     // Whether the player's hands are currently occupied
     private static GameObject heldLeftObject = null;

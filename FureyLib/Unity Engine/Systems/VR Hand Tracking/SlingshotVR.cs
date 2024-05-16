@@ -16,7 +16,7 @@ public class SlingshotVR : MonoBehaviour, IHandInteractableVR
     [Header("\nSLINGSHOT SETTINGS")]
 
     [Header("Whether the player has the slingshot:")]
-    [SerializeField] private bool hasSlingshot = true;
+    public bool hasSlingshot = true;
 
     // Objects to be used as pivots of the player's tracked hands
     private GameObject leftHandPivot = null;

@@ -39,7 +39,7 @@ public class ButtonVR : MonoBehaviour, IHandInteractableVR
     [Header("\nBUTTON SETTINGS")]
 
     [Header("Whether the button is currently active:")]
-    [SerializeField] private bool isActive = true;
+    public bool isActive = true;
 
     [Header("Whether the button will stay clicked when pushed down and unclick when pushed again:")]
     [SerializeField] private bool isSticky = true;

@@ -31,8 +31,8 @@ public class HandPointerVR : MonoBehaviour, IHandInteractableVR
     private bool isTeleporting = false;
 
     [Header("Whether the player can teleport with their right hand or left hand:")]
-    [SerializeField] private bool canTeleportLeft = true;
-    [SerializeField] private bool canTeleportRight = true;
+    public bool canTeleportLeft = true;
+    public bool canTeleportRight = true;
 
     [Header("The time required to teleport via pointing at a teleporter and the delay after a successful teleport (should be synced with the fade):")]
     [SerializeField] private float teleportTimer = 0;

@@ -1,11 +1,13 @@
 
-// Player Movement Template Script
+// Simple Player Movement Script
 // by Kyle Furey
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// Drop onto any object in a 3D Unity game to generate a Player.
+/// <summary>
+/// Drop onto any object in a 3D Unity game to generate a player.
+/// </summary>
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Drop onto any object in a 3D Unity game to generate a Player.")]
@@ -34,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool invertY = false;
 
     [Header("Player Speed")]
-    [SerializeField] private float speed = 7.5f;
+    [SerializeField] private float speed = 0.5f;
     [SerializeField] private float airControl = 0.5f;
 
     [Header("Jumping Variables")]
@@ -96,7 +98,6 @@ public class PlayerMovement : MonoBehaviour
             Jumping();
             Sprinting();
             Crouching();
-            Movement();
         }
         else
         {
@@ -112,6 +113,11 @@ public class PlayerMovement : MonoBehaviour
         if (thirdPerson)
         {
             CameraRotation();
+        }
+
+        if (active)
+        {
+            Movement();
         }
     }
 
@@ -199,6 +205,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         Rigidbody.velocity = new Vector3(Rigidbody.velocity.x, fallingVelocity, Rigidbody.velocity.z);
+
         Rigidbody.angularVelocity = Vector3.zero;
 
         if (!thirdPerson || playerRotatesToCamera || Mathf.Abs(movement.magnitude) > 0)
@@ -306,9 +313,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!thirdPerson)
         {
-            if (Rigidbody.velocity.x != 0 || Rigidbody.velocity.z != 0)
+            if ((Mathf.Abs(Rigidbody.velocity.x) >= 0.1f || Mathf.Abs(Rigidbody.velocity.z) >= 0.1f) && isGrounded)
             {
-                bobTime += Time.deltaTime;
+                bobTime += Time.deltaTime * (Rigidbody.velocity.magnitude / speed);
+
                 Camera.transform.localPosition += new Vector3(0, Mathf.Sin(bobTime * bobSpeed) * bobHeight, 0);
             }
         }

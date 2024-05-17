@@ -181,6 +181,85 @@ public static class Math
         return position;
     }
 
+    /// <summary>
+    /// Rotation axis enum
+    /// </summary>
+    public enum Axis { X, Y, Z, W, x = X, y = Y, z = Z, w = W };
+
+    /// <summary>
+    /// Returns the 0 - 360 degree rotation of an axis based on the given rotation
+    /// SOURCE: https://discussions.unity.com/t/read-rotations-around-local-axis/227816/4 by WarmedxMints
+    /// </summary>
+    /// <param name="rotation"></param>
+    /// <param name="axis"></param>
+    /// <returns></returns>
+    public static float RotationOnAxis(Quaternion rotation, Axis axis)
+    {
+        rotation.x /= rotation.w;
+        rotation.y /= rotation.w;
+        rotation.z /= rotation.w;
+        rotation.w = 1;
+
+        float angle = Mathf.Atan(rotation[(int)axis]) * Mathf.Rad2Deg * 2;
+
+        return angle < 0 ? angle + 360 : angle;
+    }
+
+    /// <summary>
+    /// Returns the 0 - 360 degree rotation of an axis based on the given rotation
+    /// SOURCE: https://discussions.unity.com/t/read-rotations-around-local-axis/227816/4 by WarmedxMints
+    /// </summary>
+    /// <param name="eulerRotation"></param>
+    /// <param name="axis"></param>
+    /// <returns></returns>
+    public static float RotationOnAxis(Vector3 eulerRotation, Axis axis)
+    {
+        Quaternion rotation = Quaternion.Euler(eulerRotation);
+
+        rotation.x /= rotation.w;
+        rotation.y /= rotation.w;
+        rotation.z /= rotation.w;
+        rotation.w = 1;
+
+        float angle = Mathf.Atan(rotation[(int)axis]) * Mathf.Rad2Deg * 2;
+
+        return angle < 0 ? angle + 360 : angle;
+    }
+
+    /// <summary>
+    /// Returns three 0 - 360 degree rotations of the given rotation
+    /// </summary>
+    /// <param name="rotation"></param>
+    /// <returns></returns>
+    public static Vector3 EulerRotation(Quaternion rotation)
+    {
+        Vector3 euler = Vector3.zero;
+
+        euler.x = RotationOnAxis(rotation, Axis.X);
+        euler.y = RotationOnAxis(rotation, Axis.Y);
+        euler.z = RotationOnAxis(rotation, Axis.Z);
+
+        return euler;
+    }
+
+    /// <summary>
+    /// Returns three 0 - 360 degree rotations of the given rotation
+    /// </summary>
+    /// <param name="eulerRotation"></param>
+    /// <returns></returns>
+    public static Vector3 EulerRotation(Vector3 eulerRotation)
+    {
+        Quaternion rotation = Quaternion.Euler(eulerRotation);
+
+        Vector3 euler = Vector3.zero;
+
+        euler.x = RotationOnAxis(rotation, Axis.X);
+        euler.y = RotationOnAxis(rotation, Axis.Y);
+        euler.z = RotationOnAxis(rotation, Axis.Z);
+
+        return euler;
+    }
+
 
     // FLOAT
 

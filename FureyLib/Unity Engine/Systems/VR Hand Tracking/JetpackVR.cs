@@ -2,9 +2,7 @@
 // VR Jetpack Locomotion Script
 // by Kyle Furey
 
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 /// <summary>
 /// Creates a grabbable device in front of the player that allows them to freely move in set directions in VR.
@@ -34,13 +32,13 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
     public bool canGrabLeft = true;
     public bool canGrabRight = true;
 
-    [Header("The directions the player is allowed to move:")]
+    [Header("The directions the player is allowed to move (in world space):")]
     [SerializeField] private bool canMoveX = true;
     [SerializeField] private bool canMoveY = false;
     [SerializeField] private bool canMoveZ = true;
 
     [Header("The max speed the player can move:")]
-    [SerializeField] private float moveSpeed = 0.15f;
+    [SerializeField] private float moveSpeed = 0.05f;
 
     [Header("The speed the control object lerps to the center:")]
     [SerializeField] private float controlObjectLerpSpeed = 5;
@@ -211,7 +209,7 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
 
         speed = speed.normalized * Mathf.Min(speed.magnitude, moveSpeed);
 
-        rigidbody.MovePosition(rigidbody.transform.position + rigidbody.rotation * speed);
+        rigidbody.MovePosition(rigidbody.transform.position + speed);
     }
 
     /// <summary>
@@ -286,13 +284,13 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
 
         controlObject.transform.position = Vector3.Lerp(controlObject.transform.position, transform.position, Time.deltaTime * controlObjectLerpSpeed);
 
-        if (!IHandInteractableVR.handsSet || distance <= 0.005f)
+        if (distance <= 0.005f)
         {
             controlObject.transform.localPosition = Vector3.zero;
 
-            if (renderer != null) { renderer.enabled = hasJetpack; }
+            if (renderer != null) { renderer.enabled = hasJetpack && IHandInteractableVR.handsSet; }
 
-            if (controlObjectRenderer != null) { controlObjectRenderer.enabled = hasJetpack; }
+            if (controlObjectRenderer != null) { controlObjectRenderer.enabled = hasJetpack && IHandInteractableVR.handsSet; }
         }
     }
 

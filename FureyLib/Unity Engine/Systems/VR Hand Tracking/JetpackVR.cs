@@ -38,7 +38,7 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
     [SerializeField] private bool canMoveZ = true;
 
     [Header("The max speed the player can move:")]
-    [SerializeField] private float moveSpeed = 0.05f;
+    [SerializeField] private float moveSpeed = 0.15f;
 
     [Header("The speed the control object lerps to the center:")]
     [SerializeField] private float controlObjectLerpSpeed = 5;
@@ -167,7 +167,7 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
-    /// Moves the player
+    /// Moves the rigidbody each physics tick
     /// </summary>
     private void FixedUpdate()
     {
@@ -197,19 +197,24 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
-    /// Moves the rigidbody each physics tick
+    /// Moves the player by the control object's distance and direction
     /// </summary>
     private void MovePlayer()
     {
-        Vector3 speed = controlObject.transform.position - transform.position;
+        Vector3 speed = (controlObject.transform.position - transform.position) * moveSpeed;
+
+        speed = speed.normalized * speed.magnitude;
 
         speed.x *= canMoveX ? 1 : 0;
         speed.y *= canMoveY ? 1 : 0;
         speed.z *= canMoveZ ? 1 : 0;
 
-        speed = speed.normalized * Mathf.Min(speed.magnitude, moveSpeed);
-
         rigidbody.MovePosition(rigidbody.transform.position + speed);
+
+        if (controlObject.IsGrabbed())
+        {
+            transform.position = TranslateRelative(rigidbody.transform, currentOffset);
+        }
     }
 
     /// <summary>
@@ -225,11 +230,7 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
 
         if (IHandInteractableVR.handsSet)
         {
-            if (controlObject.IsGrabbed())
-            {
-                transform.position = TranslateRelative(rigidbody.transform, currentOffset);
-            }
-            else
+            if (!controlObject.IsGrabbed())
             {
                 ResetControl(distance);
 

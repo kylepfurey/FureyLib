@@ -342,6 +342,7 @@ public class HandVR
         rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rigidbodies[palm] = rigidbody;
+        palm.layer = 2;
 
 
         // THUMB
@@ -368,6 +369,7 @@ public class HandVR
         rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rigidbodies[thumb] = rigidbody;
+        thumbTip.layer = 2;
 
 
         // INDEX
@@ -394,6 +396,7 @@ public class HandVR
         rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rigidbodies[index] = rigidbody;
+        indexTip.layer = 2;
 
 
         // MIDDLE
@@ -420,6 +423,7 @@ public class HandVR
         rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rigidbodies[middle] = rigidbody;
+        middleTip.layer = 2;
 
 
         // RING
@@ -446,6 +450,7 @@ public class HandVR
         rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rigidbodies[ring] = rigidbody;
+        ringTip.layer = 2;
 
 
         // PINKY
@@ -472,6 +477,7 @@ public class HandVR
         rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rigidbodies[pinky] = rigidbody;
+        pinkyTip.layer = 2;
     }
 
     // Returns the percentage of a finger's value based on their maximums and minimums. 1 = finger pointing outward, 0 = finger pointing inward.

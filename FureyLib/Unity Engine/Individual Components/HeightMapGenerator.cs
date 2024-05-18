@@ -18,10 +18,10 @@ public class HeightMapGenerator : MonoBehaviour
     [SerializeField] private Material material = null;
 
     [Header("The number of planes to generate:")]
-    [SerializeField] private float count = 10;
+    [SerializeField] private int count = 10;
 
     [Header("The maximum height to generate planes from:")]
-    [SerializeField] private float height = 10;
+    [SerializeField] private float height = 5;
 
     [Header("\nTESTING")]
 
@@ -45,25 +45,27 @@ public class HeightMapGenerator : MonoBehaviour
     /// </summary>
     private void OnValidate()
     {
+        if (test)
+        {
+            test = false;
+
+            Invoke("Generate", 0);
+
+            return;
+        }
+
+        if (clear)
+        {
+            clear = false;
+
+            Invoke("Clear", 0);
+
+            return;
+        }
+
         if (liveTesting)
         {
             Invoke("Generate", 0);
-        }
-        else
-        {
-            if (test)
-            {
-                test = false;
-
-                Invoke("Generate", 0);
-            }
-
-            if (clear)
-            {
-                clear = false;
-
-                Invoke("Clear", 0);
-            }
         }
     }
 
@@ -90,11 +92,18 @@ public class HeightMapGenerator : MonoBehaviour
         {
             GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
 
-            plane.name = "Generated Plane " + i + 1;
+            plane.name = "Generated Plane " + (i + 1);
 
             plane.transform.parent = transform;
 
-            plane.transform.localPosition = transform.localPosition + new Vector3(0, i * (height / count), 0);
+            if (count > 1)
+            {
+                plane.transform.localPosition = new Vector3(0, i * (height / (count - 1)), 0);
+            }
+            else
+            {
+                plane.transform.localPosition = Vector3.zero;
+            }
 
             plane.transform.localEulerAngles = Vector3.zero;
 

@@ -5,7 +5,9 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-// Generates a random seed used for random generation.
+/// <summary>
+/// Generates a random seed used for random generation.
+/// </summary>
 public class RandomSeed : MonoBehaviour
 {
     [Header("Generates a random seed used for random generation.")]
@@ -21,6 +23,9 @@ public class RandomSeed : MonoBehaviour
     [Header("Start functions called after the random seed is generated:")]
     [SerializeField] private UnityEvent StartFunctions;
 
+    /// <summary>
+    /// Awake is called when the script is loaded
+    /// </summary>
     private void Awake()
     {
         // Set random seed at the start of the game

@@ -1,11 +1,13 @@
 
-// Randomly Generated Modules Script
+// Random Module Generator Script
 // by Kyle Furey
 
 using System.Collections.Generic;
 using UnityEngine;
 
-// Generates different sets of random modules based on set criteria.
+/// <summary>
+/// Generates different sets of random modules based on set criteria.
+/// </summary>
 public class RandomModular : MonoBehaviour
 {
     [Header("Generates a set of random modules based on set criteria.")]
@@ -19,10 +21,15 @@ public class RandomModular : MonoBehaviour
     [Header("Click the checkbox to reroll the spawned modules:")]
     [SerializeField] private bool testSpawns = false;
 
-    // All currently spawned modules
+    /// <summary>
+    /// All currently spawned modules
+    /// </summary>
     private Dictionary<SetOfModules, List<GameObject>> allSpawnedModules = new Dictionary<SetOfModules, List<GameObject>>();
 
-    // Spawns modules for a specific set
+    /// <summary>
+    /// Spawns modules for a specific set
+    /// </summary>
+    /// <param name="setName"></param>
     public void SpawnSet(string setName)
     {
         // Despawn the modules of the current set (if applicable)
@@ -40,7 +47,9 @@ public class RandomModular : MonoBehaviour
         }
     }
 
-    // Spawns modules for all sets
+    /// <summary>
+    /// Spawns modules for all sets
+    /// </summary>
     public void SpawnAll()
     {
         // Despawn all modules of each set (if applicable)
@@ -53,7 +62,10 @@ public class RandomModular : MonoBehaviour
         }
     }
 
-    // Destroys all spawned modules of a given set
+    /// <summary>
+    /// Destroys all spawned modules of a given set
+    /// </summary>
+    /// <param name="setName"></param>
     public void DespawnSet(string setName)
     {
         // Find the set from the given name
@@ -75,7 +87,9 @@ public class RandomModular : MonoBehaviour
         }
     }
 
-    // Destroys all spawned modules of each set
+    /// <summary>
+    /// Destroys all spawned modules of each set
+    /// </summary>
     public void DespawnAll()
     {
         // Find each set and delete its modules
@@ -94,7 +108,10 @@ public class RandomModular : MonoBehaviour
         allSpawnedModules.Clear();
     }
 
-    // Spawns modules at random depending on their spawn rates from a given set
+    /// <summary>
+    /// Spawns modules at random depending on their spawn rates from a given set
+    /// </summary>
+    /// <param name="set"></param>
     private void Spawn(SetOfModules set)
     {
         // Initalize our spawned modules list
@@ -150,7 +167,7 @@ public class RandomModular : MonoBehaviour
             for (int i = 0; i < spawnTable.Count; i++)
             {
                 // Remove modules that cannot spawn
-                if (spawnRates[spawnTable[i]] <= 0 || spawnTable[i].numberOfSpawns <= FindAll(spawnedModules, spawnTable[i]))
+                if (spawnRates[spawnTable[i]] <= 0 || spawnTable[i].numberOfSpawns <= Count(spawnedModules, spawnTable[i]))
                 {
                     spawnTable.Remove(spawnTable[i]);
                     continue;
@@ -221,8 +238,14 @@ public class RandomModular : MonoBehaviour
         }
     }
 
-    // Returns a count of specific elements in a list
-    private static int FindAll<DataType>(List<DataType> list, DataType element)
+    /// <summary>
+    /// Returns a count of specific elements in a list
+    /// </summary>
+    /// <typeparam name="DataType"></typeparam>
+    /// <param name="list"></param>
+    /// <param name="element"></param>
+    /// <returns></returns>
+    private static int Count<DataType>(List<DataType> list, DataType element)
     {
         int count = 0;
 
@@ -237,7 +260,9 @@ public class RandomModular : MonoBehaviour
         return count;
     }
 
-    // Test spawning
+    /// <summary>
+    /// Testing spawning
+    /// </summary>
     private void OnValidate()
     {
         // Generate spawns 
@@ -259,7 +284,9 @@ public class RandomModular : MonoBehaviour
     }
 }
 
-// A module that may be spawned by the random modular class.
+/// <summary>
+/// A module that may be spawned by the random modular class.
+/// </summary>
 [System.Serializable]
 public class Module
 {
@@ -267,7 +294,6 @@ public class Module
 
     [Header("The referenced name of this module:")]
     public string name = "New Module";
-    // NOTE FROM DEVELOPER: You cannot serialize a class both by value and by reference in Unity without custom editor code, so I had to use a naming system to reference each module
 
     [Header("The prefab to be generated:")]
     public GameObject prefab;
@@ -307,13 +333,14 @@ public class Module
     public Vector3 spawnScaleMaximum = Vector3.one;
 }
 
-// A module that will affect another module's chances of spawning.
+/// <summary>
+/// A module that will affect another module's chances of spawning.
+/// </summary>
 [System.Serializable]
 public class ExclusiveModule
 {
     [Header("The referenced name of the module that will affect the parent module's spawn rate:")]
     public string exclusiveModuleName;
-    // NOTE FROM DEVELOPER: You cannot serialize a class both by value and by reference in Unity without custom editor code, so I had to use a naming system to reference each module
 
     [Header("The spawn rate value that will be added to the parent module's spawn rate if the above module is present in the set:")]
     public float spawnModifier = 0;
@@ -322,7 +349,9 @@ public class ExclusiveModule
     [SerializeField] private string description = "New Module Behavior";
 }
 
-// A set of modules that can be spawned to specific spawn points depending on each module's spawn rate.
+/// <summary>
+/// A set of modules that can be spawned to specific spawn points depending on each module's spawn rate.
+/// </summary>
 [System.Serializable]
 public class SetOfModules
 {
@@ -337,5 +366,4 @@ public class SetOfModules
 
     [Header("The referenced name of the modules that can be spawned in this set:")]
     public List<string> setModules = new List<string>();
-    // NOTE FROM DEVELOPER: You cannot serialize a class both by value and by reference in Unity without custom editor code, so I had to use a naming system to reference each module
 }

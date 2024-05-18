@@ -249,7 +249,7 @@ public class HandVR
     /// <summary>
     /// Gesture type enum (add more if needed)
     /// </summary>
-    public enum Gesture { Open, Fist, Point, Pinch, ThumbsUp, FingerGun, FlipOff };
+    public enum Gesture { Open, Fist, Point, Pinch, PinchMiddle, ThumbsUp, FingerGun, FlipOff };
 
     // Sets this hand to a found hand object based on the given name. Make sure the name exactly matches the parent of the intended hand.
     // Note: The hierarchy of joints may also need to be changed depending on your hand prefab.
@@ -570,6 +570,10 @@ public class HandVR
             case Gesture.Pinch:
 
                 return DistanceSquared(TranslateRelative(indexTip.transform, new Vector3(0, -0.005f, 0.017f)), TranslateRelative(thumbTip.transform, new Vector3(0, -0.0045f, 0.008f))) < 0.0005f;
+
+            case Gesture.PinchMiddle:
+
+                return DistanceSquared(TranslateRelative(middleTip.transform, new Vector3(0, -0.005f, 0.017f)), TranslateRelative(thumbTip.transform, new Vector3(0, -0.0045f, 0.008f))) < 0.0005f;
 
             case Gesture.ThumbsUp:
 

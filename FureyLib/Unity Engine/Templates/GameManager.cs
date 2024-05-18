@@ -5,46 +5,78 @@
 using UnityEngine;
 
 /// <summary>
-/// A component that allows easy access to other components through the singleton design pattern.
+/// A singleton component that allows easy access to other components.
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+    [Header("A singleton component that allows easy access to other components.")]
+
+
+    // SETTINGS
+
+    [Header("\nCONFIGURATION")]
+
+    [Header("Whether to always keep the game manager loaded between scenes:")]
+    [SerializeField] private bool dontDestroyOnLoad = true;
+
+    // New variables here
+
+
+    // INSTANCE
+
     /// <summary>
     /// The current instance of the game manager game object
     /// </summary>
     [HideInInspector] public static GameManager instance;
 
+
+    // PROPERTIES
+
     /// <summary>
-    /// A reference to the player
+    /// Reference to the player
     /// </summary>
-    [HideInInspector]
-    public static Player Player
+    public static PlayerClass player
     {
         get
         {
-            if (!player)
+            if (player == null)
             {
-                player = FindObjectOfType<Player>();
+                player = FindObjectOfType<PlayerClass>();
             }
 
             return player;
         }
+
         set
         {
-            Player = value;
+            player = value;
         }
     }
 
-    /// <summary>
-    /// Static reference to the player
-    /// </summary>
-    private static Player player;
+    // New properties here
+
+
+    // FUNCTIONS
 
     /// <summary>
     /// Called before Start when the object is created
     /// </summary>
     private void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            DestroyImmediate(this);
+        }
+
+        if (dontDestroyOnLoad)
+        {
+            DontDestroyOnLoad(gameObject);
+        }
     }
+
+    // New functions here
 }

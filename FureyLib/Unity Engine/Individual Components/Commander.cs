@@ -15,7 +15,7 @@ public class Commander : MonoBehaviour
 {
     [Header("Allows communication and events between the game and the user through commands.")]
 
-    [Header("COMMANDER SETTINGS")]
+    [Header("\nCOMMANDER SETTINGS")]
 
     [Header("Whether the commander is active:")]
     [SerializeField] private bool commanderActive = true;
@@ -23,8 +23,10 @@ public class Commander : MonoBehaviour
     [Header("Whether to pause the game when the commander is open:")]
     [SerializeField] private bool pauseGame = false;
 
-    [Header("The script sending commands (defaults to this if no script is set):")]
-    public static MonoBehaviour commanderScript = null;
+    /// <summary>
+    /// The script currently sending commands
+    /// </summary>
+    public static MonoBehaviour instance = null;
 
     /// <summary>
     /// Whether the commander is currently open
@@ -44,12 +46,15 @@ public class Commander : MonoBehaviour
     /// <summary>
     /// The current command that invokes the corresponding function by name
     /// </summary>
-    private string command = "";
+    private static string currentCommand = "";
 
     /// <summary>
-    /// A list of arguments that can be accessed by any of the command functions
+    /// A list of the current arguments that can be accessed by any of the command functions
     /// </summary>
-    private List<string> arguments = new List<string>();
+    private static List<string> currentArguments = new List<string>();
+
+    [Header("Test particle prefab:")]
+    [SerializeField] private GameObject particlePrefab = null;
 
 
     // INITIALIZATION AND INPUT
@@ -60,9 +65,9 @@ public class Commander : MonoBehaviour
     private void Start()
     {
         // Set the commander object to itself is none is present
-        if (commanderScript == null)
+        if (instance == null)
         {
-            commanderScript = this;
+            instance = this;
         }
 
         // Close the commander
@@ -100,9 +105,7 @@ public class Commander : MonoBehaviour
                 // Sending command
                 else if (Input.GetKeyDown(send))
                 {
-                    command = ConvertTextToCommand(inputField.text, out arguments);
-
-                    SendCommand(command, arguments);
+                    SendCommand(inputField.text);
                 }
             }
         }
@@ -159,7 +162,55 @@ public class Commander : MonoBehaviour
     }
 
     /// <summary>
-    /// Convert a string to a command and arguments
+    /// Converts text into a command with arguments and sends the command to the commander
+    /// </summary>
+    /// <param name="text"></param>
+    public void SendCommand(string text)
+    {
+        currentCommand = ConvertTextToCommand(text, out currentArguments);
+
+        SendCommand(currentCommand, currentArguments);
+    }
+
+    /// <summary>
+    /// Sends a command and its arguments to the commander
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="arguments"></param>
+    public void SendCommand(string command, List<string> arguments)
+    {
+        currentCommand = command;
+
+        currentArguments = arguments;
+
+        if (instance == null)
+        {
+            instance = this;
+        }
+
+        instance.Invoke(command, 0);
+
+        string log = "Command: " + command;
+
+        if (arguments.Count > 0)
+        {
+            log += " - Arguments:";
+
+            foreach (string argument in arguments)
+            {
+                log += " " + argument + ",";
+            }
+
+            log = log.Remove(log.Length - 1, 1);
+        }
+
+        print(log);
+
+        CloseCommander();
+    }
+
+    /// <summary>
+    /// Convert a string into a command and arguments
     /// </summary>
     /// <param name="text"></param>
     /// <param name="arguments"></param>
@@ -215,50 +266,6 @@ public class Commander : MonoBehaviour
         }
 
         return command;
-    }
-
-    /// <summary>
-    /// Sending a command
-    /// </summary>
-    /// <param name="command"></param>
-    /// <param name="arguments"></param>
-    public void SendCommand(string command, List<string> arguments)
-    {
-        string log = "Command: " + command;
-
-        if (arguments.Count > 0)
-        {
-            log += " - Arguments:";
-
-            foreach (string argument in arguments)
-            {
-                log += " " + argument + ",";
-            }
-
-            log = log.Remove(log.Length - 1, 1);
-        }
-
-        print(log);
-
-        if (commanderScript == null)
-        {
-            commanderScript = this;
-        }
-
-        commanderScript.Invoke(command, 0);
-
-        CloseCommander();
-    }
-
-    /// <summary>
-    /// Sending a command through text
-    /// </summary>
-    /// <param name="text"></param>
-    public void SendCommand(string text)
-    {
-        string command = ConvertTextToCommand(text, out List<string> arguments);
-
-        SendCommand(command, arguments);
     }
 
 
@@ -330,9 +337,9 @@ public class Commander : MonoBehaviour
     /// </summary>
     private void load()
     {
-        if (arguments.Count > 0)
+        if (currentArguments.Count > 0)
         {
-            SceneManager.LoadScene(arguments[0]);
+            SceneManager.LoadScene(currentArguments[0]);
         }
         else
         {
@@ -348,7 +355,7 @@ public class Commander : MonoBehaviour
     /// </summary>
     private void print()
     {
-        if (arguments.Count == 0)
+        if (currentArguments.Count == 0)
         {
             Debug.LogWarning("No arguments were given to print!");
 
@@ -357,7 +364,7 @@ public class Commander : MonoBehaviour
 
         string log = "";
 
-        foreach (string argument in arguments)
+        foreach (string argument in currentArguments)
         {
             log += argument + " ";
         }
@@ -370,7 +377,7 @@ public class Commander : MonoBehaviour
     /// </summary>
     private void log()
     {
-        if (arguments.Count == 0)
+        if (currentArguments.Count == 0)
         {
             Debug.LogWarning("No arguments were given to print!");
 
@@ -379,11 +386,48 @@ public class Commander : MonoBehaviour
 
         string log = "";
 
-        foreach (string argument in arguments)
+        foreach (string argument in currentArguments)
         {
             log += argument + " ";
         }
 
         print(log);
+    }
+
+
+    // SUMMON PARTICLE COMMAND
+
+    /// <summary>
+    /// Summons a grabbable particle in front of the player
+    /// </summary>
+    private void particle()
+    {
+        Instantiate(particlePrefab, transform.position, transform.rotation);
+    }
+
+    /// <summary>
+    /// Summons a grabbable particle in front of the player
+    /// </summary>
+    private void summon()
+    {
+        if (currentArguments.Count == 0)
+        {
+            Instantiate(particlePrefab, transform.position, transform.rotation);
+        }
+        else
+        {
+            switch (currentArguments[0])
+            {
+                default:
+
+                    break;
+
+                case "particle":
+
+                    Instantiate(particlePrefab, transform.position, transform.rotation);
+
+                    break;
+            }
+        }
     }
 }

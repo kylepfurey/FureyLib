@@ -11,23 +11,17 @@ public class GameManager : MonoBehaviour
 {
     [Header("A singleton component that allows easy access to other components.")]
 
-
-    // SETTINGS
-
     [Header("\nCONFIGURATION")]
 
     [Header("Whether to always keep the game manager loaded between scenes:")]
     [SerializeField] private bool dontDestroyOnLoad = true;
 
-    // New variables here
-
-
-    // INSTANCE
-
     /// <summary>
-    /// The current instance of the game manager game object
+    /// Reference to the game manager in the scene
     /// </summary>
     [HideInInspector] public static GameManager instance;
+
+    // New variables here
 
 
     // PROPERTIES
@@ -59,7 +53,7 @@ public class GameManager : MonoBehaviour
     // FUNCTIONS
 
     /// <summary>
-    /// Called before Start when the object is created
+    /// Awake is called when the script is loaded
     /// </summary>
     private void Awake()
     {

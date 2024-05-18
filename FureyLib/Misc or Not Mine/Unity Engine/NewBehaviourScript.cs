@@ -13,7 +13,12 @@ using UnityEngine;
 /// </summary>
 public class NewBehaviourScript : MonoBehaviour
 {
-    // VARIABLES
+    [Header("Template Unity behaviour script.")]
+
+    [Header("\nCONFIGURATION")]
+
+    [Header("Example setting:")]
+    [SerializeField] private bool setting = false;
 
     // New variables here
 
@@ -49,6 +54,14 @@ public class NewBehaviourScript : MonoBehaviour
 
 
     // FUNCTIONS
+
+    /// <summary>
+    /// Awake is called when the script is loaded
+    /// </summary>
+    private void Awake()
+    {
+
+    }
 
     /// <summary>
     /// Start is called before the first frame update

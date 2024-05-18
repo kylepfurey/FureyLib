@@ -14,7 +14,7 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
 {
     [Header("Template for a new object interactable by VR hands.")]
 
-    [Header("\nSETTINGS")]
+    [Header("\nCONFIGURATION")]
 
     [Header("Example setting:")]
     [SerializeField] private bool setting = false;
@@ -46,7 +46,7 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
-    /// Called before start
+    /// Awake is called when the script is loaded
     /// </summary>
     private void Awake()
     {
@@ -54,7 +54,7 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
-    /// Called on start
+    /// Start is called before the first frame update
     /// </summary>
     private void Start()
     {
@@ -62,7 +62,7 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
-    /// Called every frame
+    /// Update is called once per frame
     /// </summary>
     private void Update()
     {
@@ -71,6 +71,22 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
         {
             // New code here
         }
+    }
+
+    /// <summary>
+    /// FixedUpdate is called once per physics tick
+    /// </summary>
+    private void FixedUpdate()
+    {
+
+    }
+
+    /// <summary>
+    /// LateUpdate is called once per frame after Update
+    /// </summary>
+    private void LateUpdate()
+    {
+
     }
 
     // New functions here

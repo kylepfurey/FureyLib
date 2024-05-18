@@ -14,7 +14,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Scriptable Object", menuName = "Scriptable Objects", order = 0)]
 public class NewScriptableObject : ScriptableObject
 {
-    // VARIABLES
+    [Header("Template Unity scriptable object.")]
+
+    [Header("\nCONFIGURATION")]
+
+    [Header("Example setting:")]
+    [SerializeField] private bool setting = false;
 
     // New variables here
 
@@ -52,6 +57,14 @@ public class NewScriptableObject : ScriptableObject
     // FUNCTIONS
 
     /// <summary>
+    /// Awake is called when the script is loaded
+    /// </summary>
+    private void Awake()
+    {
+
+    }
+
+    /// <summary>
     /// Start is called before the first frame update
     /// </summary>
     private void Start()
@@ -63,6 +76,22 @@ public class NewScriptableObject : ScriptableObject
     /// Update is called once per frame
     /// </summary>
     private void Update()
+    {
+
+    }
+
+    /// <summary>
+    /// FixedUpdate is called once per physics tick
+    /// </summary>
+    private void FixedUpdate()
+    {
+
+    }
+
+    /// <summary>
+    /// LateUpdate is called once per frame after Update
+    /// </summary>
+    private void LateUpdate()
     {
 
     }

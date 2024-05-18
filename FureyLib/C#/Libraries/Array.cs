@@ -8,12 +8,19 @@ using System.Diagnostics;
 // Include this heading to use the class
 using static Array;
 
-// New array functions.
+/// <summary>
+/// New array functions.
+/// </summary>
+/// <typeparam name="DataType"></typeparam>
 public static class Array<DataType>
 {
     // ARRAY LENGTH
 
-    // Returns the length of the given array
+    /// <summary>
+    /// Returns the length of the given array
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static int Length(DataType[] array)
     {
         // Null check
@@ -29,7 +36,11 @@ public static class Array<DataType>
 
     // COPYING ARRAY
 
-    // Returns a copy of the given array
+    /// <summary>
+    /// Returns a copy of the given array
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static DataType[] Copy(DataType[] array)
     {
         // Null check
@@ -48,7 +59,11 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Returns a copy of the given data
+    /// <summary>
+    /// Returns a copy of the given data
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static DataType Copy(DataType data)
     {
         // Null check
@@ -61,7 +76,12 @@ public static class Array<DataType>
         return data;
     }
 
-    // Returns a copy of the given array's element
+    /// <summary>
+    /// Returns a copy of the given array's element
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public static DataType CopyElement(DataType[] array, int index)
     {
         // Null check
@@ -80,7 +100,12 @@ public static class Array<DataType>
         return array[index];
     }
 
-    // Returns copies of the given array's elements
+    /// <summary>
+    /// Returns copies of the given array's elements
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public static DataType[] CopyElement(DataType[] array, int[] index)
     {
         // Null check
@@ -112,19 +137,29 @@ public static class Array<DataType>
 
     // EMPTY ARRAY
 
-    // Returns an empty version of the array type
+    /// <summary>
+    /// Returns an empty version of the array type
+    /// </summary>
+    /// <returns></returns>
     public static DataType[] Empty()
     {
         return new DataType[0];
     }
 
-    // Returns an empty version of the data type
+    /// <summary>
+    /// Returns an empty version of the data type
+    /// </summary>
+    /// <returns></returns>
     public static DataType EmptyElement()
     {
         return default;
     }
 
-    // Returns an empty version of the array
+    /// <summary>
+    /// Returns an empty version of the array
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static DataType[] Clear(DataType[] array)
     {
         // Create a copy of the array
@@ -136,7 +171,10 @@ public static class Array<DataType>
 
     // READING ARRAY ELEMENTS
 
-    // Prints all elements in an array
+    /// <summary>
+    /// Prints all elements in an array
+    /// </summary>
+    /// <param name="array"></param>
     public static void Read(DataType[] array)
     {
         // Null check
@@ -160,7 +198,11 @@ public static class Array<DataType>
         }
     }
 
-    // Prints all elements in an array on one line
+    /// <summary>
+    /// Prints all elements in an array on one line
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="oneLine"></param>
     public static void Read(DataType[] array, bool oneLine)
     {
         // Null check
@@ -202,7 +244,12 @@ public static class Array<DataType>
         }
     }
 
-    // Prints all elements in an array on one line and returns the log
+    /// <summary>
+    /// Prints all elements in an array on one line and returns the log
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="oneLine"></param>
+    /// <param name="log"></param>
     public static void Read(DataType[] array, bool oneLine, out string log)
     {
         // Null check
@@ -250,7 +297,12 @@ public static class Array<DataType>
 
     // ADDING ARRAY ELEMENTS
 
-    // Adds a new element to an array of elements, returns a copy
+    /// <summary>
+    /// Adds a new element to an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="addedData"></param>
+    /// <returns></returns>
     public static DataType[] Add(DataType[] array, DataType addedData)
     {
         // Null check
@@ -273,7 +325,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Adds a new element to an array of elements at a specified index, returns a copy
+    /// <summary>
+    /// Adds a new element to an array of elements at a specified index, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="addedData"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public static DataType[] Add(DataType[] array, DataType addedData, int index)
     {
         // Null check
@@ -306,7 +364,12 @@ public static class Array<DataType>
         }
     }
 
-    // Adds new elements to an array of elements, returns a copy
+    /// <summary>
+    /// Adds new elements to an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="addedArray"></param>
+    /// <returns></returns>
     public static DataType[] AddArray(DataType[] array, DataType[] addedArray)
     {
         // Null check
@@ -329,7 +392,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Adds new elements to an array of elements at a specified index, returns a copy
+    /// <summary>
+    /// Adds new elements to an array of elements at a specified index, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="addedArray"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public static DataType[] AddArray(DataType[] array, DataType[] addedArray, int index)
     {
         // Null check
@@ -362,7 +431,12 @@ public static class Array<DataType>
         }
     }
 
-    // Adds a new element to an array of elements only if the new element is unique, returns a copy
+    /// <summary>
+    /// Adds a new element to an array of elements only if the new element is unique, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="addedData"></param>
+    /// <returns></returns>
     public static DataType[] AddUnique(DataType[] array, DataType addedData)
     {
         // Null check
@@ -396,7 +470,13 @@ public static class Array<DataType>
         }
     }
 
-    // Adds a new element to an array of elements only if the new element is unique and return whether it was successful, returns a copy
+    /// <summary>
+    /// Adds a new element to an array of elements only if the new element is unique and return whether it was successful, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="addedData"></param>
+    /// <param name="success"></param>
+    /// <returns></returns>
     public static DataType[] AddUnique(DataType[] array, DataType addedData, out bool success)
     {
         // Null check
@@ -432,8 +512,13 @@ public static class Array<DataType>
             return array;
         }
     }
-
-    // Adds a new element to an array of elements only if the new element is not unique, returns a copy
+    
+    /// <summary>
+    /// Adds a new element to an array of elements only if the new element is not unique, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="addedData"></param>
+    /// <returns></returns>
     public static DataType[] AddDuplicate(DataType[] array, DataType addedData)
     {
         // Null check
@@ -467,7 +552,13 @@ public static class Array<DataType>
         }
     }
 
-    // Adds a new element to an array of elements only if the new element is not unique and return whether it was successful, returns a copy
+    /// <summary>
+    /// Adds a new element to an array of elements only if the new element is not unique and return whether it was successful, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="addedData"></param>
+    /// <param name="success"></param>
+    /// <returns></returns>
     public static DataType[] AddDuplicate(DataType[] array, DataType addedData, out bool success)
     {
         // Null check
@@ -507,7 +598,12 @@ public static class Array<DataType>
 
     // REMOVING ARRAY ELEMENTS
 
-    // Removes the first matching element from an array of elements, returns a copy
+    /// <summary>
+    /// Removes the first matching element from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType removedData)
     {
         // Null check
@@ -533,7 +629,13 @@ public static class Array<DataType>
         return array;
     }
 
-    // Removes the first or last matching element from an array of elements, returns a copy
+    /// <summary>
+    /// Removes the first or last matching element from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="reverseSearch"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType removedData, bool reverseSearch)
     {
         // Null check
@@ -574,7 +676,13 @@ public static class Array<DataType>
         return array;
     }
 
-    // Removes the first matching element from an array of elements and return the index, returns a copy
+    /// <summary>
+    /// Removes the first matching element from an array of elements and return the index, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType removedData, out int removedIndex)
     {
         // Null check
@@ -603,7 +711,14 @@ public static class Array<DataType>
         return array;
     }
 
-    // Removes the first or last matching element from an array of elements and return the index, returns a copy
+    /// <summary>
+    /// Removes the first or last matching element from an array of elements and return the index, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="reverseSearch"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType removedData, bool reverseSearch, out int removedIndex)
     {
         // Null check
@@ -648,7 +763,12 @@ public static class Array<DataType>
         return array;
     }
 
-    // Removes the first matching elements from an array of elements, returns a copy
+    /// <summary>
+    /// Removes the first matching elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType[] removedData)
     {
         // Null check
@@ -708,7 +828,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes the first or last matching elements from an array of elements, returns a copy
+    /// <summary>
+    /// Removes the first or last matching elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="reverseSearch"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType[] removedData, bool reverseSearch)
     {
         // Null check
@@ -788,7 +914,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes the first matching elements from an array of elements and return the indicies, returns a copy
+    /// <summary>
+    /// Removes the first matching elements from an array of elements and return the indicies, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType[] removedData, out int[] removedIndex)
     {
         // Null check
@@ -851,7 +983,14 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes the first or last matching elements from an array of elements and return the indicies, returns a copy
+    /// <summary>
+    /// Removes the first or last matching elements from an array of elements and return the indicies, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="reverseSearch"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType[] removedData, bool reverseSearch, out int[] removedIndex)
     {
         // Null check
@@ -934,7 +1073,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes the set number of the first matching elements from an array of elements, returns a copy
+    /// <summary>
+    /// Removes the set number of the first matching elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="removeAmount"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType removedData, int removeAmount)
     {
         // Null check
@@ -1003,7 +1148,14 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes the set number of the first or last matching elements from an array of elements, returns a copy
+    /// <summary>
+    /// Removes the set number of the first or last matching elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="removeAmount"></param>
+    /// <param name="reverseSearch"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType removedData, int removeAmount, bool reverseSearch)
     {
         // Null check
@@ -1094,7 +1246,14 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes the set number of the first matching elements from an array of elements and returns the indicies of each removed element, returns a copy
+    /// <summary>
+    /// Removes the set number of the first matching elements from an array of elements and returns the indicies of each removed element, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="removeAmount"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType removedData, int removeAmount, out int[] removedIndex)
     {
         // Null check
@@ -1166,7 +1325,15 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes the set number of the first or last matching elements from an array of elements and returns the indicies of each removed element, returns a copy
+    /// <summary>
+    /// Removes the set number of the first or last matching elements from an array of elements and returns the indicies of each removed element, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="removeAmount"></param>
+    /// <param name="reverseSearch"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType removedData, int removeAmount, bool reverseSearch, out int[] removedIndex)
     {
         // Null check
@@ -1260,7 +1427,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes a set number of the first matching elements from an array of elements, returns a copy
+    /// <summary>
+    /// Removes a set number of the first matching elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="removeAmount"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType[] removedData, int[] removeAmount)
     {
         // Null check
@@ -1330,7 +1503,14 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes a set number of the first or last matching elements from an array of elements, returns a copy
+    /// <summary>
+    /// Removes a set number of the first or last matching elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="removeAmount"></param>
+    /// <param name="reverseSearch"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType[] removedData, int[] removeAmount, bool reverseSearch)
     {
         // Null check
@@ -1429,7 +1609,14 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes a set number of the first matching elements from an array of elements and returns the indicies of each removed element, returns a copy
+    /// <summary>
+    /// Removes a set number of the first matching elements from an array of elements and returns the indicies of each removed element, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="removeAmount"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType[] removedData, int[] removeAmount, out int[] removedIndex)
     {
         // Null check
@@ -1502,7 +1689,15 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes a set number of the first or last matching elements from an array of elements and returns the indicies of each removed element, returns a copy
+    /// <summary>
+    /// Removes a set number of the first or last matching elements from an array of elements and returns the indicies of each removed element, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="removeAmount"></param>
+    /// <param name="reverseSearch"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] Remove(DataType[] array, DataType[] removedData, int[] removeAmount, bool reverseSearch, out int[] removedIndex)
     {
         // Null check
@@ -1604,7 +1799,12 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes an element from an array of elements, returns a copy
+    /// <summary>
+    /// Removes an element from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] RemoveIndex(DataType[] array, int removedIndex)
     {
         // Null check
@@ -1634,7 +1834,13 @@ public static class Array<DataType>
         }
     }
 
-    // Removes elements from an array of elements, returns a copy
+    /// <summary>
+    /// Removes elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedIndex"></param>
+    /// <param name="removeAmount"></param>
+    /// <returns></returns>
     public static DataType[] RemoveIndex(DataType[] array, int removedIndex, int removeAmount)
     {
         // Null check
@@ -1664,7 +1870,12 @@ public static class Array<DataType>
         }
     }
 
-    // Removes a list of elements from an array of elements, returns a copy
+    /// <summary>
+    /// Removes a list of elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] RemoveIndex(DataType[] array, int[] removedIndex)
     {
         // Null check
@@ -1693,7 +1904,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes a list of elements from an array of elements and returns the removed elements, returns a copy
+    /// <summary>
+    /// Removes a list of elements from an array of elements and returns the removed elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedIndex"></param>
+    /// <param name="removedArray"></param>
+    /// <returns></returns>
     public static DataType[] RemoveIndex(DataType[] array, int[] removedIndex, out DataType[] removedArray)
     {
         // Null check
@@ -1731,7 +1948,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes a list of elements from an array of elements and returns the saved element indicies, returns a copy
+    /// <summary>
+    /// Removes a list of elements from an array of elements and returns the saved element indicies, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedIndex"></param>
+    /// <param name="savedIndex"></param>
+    /// <returns></returns>
     public static DataType[] RemoveIndex(DataType[] array, int[] removedIndex, out int[] savedIndex)
     {
         // Null check
@@ -1768,7 +1991,14 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes a list of elements from an array of elements and returns the removed elements and the saved element indicies, returns a copy
+    /// <summary>
+    /// Removes a list of elements from an array of elements and returns the removed elements and the saved element indicies, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedIndex"></param>
+    /// <param name="removedArray"></param>
+    /// <param name="savedIndex"></param>
+    /// <returns></returns>
     public static DataType[] RemoveIndex(DataType[] array, int[] removedIndex, out DataType[] removedArray, out int[] savedIndex)
     {
         // Null check
@@ -1809,7 +2039,12 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes all matching elements from an array of elements, returns a copy
+    /// <summary>
+    /// Removes all matching elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <returns></returns>
     public static DataType[] RemoveAll(DataType[] array, DataType removedData)
     {
         // Null check
@@ -1866,7 +2101,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes all matching elements from an array of elements and return the indicies, returns a copy
+    /// <summary>
+    /// Removes all matching elements from an array of elements and return the indicies, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] RemoveAll(DataType[] array, DataType removedData, out int[] removedIndex)
     {
         // Null check
@@ -1926,7 +2167,12 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes all matching elements from an array of elements, returns a copy
+    /// <summary>
+    /// Removes all matching elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <returns></returns>
     public static DataType[] RemoveAll(DataType[] array, DataType[] removedData)
     {
         // Null check
@@ -1986,7 +2232,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes all matching elements from an array of elements and return the indicies, returns a copy
+    /// <summary>
+    /// Removes all matching elements from an array of elements and return the indicies, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedData"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] RemoveAll(DataType[] array, DataType[] removedData, out int[] removedIndex)
     {
         // Null check
@@ -2049,7 +2301,11 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes all duplicate elements from an array of elements, returns a copy
+    /// <summary>
+    /// Removes all duplicate elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static DataType[] RemoveDuplicates(DataType[] array)
     {
         // Null check
@@ -2079,7 +2335,12 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes all duplicate elements from an array of elements and returns their indicies, returns a copy
+    /// <summary>
+    /// Removes all duplicate elements from an array of elements and returns their indicies, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] RemoveDuplicates(DataType[] array, out int[] removedIndex)
     {
         // Null check
@@ -2113,7 +2374,12 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes all front or back duplicate elements from an array of elements, returns a copy
+    /// <summary>
+    /// Removes all front or back duplicate elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="reverseSearch"></param>
+    /// <returns></returns>
     public static DataType[] RemoveDuplicates(DataType[] array, bool reverseSearch)
     {
         // Null check
@@ -2143,7 +2409,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes all front or back duplicate elements from an array of elements and returns their indicies, returns a copy
+    /// <summary>
+    /// Removes all front or back duplicate elements from an array of elements and returns their indicies, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedIndex"></param>
+    /// <param name="reverseSearch"></param>
+    /// <returns></returns>
     public static DataType[] RemoveDuplicates(DataType[] array, out int[] removedIndex, bool reverseSearch)
     {
         // Null check
@@ -2180,7 +2452,12 @@ public static class Array<DataType>
 
     // ISOLATING ARRAY ELEMENTS
 
-    // Isolates a list of elements from an array of elements, returns a copy
+    /// <summary>
+    /// Isolates a list of elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="isolatedIndex"></param>
+    /// <returns></returns>
     public static DataType[] Isolate(DataType[] array, int[] isolatedIndex)
     {
         // Null check
@@ -2218,7 +2495,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Isolates a list of elements from an array of elements and returns the remaining elements, returns a copy
+    /// <summary>
+    /// Isolates a list of elements from an array of elements and returns the remaining elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="isolatedIndex"></param>
+    /// <param name="remainingArray"></param>
+    /// <returns></returns>
     public static DataType[] Isolate(DataType[] array, int[] isolatedIndex, out DataType[] remainingArray)
     {
         // Null check
@@ -2266,7 +2549,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Isolates a list of elements from an array of elements and returns the remaining indicies, returns a copy
+    /// <summary>
+    /// Isolates a list of elements from an array of elements and returns the remaining indicies, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="isolatedIndex"></param>
+    /// <param name="remainingIndex"></param>
+    /// <returns></returns>
     public static DataType[] Isolate(DataType[] array, int[] isolatedIndex, out int[] remainingIndex)
     {
         // Null check
@@ -2314,7 +2603,14 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Isolates a list of elements from an array of elements and returns the remaining elements and their indicies, returns a copy
+    /// <summary>
+    /// Isolates a list of elements from an array of elements and returns the remaining elements and their indicies, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="isolatedIndex"></param>
+    /// <param name="remainingArray"></param>
+    /// <param name="remainingIndex"></param>
+    /// <returns></returns>
     public static DataType[] Isolate(DataType[] array, int[] isolatedIndex, out DataType[] remainingArray, out int[] remainingIndex)
     {
         // Null check
@@ -2369,7 +2665,13 @@ public static class Array<DataType>
 
     // MOVING ARRAY ELEMENTS
 
-    // Swaps two elements from an array of elements, returns a copy
+    /// <summary>
+    /// Swaps two elements from an array of elements, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="swappedIndex1"></param>
+    /// <param name="swappedIndex2"></param>
+    /// <returns></returns>
     public static DataType[] Swap(DataType[] array, int swappedIndex1, int swappedIndex2)
     {
         // Null check
@@ -2403,7 +2705,12 @@ public static class Array<DataType>
         }
     }
 
-    // Shifts all array elements by a selected amount, returns a copy
+    /// <summary>
+    /// Shifts all array elements by a selected amount, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="shiftAmount"></param>
+    /// <returns></returns>
     public static DataType[] Shift(DataType[] array, int shiftAmount)
     {
         // Null check
@@ -2432,7 +2739,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Shifts all array elements by a selected amount and returns the positive shift, returns a copy
+    /// <summary>
+    /// Shifts all array elements by a selected amount and returns the positive shift, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="shiftAmount"></param>
+    /// <param name="positiveShift"></param>
+    /// <returns></returns>
     public static DataType[] Shift(DataType[] array, int shiftAmount, out int positiveShift)
     {
         // Null check
@@ -2464,7 +2777,14 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Shifts all array elements by a selected amount and returns the positive shift and total shift, returns a copy
+    /// <summary>
+    /// Shifts all array elements by a selected amount and returns the positive shift and total shift, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="shiftAmount"></param>
+    /// <param name="positiveShift"></param>
+    /// <param name="totalShift"></param>
+    /// <returns></returns>
     public static DataType[] Shift(DataType[] array, int shiftAmount, out int positiveShift, out int totalShift)
     {
         // Null check
@@ -2502,7 +2822,12 @@ public static class Array<DataType>
 
     // FINDING ARRAY ELEMENTS
 
-    // Check if the array has a specific element
+    /// <summary>
+    /// Check if the array has a specific element
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static bool Contains(DataType[] array, DataType data)
     {
         // Null check
@@ -2526,7 +2851,13 @@ public static class Array<DataType>
         return false;
     }
 
-    // Check if the array has a specific element and also returns the number of matching elements
+    /// <summary>
+    /// Check if the array has a specific element and also returns the number of matching elements
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="data"></param>
+    /// <param name="total"></param>
+    /// <returns></returns>
     public static bool Contains(DataType[] array, DataType data, out int total)
     {
         // Null check
@@ -2557,7 +2888,12 @@ public static class Array<DataType>
         return false;
     }
 
-    // Check if the array has a specific element and return its index (returns -1 if nothing is found)
+    /// <summary>
+    /// Check if the array has a specific element and return its index (returns -1 if nothing is found)
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static int Find(DataType[] array, DataType data)
     {
         // Null check
@@ -2581,7 +2917,13 @@ public static class Array<DataType>
         return -1;
     }
 
-    // Check if the array has a specific element and return its index (returns -1 if nothing is found)
+    /// <summary>
+    /// Check if the array has a specific element and return its index (returns -1 if nothing is found)
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="data"></param>
+    /// <param name="reverseSearch"></param>
+    /// <returns></returns>
     public static int Find(DataType[] array, DataType data, bool reverseSearch)
     {
         // Null check
@@ -2619,7 +2961,12 @@ public static class Array<DataType>
         return -1;
     }
 
-    // Check if the array has a specific element and return its index (returns empty if nothing is found)
+    /// <summary>
+    /// Check if the array has a specific element and return its index (returns empty if nothing is found)
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static int[] FindAll(DataType[] array, DataType data)
     {
         // Null check
@@ -2659,7 +3006,13 @@ public static class Array<DataType>
         return indicies;
     }
 
-    // Check if the array has a specific element and return its index (returns empty if nothing is found)
+    /// <summary>
+    /// Check if the array has a specific element and return its index (returns empty if nothing is found)
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="data"></param>
+    /// <param name="reverseSearch"></param>
+    /// <returns></returns>
     public static int[] FindAll(DataType[] array, DataType data, bool reverseSearch)
     {
         // Null check
@@ -2717,7 +3070,13 @@ public static class Array<DataType>
 
     // REPLACING ARRAY ELEMENTS
 
-    // Replaces a specific index in an array with the given replacement data, returns a copy
+    /// <summary>
+    /// Replaces a specific index in an array with the given replacement data, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="replacedIndex"></param>
+    /// <param name="replacementData"></param>
+    /// <returns></returns>
     public static DataType[] Replace(DataType[] array, int replacedIndex, DataType replacementData)
     {
         // Null check
@@ -2746,7 +3105,14 @@ public static class Array<DataType>
         }
     }
 
-    // Replaces a specific index in an array with the given replacement data and returns the replaced data, returns a copy
+    /// <summary>
+    /// Replaces a specific index in an array with the given replacement data and returns the replaced data, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="replacedIndex"></param>
+    /// <param name="replacementData"></param>
+    /// <param name="replacedData"></param>
+    /// <returns></returns>
     public static DataType[] Replace(DataType[] array, int replacedIndex, DataType replacementData, out DataType replacedData)
     {
         // Null check
@@ -2778,7 +3144,13 @@ public static class Array<DataType>
         }
     }
 
-    // Replaces the specific indicies in an array with the given replacement data, returns a copy
+    /// <summary>
+    /// Replaces the specific indicies in an array with the given replacement data, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="index"></param>
+    /// <param name="replacement"></param>
+    /// <returns></returns>
     public static DataType[] Replace(DataType[] array, int[] index, DataType replacement)
     {
         // Null check
@@ -2801,7 +3173,14 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Replaces the specific indicies in an array with the given replacement data and return the replaced data, returns a copy
+    /// <summary>
+    /// Replaces the specific indicies in an array with the given replacement data and return the replaced data, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="index"></param>
+    /// <param name="replacement"></param>
+    /// <param name="replacedData"></param>
+    /// <returns></returns>
     public static DataType[] Replace(DataType[] array, int[] index, DataType replacement, out DataType[] replacedData)
     {
         // Null check
@@ -2829,7 +3208,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Replaces the specific indicies in an array with the matching replacement data, returns a copy
+    /// <summary>
+    /// Replaces the specific indicies in an array with the matching replacement data, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="index"></param>
+    /// <param name="replacement"></param>
+    /// <returns></returns>
     public static DataType[] Replace(DataType[] array, int[] index, DataType[] replacement)
     {
         // Null check
@@ -2861,7 +3246,14 @@ public static class Array<DataType>
         }
     }
 
-    // Replaces the specific indicies in an array with the matching replacement data and return the replaced data, returns a copy
+    /// <summary>
+    /// Replaces the specific indicies in an array with the matching replacement data and return the replaced data, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="index"></param>
+    /// <param name="replacement"></param>
+    /// <param name="replacedData"></param>
+    /// <returns></returns>
     public static DataType[] Replace(DataType[] array, int[] index, DataType[] replacement, out DataType[] replacedData)
     {
         // Null check
@@ -2902,7 +3294,11 @@ public static class Array<DataType>
 
     // REVERSING ARRAY ELEMENTS
 
-    // Reverses an array, returns a copy
+    /// <summary>
+    /// Reverses an array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static DataType[] Reverse(DataType[] array)
     {
         // Null check
@@ -2925,7 +3321,12 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Reverses an array starting from an index, returns a copy
+    /// <summary>
+    /// Reverses an array starting from an index, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="startingIndex"></param>
+    /// <returns></returns>
     public static DataType[] Reverse(DataType[] array, int startingIndex)
     {
         // Null check
@@ -2956,7 +3357,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Reverses an array starting from an index backwards or forwards, returns a copy
+    /// <summary>
+    /// Reverses an array starting from an index backwards or forwards, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="startingIndex"></param>
+    /// <param name="backwards"></param>
+    /// <returns></returns>
     public static DataType[] Reverse(DataType[] array, int startingIndex, bool backwards)
     {
         // Null check
@@ -3010,7 +3417,12 @@ public static class Array<DataType>
 
     // CHANGING ARRAY SIZE
 
-    // Returns a portion of the given array for only the given length, returns a copy
+    /// <summary>
+    /// Returns a portion of the given array for only the given length, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="length"></param>
+    /// <returns></returns>
     public static DataType[] Shorten(DataType[] array, int length)
     {
         // Null check
@@ -3038,7 +3450,13 @@ public static class Array<DataType>
         }
     }
 
-    // Returns a portion of the given array for only the given length starting from the first or last element, returns a copy
+    /// <summary>
+    /// Returns a portion of the given array for only the given length starting from the first or last element, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="length"></param>
+    /// <param name="backwards"></param>
+    /// <returns></returns>
     public static DataType[] Shorten(DataType[] array, int length, bool backwards)
     {
         // Null check
@@ -3079,7 +3497,12 @@ public static class Array<DataType>
         }
     }
 
-    // Returns a portion of the given array from the starting index, returns a copy
+    /// <summary>
+    /// Returns a portion of the given array from the starting index, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="startingIndex"></param>
+    /// <returns></returns>
     public static DataType[] Slice(DataType[] array, int startingIndex)
     {
         // Null check
@@ -3107,7 +3530,13 @@ public static class Array<DataType>
         }
     }
 
-    // Returns a portion of the given array from or behind the starting index, returns a copy
+    /// <summary>
+    /// Returns a portion of the given array from or behind the starting index, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="startingIndex"></param>
+    /// <param name="backwards"></param>
+    /// <returns></returns>
     public static DataType[] Slice(DataType[] array, int startingIndex, bool backwards)
     {
         // Null check
@@ -3148,7 +3577,13 @@ public static class Array<DataType>
         }
     }
 
-    // Returns a portion of the given array from the starting index for only the given length, returns a copy
+    /// <summary>
+    /// Returns a portion of the given array from the starting index for only the given length, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="startingIndex"></param>
+    /// <param name="length"></param>
+    /// <returns></returns>
     public static DataType[] Cut(DataType[] array, int startingIndex, int length)
     {
         // Null check
@@ -3176,7 +3611,14 @@ public static class Array<DataType>
         }
     }
 
-    // Returns a portion of the given array from or behind the starting index for only the given length, returns a copy
+    /// <summary>
+    /// Returns a portion of the given array from or behind the starting index for only the given length, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="startingIndex"></param>
+    /// <param name="length"></param>
+    /// <param name="backwards"></param>
+    /// <returns></returns>
     public static DataType[] Cut(DataType[] array, int startingIndex, int length, bool backwards)
     {
         // Null check
@@ -3217,7 +3659,12 @@ public static class Array<DataType>
         }
     }
 
-    // Removes all elements from an array of elements starting from an index, returns a copy
+    /// <summary>
+    /// Removes all elements from an array of elements starting from an index, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="trimIndex"></param>
+    /// <returns></returns>
     public static DataType[] Trim(DataType[] array, int trimIndex)
     {
         // Null check
@@ -3246,7 +3693,13 @@ public static class Array<DataType>
         }
     }
 
-    // Removes all elements from an array of elements starting from or behind an index, returns a copy
+    /// <summary>
+    /// Removes all elements from an array of elements starting from or behind an index, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="trimIndex"></param>
+    /// <param name="backwards"></param>
+    /// <returns></returns>
     public static DataType[] Trim(DataType[] array, int trimIndex, bool backwards)
     {
         // Null check
@@ -3292,7 +3745,11 @@ public static class Array<DataType>
 
     // ODD AND EVEN ARRAY ELEMENTS
 
-    // Returns an array of all odd indicies of the given array
+    /// <summary>
+    /// Returns an array of all odd indicies of the given array
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static DataType[] Odd(DataType[] array)
     {
         // Null check
@@ -3321,7 +3778,11 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Returns an array of all even indicies of the given array
+    /// <summary>
+    /// Returns an array of all even indicies of the given array
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static DataType[] Even(DataType[] array)
     {
         // Null check
@@ -3363,7 +3824,11 @@ public static class Array<DataType>
 
     // REMOVING NULL OR DEFAULT ELEMENTS
 
-    // Removes any null or default values from an array, returns a copy
+    /// <summary>
+    /// Removes any null or default values from an array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static DataType[] Clean(DataType[] array)
     {
         // Null check
@@ -3413,7 +3878,12 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Removes any null or empty values from an array and return the indicies, returns a copy
+    /// <summary>
+    /// Removes any null or empty values from an array and return the indicies, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="removedIndex"></param>
+    /// <returns></returns>
     public static DataType[] Clean(DataType[] array, out int[] removedIndex)
     {
         // Null check
@@ -3468,13 +3938,21 @@ public static class Array<DataType>
 
     // NULL OR EMPTY ARRAY
 
-    // Returns true if the array is null
+    /// <summary>
+    /// Returns true if the array is null
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static bool IsNull(DataType[] array)
     {
         return array == null;
     }
 
-    // Returns true if the array is empty
+    /// <summary>
+    /// Returns true if the array is empty
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static bool IsEmpty(DataType[] array)
     {
         if (array == null)
@@ -3486,7 +3964,11 @@ public static class Array<DataType>
         return array.Length == 0;
     }
 
-    // Returns true if the array is null or empty
+    /// <summary>
+    /// Returns true if the array is null or empty
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static bool IsNullOrEmpty(DataType[] array)
     {
         if (array == null)
@@ -3500,13 +3982,21 @@ public static class Array<DataType>
 
     // NULL OR DEFAULT DATA
 
-    // Returns true if the data is null
+    /// <summary>
+    /// Returns true if the data is null
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static bool IsNull(DataType data)
     {
         return data == null;
     }
 
-    // Returns true if the data is default
+    /// <summary>
+    /// Returns true if the data is default
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static bool IsDefault(DataType data)
     {
         if (data == null)
@@ -3518,7 +4008,11 @@ public static class Array<DataType>
         return data.Equals(default(DataType));
     }
 
-    // Returns true if the data is null or default
+    /// <summary>
+    /// Returns true if the data is null or default
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static bool IsNullOrDefault(DataType data)
     {
         if (data == null)
@@ -3532,7 +4026,12 @@ public static class Array<DataType>
 
     // SORTING ARRAY ELEMENTS
 
-    // Bubble sort an array with an integer array, returns a copy
+    /// <summary>
+    /// Bubble sort an array with an integer array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="order"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, int[] order)
     {
         // Null check
@@ -3587,7 +4086,13 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with an integer array and also returns the sorted order, returns a copy
+    /// <summary>
+    /// Bubble sort an array with an integer array and also returns the sorted order, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="order"></param>
+    /// <param name="sortedOrder"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, int[] order, out int[] sortedOrder)
     {
         // Null check
@@ -3645,7 +4150,12 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with a float array, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a float array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="order"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, float[] order)
     {
         // Null check
@@ -3700,7 +4210,13 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with a float array and also returns the sorted order, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a float array and also returns the sorted order, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="order"></param>
+    /// <param name="sortedOrder"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, float[] order, out float[] sortedOrder)
     {
         // Null check
@@ -3758,7 +4274,12 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with a boolean array, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a boolean array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="order"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, bool[] order)
     {
         // Null check
@@ -3824,7 +4345,13 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with a reversed boolean array and also returns the sorted order, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a reversed boolean array and also returns the sorted order, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="order"></param>
+    /// <param name="sortedOrder"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, bool[] order, out bool[] sortedOrder)
     {
         // Null check
@@ -3908,7 +4435,13 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with a reversed boolean array, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a reversed boolean array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="order"></param>
+    /// <param name="trueFirst"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, bool[] order, bool trueFirst)
     {
         // Null check
@@ -3981,7 +4514,14 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with a boolean array and also returns the sorted order, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a boolean array and also returns the sorted order, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="order"></param>
+    /// <param name="sortedOrder"></param>
+    /// <param name="trueFirst"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, bool[] order, out bool[] sortedOrder, bool trueFirst)
     {
         // Null check
@@ -4073,7 +4613,12 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with a character array, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a character array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="order"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, char[] order)
     {
         // Null check
@@ -4132,7 +4677,13 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with a character array and also returns the sorted order, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a character array and also returns the sorted order, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="order"></param>
+    /// <param name="sortedOrder"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, char[] order, out char[] sortedOrder)
     {
         // Null check
@@ -4202,7 +4753,13 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with a character array as lowercase, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a character array as lowercase, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="order"></param>
+    /// <param name="sortLower"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, char[] order, bool sortLower)
     {
         // Null check
@@ -4272,7 +4829,14 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with a character array as lowercase and also returns the sorted order, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a character array as lowercase and also returns the sorted order, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="order"></param>
+    /// <param name="sortedOrder"></param>
+    /// <param name="sortLower"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, char[] order, out char[] sortedOrder, bool sortLower)
     {
         // Null check
@@ -4391,7 +4955,12 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with a string, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a string, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="String"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, string String)
     {
         // Null check
@@ -4405,7 +4974,13 @@ public static class Array<DataType>
         return Sort(array, String.ToCharArray());
     }
 
-    // Bubble sort an array with a string and also returns the sorted order, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a string and also returns the sorted order, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="String"></param>
+    /// <param name="sortedOrder"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, string String, out string sortedOrder)
     {
         // Null check
@@ -4426,7 +5001,13 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Bubble sort an array with a string as lowercase, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a string as lowercase, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="String"></param>
+    /// <param name="sortLower"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, string String, bool sortLower)
     {
         // Null check
@@ -4447,7 +5028,14 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an array with a string as lowercase and also returns the sorted order, returns a copy
+    /// <summary>
+    /// Bubble sort an array with a string as lowercase and also returns the sorted order, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="String"></param>
+    /// <param name="sortedOrder"></param>
+    /// <param name="sortLower"></param>
+    /// <returns></returns>
     public static DataType[] Sort(DataType[] array, string String, out string sortedOrder, bool sortLower)
     {
         // Null check
@@ -4480,7 +5068,11 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort an integer array, returns a copy
+    /// <summary>
+    /// Bubble sort an integer array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static int[] Sort(int[] array)
     {
         // Null check
@@ -4515,7 +5107,11 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Bubble sort a float array, returns a copy
+    /// <summary>
+    /// Bubble sort a float array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static float[] Sort(float[] array)
     {
         // Null check
@@ -4550,7 +5146,11 @@ public static class Array<DataType>
         return arrayCopy;
     }
 
-    // Bubble sort a boolean array, returns a copy
+    /// <summary>
+    /// Bubble sort a boolean array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static bool[] Sort(bool[] array)
     {
         // Null check
@@ -4579,7 +5179,12 @@ public static class Array<DataType>
         return Array<bool>.Sort(array, arrayCopy);
     }
 
-    // Bubble sort a boolean array, returns a reversed copy
+    /// <summary>
+    /// Bubble sort a boolean array, returns a reversed copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="trueFirst"></param>
+    /// <returns></returns>
     public static bool[] Sort(bool[] array, bool trueFirst)
     {
         // Null check
@@ -4615,7 +5220,11 @@ public static class Array<DataType>
         }
     }
 
-    // Bubble sort a character array, returns a copy
+    /// <summary>
+    /// Bubble sort a character array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static char[] Sort(char[] array)
     {
         // Null check
@@ -4637,7 +5246,12 @@ public static class Array<DataType>
         return Array<char>.Sort(array, arrayCopy);
     }
 
-    // Bubble sort a character array as lowercase, returns a copy
+    /// <summary>
+    /// Bubble sort a character array as lowercase, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="sortLower"></param>
+    /// <returns></returns>
     public static char[] Sort(char[] array, bool sortLower)
     {
         // Null check
@@ -4669,7 +5283,11 @@ public static class Array<DataType>
         return Array<char>.Sort(array, arrayCopy);
     }
 
-    // Bubble sort a string, returns a copy
+    /// <summary>
+    /// Bubble sort a string, returns a copy
+    /// </summary>
+    /// <param name="String"></param>
+    /// <returns></returns>
     public static string Sort(string String)
     {
         // Null check
@@ -4683,7 +5301,12 @@ public static class Array<DataType>
         return new string(Sort(String.ToCharArray()));
     }
 
-    // Bubble sort a string as lowercase, returns a copy
+    /// <summary>
+    /// Bubble sort a string as lowercase, returns a copy
+    /// </summary>
+    /// <param name="String"></param>
+    /// <param name="sortLower"></param>
+    /// <returns></returns>
     public static string Sort(string String, bool sortLower)
     {
         // Null check
@@ -4705,12 +5328,18 @@ public static class Array<DataType>
     }
 }
 
-// New array functions used just for sorting specific data types.
+/// <summary>
+/// New array functions used just for sorting specific data types.
+/// </summary>
 public static class Array
 {
     // SORTING ARRAY ELEMENTS
 
-    // Bubble sort an integer array, returns a copy
+    /// <summary>
+    /// Bubble sort an integer array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static int[] Sort(int[] array)
     {
         // Null check
@@ -4745,7 +5374,11 @@ public static class Array
         return arrayCopy;
     }
 
-    // Bubble sort a float array, returns a copy
+    /// <summary>
+    /// Bubble sort a float array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static float[] Sort(float[] array)
     {
         // Null check
@@ -4780,7 +5413,11 @@ public static class Array
         return arrayCopy;
     }
 
-    // Bubble sort a boolean array, returns a copy
+    /// <summary>
+    /// Bubble sort a boolean array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static bool[] Sort(bool[] array)
     {
         // Null check
@@ -4809,7 +5446,12 @@ public static class Array
         return Array<bool>.Sort(array, arrayCopy);
     }
 
-    // Bubble sort a boolean array, returns a reversed copy
+    /// <summary>
+    /// Bubble sort a boolean array, returns a reversed copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="trueFirst"></param>
+    /// <returns></returns>
     public static bool[] Sort(bool[] array, bool trueFirst)
     {
         // Null check
@@ -4845,7 +5487,11 @@ public static class Array
         }
     }
 
-    // Bubble sort a character array, returns a copy
+    /// <summary>
+    /// Bubble sort a character array, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static char[] Sort(char[] array)
     {
         // Null check
@@ -4867,7 +5513,12 @@ public static class Array
         return Array<char>.Sort(array, arrayCopy);
     }
 
-    // Bubble sort a character array as lowercase, returns a copy
+    /// <summary>
+    /// Bubble sort a character array as lowercase, returns a copy
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="sortLower"></param>
+    /// <returns></returns>
     public static char[] Sort(char[] array, bool sortLower)
     {
         // Null check
@@ -4899,7 +5550,11 @@ public static class Array
         return Array<char>.Sort(array, arrayCopy);
     }
 
-    // Bubble sort a string, returns a copy
+    /// <summary>
+    /// Bubble sort a string, returns a copy
+    /// </summary>
+    /// <param name="String"></param>
+    /// <returns></returns>
     public static string Sort(string String)
     {
         // Null check
@@ -4913,7 +5568,12 @@ public static class Array
         return new string(Sort(String.ToCharArray()));
     }
 
-    // Bubble sort a string as lowercase, returns a copy
+    /// <summary>
+    /// Bubble sort a string as lowercase, returns a copy
+    /// </summary>
+    /// <param name="String"></param>
+    /// <param name="sortLower"></param>
+    /// <returns></returns>
     public static string Sort(string String, bool sortLower)
     {
         // Null check

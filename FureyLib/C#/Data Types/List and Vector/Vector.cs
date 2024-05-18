@@ -9,24 +9,37 @@ using System.Collections;
 // Data type used for sorting
 using SortType = System.Single;
 
-// Vector Class
+/// <summary>
+/// Vector container class.
+/// </summary>
+/// <typeparam name="DataType"></typeparam>
 public class Vector<DataType> : IEnumerable
 {
     // VECTOR VARIABLES
 
-    // The array of the vector's data
+    /// <summary>
+    /// The array of the vector's data
+    /// </summary>
     private DataType[] vectorData = new DataType[0];
 
-    // The current number of elements in the array holding data
+    /// <summary>
+    /// The current number of elements in the array holding data
+    /// </summary>
     private int vectorCount = 0;
 
-    // The current maximum size of the array before needing to expand
+    /// <summary>
+    /// The current maximum size of the array before needing to expand
+    /// </summary>
     private int vectorCapacity = 1;
 
-    // The number of array expansions
+    /// <summary>
+    /// The number of array expansions
+    /// </summary>
     private int vectorExpansions = 0;
 
-    // Readonly count variable
+    /// <summary>
+    /// Readonly count variable
+    /// </summary>
     public int Count
     {
         get
@@ -38,7 +51,10 @@ public class Vector<DataType> : IEnumerable
 
     // REALLOCATE MEMORY
 
-    // Expands the capacity based on how many times it has been expanded
+    /// <summary>
+    /// Expands the capacity based on how many times it has been expanded
+    /// </summary>
+    /// <returns></returns>
     public Vector<DataType> Reallocate()
     {
         // Advance the number of expansions
@@ -69,7 +85,10 @@ public class Vector<DataType> : IEnumerable
 
     // TO ARRAY
 
-    // Returns an array of the current vector
+    /// <summary>
+    /// Returns an array of the current vector
+    /// </summary>
+    /// <returns></returns>
     public DataType[] ToArray()
     {
         // Copy the vector into an array
@@ -86,7 +105,11 @@ public class Vector<DataType> : IEnumerable
 
     // VECTOR EQUALITY
 
-    // Check if another vector is equal to this vector
+    /// <summary>
+    /// Check if another vector is equal to this vector
+    /// </summary>
+    /// <param name="comparedVector"></param>
+    /// <returns></returns>
     public bool Equals(Vector<DataType> comparedVector)
     {
         // Check if the sizes are equal
@@ -109,13 +132,23 @@ public class Vector<DataType> : IEnumerable
         return true;
     }
 
-    // Check if another vector is equal to this vector
+    /// <summary>
+    /// Check if another vector is equal to this vector
+    /// </summary>
+    /// <param name="vector"></param>
+    /// <param name="comparedVector"></param>
+    /// <returns></returns>
     public static bool operator ==(Vector<DataType> vector, Vector<DataType> comparedVector)
     {
         return vector.Equals(comparedVector);
     }
 
-    // Check if another vector is not equal to this vector
+    /// <summary>
+    /// Check if another vector is not equal to this vector
+    /// </summary>
+    /// <param name="vector"></param>
+    /// <param name="comparedVector"></param>
+    /// <returns></returns>
     public static bool operator !=(Vector<DataType> vector, Vector<DataType> comparedVector)
     {
         return !vector.Equals(comparedVector);
@@ -124,13 +157,19 @@ public class Vector<DataType> : IEnumerable
 
     // ITERATORS
 
-    // Return the beginning data
+    /// <summary>
+    /// Return the beginning data
+    /// </summary>
+    /// <returns></returns>
     public DataType Begin()
     {
         return vectorData[0];
     }
 
-    // Return the end data
+    /// <summary>
+    /// Return the end data
+    /// </summary>
+    /// <returns></returns>
     public DataType End()
     {
         return vectorData[vectorCount - 1];
@@ -139,19 +178,29 @@ public class Vector<DataType> : IEnumerable
 
     // CAPACITY
 
-    // Return the current size of the vector
+    /// <summary>
+    /// Return the current size of the vector
+    /// </summary>
+    /// <returns></returns>
     public int Size()
     {
         return vectorCount;
     }
 
-    // Return the current size of the vector
+    /// <summary>
+    /// Return the current size of the vector
+    /// </summary>
+    /// <returns></returns>
     public int Length()
     {
         return vectorCount;
     }
 
-    // Resizes the vector's size and removes out of bounds data or expands if necessary
+    /// <summary>
+    /// Resizes the vector's size and removes out of bounds data or expands if necessary
+    /// </summary>
+    /// <param name="newSize"></param>
+    /// <returns></returns>
     public Vector<DataType> Resize(int newSize)
     {
         // Check if the new size is identical
@@ -188,31 +237,47 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Return the maximum capacity of the vector before expanding
+    /// <summary>
+    /// Return the maximum capacity of the vector before expanding
+    /// </summary>
+    /// <returns></returns>
     public int Capacity()
     {
         return vectorCapacity;
     }
 
-    // Return the maximum capacity of the vector before expanding
+    /// <summary>
+    /// Return the maximum capacity of the vector before expanding
+    /// </summary>
+    /// <returns></returns>
     public int MaxSize()
     {
         return Capacity();
     }
 
-    // Return whether the vector is empty
+    /// <summary>
+    /// Return whether the vector is empty
+    /// </summary>
+    /// <returns></returns>
     public bool Empty()
     {
         return vectorCount == 0;
     }
 
-    // Return whether the vector is empty
+    /// <summary>
+    /// Return whether the vector is empty
+    /// </summary>
+    /// <returns></returns>
     public bool IsEmpty()
     {
         return Empty();
     }
 
-    // Expands the vector's capacity enough to hold the given amount (does not reduce the capacity)
+    /// <summary>
+    /// Expands the vector's capacity enough to hold the given amount (does not reduce the capacity)
+    /// </summary>
+    /// <param name="newCapacity"></param>
+    /// <returns></returns>
     public Vector<DataType> Reserve(int newCapacity)
     {
         // Check if the new capacity is less
@@ -246,13 +311,20 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Expands the vector's capacity enough to hold the given amount (does not reduce the capacity)
+    /// <summary>
+    /// Expands the vector's capacity enough to hold the given amount (does not reduce the capacity)
+    /// </summary>
+    /// <param name="newCapacity"></param>
+    /// <returns></returns>
     public Vector<DataType> EnsureCapacity(int newCapacity)
     {
         return Reserve(newCapacity);
     }
 
-    // Shrinks the capacity to the size
+    /// <summary>
+    /// Shrinks the capacity to the size
+    /// </summary>
+    /// <returns></returns>
     public Vector<DataType> ShrinkToFit()
     {
         // Duplicate the current vector
@@ -280,31 +352,47 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Shrinks the capacity to the size
+    /// <summary>
+    /// Shrinks the capacity to the size
+    /// </summary>
+    /// <returns></returns>
     public Vector<DataType> TrimExcess()
     {
         return ShrinkToFit();
     }
 
-    // Shrinks the capacity to the size
+    /// <summary>
+    /// Shrinks the capacity to the size
+    /// </summary>
+    /// <returns></returns>
     public Vector<DataType> Clean()
     {
         return ShrinkToFit();
     }
 
-    // Return the total number of expansions
+    /// <summary>
+    /// Return the total number of expansions
+    /// </summary>
+    /// <returns></returns>
     public int Expansions()
     {
         return vectorExpansions;
     }
 
-    // Return the total number of expansions
+    /// <summary>
+    /// Return the total number of expansions
+    /// </summary>
+    /// <returns></returns>
     public int Reallocations()
     {
         return Expansions();
     }
 
-    // Expands the vector's capacity by the given amount
+    /// <summary>
+    /// Expands the vector's capacity by the given amount
+    /// </summary>
+    /// <param name="numberOfSpaces"></param>
+    /// <returns></returns>
     public Vector<DataType> Expand(int numberOfSpaces)
     {
         return Reserve(vectorCapacity + numberOfSpaces);
@@ -313,38 +401,60 @@ public class Vector<DataType> : IEnumerable
 
     // ELEMENT ACCESS
 
-    // Returns the element at the given index
+    /// <summary>
+    /// Returns the element at the given index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public DataType At(int index)
     {
         return vectorData[index];
     }
 
-    // Returns the element at the given index
+    /// <summary>
+    /// Returns the element at the given index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public DataType Get(int index)
     {
         return At(index);
     }
 
-    // Returns the element at the given index
+    /// <summary>
+    /// Returns the element at the given index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public DataType Data(int index)
     {
         return At(index);
     }
 
-    // Returns the element at the given index
+    /// <summary>
+    /// Returns the element at the given index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public DataType this[int index]
     {
         get => Get(index);
         set => Set(index, value);
     }
 
-    // Returns the first element in the vector
+    /// <summary>
+    /// Returns the first element in the vector
+    /// </summary>
+    /// <returns></returns>
     public DataType Front()
     {
         return vectorData[0];
     }
 
-    // Returns the first element in the vector
+    /// <summary>
+    /// Returns the first element in the vector
+    /// </summary>
+    /// <returns></returns>
     public DataType Back()
     {
         return vectorData[vectorCount - 1];
@@ -353,7 +463,11 @@ public class Vector<DataType> : IEnumerable
 
     // MODIFIERS
 
-    // Assigns this vector's elements and capacity to the elements and capacity of another vector
+    /// <summary>
+    /// Assigns this vector's elements and capacity to the elements and capacity of another vector
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> Assign(Vector<DataType> newData)
     {
         // Store the vector's size values
@@ -375,7 +489,11 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Adds a new element at the front of the vector
+    /// <summary>
+    /// Adds a new element at the front of the vector
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     Vector<DataType> Push(DataType newData)
     {
         // Expand the vector if needed
@@ -399,19 +517,31 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Adds a new element at the front of the vector
+    /// <summary>
+    /// Adds a new element at the front of the vector
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> Enqueue(DataType newData)
     {
         return Push(newData);
     }
 
-    // Adds a new element at the front of the vector
+    /// <summary>
+    /// Adds a new element at the front of the vector
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> AddFront(DataType newData)
     {
         return Push(newData);
     }
 
-    // Adds a new element at the end of the vector
+    /// <summary>
+    /// Adds a new element at the end of the vector
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> PushBack(DataType newData)
     {
         // Expand the vector if needed
@@ -429,13 +559,20 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Adds a new element at the end of the vector
+    /// <summary>
+    /// Adds a new element at the end of the vector
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> Add(DataType newData)
     {
         return PushBack(newData);
     }
 
-    // Remove and return the first element of the vector
+    /// <summary>
+    /// Remove and return the first element of the vector
+    /// </summary>
+    /// <returns></returns>
     public DataType Pop()
     {
         // Decrease the vector size if possible
@@ -458,13 +595,19 @@ public class Vector<DataType> : IEnumerable
         return newData;
     }
 
-    // Remove and return the first element of the vector
+    /// <summary>
+    /// Remove and return the first element of the vector
+    /// </summary>
+    /// <returns></returns>
     public DataType Dequeue()
     {
         return Pop();
     }
 
-    // Remove and return the last element of the vector
+    /// <summary>
+    /// Remove and return the last element of the vector
+    /// </summary>
+    /// <returns></returns>
     public DataType PopBack()
     {
         // Decrease the vector size if possible
@@ -478,7 +621,12 @@ public class Vector<DataType> : IEnumerable
         return vectorData[vectorCount];
     }
 
-    // Adds a new element in the vector at a given index and shift following elements forward
+    /// <summary>
+    /// Adds a new element in the vector at a given index and shift following elements forward
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> Insert(int index, DataType newData)
     {
         // Check for out of bounds
@@ -508,7 +656,11 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Removes a element in the vector at a given index and shift following elements back
+    /// <summary>
+    /// Removes a element in the vector at a given index and shift following elements back
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public Vector<DataType> Erase(int index)
     {
         // Check for out of bounds
@@ -529,13 +681,22 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Removes a element in the vector at a given index and shift following elements back
+    /// <summary>
+    /// Removes a element in the vector at a given index and shift following elements back
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public Vector<DataType> RemoveAt(int index)
     {
         return Erase(index);
     }
 
-    // Swaps two elements at two given indicies
+    /// <summary>
+    /// Swaps two elements at two given indicies
+    /// </summary>
+    /// <param name="index1"></param>
+    /// <param name="index2"></param>
+    /// <returns></returns>
     public Vector<DataType> Swap(int index1, int index2)
     {
         // Check for out of bounds
@@ -562,7 +723,10 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Clears the vector's data
+    /// <summary>
+    /// Clears the vector's data
+    /// </summary>
+    /// <returns></returns>
     public Vector<DataType> Clear()
     {
         // Reset vector variables
@@ -577,7 +741,12 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Adds an existing variable to a given index and shift following elements forward
+    /// <summary>
+    /// Adds an existing variable to a given index and shift following elements forward
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> Emplace(int index, ref DataType newData)
     {
         // Check for out of bounds
@@ -607,7 +776,11 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Adds an existing variable to the front of the vector
+    /// <summary>
+    /// Adds an existing variable to the front of the vector
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> Emplace(ref DataType newData)
     {
         // Expand the vector if needed
@@ -631,7 +804,11 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Adds an existing variable to the end of the vector
+    /// <summary>
+    /// Adds an existing variable to the end of the vector
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> EmplaceBack(ref DataType newData)
     {
         // Expand the vector if needed
@@ -649,7 +826,10 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Returns a copy of the vector's data
+    /// <summary>
+    /// Returns a copy of the vector's data
+    /// </summary>
+    /// <returns></returns>
     public Vector<DataType> Copy()
     {
         Vector<DataType> newVector = new Vector<DataType>(this);
@@ -657,7 +837,11 @@ public class Vector<DataType> : IEnumerable
         return newVector;
     }
 
-    // Returns the first index of the given data in the vector, returns -1 if nothing matched
+    /// <summary>
+    /// Returns the first index of the given data in the vector, returns -1 if nothing matched
+    /// </summary>
+    /// <param name="foundData"></param>
+    /// <returns></returns>
     public int Find(DataType foundData)
     {
         // Loop through the vector for the matching element
@@ -672,13 +856,21 @@ public class Vector<DataType> : IEnumerable
         return -1;
     }
 
-    // Returns the first index of the given data in the vector, returns -1 if nothing matched
+    /// <summary>
+    /// Returns the first index of the given data in the vector, returns -1 if nothing matched
+    /// </summary>
+    /// <param name="foundData"></param>
+    /// <returns></returns>
     public int IndexOf(DataType foundData)
     {
         return Find(foundData);
     }
 
-    // Returns the last index of the given data in the vector, returns -1 if nothing matched
+    /// <summary>
+    /// Returns the last index of the given data in the vector, returns -1 if nothing matched
+    /// </summary>
+    /// <param name="foundData"></param>
+    /// <returns></returns>
     public int FindLast(DataType foundData)
     {
         // Loop through the vector for the matching element
@@ -693,13 +885,21 @@ public class Vector<DataType> : IEnumerable
         return -1;
     }
 
-    // Returns the last index of the given data in the vector, returns -1 if nothing matched
+    /// <summary>
+    /// Returns the last index of the given data in the vector, returns -1 if nothing matched
+    /// </summary>
+    /// <param name="foundData"></param>
+    /// <returns></returns>
     public int LastIndexOf(DataType foundData)
     {
         return FindLast(foundData);
     }
 
-    // Returns the total number of instances of the given data in the vector, returns -1 if nothing matched
+    /// <summary>
+    /// Returns the total number of instances of the given data in the vector, returns -1 if nothing matched
+    /// </summary>
+    /// <param name="foundData"></param>
+    /// <returns></returns>
     public int Total(DataType foundData)
     {
         // Store the current count
@@ -717,31 +917,51 @@ public class Vector<DataType> : IEnumerable
         return count;
     }
 
-    // Returns whether the vector contains at least one of the elements 
+    /// <summary>
+    /// Returns whether the vector contains at least one of the elements 
+    /// </summary>
+    /// <param name="containedData"></param>
+    /// <returns></returns>
     public bool Contains(DataType containedData)
     {
         return Find(containedData) != -1;
     }
 
-    // Returns whether the vector contains at least one of the elements 
+    /// <summary>
+    /// Returns whether the vector contains at least one of the elements 
+    /// </summary>
+    /// <param name="containedData"></param>
+    /// <returns></returns>
     public bool Exists(DataType containedData)
     {
         return Contains(containedData);
     }
 
-    // Removes the first of a given element in the vector
+    /// <summary>
+    /// Removes the first of a given element in the vector
+    /// </summary>
+    /// <param name="removedData"></param>
+    /// <returns></returns>
     public Vector<DataType> Remove(DataType removedData)
     {
         return Erase(Find(removedData));
     }
 
-    // Removes the last of a given element in the vector
+    /// <summary>
+    /// Removes the last of a given element in the vector
+    /// </summary>
+    /// <param name="removedData"></param>
+    /// <returns></returns>
     public Vector<DataType> RemoveLast(DataType removedData)
     {
         return Erase(FindLast(removedData));
     }
 
-    // Removes all of the given element in the vector
+    /// <summary>
+    /// Removes all of the given element in the vector
+    /// </summary>
+    /// <param name="removedData"></param>
+    /// <returns></returns>
     public Vector<DataType> RemoveAll(DataType removedData)
     {
         // Get the total number of elements
@@ -756,7 +976,12 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Replaces the data at the given index with the given data
+    /// <summary>
+    /// Replaces the data at the given index with the given data
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> Set(int index, DataType newData)
     {
         // Check for out of bounds
@@ -771,13 +996,23 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Replaces the data at the given index with the given data
+    /// <summary>
+    /// Replaces the data at the given index with the given data
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> Overwrite(int index, DataType newData)
     {
         return Set(index, newData);
     }
 
-    // Replaces the first of the found data with the given data
+    /// <summary>
+    /// Replaces the first of the found data with the given data
+    /// </summary>
+    /// <param name="replacedData"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> Replace(DataType replacedData, DataType newData)
     {
         // Find the index of the found data
@@ -795,7 +1030,12 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Replaces the last of the found data with the given data
+    /// <summary>
+    /// Replaces the last of the found data with the given data
+    /// </summary>
+    /// <param name="replacedData"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> ReplaceLast(DataType replacedData, DataType newData)
     {
         // Find the index of the found data
@@ -813,7 +1053,12 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Replaces all of the found data with the given data
+    /// <summary>
+    /// Replaces all of the found data with the given data
+    /// </summary>
+    /// <param name="replacedData"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public Vector<DataType> ReplaceAll(DataType replacedData, DataType newData)
     {
         // Get the total number of elements
@@ -828,7 +1073,10 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Reverse the vector elements
+    /// <summary>
+    /// Reverse the vector elements
+    /// </summary>
+    /// <returns></returns>
     public Vector<DataType> Reverse()
     {
         // Check length
@@ -846,7 +1094,11 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Shifts the vector elements right
+    /// <summary>
+    /// Shifts the vector elements right
+    /// </summary>
+    /// <param name="numberOfShifts"></param>
+    /// <returns></returns>
     public Vector<DataType> ShiftRight(int numberOfShifts)
     {
         // Check length
@@ -880,19 +1132,31 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Shifts the vector elements right
+    /// <summary>
+    /// Shifts the vector elements right
+    /// </summary>
+    /// <param name="numberOfShifts"></param>
+    /// <returns></returns>
     public Vector<DataType> Shift(int numberOfShifts)
     {
         return ShiftRight(numberOfShifts);
     }
 
-    // Shifts the vector elements left
+    /// <summary>
+    /// Shifts the vector elements left
+    /// </summary>
+    /// <param name="numberOfShifts"></param>
+    /// <returns></returns>
     public Vector<DataType> ShiftLeft(int numberOfShifts)
     {
         return ShiftRight(-numberOfShifts);
     }
 
-    // Bubble sorts the elements of the vector relative to the given sort order
+    /// <summary>
+    /// Bubble sorts the elements of the vector relative to the given sort order
+    /// </summary>
+    /// <param name="sortOrder"></param>
+    /// <returns></returns>
     public Vector<DataType> Sort(SortType[] sortOrder)
     {
         // Check length
@@ -923,7 +1187,11 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Safely bubble sorts the elements of the vector relative to the given sort order
+    /// <summary>
+    /// Safely bubble sorts the elements of the vector relative to the given sort order
+    /// </summary>
+    /// <param name="sortOrder"></param>
+    /// <returns></returns>
     public Vector<DataType> Sort(Vector<SortType> sortOrder)
     {
         SortType[] newSortOrder = sortOrder.ToArray();
@@ -933,7 +1201,9 @@ public class Vector<DataType> : IEnumerable
         return this;
     }
 
-    // Prints the elements of the vector
+    /// <summary>
+    /// Prints the elements of the vector
+    /// </summary>
     public void Print()
     {
         for (int i = 0; i < vectorCount; i++)
@@ -942,7 +1212,10 @@ public class Vector<DataType> : IEnumerable
         }
     }
 
-    // Converts the elements of the vector into a string
+    /// <summary>
+    /// Converts the elements of the vector into a string
+    /// </summary>
+    /// <returns></returns>
     public string ToString()
     {
         string log = "";
@@ -958,7 +1231,9 @@ public class Vector<DataType> : IEnumerable
 
     // CONSTRUCTORS AND DECONSTRUCTOR
 
-    // Default constructor
+    /// <summary>
+    /// Default constructor
+    /// </summary>
     public Vector()
     {
         vectorData = new DataType[1];
@@ -970,7 +1245,10 @@ public class Vector<DataType> : IEnumerable
         vectorExpansions = 0;
     }
 
-    // Copy constructor
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    /// <param name="copiedVector"></param>
     public Vector(Vector<DataType> copiedVector)
     {
         vectorCount = copiedVector.vectorCount;
@@ -987,7 +1265,10 @@ public class Vector<DataType> : IEnumerable
         }
     }
 
-    // Capacity constructor
+    /// <summary>
+    /// Capacity constructor
+    /// </summary>
+    /// <param name="maxCapacity"></param>
     public Vector(int maxCapacity)
     {
         vectorData = new DataType[maxCapacity];
@@ -999,7 +1280,11 @@ public class Vector<DataType> : IEnumerable
         vectorExpansions = 0;
     }
 
-    // Fill constructor
+    /// <summary>
+    /// Fill constructor
+    /// </summary>
+    /// <param name="sizeAndCapacity"></param>
+    /// <param name="newData"></param>
     public Vector(int sizeAndCapacity, DataType newData)
     {
         vectorData = new DataType[sizeAndCapacity];
@@ -1016,7 +1301,11 @@ public class Vector<DataType> : IEnumerable
         vectorExpansions = 0;
     }
 
-    // Array constructor
+    /// <summary>
+    /// Array constructor
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="arrayLength"></param>
     public Vector(DataType[] array, int arrayLength)
     {
         vectorData = new DataType[arrayLength];
@@ -1036,7 +1325,10 @@ public class Vector<DataType> : IEnumerable
 
     // ENUMERATOR FUNCTION
 
-    // Enumerator implementation
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator GetEnumerator()
     {
         return vectorData.GetEnumerator();

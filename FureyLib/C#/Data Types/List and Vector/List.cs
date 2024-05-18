@@ -9,24 +9,37 @@ using System.Collections;
 // Data type used for sorting
 using SortType = System.Single;
 
-// List Class
+/// <summary>
+/// List container class.
+/// </summary>
+/// <typeparam name="DataType"></typeparam>
 public class List<DataType> : IEnumerable
 {
     // LIST VARIABLES
 
-    // The array of the list's data
+    /// <summary>
+    /// The array of the list's data
+    /// </summary>
     private DataType[] listData = new DataType[0];
 
-    // The current number of elements in the array holding data
+    /// <summary>
+    /// The current number of elements in the array holding data
+    /// </summary>
     private int listCount = 0;
 
-    // The current maximum size of the array before needing to expand
+    /// <summary>
+    /// The current maximum size of the array before needing to expand
+    /// </summary>
     private int listCapacity = 1;
 
-    // The number of array expansions
+    /// <summary>
+    /// The number of array expansions
+    /// </summary>
     private int listExpansions = 0;
 
-    // Readonly count variable
+    /// <summary>
+    /// Readonly count variable
+    /// </summary>
     public int Count
     {
         get
@@ -38,7 +51,10 @@ public class List<DataType> : IEnumerable
 
     // REALLOCATE MEMORY
 
-    // Expands the capacity based on how many times it has been expanded
+    /// <summary>
+    /// Expands the capacity based on how many times it has been expanded
+    /// </summary>
+    /// <returns></returns>
     public List<DataType> Reallocate()
     {
         // Advance the number of expansions
@@ -69,7 +85,10 @@ public class List<DataType> : IEnumerable
 
     // TO ARRAY
 
-    // Returns an array of the current list
+    /// <summary>
+    /// Returns an array of the current list
+    /// </summary>
+    /// <returns></returns>
     public DataType[] ToArray()
     {
         // Copy the list into an array
@@ -86,7 +105,11 @@ public class List<DataType> : IEnumerable
 
     // LIST EQUALITY
 
-    // Check if another list is equal to this list
+    /// <summary>
+    /// Check if another list is equal to this list
+    /// </summary>
+    /// <param name="comparedList"></param>
+    /// <returns></returns>
     public bool Equals(List<DataType> comparedList)
     {
         // Check if the sizes are equal
@@ -109,13 +132,23 @@ public class List<DataType> : IEnumerable
         return true;
     }
 
-    // Check if another list is equal to this list
+    /// <summary>
+    /// Check if another list is equal to this list
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="comparedList"></param>
+    /// <returns></returns>
     public static bool operator ==(List<DataType> list, List<DataType> comparedList)
     {
         return list.Equals(comparedList);
     }
 
-    // Check if another list is not equal to this list
+    /// <summary>
+    /// Check if another list is not equal to this list
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="comparedList"></param>
+    /// <returns></returns>
     public static bool operator !=(List<DataType> list, List<DataType> comparedList)
     {
         return !list.Equals(comparedList);
@@ -124,13 +157,19 @@ public class List<DataType> : IEnumerable
 
     // ITERATORS
 
-    // Return the beginning data
+    /// <summary>
+    /// Return the beginning data
+    /// </summary>
+    /// <returns></returns>
     public DataType Begin()
     {
         return listData[0];
     }
 
-    // Return the end data
+    /// <summary>
+    /// Return the end data
+    /// </summary>
+    /// <returns></returns>
     public DataType End()
     {
         return listData[listCount - 1];
@@ -139,19 +178,29 @@ public class List<DataType> : IEnumerable
 
     // CAPACITY
 
-    // Return the current size of the list
+    /// <summary>
+    /// Return the current size of the list
+    /// </summary>
+    /// <returns></returns>
     public int Size()
     {
         return listCount;
     }
 
-    // Return the current size of the list
+    /// <summary>
+    /// Return the current size of the list
+    /// </summary>
+    /// <returns></returns>
     public int Length()
     {
         return listCount;
     }
 
-    // Resizes the list's size and removes out of bounds data or expands if necessary
+    /// <summary>
+    /// Resizes the list's size and removes out of bounds data or expands if necessary
+    /// </summary>
+    /// <param name="newSize"></param>
+    /// <returns></returns>
     public List<DataType> Resize(int newSize)
     {
         // Check if the new size is identical
@@ -188,31 +237,47 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Return the maximum capacity of the list before expanding
+    /// <summary>
+    /// Return the maximum capacity of the list before expanding
+    /// </summary>
+    /// <returns></returns>
     public int Capacity()
     {
         return listCapacity;
     }
 
-    // Return the maximum capacity of the list before expanding
+    /// <summary>
+    /// Return the maximum capacity of the list before expanding
+    /// </summary>
+    /// <returns></returns>
     public int MaxSize()
     {
         return Capacity();
     }
 
-    // Return whether the list is empty
+    /// <summary>
+    /// Return whether the list is empty
+    /// </summary>
+    /// <returns></returns>
     public bool Empty()
     {
         return listCount == 0;
     }
 
-    // Return whether the list is empty
+    /// <summary>
+    /// Return whether the list is empty
+    /// </summary>
+    /// <returns></returns>
     public bool IsEmpty()
     {
         return Empty();
     }
 
-    // Expands the list's capacity enough to hold the given amount (does not reduce the capacity)
+    /// <summary>
+    /// Expands the list's capacity enough to hold the given amount (does not reduce the capacity)
+    /// </summary>
+    /// <param name="newCapacity"></param>
+    /// <returns></returns>
     public List<DataType> Reserve(int newCapacity)
     {
         // Check if the new capacity is less
@@ -246,13 +311,20 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Expands the list's capacity enough to hold the given amount (does not reduce the capacity)
+    /// <summary>
+    /// Expands the list's capacity enough to hold the given amount (does not reduce the capacity)
+    /// </summary>
+    /// <param name="newCapacity"></param>
+    /// <returns></returns>
     public List<DataType> EnsureCapacity(int newCapacity)
     {
         return Reserve(newCapacity);
     }
 
-    // Shrinks the capacity to the size
+    /// <summary>
+    /// Shrinks the capacity to the size
+    /// </summary>
+    /// <returns></returns>
     public List<DataType> ShrinkToFit()
     {
         // Duplicate the current list
@@ -280,31 +352,47 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Shrinks the capacity to the size
+    /// <summary>
+    /// Shrinks the capacity to the size
+    /// </summary>
+    /// <returns></returns>
     public List<DataType> TrimExcess()
     {
         return ShrinkToFit();
     }
 
-    // Shrinks the capacity to the size
+    /// <summary>
+    /// Shrinks the capacity to the size
+    /// </summary>
+    /// <returns></returns>
     public List<DataType> Clean()
     {
         return ShrinkToFit();
     }
 
-    // Return the total number of expansions
+    /// <summary>
+    /// Return the total number of expansions
+    /// </summary>
+    /// <returns></returns>
     public int Expansions()
     {
         return listExpansions;
     }
 
-    // Return the total number of expansions
+    /// <summary>
+    /// Return the total number of expansions
+    /// </summary>
+    /// <returns></returns>
     public int Reallocations()
     {
         return Expansions();
     }
 
-    // Expands the list's capacity by the given amount
+    /// <summary>
+    /// Expands the list's capacity by the given amount
+    /// </summary>
+    /// <param name="numberOfSpaces"></param>
+    /// <returns></returns>
     public List<DataType> Expand(int numberOfSpaces)
     {
         return Reserve(listCapacity + numberOfSpaces);
@@ -313,38 +401,60 @@ public class List<DataType> : IEnumerable
 
     // ELEMENT ACCESS
 
-    // Returns the element at the given index
+    /// <summary>
+    /// Returns the element at the given index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public DataType At(int index)
     {
         return listData[index];
     }
 
-    // Returns the element at the given index
+    /// <summary>
+    /// Returns the element at the given index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public DataType Get(int index)
     {
         return At(index);
     }
 
-    // Returns the element at the given index
+    /// <summary>
+    /// Returns the element at the given index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public DataType Data(int index)
     {
         return At(index);
     }
 
-    // Returns the element at the given index
+    /// <summary>
+    /// Returns the element at the given index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public DataType this[int index]
     {
         get => Get(index);
         set => Set(index, value);
     }
 
-    // Returns the first element in the list
+    /// <summary>
+    /// Returns the first element in the list
+    /// </summary>
+    /// <returns></returns>
     public DataType Front()
     {
         return listData[0];
     }
 
-    // Returns the first element in the list
+    /// <summary>
+    /// Returns the first element in the list
+    /// </summary>
+    /// <returns></returns>
     public DataType Back()
     {
         return listData[listCount - 1];
@@ -353,7 +463,11 @@ public class List<DataType> : IEnumerable
 
     // MODIFIERS
 
-    // Assigns this list's elements and capacity to the elements and capacity of another list
+    /// <summary>
+    /// Assigns this list's elements and capacity to the elements and capacity of another list
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> Assign(List<DataType> newData)
     {
         // Store the list's size values
@@ -375,7 +489,11 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Adds a new element at the front of the list
+    /// <summary>
+    /// Adds a new element at the front of the list
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     List<DataType> Push(DataType newData)
     {
         // Expand the list if needed
@@ -399,19 +517,31 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Adds a new element at the front of the list
+    /// <summary>
+    /// Adds a new element at the front of the list
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> Enqueue(DataType newData)
     {
         return Push(newData);
     }
 
-    // Adds a new element at the front of the list
+    /// <summary>
+    /// Adds a new element at the front of the list
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> AddFront(DataType newData)
     {
         return Push(newData);
     }
 
-    // Adds a new element at the end of the list
+    /// <summary>
+    /// Adds a new element at the end of the list
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> PushBack(DataType newData)
     {
         // Expand the list if needed
@@ -429,13 +559,20 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Adds a new element at the end of the list
+    /// <summary>
+    /// Adds a new element at the end of the list
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> Add(DataType newData)
     {
         return PushBack(newData);
     }
 
-    // Remove and return the first element of the list
+    /// <summary>
+    /// Remove and return the first element of the list
+    /// </summary>
+    /// <returns></returns>
     public DataType Pop()
     {
         // Decrease the list size if possible
@@ -464,7 +601,10 @@ public class List<DataType> : IEnumerable
         return Pop();
     }
 
-    // Remove and return the last element of the list
+    /// <summary>
+    /// Remove and return the last element of the list
+    /// </summary>
+    /// <returns></returns>
     public DataType PopBack()
     {
         // Decrease the list size if possible
@@ -478,7 +618,12 @@ public class List<DataType> : IEnumerable
         return listData[listCount];
     }
 
-    // Adds a new element in the list at a given index and shift following elements forward
+    /// <summary>
+    /// Adds a new element in the list at a given index and shift following elements forward
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> Insert(int index, DataType newData)
     {
         // Check for out of bounds
@@ -508,7 +653,11 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Removes a element in the list at a given index and shift following elements back
+    /// <summary>
+    /// Removes a element in the list at a given index and shift following elements back
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public List<DataType> Erase(int index)
     {
         // Check for out of bounds
@@ -529,13 +678,22 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Removes a element in the list at a given index and shift following elements back
+    /// <summary>
+    /// Removes a element in the list at a given index and shift following elements back
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public List<DataType> RemoveAt(int index)
     {
         return Erase(index);
     }
 
-    // Swaps two elements at two given indicies
+    /// <summary>
+    /// Swaps two elements at two given indicies
+    /// </summary>
+    /// <param name="index1"></param>
+    /// <param name="index2"></param>
+    /// <returns></returns>
     public List<DataType> Swap(int index1, int index2)
     {
         // Check for out of bounds
@@ -562,7 +720,10 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Clears the list's data
+    /// <summary>
+    /// Clears the list's data
+    /// </summary>
+    /// <returns></returns>
     public List<DataType> Clear()
     {
         // Reset list variables
@@ -577,7 +738,12 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Adds an existing variable to a given index and shift following elements forward
+    /// <summary>
+    /// Adds an existing variable to a given index and shift following elements forward
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> Emplace(int index, ref DataType newData)
     {
         // Check for out of bounds
@@ -607,7 +773,11 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Adds an existing variable to the front of the list
+    /// <summary>
+    /// Adds an existing variable to the front of the list
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> Emplace(ref DataType newData)
     {
         // Expand the list if needed
@@ -631,7 +801,11 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Adds an existing variable to the end of the list
+    /// <summary>
+    /// Adds an existing variable to the end of the list
+    /// </summary>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> EmplaceBack(ref DataType newData)
     {
         // Expand the list if needed
@@ -649,7 +823,10 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Returns a copy of the list's data
+    /// <summary>
+    /// Returns a copy of the list's data
+    /// </summary>
+    /// <returns></returns>
     public List<DataType> Copy()
     {
         List<DataType> newList = new List<DataType>(this);
@@ -657,7 +834,11 @@ public class List<DataType> : IEnumerable
         return newList;
     }
 
-    // Returns the first index of the given data in the list, returns -1 if nothing matched
+    /// <summary>
+    /// Returns the first index of the given data in the list, returns -1 if nothing matched
+    /// </summary>
+    /// <param name="foundData"></param>
+    /// <returns></returns>
     public int Find(DataType foundData)
     {
         // Loop through the list for the matching element
@@ -672,13 +853,21 @@ public class List<DataType> : IEnumerable
         return -1;
     }
 
-    // Returns the first index of the given data in the list, returns -1 if nothing matched
+    /// <summary>
+    /// Returns the first index of the given data in the list, returns -1 if nothing matched
+    /// </summary>
+    /// <param name="foundData"></param>
+    /// <returns></returns>
     public int IndexOf(DataType foundData)
     {
         return Find(foundData);
     }
 
-    // Returns the last index of the given data in the list, returns -1 if nothing matched
+    /// <summary>
+    /// Returns the last index of the given data in the list, returns -1 if nothing matched
+    /// </summary>
+    /// <param name="foundData"></param>
+    /// <returns></returns>
     public int FindLast(DataType foundData)
     {
         // Loop through the list for the matching element
@@ -693,13 +882,21 @@ public class List<DataType> : IEnumerable
         return -1;
     }
 
-    // Returns the last index of the given data in the list, returns -1 if nothing matched
+    /// <summary>
+    /// Returns the last index of the given data in the list, returns -1 if nothing matched
+    /// </summary>
+    /// <param name="foundData"></param>
+    /// <returns></returns>
     public int LastIndexOf(DataType foundData)
     {
         return FindLast(foundData);
     }
 
-    // Returns the total number of instances of the given data in the list, returns -1 if nothing matched
+    /// <summary>
+    /// Returns the total number of instances of the given data in the list, returns -1 if nothing matched
+    /// </summary>
+    /// <param name="foundData"></param>
+    /// <returns></returns>
     public int Total(DataType foundData)
     {
         // Store the current count
@@ -717,31 +914,51 @@ public class List<DataType> : IEnumerable
         return count;
     }
 
-    // Returns whether the list contains at least one of the elements 
+    /// <summary>
+    /// Returns whether the list contains at least one of the elements 
+    /// </summary>
+    /// <param name="containedData"></param>
+    /// <returns></returns>
     public bool Contains(DataType containedData)
     {
         return Find(containedData) != -1;
     }
 
-    // Returns whether the list contains at least one of the elements 
+    /// <summary>
+    /// Returns whether the list contains at least one of the elements 
+    /// </summary>
+    /// <param name="containedData"></param>
+    /// <returns></returns>
     public bool Exists(DataType containedData)
     {
         return Contains(containedData);
     }
 
-    // Removes the first of a given element in the list
+    /// <summary>
+    /// Removes the first of a given element in the list
+    /// </summary>
+    /// <param name="removedData"></param>
+    /// <returns></returns>
     public List<DataType> Remove(DataType removedData)
     {
         return Erase(Find(removedData));
     }
 
-    // Removes the last of a given element in the list
+    /// <summary>
+    /// Removes the last of a given element in the list
+    /// </summary>
+    /// <param name="removedData"></param>
+    /// <returns></returns>
     public List<DataType> RemoveLast(DataType removedData)
     {
         return Erase(FindLast(removedData));
     }
 
-    // Removes all of the given element in the list
+    /// <summary>
+    /// Removes all of the given element in the list
+    /// </summary>
+    /// <param name="removedData"></param>
+    /// <returns></returns>
     public List<DataType> RemoveAll(DataType removedData)
     {
         // Get the total number of elements
@@ -756,7 +973,12 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Replaces the data at the given index with the given data
+    /// <summary>
+    /// Replaces the data at the given index with the given data
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> Set(int index, DataType newData)
     {
         // Check for out of bounds
@@ -771,13 +993,23 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Replaces the data at the given index with the given data
+    /// <summary>
+    /// Replaces the data at the given index with the given data
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> Overwrite(int index, DataType newData)
     {
         return Set(index, newData);
     }
 
-    // Replaces the first of the found data with the given data
+    /// <summary>
+    /// Replaces the first of the found data with the given data
+    /// </summary>
+    /// <param name="replacedData"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> Replace(DataType replacedData, DataType newData)
     {
         // Find the index of the found data
@@ -795,7 +1027,12 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Replaces the last of the found data with the given data
+    /// <summary>
+    /// Replaces the last of the found data with the given data
+    /// </summary>
+    /// <param name="replacedData"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> ReplaceLast(DataType replacedData, DataType newData)
     {
         // Find the index of the found data
@@ -813,7 +1050,12 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Replaces all of the found data with the given data
+    /// <summary>
+    /// Replaces all of the found data with the given data
+    /// </summary>
+    /// <param name="replacedData"></param>
+    /// <param name="newData"></param>
+    /// <returns></returns>
     public List<DataType> ReplaceAll(DataType replacedData, DataType newData)
     {
         // Get the total number of elements
@@ -828,7 +1070,10 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Reverse the list elements
+    /// <summary>
+    /// Reverse the list elements
+    /// </summary>
+    /// <returns></returns>
     public List<DataType> Reverse()
     {
         // Check length
@@ -846,7 +1091,11 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Shifts the list elements right
+    /// <summary>
+    /// Shifts the list elements right
+    /// </summary>
+    /// <param name="numberOfShifts"></param>
+    /// <returns></returns>
     public List<DataType> ShiftRight(int numberOfShifts)
     {
         // Check length
@@ -880,19 +1129,31 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Shifts the list elements right
+    /// <summary>
+    /// Shifts the list elements right
+    /// </summary>
+    /// <param name="numberOfShifts"></param>
+    /// <returns></returns>
     public List<DataType> Shift(int numberOfShifts)
     {
         return ShiftRight(numberOfShifts);
     }
 
-    // Shifts the list elements left
+    /// <summary>
+    /// Shifts the list elements left
+    /// </summary>
+    /// <param name="numberOfShifts"></param>
+    /// <returns></returns>
     public List<DataType> ShiftLeft(int numberOfShifts)
     {
         return ShiftRight(-numberOfShifts);
     }
 
-    // Bubble sorts the elements of the list relative to the given sort order
+    /// <summary>
+    /// Bubble sorts the elements of the list relative to the given sort order
+    /// </summary>
+    /// <param name="sortOrder"></param>
+    /// <returns></returns>
     public List<DataType> Sort(SortType[] sortOrder)
     {
         // Check length
@@ -923,7 +1184,11 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Safely bubble sorts the elements of the list relative to the given sort order
+    /// <summary>
+    /// Safely bubble sorts the elements of the list relative to the given sort order
+    /// </summary>
+    /// <param name="sortOrder"></param>
+    /// <returns></returns>
     public List<DataType> Sort(List<SortType> sortOrder)
     {
         SortType[] newSortOrder = sortOrder.ToArray();
@@ -933,7 +1198,9 @@ public class List<DataType> : IEnumerable
         return this;
     }
 
-    // Prints the elements of the list
+    /// <summary>
+    /// Prints the elements of the list
+    /// </summary>
     public void Print()
     {
         for (int i = 0; i < listCount; i++)
@@ -942,7 +1209,10 @@ public class List<DataType> : IEnumerable
         }
     }
 
-    // Converts the elements of the list into a string
+    /// <summary>
+    /// Converts the elements of the list into a string
+    /// </summary>
+    /// <returns></returns>
     public string ToString()
     {
         string log = "";
@@ -958,7 +1228,9 @@ public class List<DataType> : IEnumerable
 
     // CONSTRUCTORS AND DECONSTRUCTOR
 
-    // Default constructor
+    /// <summary>
+    /// Default constructor
+    /// </summary>
     public List()
     {
         listData = new DataType[1];
@@ -970,7 +1242,10 @@ public class List<DataType> : IEnumerable
         listExpansions = 0;
     }
 
-    // Copy constructor
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    /// <param name="copiedList"></param>
     public List(List<DataType> copiedList)
     {
         listCount = copiedList.listCount;
@@ -987,7 +1262,10 @@ public class List<DataType> : IEnumerable
         }
     }
 
-    // Capacity constructor
+    /// <summary>
+    /// Capacity constructor
+    /// </summary>
+    /// <param name="maxCapacity"></param>
     public List(int maxCapacity)
     {
         listData = new DataType[maxCapacity];
@@ -999,7 +1277,11 @@ public class List<DataType> : IEnumerable
         listExpansions = 0;
     }
 
-    // Fill constructor
+    /// <summary>
+    /// Fill constructor
+    /// </summary>
+    /// <param name="sizeAndCapacity"></param>
+    /// <param name="newData"></param>
     public List(int sizeAndCapacity, DataType newData)
     {
         listData = new DataType[sizeAndCapacity];
@@ -1016,7 +1298,11 @@ public class List<DataType> : IEnumerable
         listExpansions = 0;
     }
 
-    // Array constructor
+    /// <summary>
+    /// Array constructor
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="arrayLength"></param>
     public List(DataType[] array, int arrayLength)
     {
         listData = new DataType[arrayLength];
@@ -1036,7 +1322,10 @@ public class List<DataType> : IEnumerable
 
     // ENUMERATOR FUNCTION
 
-    // Enumerator implementation
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator GetEnumerator()
     {
         return listData.GetEnumerator();

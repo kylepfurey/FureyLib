@@ -5,27 +5,42 @@
 using System.Collections;
 using System.Collections.Generic;
 
-// An individual node with its own data, connections, and weight.
+/// <summary>
+/// An individual node with its own data, connections, and weight.
+/// </summary>
+/// <typeparam name="DataType"></typeparam>
 public class Node<DataType>
 {
     // NODE DATA
 
-    // The data this node owns
+    /// <summary>
+    /// The data this node owns
+    /// </summary>
     public DataType data = default(DataType);
 
-    // The other nodes this node is connected to and the weight of that connection
+    /// <summary>
+    /// The other nodes this node is connected to and the weight of that connection
+    /// </summary>
     public List<Connection<DataType>> connections = new List<Connection<DataType>>();
 
-    // The weight of this node
+    /// <summary>
+    /// The weight of this node
+    /// </summary>
     public float weight = 1;
 
-    // Whether this node is active
+    /// <summary>
+    /// Whether this node is active
+    /// </summary>
     public bool active = true;
 
 
     // NODE CONSTRUCTORS
 
-    // Default constructor
+    /// <summary>
+    /// Default constructor
+    /// </summary>
+    /// <param name="weight"></param>
+    /// <param name="active"></param>
     public Node(float weight = 1, bool active = true)
     {
         data = default(DataType);
@@ -34,6 +49,11 @@ public class Node<DataType>
         this.active = active;
     }
 
+    /// <summary>
+    /// Default constructor
+    /// </summary>
+    /// <param name="active"></param>
+    /// <param name="weight"></param>
     public Node(bool active, float weight = 1)
     {
         data = default(DataType);
@@ -43,7 +63,13 @@ public class Node<DataType>
     }
 
 
-    // Node constructor
+    /// <summary>
+    /// Node constructor
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="connections"></param>
+    /// <param name="weight"></param>
+    /// <param name="active"></param>
     public Node(DataType data, List<Connection<DataType>> connections, float weight, bool active)
     {
         this.data = data;
@@ -52,6 +78,13 @@ public class Node<DataType>
         this.active = active;
     }
 
+    /// <summary>
+    /// Node constructor
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="connections"></param>
+    /// <param name="active"></param>
+    /// <param name="weight"></param>
     public Node(DataType data, List<Connection<DataType>> connections, bool active, float weight)
     {
         this.data = data;
@@ -60,6 +93,13 @@ public class Node<DataType>
         this.active = active;
     }
 
+    /// <summary>
+    /// Node constructor
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="connections"></param>
+    /// <param name="weight"></param>
+    /// <param name="active"></param>
     public Node(DataType data, Connection<DataType>[] connections, float weight, bool active)
     {
         this.data = data;
@@ -75,6 +115,13 @@ public class Node<DataType>
         this.active = active;
     }
 
+    /// <summary>
+    /// Node constructor
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="connections"></param>
+    /// <param name="active"></param>
+    /// <param name="weight"></param>
     public Node(DataType data, Connection<DataType>[] connections, bool active, float weight)
     {
         this.data = data;
@@ -90,6 +137,13 @@ public class Node<DataType>
         this.active = active;
     }
 
+    /// <summary>
+    /// Node constructor
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="weight"></param>
+    /// <param name="active"></param>
+    /// <param name="connections"></param>
     public Node(DataType data, float weight, bool active, params Connection<DataType>[] connections)
     {
         this.data = data;
@@ -105,6 +159,13 @@ public class Node<DataType>
         this.active = active;
     }
 
+    /// <summary>
+    /// Node constructor
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="active"></param>
+    /// <param name="weight"></param>
+    /// <param name="connections"></param>
     public Node(DataType data, bool active, float weight, params Connection<DataType>[] connections)
     {
         this.data = data;
@@ -123,7 +184,13 @@ public class Node<DataType>
 
     // NODE FUNCTIONS
 
-    // Make and add a new connection to the list of connections
+    /// <summary>
+    /// Make and add a new connection to the list of connections
+    /// </summary>
+    /// <param name="connectedNode"></param>
+    /// <param name="weight"></param>
+    /// <param name="active"></param>
+    /// <returns></returns>
     public List<Connection<DataType>> AddConnection(Node<DataType> connectedNode, float weight = 1, bool active = true)
     {
         Connection<DataType> newConnection = new Connection<DataType>(this, connectedNode, weight, active);
@@ -133,6 +200,13 @@ public class Node<DataType>
         return connections;
     }
 
+    /// <summary>
+    /// Make and add a new connection to the list of connections
+    /// </summary>
+    /// <param name="connectedNode"></param>
+    /// <param name="active"></param>
+    /// <param name="weight"></param>
+    /// <returns></returns>
     public List<Connection<DataType>> AddConnection(Node<DataType> connectedNode, bool active, float weight = 1)
     {
         Connection<DataType> newConnection = new Connection<DataType>(this, connectedNode, active, weight);
@@ -142,7 +216,13 @@ public class Node<DataType>
         return connections;
     }
 
-    // Make and remove a matching connection from the list of connections
+    /// <summary>
+    /// Make and remove a matching connection from the list of connections
+    /// </summary>
+    /// <param name="connectedNode"></param>
+    /// <param name="weight"></param>
+    /// <param name="active"></param>
+    /// <returns></returns>
     public List<Connection<DataType>> RemoveConnection(Node<DataType> connectedNode, float weight = 1, bool active = true)
     {
         Connection<DataType> newConnection = new Connection<DataType>(this, connectedNode, weight, active);
@@ -152,6 +232,13 @@ public class Node<DataType>
         return connections;
     }
 
+    /// <summary>
+    /// Make and remove a matching connection from the list of connections
+    /// </summary>
+    /// <param name="connectedNode"></param>
+    /// <param name="active"></param>
+    /// <param name="weight"></param>
+    /// <returns></returns>
     public List<Connection<DataType>> RemoveConnection(Node<DataType> connectedNode, bool active, float weight = 1)
     {
         Connection<DataType> newConnection = new Connection<DataType>(this, connectedNode, active, weight);
@@ -162,27 +249,40 @@ public class Node<DataType>
     }
 }
 
-// Stores the connection of two nodes and the weight of the connection.
+/// <summary>
+/// Stores the connection of two nodes and the weight of the connection.
+/// </summary>
+/// <typeparam name="DataType"></typeparam>
 public class Connection<DataType>
 {
     // CONNECTION DATA
 
-    // The node that owns this connection
+    /// <summary>
+    /// The node that owns this connection
+    /// </summary>
     public Node<DataType> from = null;
 
-    // The node that is being connected to by the from node
+    /// <summary>
+    /// The node that is being connected to by the from node
+    /// </summary>
     public Node<DataType> to = null;
 
-    // The weight of this connection
+    /// <summary>
+    /// The weight of this connection
+    /// </summary>
     public float weight = 1;
 
-    // Whether this connection is active
+    /// <summary>
+    /// Whether this connection is active
+    /// </summary>
     public bool active = true;
 
 
     // CONNECTION CONSTRUCTORS
 
-    // Default constructor
+    /// <summary>
+    /// Default constructor
+    /// </summary>
     public Connection()
     {
         from = null;
@@ -191,7 +291,13 @@ public class Connection<DataType>
         active = true;
     }
 
-    // Connection constructor
+    /// <summary>
+    /// Connection constructor
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <param name="weight"></param>
+    /// <param name="active"></param>
     public Connection(Node<DataType> from, Node<DataType> to, float weight = 1, bool active = true)
     {
         this.from = from;
@@ -200,6 +306,13 @@ public class Connection<DataType>
         this.active = active;
     }
 
+    /// <summary>
+    /// Connection constructor
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <param name="active"></param>
+    /// <param name="weight"></param>
     public Connection(Node<DataType> from, Node<DataType> to, bool active, float weight = 1)
     {
         this.from = from;
@@ -211,7 +324,11 @@ public class Connection<DataType>
 
     // CONNECTION FUNCTIONS
 
-    // Reconnect a connection's from
+    /// <summary>
+    /// Reconnect a connection's from
+    /// </summary>
+    /// <param name="from"></param>
+    /// <returns></returns>
     public Connection<DataType> ReconnectFrom(Node<DataType> from)
     {
         this.from = from;
@@ -219,6 +336,12 @@ public class Connection<DataType>
         return this;
     }
 
+    /// <summary>
+    /// Reconnect a connection's from
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="weight"></param>
+    /// <returns></returns>
     public Connection<DataType> ReconnectFrom(Node<DataType> from, float weight)
     {
         this.from = from;
@@ -227,6 +350,12 @@ public class Connection<DataType>
         return this;
     }
 
+    /// <summary>
+    /// Reconnect a connection's from
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="active"></param>
+    /// <returns></returns>
     public Connection<DataType> ReconnectFrom(Node<DataType> from, bool active)
     {
         this.from = from;
@@ -235,6 +364,13 @@ public class Connection<DataType>
         return this;
     }
 
+    /// <summary>
+    /// Reconnect a connection's from
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="weight"></param>
+    /// <param name="active"></param>
+    /// <returns></returns>
     public Connection<DataType> ReconnectFrom(Node<DataType> from, float weight, bool active)
     {
         this.from = from;
@@ -244,6 +380,13 @@ public class Connection<DataType>
         return this;
     }
 
+    /// <summary>
+    /// Reconnect a connection's from
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="active"></param>
+    /// <param name="weight"></param>
+    /// <returns></returns>
     public Connection<DataType> ReconnectFrom(Node<DataType> from, bool active, float weight)
     {
         this.from = from;
@@ -253,7 +396,11 @@ public class Connection<DataType>
         return this;
     }
 
-    // Reconnect a connection's to
+    /// <summary>
+    /// Reconnect a connection's to
+    /// </summary>
+    /// <param name="to"></param>
+    /// <returns></returns>
     public Connection<DataType> ReconnectTo(Node<DataType> to)
     {
         this.to = to;
@@ -261,6 +408,12 @@ public class Connection<DataType>
         return this;
     }
 
+    /// <summary>
+    /// Reconnect a connection's to
+    /// </summary>
+    /// <param name="to"></param>
+    /// <param name="weight"></param>
+    /// <returns></returns>
     public Connection<DataType> ReconnectTo(Node<DataType> to, float weight)
     {
         this.to = to;
@@ -269,6 +422,12 @@ public class Connection<DataType>
         return this;
     }
 
+    /// <summary>
+    /// Reconnect a connection's to
+    /// </summary>
+    /// <param name="to"></param>
+    /// <param name="active"></param>
+    /// <returns></returns>
     public Connection<DataType> ReconnectTo(Node<DataType> to, bool active)
     {
         this.to = to;
@@ -277,6 +436,13 @@ public class Connection<DataType>
         return this;
     }
 
+    /// <summary>
+    /// Reconnect a connection's to
+    /// </summary>
+    /// <param name="to"></param>
+    /// <param name="weight"></param>
+    /// <param name="active"></param>
+    /// <returns></returns>
     public Connection<DataType> ReconnectTo(Node<DataType> to, float weight, bool active)
     {
         this.to = to;
@@ -286,6 +452,13 @@ public class Connection<DataType>
         return this;
     }
 
+    /// <summary>
+    /// Reconnect a connection's to
+    /// </summary>
+    /// <param name="to"></param>
+    /// <param name="active"></param>
+    /// <param name="weight"></param>
+    /// <returns></returns>
     public Connection<DataType> ReconnectTo(Node<DataType> to, bool active, float weight)
     {
         this.to = to;
@@ -295,7 +468,12 @@ public class Connection<DataType>
         return this;
     }
 
-    // Reconnect a connection's from and to
+    /// <summary>
+    /// Reconnect a connection's from and to
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <returns></returns>
     public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to)
     {
         this.from = from;
@@ -304,6 +482,13 @@ public class Connection<DataType>
         return this;
     }
 
+    /// <summary>
+    /// Reconnect a connection's from and to
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <param name="weight"></param>
+    /// <returns></returns>
     public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to, float weight)
     {
         this.from = from;
@@ -313,6 +498,13 @@ public class Connection<DataType>
         return this;
     }
 
+    /// <summary>
+    /// Reconnect a connection's from and to
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <param name="active"></param>
+    /// <returns></returns>
     public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to, bool active)
     {
         this.from = from;
@@ -322,6 +514,14 @@ public class Connection<DataType>
         return this;
     }
 
+    /// <summary>
+    /// Reconnect a connection's from and to
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <param name="weight"></param>
+    /// <param name="active"></param>
+    /// <returns></returns>
     public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to, float weight, bool active)
     {
         this.from = from;
@@ -332,6 +532,14 @@ public class Connection<DataType>
         return this;
     }
 
+    /// <summary>
+    /// Reconnect a connection's from and to
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <param name="active"></param>
+    /// <param name="weight"></param>
+    /// <returns></returns>
     public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to, bool active, float weight)
     {
         this.from = from;
@@ -343,29 +551,43 @@ public class Connection<DataType>
     }
 }
 
-// A graph that manages all the nodes and connections inside it.
+/// <summary>
+/// A graph that manages all the nodes and connections inside it.
+/// </summary>
+/// <typeparam name="DataType"></typeparam>
 public class Graph<DataType> : IEnumerable
 {
     // GRAPH DATA
 
-    // The list of nodes included in this graph
+    /// <summary>
+    /// The list of nodes included in this graph
+    /// </summary>
     public List<Node<DataType>> nodes;
 
 
     // GRAPH CONSTRUCTORS
 
-    // Default constructor
+    /// <summary>
+    /// Default constructor
+    /// </summary>
     public Graph()
     {
         nodes = new List<Node<DataType>>();
     }
 
-    // Node constructor
+    /// <summary>
+    /// Node constructor
+    /// </summary>
+    /// <param name="nodes"></param>
     public Graph(List<Node<DataType>> nodes)
     {
         this.nodes = nodes;
     }
 
+    /// <summary>
+    /// Node constructor
+    /// </summary>
+    /// <param name="nodes"></param>
     public Graph(params Node<DataType>[] nodes)
     {
         this.nodes = new List<Node<DataType>>(nodes.Length);
@@ -379,7 +601,11 @@ public class Graph<DataType> : IEnumerable
 
     // GRAPH FUNCTIONS
 
-    // Get all of the given node's connections
+    /// <summary>
+    /// Get all of the given node's connections
+    /// </summary>
+    /// <param name="node"></param>
+    /// <returns></returns>
     public List<Connection<DataType>> NodeConnections(Node<DataType> node)
     {
         List<Connection<DataType>> connections = new List<Connection<DataType>>();
@@ -392,7 +618,11 @@ public class Graph<DataType> : IEnumerable
         return connections;
     }
 
-    // Get all of the connections that are connected to the given node
+    /// <summary>
+    /// Get all of the connections that are connected to the given node
+    /// </summary>
+    /// <param name="node"></param>
+    /// <returns></returns>
     public List<Connection<DataType>> ConnectedNodes(Node<DataType> node)
     {
         List<Connection<DataType>> connections = new List<Connection<DataType>>();
@@ -416,7 +646,10 @@ public class Graph<DataType> : IEnumerable
         return connections;
     }
 
-    // Get all of the connections of each node in a list
+    /// <summary>
+    /// Get all of the connections of each node in a list
+    /// </summary>
+    /// <returns></returns>
     public List<Connection<DataType>> AllConnections()
     {
         List<Connection<DataType>> allConnections = new List<Connection<DataType>>();
@@ -432,7 +665,10 @@ public class Graph<DataType> : IEnumerable
         return allConnections;
     }
 
-    // Get all of the connections of each node in a dictionary
+    /// <summary>
+    /// Get all of the connections of each node in a dictionary
+    /// </summary>
+    /// <returns></returns>
     public Dictionary<Node<DataType>, List<Connection<DataType>>> AllConnectionsDictionary()
     {
         Dictionary<Node<DataType>, List<Connection<DataType>>> allConnections = new Dictionary<Node<DataType>, List<Connection<DataType>>>();
@@ -445,7 +681,10 @@ public class Graph<DataType> : IEnumerable
         return allConnections;
     }
 
-    // Get the total number of connections of this graph
+    /// <summary>
+    /// Get the total number of connections of this graph
+    /// </summary>
+    /// <returns></returns>
     public int TotalConnections()
     {
         int totalConnections = 0;
@@ -464,7 +703,10 @@ public class Graph<DataType> : IEnumerable
 
     // ENUMERATOR FUNCTION
 
-    // Enumerator implementation
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator GetEnumerator()
     {
         return nodes.GetEnumerator();

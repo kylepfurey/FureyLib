@@ -31,6 +31,9 @@ private:
 	// Delegate cancellation token
 	bool cancel_invoke = false;
 
+	// Whether the delegate is currently invoking functions
+	bool is_invoking = false;
+
 public:
 
 	// DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
@@ -218,15 +221,21 @@ public:
 	{
 		cancel_invoke = false;
 
+		is_invoking = true;
+
 		for (int i = 0; i < functions.size(); i++)
 		{
 			functions[i](parameters...);
 
 			if (cancel_invoke)
 			{
+				is_invoking = false;
+
 				return false;
 			}
 		}
+
+		is_invoking = false;
 
 		return true;
 	}
@@ -235,6 +244,12 @@ public:
 	void cancel()
 	{
 		cancel_invoke = true;
+	}
+
+	// Returns whether the delegate is currently being invoked
+	bool is_invoking()
+	{
+		return is_invoking;
 	}
 
 
@@ -426,6 +441,9 @@ private:
 	// Delegate cancellation token
 	bool cancel_invoke = false;
 
+	// Whether the delegate is currently invoking functions
+	bool is_invoking = false;
+
 public:
 
 	// DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
@@ -613,6 +631,8 @@ public:
 	{
 		cancel_invoke = false;
 
+		is_invoking = true;
+
 		std::map<FUNCTION(), ReturnType> returns = std::map<FUNCTION(), ReturnType>();
 
 		for (int i = 0; i < functions.size(); i++)
@@ -630,6 +650,8 @@ public:
 			}
 		}
 
+		is_invoking = false;
+
 		return returns;
 	}
 
@@ -637,6 +659,12 @@ public:
 	void cancel()
 	{
 		cancel_invoke = true;
+	}
+
+	// Returns whether the delegate is currently being invoked
+	bool is_invoking()
+	{
+		return is_invoking;
 	}
 
 
@@ -826,7 +854,10 @@ private:
 	std::vector<METHOD()> functions = std::vector<METHOD()>();
 
 	// Delegate cancellation token
-	bool cancel_invoke = false;
+	bool cancelInvoke = false;
+
+	// Whether the delegate is currently invoking functions
+	bool isInvoking = false;
 
 public:
 
@@ -1013,17 +1044,23 @@ public:
 	// Call each function in the delegate and return if the invoke was successful
 	bool Invoke(ParameterTypes... parameters)
 	{
-		cancel_invoke = false;
+		cancelInvoke = false;
+
+		isInvoking = true;
 
 		for (int i = 0; i < functions.size(); i++)
 		{
 			functions[i](parameters...);
 
-			if (cancel_invoke)
+			if (cancelInvoke)
 			{
+				isInvoking = false;
+
 				return false;
 			}
 		}
+
+		isInvoking = false;
 
 		return true;
 	}
@@ -1031,7 +1068,13 @@ public:
 	// Cancel an invoke
 	void Cancel()
 	{
-		cancel_invoke = true;
+		cancelInvoke = true;
+	}
+
+	// Returns whether the delegate is currently being invoked
+	bool IsInvoking()
+	{
+		return isInvoking;
 	}
 
 
@@ -1223,6 +1266,9 @@ private:
 	// Delegate cancellation token
 	bool cancelInvoke = false;
 
+	// Whether the delegate is currently invoking functions
+	bool isInvoking = false;
+
 public:
 
 	// DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
@@ -1410,6 +1456,8 @@ public:
 	{
 		cancelInvoke = false;
 
+		isInvoking = true;
+
 		std::map<FUNCTION(), ReturnType> returns = std::map<FUNCTION(), ReturnType>();
 
 		for (int i = 0; i < functions.size(); i++)
@@ -1427,6 +1475,8 @@ public:
 			}
 		}
 
+		isInvoking = false;
+
 		return returns;
 	}
 
@@ -1434,6 +1484,12 @@ public:
 	void Cancel()
 	{
 		cancelInvoke = true;
+	}
+
+	// Returns whether the delegate is currently being invoked
+	bool IsInvoking()
+	{
+		return isInvoking;
 	}
 
 

@@ -54,6 +54,7 @@ public:
 		this->active = active;
 	}
 
+	// Connection constructor
 	connection(node<DataType>* from, node<DataType>* to, bool active, float weight = 1)
 	{
 		this->from = from;
@@ -73,6 +74,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from
 	connection<DataType>& reconnect_from(node<DataType>* from, float weight)
 	{
 		this->from = from;
@@ -81,6 +83,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from
 	connection<DataType>& reconnect_from(node<DataType>* from, bool active)
 	{
 		this->from = from;
@@ -89,6 +92,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from
 	connection<DataType>& reconnect_from(node<DataType>* from, float weight, bool active)
 	{
 		this->from = from;
@@ -98,6 +102,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from
 	connection<DataType>& reconnect_from(node<DataType>* from, bool active, float weight)
 	{
 		this->from = from;
@@ -115,6 +120,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's to
 	connection<DataType>& reconnect_to(node<DataType>* to, float weight)
 	{
 		this->to = to;
@@ -123,6 +129,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's to
 	connection<DataType>& reconnect_to(node<DataType>* to, bool active)
 	{
 		this->to = to;
@@ -131,6 +138,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's to
 	connection<DataType>& reconnect_to(node<DataType>* to, float weight, bool active)
 	{
 		this->to = to;
@@ -140,6 +148,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's to
 	connection<DataType>& reconnect_to(node<DataType>* to, bool active, float weight)
 	{
 		this->to = to;
@@ -158,6 +167,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from and to
 	connection<DataType>& reconnect(node<DataType>* from, node<DataType>* to, float weight)
 	{
 		this->from = from;
@@ -167,6 +177,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from and to
 	connection<DataType>& reconnect(node<DataType>* from, node<DataType>* to, bool active)
 	{
 		this->from = from;
@@ -176,6 +187,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from and to
 	connection<DataType>& reconnect(node<DataType>* from, node<DataType>* to, float weight, bool active)
 	{
 		this->from = from;
@@ -186,6 +198,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from and to
 	connection<DataType>& reconnect(node<DataType>* from, node<DataType>* to, bool active, float weight)
 	{
 		this->from = from;
@@ -237,6 +250,7 @@ public:
 		this->active = active;
 	}
 
+	// Default constructor
 	node(bool active, float weight = 1)
 	{
 		data = DataType();
@@ -254,6 +268,7 @@ public:
 		this->active = active;
 	}
 
+	// Node constructor
 	node(DataType data, std::vector<connection<DataType>> connections, bool active, float weight)
 	{
 		this->data = data;
@@ -262,6 +277,7 @@ public:
 		this->active = active;
 	}
 
+	// Node constructor
 	node(DataType data, connection<DataType> connections[], int number_of_connections, float weight, bool active)
 	{
 		this->data = data;
@@ -277,6 +293,7 @@ public:
 		this->active = active;
 	}
 
+	// Node constructor
 	node(DataType data, connection<DataType> connections[], int number_of_connections, bool active, float weight)
 	{
 		this->data = data;
@@ -292,6 +309,7 @@ public:
 		this->active = active;
 	}
 
+	// Node constructor
 	node(DataType data, float weight, bool active, int number_of_connections)
 	{
 		this->data = data;
@@ -302,6 +320,7 @@ public:
 		this->active = active;
 	}
 
+	// Node constructor
 	node(DataType data, bool active, float weight, int number_of_connections)
 	{
 		this->data = data;
@@ -312,6 +331,7 @@ public:
 		this->active = active;
 	}
 
+	// Node constructor
 	node(DataType data, float weight, bool active, int number_of_connections, connection<DataType> connections...)
 	{
 		this->data = data;
@@ -333,6 +353,7 @@ public:
 		va_end(list);
 	}
 
+	// Node constructor
 	node(DataType data, bool active, float weight, int number_of_connections, connection<DataType> connections...)
 	{
 		this->data = data;
@@ -367,6 +388,7 @@ public:
 		return connections;
 	}
 
+	// Make and add a new connection to the list of connections
 	std::vector<connection<DataType>>& add_connection(node<DataType>* connected_node, bool active, float weight = 1)
 	{
 		connection<DataType> new_connection = connection<DataType>(this, connected_node, active, weight);
@@ -386,6 +408,7 @@ public:
 		return connections;
 	}
 
+	// Make and remove a matching connection from the list of connections
 	std::vector<connection<DataType>>& remove_connection(node<DataType>* connected_node, bool active, float weight = 1)
 	{
 		connection<DataType> new_connection = connection<DataType>(this, connected_node, active, weight);
@@ -430,6 +453,7 @@ public:
 		this->nodes = nodes;
 	}
 
+	// Node constructor
 	graph(node<DataType>* nodes[], int number_of_nodes)
 	{
 		this->nodes = std::vector<node<DataType>*>(number_of_nodes);
@@ -440,6 +464,7 @@ public:
 		}
 	}
 
+	// Node constructor
 	graph(int number_of_nodes, node<DataType>* nodes...)
 	{
 		this->nodes = std::vector<node<DataType>*>(number_of_nodes);
@@ -456,6 +481,7 @@ public:
 		va_end(list);
 	}
 
+	// Node constructor
 	graph(const std::initializer_list<node<DataType>*> nodes)
 	{
 		this->nodes = std::vector<node<DataType>*>(nodes.size());
@@ -595,6 +621,7 @@ public:
 		this->active = active;
 	}
 
+	// Connection constructor
 	Connection(Node<DataType>* from, Node<DataType>* to, bool active, float weight = 1)
 	{
 		this->from = from;
@@ -614,6 +641,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from
 	Connection<DataType>& ReconnectFrom(Node<DataType>* from, float weight)
 	{
 		this->from = from;
@@ -622,6 +650,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from
 	Connection<DataType>& ReconnectFrom(Node<DataType>* from, bool active)
 	{
 		this->from = from;
@@ -630,6 +659,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from
 	Connection<DataType>& ReconnectFrom(Node<DataType>* from, float weight, bool active)
 	{
 		this->from = from;
@@ -639,6 +669,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from
 	Connection<DataType>& ReconnectFrom(Node<DataType>* from, bool active, float weight)
 	{
 		this->from = from;
@@ -656,6 +687,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's to
 	Connection<DataType>& ReconnectTo(Node<DataType>* to, float weight)
 	{
 		this->to = to;
@@ -664,6 +696,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's to
 	Connection<DataType>& ReconnectTo(Node<DataType>* to, bool active)
 	{
 		this->to = to;
@@ -672,6 +705,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's to
 	Connection<DataType>& ReconnectTo(Node<DataType>* to, float weight, bool active)
 	{
 		this->to = to;
@@ -681,6 +715,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's to
 	Connection<DataType>& ReconnectTo(Node<DataType>* to, bool active, float weight)
 	{
 		this->to = to;
@@ -699,6 +734,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from and to
 	Connection<DataType>& Reconnect(Node<DataType>* from, Node<DataType>* to, float weight)
 	{
 		this->from = from;
@@ -708,6 +744,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from and to
 	Connection<DataType>& Reconnect(Node<DataType>* from, Node<DataType>* to, bool active)
 	{
 		this->from = from;
@@ -717,6 +754,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from and to
 	Connection<DataType>& Reconnect(Node<DataType>* from, Node<DataType>* to, float weight, bool active)
 	{
 		this->from = from;
@@ -727,6 +765,7 @@ public:
 		return *this;
 	}
 
+	// Reconnect a connection's from and to
 	Connection<DataType>& Reconnect(Node<DataType>* from, Node<DataType>* to, bool active, float weight)
 	{
 		this->from = from;
@@ -795,6 +834,7 @@ public:
 		this->active = active;
 	}
 
+	// Node constructor
 	Node(DataType data, std::vector<Connection<DataType>> connections, bool active, float weight)
 	{
 		this->data = data;
@@ -803,6 +843,7 @@ public:
 		this->active = active;
 	}
 
+	// Node constructor
 	Node(DataType data, Connection<DataType> connections[], int number_of_connections, float weight, bool active)
 	{
 		this->data = data;
@@ -818,6 +859,7 @@ public:
 		this->active = active;
 	}
 
+	// Node constructor
 	Node(DataType data, Connection<DataType> connections[], int number_of_connections, bool active, float weight)
 	{
 		this->data = data;
@@ -833,6 +875,7 @@ public:
 		this->active = active;
 	}
 
+	// Node constructor
 	Node(DataType data, float weight, bool active, int number_of_connections)
 	{
 		this->data = data;
@@ -843,6 +886,7 @@ public:
 		this->active = active;
 	}
 
+	// Node constructor
 	Node(DataType data, bool active, float weight, int number_of_connections)
 	{
 		this->data = data;
@@ -853,6 +897,7 @@ public:
 		this->active = active;
 	}
 
+	// Node constructor
 	Node(DataType data, float weight, bool active, int number_of_connections, Connection<DataType> connections...)
 	{
 		this->data = data;
@@ -874,6 +919,7 @@ public:
 		va_end(list);
 	}
 
+	// Node constructor
 	Node(DataType data, bool active, float weight, int number_of_connections, Connection<DataType> connections...)
 	{
 		this->data = data;
@@ -908,6 +954,7 @@ public:
 		return connections;
 	}
 
+	// Make and add a new connection to the list of connections
 	std::vector<Connection<DataType>>& AddConnection(Node<DataType>* connected_node, bool active, float weight = 1)
 	{
 		Connection<DataType> new_connection = Connection<DataType>(this, connected_node, active, weight);
@@ -927,6 +974,7 @@ public:
 		return connections;
 	}
 
+	// Make and remove a matching connection from the list of connections
 	std::vector<Connection<DataType>>& RemoveConnection(Node<DataType>* connected_node, bool active, float weight = 1)
 	{
 		Connection<DataType> new_connection = Connection<DataType>(this, connected_node, active, weight);
@@ -971,6 +1019,7 @@ public:
 		this->nodes = nodes;
 	}
 
+	// Node constructor
 	Graph(Node<DataType>* nodes[], int number_of_nodes)
 	{
 		this->nodes = std::vector<Node<DataType>*>(number_of_nodes);
@@ -981,6 +1030,7 @@ public:
 		}
 	}
 
+	// Node constructor
 	Graph(int number_of_nodes, Node<DataType>* nodes...)
 	{
 		this->nodes = std::vector<Node<DataType>*>(number_of_nodes);
@@ -997,6 +1047,7 @@ public:
 		va_end(list);
 	}
 
+	// Node constructor
 	Graph(const std::initializer_list<Node<DataType>*> nodes)
 	{
 		this->nodes = std::vector<Node<DataType>*>(nodes.size());

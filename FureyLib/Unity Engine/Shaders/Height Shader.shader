@@ -1,9 +1,3 @@
-
-// Vector Height Shader
-// by Kyle Furey
-
-// SOURCE: https://www.youtube.com/watch?v=AK8oV4BzrW4 by World of Zero
-
 Shader "Custom/HeightShader"
 {
     Properties

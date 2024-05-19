@@ -56,7 +56,7 @@ public class NewBehaviourScript : MonoBehaviour
     // FUNCTIONS
 
     /// <summary>
-    /// Awake is called when the script is loaded
+    /// Awake() is called when the script is loaded
     /// </summary>
     private void Awake()
     {
@@ -64,7 +64,7 @@ public class NewBehaviourScript : MonoBehaviour
     }
 
     /// <summary>
-    /// Start is called before the first frame update
+    /// Start() is called before the first frame update
     /// </summary>
     private void Start()
     {
@@ -72,9 +72,25 @@ public class NewBehaviourScript : MonoBehaviour
     }
 
     /// <summary>
-    /// Update is called once per frame
+    /// Update() is called once per frame
     /// </summary>
     private void Update()
+    {
+
+    }
+
+    /// <summary>
+    /// FixedUpdate() is called once per physics tick
+    /// </summary>
+    private void FixedUpdate()
+    {
+
+    }
+
+    /// <summary>
+    /// LateUpdate() is called once per frame after Update
+    /// </summary>
+    private void LateUpdate()
     {
 
     }

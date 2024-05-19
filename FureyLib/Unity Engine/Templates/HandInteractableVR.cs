@@ -46,7 +46,7 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
-    /// Awake is called when the script is loaded
+    /// Awake() is called when the script is loaded
     /// </summary>
     private void Awake()
     {
@@ -54,7 +54,7 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
-    /// Start is called before the first frame update
+    /// Start() is called before the first frame update
     /// </summary>
     private void Start()
     {
@@ -62,11 +62,10 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
-    /// Update is called once per frame
+    /// Update() is called once per frame
     /// </summary>
     private void Update()
     {
-        // Check the player's hands
         if (IHandInteractableVR.handsSet)
         {
             // New code here
@@ -74,19 +73,25 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
-    /// FixedUpdate is called once per physics tick
+    /// FixedUpdate() is called once per physics tick
     /// </summary>
     private void FixedUpdate()
     {
-
+        if (IHandInteractableVR.handsSet)
+        {
+            // New code here
+        }
     }
 
     /// <summary>
-    /// LateUpdate is called once per frame after Update
+    /// LateUpdate() is called once per frame after Update
     /// </summary>
     private void LateUpdate()
     {
-
+        if (IHandInteractableVR.handsSet)
+        {
+            // New code here
+        }
     }
 
     // New functions here

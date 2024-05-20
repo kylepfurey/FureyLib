@@ -1,3 +1,7 @@
+
+// Height Map Shader
+// by Kyle Furey
+
 Shader "Custom/HeightShader"
 {
     Properties

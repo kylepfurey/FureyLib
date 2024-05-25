@@ -17,12 +17,6 @@ public class ParticleVisibility : MonoBehaviour
     [Header("The file containing the data for the particles to represent:")]
     [SerializeField] private FlowFile flowFile;
 
-    /// <summary>
-    /// Particle system variables
-    /// </summary>
-    private ParticleSystem particleSystem;
-    private ParticleSystem.Particle[] particles;
-
     [Header("Whether the bounds and origin for the particle system are static and do not change:")]
     public bool boundsAreStatic = true;
 
@@ -31,16 +25,6 @@ public class ParticleVisibility : MonoBehaviour
 
     [Header("The relative origin of the particle system:")]
     public Vector3 particleOrigin = new Vector3(0.5f, 0.5f, 0.5f);
-
-    /// <summary>
-    /// The scale of a particle's position
-    /// </summary>
-    public const float particleScale = 100;
-
-    /// <summary>
-    /// The flow data cube's collider
-    /// </summary>
-    private BoxCollider collider = null;
 
     [Header("\nGRID SETTINGS")]
 
@@ -53,8 +37,38 @@ public class ParticleVisibility : MonoBehaviour
     [Header("The flow data cube's Z plane:")]
     public GridGenerator zPlane = null;
 
-    [Header("Storage of the plane counts to check if they need to be updated:")]
+    /// <summary>
+    /// The scale of a particle's position
+    /// </summary>
+    public const float particleScale = 100;
+
+    /// <summary>
+    /// Particle system variables
+    /// </summary>
+    private ParticleSystem particleSystem;
+
+    /// <summary>
+    /// Particle variables
+    /// </summary>
+    private ParticleSystem.Particle[] particles;
+
+    /// <summary>
+    /// The flow data cube's collider
+    /// </summary>
+    private BoxCollider collider = null;
+
+    /// <summary>
+    /// Storage of the plane counts to check if they need to be updated:
+    /// </summary>
     private Vector2Int[] planeCounts = new Vector2Int[3];
+
+    /// <summary>
+    /// Axis enum
+    /// </summary>
+    public enum Axis { X, Y, Z };
+
+
+    // FUNCTIONS
 
     /// <summary>
     /// Sets particle system variables
@@ -121,66 +135,7 @@ public class ParticleVisibility : MonoBehaviour
     {
         if (!boundsAreStatic)
         {
-            // Clamp the bounds
-            particleBounds.x = Mathf.Clamp(particleBounds.x, 0, 1);
-            particleBounds.y = Mathf.Clamp(particleBounds.y, 0, 1);
-            particleBounds.z = Mathf.Clamp(particleBounds.z, 0, 1);
-
-            // Clamp the origin
-            particleOrigin.x = Mathf.Clamp(particleOrigin.x, 0, 1);
-            particleOrigin.y = Mathf.Clamp(particleOrigin.y, 0, 1);
-            particleOrigin.z = Mathf.Clamp(particleOrigin.z, 0, 1);
-
-            // Update the collider's size
-            collider.size = particleBounds;
-
-            // Update the plane counts
-            xPlane.count.x = (int)(particleBounds.x * 101);
-            xPlane.count.y = (int)(particleBounds.z * 101);
-
-            yPlane.count.x = (int)(particleBounds.x * 101);
-            yPlane.count.y = (int)(particleBounds.y * 101);
-
-            zPlane.count.x = (int)(particleBounds.z * 101);
-            zPlane.count.y = (int)(particleBounds.y * 101);
-
-            if (planeCounts[0].x != xPlane.count.x || planeCounts[0].y != xPlane.count.y)
-            {
-                if (xPlane.enabled)
-                {
-                    xPlane.GenerateGrid();
-                }
-
-                planeCounts[0].x = xPlane.count.x;
-                planeCounts[0].y = xPlane.count.y;
-            }
-
-            if (planeCounts[1].x != yPlane.count.x || planeCounts[1].y != yPlane.count.y)
-            {
-                if (yPlane.enabled)
-                {
-                    yPlane.GenerateGrid();
-                }
-
-                planeCounts[1].x = yPlane.count.x;
-                planeCounts[1].y = yPlane.count.y;
-            }
-
-            if (planeCounts[2].x != zPlane.count.x || planeCounts[2].y != zPlane.count.y)
-            {
-                if (zPlane.enabled)
-                {
-                    zPlane.GenerateGrid();
-                }
-
-                planeCounts[2].x = zPlane.count.x;
-                planeCounts[2].y = zPlane.count.y;
-            }
-
-            // Update the plane positions
-            xPlane.transform.localPosition = new Vector3(Mathf.Clamp(particleOrigin.x, particleBounds.x / 2, 1 - particleBounds.x / 2), particleOrigin.y, Mathf.Clamp(particleOrigin.z, particleBounds.z / 2, 1 - particleBounds.z / 2)) * particleScale;
-            yPlane.transform.localPosition = new Vector3(Mathf.Clamp(particleOrigin.x, particleBounds.x / 2, 1 - particleBounds.x / 2), Mathf.Clamp(particleOrigin.y, particleBounds.y / 2, 1 - particleBounds.y / 2), particleOrigin.z) * particleScale;
-            zPlane.transform.localPosition = new Vector3(particleOrigin.x, Mathf.Clamp(particleOrigin.y, particleBounds.y / 2, 1 - particleBounds.y / 2), Mathf.Clamp(particleOrigin.z, particleBounds.z / 2, 1 - particleBounds.z / 2)) * particleScale;
+            UpdatePlanes();
         }
 
         // PARTICLE SYSTEM UPDATE -> CAMERA RENDER -> UPDATE PARTICLE
@@ -198,13 +153,83 @@ public class ParticleVisibility : MonoBehaviour
 
         // Let the particle system update itself, but manually update the particles immediately after with an invoke call.
         // This ensures the particles are updated before the camera renders them (to prevent flickering).
-        Invoke("UpdateParticle", 0);
+        Invoke("UpdateParticles", 0);
+    }
+
+
+    // UPDATING PARTICLES
+
+    /// <summary>
+    /// Updates the clipping planes
+    /// </summary>
+    public void UpdatePlanes()
+    {
+        // Clamp the bounds
+        particleBounds.x = Mathf.Clamp(particleBounds.x, 0, 1);
+        particleBounds.y = Mathf.Clamp(particleBounds.y, 0, 1);
+        particleBounds.z = Mathf.Clamp(particleBounds.z, 0, 1);
+
+        // Clamp the origin
+        particleOrigin.x = Mathf.Clamp(particleOrigin.x, 0, 1);
+        particleOrigin.y = Mathf.Clamp(particleOrigin.y, 0, 1);
+        particleOrigin.z = Mathf.Clamp(particleOrigin.z, 0, 1);
+
+        // Update the collider's size
+        collider.size = particleBounds;
+
+        // Update the plane counts
+        xPlane.count.x = (int)(particleBounds.x * 101);
+        xPlane.count.y = (int)(particleBounds.z * 101);
+
+        yPlane.count.x = (int)(particleBounds.x * 101);
+        yPlane.count.y = (int)(particleBounds.y * 101);
+
+        zPlane.count.x = (int)(particleBounds.z * 101);
+        zPlane.count.y = (int)(particleBounds.y * 101);
+
+        if (planeCounts[0].x != xPlane.count.x || planeCounts[0].y != xPlane.count.y)
+        {
+            if (xPlane.enabled)
+            {
+                xPlane.GenerateGrid();
+            }
+
+            planeCounts[0].x = xPlane.count.x;
+            planeCounts[0].y = xPlane.count.y;
+        }
+
+        if (planeCounts[1].x != yPlane.count.x || planeCounts[1].y != yPlane.count.y)
+        {
+            if (yPlane.enabled)
+            {
+                yPlane.GenerateGrid();
+            }
+
+            planeCounts[1].x = yPlane.count.x;
+            planeCounts[1].y = yPlane.count.y;
+        }
+
+        if (planeCounts[2].x != zPlane.count.x || planeCounts[2].y != zPlane.count.y)
+        {
+            if (zPlane.enabled)
+            {
+                zPlane.GenerateGrid();
+            }
+
+            planeCounts[2].x = zPlane.count.x;
+            planeCounts[2].y = zPlane.count.y;
+        }
+
+        // Update the plane positions
+        xPlane.transform.localPosition = new Vector3(Mathf.Clamp(particleOrigin.x, particleBounds.x / 2, 1 - particleBounds.x / 2), particleOrigin.y, Mathf.Clamp(particleOrigin.z, particleBounds.z / 2, 1 - particleBounds.z / 2)) * particleScale;
+        yPlane.transform.localPosition = new Vector3(Mathf.Clamp(particleOrigin.x, particleBounds.x / 2, 1 - particleBounds.x / 2), Mathf.Clamp(particleOrigin.y, particleBounds.y / 2, 1 - particleBounds.y / 2), particleOrigin.z) * particleScale;
+        zPlane.transform.localPosition = new Vector3(particleOrigin.x, Mathf.Clamp(particleOrigin.y, particleBounds.y / 2, 1 - particleBounds.y / 2), Mathf.Clamp(particleOrigin.z, particleBounds.z / 2, 1 - particleBounds.z / 2)) * particleScale;
     }
 
     /// <summary>
     /// Updates the particles
     /// </summary>
-    private void UpdateParticle()
+    private void UpdateParticles()
     {
         // Store the number of particles remaining
         int totalParticlesAlive = particleSystem.GetParticles(particles);
@@ -216,7 +241,7 @@ public class ParticleVisibility : MonoBehaviour
             // if (flowFile.InBounds(particles[i].position))
 
             // Check if the particles are in the bounds of the set
-            if (ParticleInBounds(particles[i].position))
+            if (InBounds(particles[i].position))
             {
                 // Update the particle's velocity
                 particles[i].velocity = flowFile.Sample(particles[i].position);
@@ -232,16 +257,49 @@ public class ParticleVisibility : MonoBehaviour
         particleSystem.SetParticles(particles, totalParticlesAlive);
     }
 
+
+    // IN BOUNDS
+
     /// <summary>
-    /// Determine if the position of a particle is in bounds of the scaled set
+    /// Determine if the given position is in bounds of the scaled set
     /// </summary>
-    /// <param name="particlePosition"></param>
+    /// <param name="position"></param>
     /// <returns></returns>
-    private bool ParticleInBounds(Vector3 particlePosition)
+    public bool InBounds(Vector3 position)
     {
-        return (particlePosition.x / particleScale >= particleOrigin.x - particleBounds.x / 2) && (particlePosition.x / particleScale <= particleOrigin.x + particleBounds.x / 2) &&
-               (particlePosition.y / particleScale >= particleOrigin.y - particleBounds.y / 2) && (particlePosition.y / particleScale <= particleOrigin.y + particleBounds.y / 2) &&
-               (particlePosition.z / particleScale >= particleOrigin.z - particleBounds.z / 2) && (particlePosition.z / particleScale <= particleOrigin.z + particleBounds.z / 2);
+        return (position.x / particleScale >= particleOrigin.x - particleBounds.x / 2) && (position.x / particleScale <= particleOrigin.x + particleBounds.x / 2) &&
+               (position.y / particleScale >= particleOrigin.y - particleBounds.y / 2) && (position.y / particleScale <= particleOrigin.y + particleBounds.y / 2) &&
+               (position.z / particleScale >= particleOrigin.z - particleBounds.z / 2) && (position.z / particleScale <= particleOrigin.z + particleBounds.z / 2);
+    }
+
+
+    // SETTERS
+
+    /// <summary>
+    /// Sets whether to display the X Y or Z plane
+    /// </summary>
+    public void ShowPlane(Axis axis, bool show)
+    {
+        switch (axis)
+        {
+            case Axis.X:
+
+                xPlane.gameObject.active = show;
+
+                return;
+
+            case Axis.Y:
+
+                yPlane.gameObject.active = show;
+
+                return;
+
+            case Axis.Z:
+
+                zPlane.gameObject.active = show;
+
+                return;
+        }
     }
 
     /// <summary>
@@ -252,5 +310,30 @@ public class ParticleVisibility : MonoBehaviour
         xPlane.gameObject.active = show;
         yPlane.gameObject.active = show;
         zPlane.gameObject.active = show;
+    }
+
+    /// <summary>
+    /// Sets whether the bounds are static
+    /// </summary>
+    public void SetStaticBounds(bool isStatic)
+    {
+        boundsAreStatic = isStatic;
+    }
+
+    /// <summary>
+    /// Updates the particle bounds
+    /// </summary>
+    public void SetParticleBounds(Vector3 bounds)
+    {
+        particleBounds = bounds;
+    }
+
+    /// <summary>
+    /// Updates the particle bounds and origin
+    /// </summary>
+    public void SetParticleBounds(Vector3 bounds, Vector3 origin)
+    {
+        particleBounds = bounds;
+        particleOrigin = origin;
     }
 }

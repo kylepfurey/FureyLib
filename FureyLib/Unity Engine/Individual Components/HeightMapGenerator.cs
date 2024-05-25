@@ -15,13 +15,13 @@ public class HeightMapGenerator : MonoBehaviour
     [Header("\nHEIGHT MAP SETTINGS")]
 
     [Header("The material to assign to the planes:")]
-    [SerializeField] private Material material = null;
+    public Material material = null;
 
     [Header("The number of planes to generate:")]
-    [SerializeField] private int count = 10;
+    public int count = 10;
 
     [Header("The maximum height to generate planes from:")]
-    [SerializeField] private float height = 5;
+    public float height = 5;
 
     [Header("\nTESTING")]
 
@@ -29,7 +29,7 @@ public class HeightMapGenerator : MonoBehaviour
     [SerializeField] private bool generateOnStart = true;
 
     [Header("Whether to generate the planes live:")]
-    [SerializeField] private bool liveTesting = true;
+    public bool liveTesting = true;
 
     [Header("Test generation button:")]
     [SerializeField] private bool test = false;
@@ -37,8 +37,13 @@ public class HeightMapGenerator : MonoBehaviour
     [Header("Clear generation button:")]
     [SerializeField] private bool clear = false;
 
-    // A list of the generated objects
+    /// <summary>
+    /// A list of the generated objects
+    /// </summary>
     private List<GameObject> planes = new List<GameObject>();
+
+
+    // FUNCTIONS
 
     /// <summary>
     /// Allows testing in the editor
@@ -79,6 +84,9 @@ public class HeightMapGenerator : MonoBehaviour
             Generate();
         }
     }
+
+
+    // GENERATE AND CLEAR
 
     /// <summary>
     /// Generates and returns the planes representing the height map
@@ -130,11 +138,38 @@ public class HeightMapGenerator : MonoBehaviour
 
         for (int i = 0; i < planes.Count; i++)
         {
-            DestroyImmediate(planes[i]);
+            Destroy(planes[i]);
         }
 
         planes.Clear();
 
         return count;
+    }
+
+
+    // SETTERS
+
+    /// <summary>
+    /// Sets the material of the height map
+    /// </summary>
+    public void SetMaterial(Material material)
+    {
+        this.material = material;
+    }
+
+    /// <summary>
+    /// Sets the count of the height map
+    /// </summary>
+    public void SetCount(int count)
+    {
+        this.count = count;
+    }
+
+    /// <summary>
+    /// Sets the height of the height map
+    /// </summary>
+    public void SetHeight(float height)
+    {
+        this.height = height;
     }
 }

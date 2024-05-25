@@ -11,7 +11,7 @@
 #include "MyClass.h"
 
 // Template Unreal class script.
-class GAME_API MyClass
+class GAME_API MyClass : public UObject
 {
 public:
 

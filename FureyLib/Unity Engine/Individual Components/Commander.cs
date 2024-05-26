@@ -35,7 +35,7 @@ public class Commander : MonoBehaviour
 
     [Header("Commander keyboard settings:")]
     [SerializeField] private KeyCode open = KeyCode.Slash;
-    [SerializeField] private KeyCode close = KeyCode.Slash;
+    [SerializeField] private KeyCode close = KeyCode.Escape;
     [SerializeField] private KeyCode send = KeyCode.Return;
 
     [Header("The commander's input field and components:")]
@@ -52,9 +52,6 @@ public class Commander : MonoBehaviour
     /// A list of the current arguments that can be accessed by any of the command functions
     /// </summary>
     private static List<string> currentArguments = new List<string>();
-
-    [Header("Test particle prefab:")]
-    [SerializeField] private GameObject particlePrefab = null;
 
 
     // INITIALIZATION AND INPUT
@@ -79,11 +76,6 @@ public class Commander : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            exit();
-        }
-
         // Commander active
         if (commanderActive)
         {
@@ -93,6 +85,8 @@ public class Commander : MonoBehaviour
                 if (Input.GetKeyDown(open))
                 {
                     OpenCommander();
+
+                    return;
                 }
             }
             else
@@ -101,11 +95,15 @@ public class Commander : MonoBehaviour
                 if (Input.GetKeyDown(close))
                 {
                     CloseCommander();
+
+                    return;
                 }
                 // Sending command
                 else if (Input.GetKeyDown(send))
                 {
                     SendCommand(inputField.text);
+
+                    return;
                 }
             }
         }
@@ -113,6 +111,12 @@ public class Commander : MonoBehaviour
         else if (commanderOpen)
         {
             CloseCommander();
+        }
+
+        // Closing the game
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            exit();
         }
     }
 
@@ -392,42 +396,5 @@ public class Commander : MonoBehaviour
         }
 
         print(log);
-    }
-
-
-    // SUMMON PARTICLE COMMAND
-
-    /// <summary>
-    /// Summons a grabbable particle in front of the player
-    /// </summary>
-    private void particle()
-    {
-        Instantiate(particlePrefab, transform.position, transform.rotation);
-    }
-
-    /// <summary>
-    /// Summons a grabbable particle in front of the player
-    /// </summary>
-    private void summon()
-    {
-        if (currentArguments.Count == 0)
-        {
-            Instantiate(particlePrefab, transform.position, transform.rotation);
-        }
-        else
-        {
-            switch (currentArguments[0])
-            {
-                default:
-
-                    break;
-
-                case "particle":
-
-                    Instantiate(particlePrefab, transform.position, transform.rotation);
-
-                    break;
-            }
-        }
     }
 }

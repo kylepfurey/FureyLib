@@ -92,7 +92,7 @@ public class ClippingPlane : MonoBehaviour
     /// <summary>
     /// Color mode enum
     /// </summary>
-    public enum ColorMode { Normal, Default, Overlay, Multiply, Fill, BlackAndWhite, Density };
+    public enum ColorMode { Default, Normal, Overlay, Multiply, Fill, BlackAndWhite, Density };
 
     /// <summary>
     /// Direction enum

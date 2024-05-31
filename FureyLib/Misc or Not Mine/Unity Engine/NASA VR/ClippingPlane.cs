@@ -39,6 +39,9 @@ public class ClippingPlane : MonoBehaviour
 
     [Header("\nHEIGHT MAP SETTINGS")]
 
+    [Header("Whether to use the density map as the height map's texture:")]
+    [SerializeField] private bool useDensity = false;
+
     [Header("The number of planes generated to display the flow data with:")]
     public int planeCount = 500;
 
@@ -58,6 +61,9 @@ public class ClippingPlane : MonoBehaviour
     [Header("The color mode to assign the flow data:")]
     public ColorMode colorMode = ColorMode.Default;
 
+    [Header("Whether to normalize the density map:")]
+    public bool normalizeDensity;
+
     [Header("The color assigned to the flow data based on the color mode:")]
     public Color color = Color.white;
 
@@ -75,9 +81,19 @@ public class ClippingPlane : MonoBehaviour
     private Vector3[,] slice = null;
 
     /// <summary>
-    /// The stored texture that represents the clipped plane
+    /// All of the points of data from the flow sample
     /// </summary>
-    private Texture2D texture = null;
+    public Vector3[,,] sample = null;
+
+    /// <summary>
+    /// The stored texture that represents the clipped plane's positional values
+    /// </summary>
+    private Texture2D height = null;
+
+    /// <summary>
+    /// The stored texture that represents the clipped plane's density values
+    /// </summary>
+    private Texture2D density = null;
 
     /// <summary>
     /// The starting position of the height map generator
@@ -152,6 +168,8 @@ public class ClippingPlane : MonoBehaviour
     /// </summary>
     private void Start()
     {
+        MakeSample();
+
         RenderSlice();
     }
 
@@ -165,26 +183,103 @@ public class ClippingPlane : MonoBehaviour
     {
         GetSlice();
 
-        if (texture != null)
+        if (height != null)
         {
-            texture.Reinitialize(resolution, resolution);
+            height.Reinitialize(resolution, resolution);
         }
         else
         {
-            texture = new Texture2D(resolution, resolution);
+            height = new Texture2D(resolution, resolution);
         }
 
         for (int y = 0; y < resolution; y++)
         {
             for (int x = 0; x < resolution; x++)
             {
-                texture.SetPixel(x, y, new Color(slice[x, y].normalized.x, slice[x, y].normalized.y, slice[x, y].normalized.z, 1));
+                height.SetPixel(x, y, new Color(slice[x, y].normalized.x, slice[x, y].normalized.y, slice[x, y].normalized.z, 1));
             }
         }
 
-        texture.Apply();
+        height.Apply();
 
-        material.SetTexture("_Texture", texture);
+        if (density != null)
+        {
+            density.Reinitialize(resolution, resolution);
+        }
+        else
+        {
+            density = new Texture2D(resolution, resolution);
+        }
+
+        for (int y = 0; y < resolution; y++)
+        {
+            for (int x = 0; x < resolution; x++)
+            {
+                /*
+                DENSITY EQUATION
+
+                The current density, J, can be calculated from the magnetic field, B.
+
+                •	We know Bi = (Bxi, Byi, Bzi) at point xi = (xi, yi, zi), where i is a grid cell.
+
+                •	The current density Ji = (Jxi, Jyi, Jzi) at cell i can be calculated as:
+
+                    •	mu0 = 1.25663706 × 10-6
+
+                    •	Jxi = 1e-6 * mu0 * { [Bz(i+1) - Bz(i-1)] / [y(i+1) - y(i-1)] - [By(i+1) - By(i-1)] / [z(i+1) - z(i-1)] }
+
+                    •	Jyi = 1e-6 * mu0 * { [Bx(i+1) - Bx(i-1)] / [z(i+1) - z(i-1)] - [Bz(i+1) - Bz(i-1)] / [x(i+1) - x(i-1)] }
+
+                    •	Jzi = 1e-6 * mu0 * { [By(i+1) - By(i-1)] / [x(i+1) - x(i-1)] - [Bx(i+1) - Bx(i-1)] / [y(i+1) - y(i-1)] }
+                */
+
+                Vector3 J = Vector3.zero;
+
+                J.x = (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
+                      /
+                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y)
+                      -
+                      (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
+                      /
+                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z);
+
+                J.y = (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
+                      /
+                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z)
+                      -
+                      (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
+                      /
+                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x);
+
+                J.z = (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
+                      /
+                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x)
+                      -
+                      (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
+                      /
+                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y);
+
+                if (normalizeDensity)
+                {
+                    J = J.normalized;
+                }
+
+                density.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
+            }
+        }
+
+        density.Apply();
+
+        if (useDensity)
+        {
+            material.SetTexture("_Height", density);
+            material.SetTexture("_Density", density);
+        }
+        else
+        {
+            material.SetTexture("_Height", height);
+            material.SetTexture("_Density", density);
+        }
 
         UpdateColor();
 
@@ -204,26 +299,103 @@ public class ClippingPlane : MonoBehaviour
     {
         GetSlice();
 
-        if (texture != null)
+        if (height != null)
         {
-            texture.Reinitialize(resolution, resolution);
+            height.Reinitialize(resolution, resolution);
         }
         else
         {
-            texture = new Texture2D(resolution, resolution);
+            height = new Texture2D(resolution, resolution);
         }
 
         for (int y = 0; y < resolution; y++)
         {
             for (int x = 0; x < resolution; x++)
             {
-                texture.SetPixel(x, y, new Color(slice[x, y].normalized.x, slice[x, y].normalized.y, slice[x, y].normalized.z, 1));
+                height.SetPixel(x, y, new Color(slice[x, y].normalized.x, slice[x, y].normalized.y, slice[x, y].normalized.z, 1));
             }
         }
 
-        texture.Apply();
+        height.Apply();
 
-        material.SetTexture("_Texture", texture);
+        if (density != null)
+        {
+            density.Reinitialize(resolution, resolution);
+        }
+        else
+        {
+            density = new Texture2D(resolution, resolution);
+        }
+
+        for (int y = 0; y < resolution; y++)
+        {
+            for (int x = 0; x < resolution; x++)
+            {
+                /*
+                DENSITY EQUATION
+
+                The current density, J, can be calculated from the magnetic field, B.
+
+                •	We know Bi = (Bxi, Byi, Bzi) at point xi = (xi, yi, zi), where i is a grid cell.
+
+                •	The current density Ji = (Jxi, Jyi, Jzi) at cell i can be calculated as:
+
+                    •	mu0 = 1.25663706 × 10-6
+
+                    •	Jxi = 1e-6 * mu0 * { [Bz(i+1) - Bz(i-1)] / [y(i+1) - y(i-1)] - [By(i+1) - By(i-1)] / [z(i+1) - z(i-1)] }
+
+                    •	Jyi = 1e-6 * mu0 * { [Bx(i+1) - Bx(i-1)] / [z(i+1) - z(i-1)] - [Bz(i+1) - Bz(i-1)] / [x(i+1) - x(i-1)] }
+
+                    •	Jzi = 1e-6 * mu0 * { [By(i+1) - By(i-1)] / [x(i+1) - x(i-1)] - [Bx(i+1) - Bx(i-1)] / [y(i+1) - y(i-1)] }
+                */
+
+                Vector3 J = Vector3.zero;
+
+                J.x = (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
+                      /
+                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y)
+                      -
+                      (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
+                      /
+                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z);
+
+                J.y = (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
+                      /
+                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z)
+                      -
+                      (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
+                      /
+                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x);
+
+                J.z = (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
+                      /
+                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x)
+                      -
+                      (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
+                      /
+                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y);
+
+                if (normalizeDensity)
+                {
+                    J = J.normalized;
+                }
+
+                density.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
+            }
+        }
+
+        density.Apply();
+
+        if (useDensity)
+        {
+            material.SetTexture("_Height", density);
+            material.SetTexture("_Density", density);
+        }
+        else
+        {
+            material.SetTexture("_Height", height);
+            material.SetTexture("_Density", density);
+        }
 
         UpdateColor();
 
@@ -529,6 +701,42 @@ public class ClippingPlane : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns a 3D array of all this component's flow data points
+    /// </summary>
+    /// <returns></returns>
+    public Vector3[,,] MakeSample()
+    {
+        return sample = MakeSample(flowFile, 100, 100, 100);
+    }
+
+    /// <summary>
+    /// Returns a point of the sample relative to the axis
+    /// </summary>
+    /// <param name="pointX"></param>
+    /// <param name="pointY"></param>
+    /// <param name="pointZ"></param>
+    /// <returns></returns>
+    public Vector3 GetSample(int pointX, int pointY, int pointZ)
+    {
+        return GetSample(pointX, pointY, pointZ, sample, axis);
+    }
+
+    /// <summary>
+    /// Orients a point based on the axis
+    /// </summary>
+    /// <param name="pointX"></param>
+    /// <param name="pointY"></param>
+    /// <param name="pointZ"></param>
+    /// <returns></returns>
+    public Vector3Int OrientPoint(int pointX, int pointY, int pointZ)
+    {
+        return OrientPoint(pointX, pointY, pointZ, axis);
+    }
+
+
+    // STATIC GETTERS
+
+    /// <summary>
     /// Returns a 2D array of a plane of the given flow data and settings
     /// </summary>
     /// <param name="flowFile"></param>
@@ -576,6 +784,135 @@ public class ClippingPlane : MonoBehaviour
         }
 
         return slice;
+    }
+
+    /// <summary>
+    /// Returns a 3D array of all the given flow data points
+    /// </summary>
+    /// <param name="flowFile"></param>
+    /// <param name="resolution"></param>
+    /// <returns></returns>
+    public static Vector3[,,] MakeSample(FlowFile flowFile, int sizeX, int sizeY, int sizeZ)
+    {
+        if (flowFile == null)
+        {
+            return null;
+        }
+
+        Vector3[,,] sample = new Vector3[sizeX, sizeY, sizeZ];
+
+        for (int z = 0; z < sizeZ; z++)
+        {
+            for (int y = 0; y < sizeY; y++)
+            {
+                for (int x = 0; x < sizeX; x++)
+                {
+                    sample[x, y, z] = flowFile.Sample(new Vector3(x * (sizeX > 1 ? (100 / (sizeX - 1)) : 100), y * (sizeY > 1 ? (100 / (sizeY - 1)) : 100), z * (sizeZ > 1 ? (100 / (sizeZ - 1)) : 100)));
+                }
+            }
+        }
+
+        return sample;
+    }
+
+    /// <summary>
+    /// Returns a point of the given sample relative to an axis
+    /// </summary>
+    /// <param name="pointX"></param>
+    /// <param name="pointY"></param>
+    /// <param name="pointZ"></param>
+    /// <param name="sample"></param>
+    /// <param name="axis"></param>
+    /// <returns></returns>
+    public static Vector3 GetSample(int pointX, int pointY, int pointZ, Vector3[,,] sample, ParticleVisibility.Axis axis)
+    {
+        if (pointX < 0)
+        {
+            pointX = 0;
+        }
+        else if (pointX >= sample.GetLength(0))
+        {
+            pointX = sample.GetLength(0) - 1;
+        }
+
+        if (pointY < 0)
+        {
+            pointY = 0;
+        }
+        else if (pointY >= sample.GetLength(1))
+        {
+            pointY = sample.GetLength(1) - 1;
+        }
+
+        if (pointZ < 0)
+        {
+            pointZ = 0;
+        }
+        else if (pointZ >= sample.GetLength(2))
+        {
+            pointZ = sample.GetLength(2) - 1;
+        }
+
+        Vector3 point = Vector3.zero;
+
+        switch (axis)
+        {
+            case ParticleVisibility.Axis.X:
+
+                point = sample[pointX, pointZ, pointY];
+
+                break;
+
+            case ParticleVisibility.Axis.Y:
+
+                point = sample[pointX, pointY, pointZ];
+
+                break;
+
+            case ParticleVisibility.Axis.Z:
+
+                point = sample[pointZ, pointY, pointX];
+
+                break;
+        }
+
+        return point;
+    }
+
+    /// <summary>
+    /// Orients a point based on the given axis
+    /// </summary>
+    /// <param name="pointX"></param>
+    /// <param name="pointY"></param>
+    /// <param name="pointZ"></param>
+    /// <param name="axis"></param>
+    /// <returns></returns>
+    public static Vector3Int OrientPoint(int pointX, int pointY, int pointZ, ParticleVisibility.Axis axis)
+    {
+        Vector3Int point = Vector3Int.zero;
+
+        switch (axis)
+        {
+            case ParticleVisibility.Axis.X:
+
+                point = new Vector3Int(pointX, pointZ, pointY);
+
+                break;
+
+            case ParticleVisibility.Axis.Y:
+
+                point = new Vector3Int(pointX, pointY, pointZ);
+
+                break;
+
+            case ParticleVisibility.Axis.Z:
+
+                point = new Vector3Int(pointZ, pointY, pointX);
+
+                break;
+        }
+
+        return point;
     }
 
 

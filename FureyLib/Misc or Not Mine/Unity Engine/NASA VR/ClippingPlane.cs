@@ -42,6 +42,9 @@ public class ClippingPlane : MonoBehaviour
     [Header("Whether to use the density map as the height map's texture:")]
     [SerializeField] private bool useDensity = false;
 
+    [Header("Scalar value used to represent the distance to earth in kilometers:")]
+    public float distanceToEarth = 1;
+
     [Header("The number of planes generated to display the flow data with:")]
     public int planeCount = 500;
 
@@ -60,9 +63,6 @@ public class ClippingPlane : MonoBehaviour
 
     [Header("The color mode to assign the flow data:")]
     public ColorMode colorMode = ColorMode.Default;
-
-    [Header("Whether to normalize the density map:")]
-    public bool normalizeDensity;
 
     [Header("The color assigned to the flow data based on the color mode:")]
     public Color color = Color.white;
@@ -119,6 +119,11 @@ public class ClippingPlane : MonoBehaviour
     /// Whether the game has started
     /// </summary>
     private bool awake = false;
+
+    /// <summary>
+    /// mu0 mathematical constant
+    /// </summary>
+    public const double mu0 = 1.25663706 * 10e-6;
 
 
     // FUNCTIONS
@@ -235,34 +240,34 @@ public class ClippingPlane : MonoBehaviour
 
                 Vector3 J = Vector3.zero;
 
-                J.x = (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
+                J.x = (float)
+                      (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
                       /
-                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y)
+                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y) * distanceToEarth)
                       -
                       (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
                       /
-                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z);
+                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z) * distanceToEarth));
 
-                J.y = (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
+                J.y = (float)
+                      (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
                       /
-                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z)
+                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z) * distanceToEarth)
                       -
                       (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
                       /
-                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x);
+                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x) * distanceToEarth));
 
-                J.z = (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
+                J.z = (float)
+                      (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
                       /
-                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x)
+                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x) * distanceToEarth)
                       -
                       (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
                       /
-                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y);
+                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y) * distanceToEarth));
 
-                if (normalizeDensity)
-                {
-                    J = J.normalized;
-                }
+                J = J.normalized;
 
                 density.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
             }
@@ -351,34 +356,34 @@ public class ClippingPlane : MonoBehaviour
 
                 Vector3 J = Vector3.zero;
 
-                J.x = (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
+                J.x = (float)
+                      (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
                       /
-                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y)
+                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y) * distanceToEarth)
                       -
                       (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
                       /
-                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z);
+                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z) * distanceToEarth));
 
-                J.y = (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
+                J.y = (float)
+                      (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
                       /
-                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z)
+                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z) * distanceToEarth)
                       -
                       (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
                       /
-                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x);
+                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x) * distanceToEarth));
 
-                J.z = (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
+                J.z = (float)
+                      (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
                       /
-                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x)
+                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x) * distanceToEarth)
                       -
                       (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
                       /
-                      (OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y);
+                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y) * distanceToEarth));
 
-                if (normalizeDensity)
-                {
-                    J = J.normalized;
-                }
+                J = J.normalized;
 
                 density.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
             }

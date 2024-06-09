@@ -9,9 +9,6 @@
 #include "Components/ActorComponent.h"
 #include "MyActorComponent.generated.h"
 
-// Include this heading to use the class
-#include "MyActorComponent.h"
-
 // Template Unreal actor component script.
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class GAME_API UMyActorComponent : public UActorComponent

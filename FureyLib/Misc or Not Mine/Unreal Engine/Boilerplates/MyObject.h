@@ -6,14 +6,15 @@
 
 #pragma once
 #include "CoreMinimal.h"
+#include "UObject/NoExportTypes.h"
+#include "MyObject.generated.h"
 
-// Include this heading to use the class
-#include "MyClass.h"
-
-// Template Unreal class script.
-UClass()
-class GAME_API MyClass : public UObject
+// Template Unreal object script.
+UCLASS()
+class GAME_API UMyObject : public UObject
 {
+	GENERATED_BODY()
+
 public:
 
 	// VARIABLES
@@ -24,19 +25,19 @@ public:
 	// CONSTRUCTORS AND DECONSTRUCTOR
 
 	// Default constructor
-	MyClass()
+	UMyObject()
 	{
 
 	}
 
 	// Copy constructor
-	MyClass(const MyClass& Copied)
+	UMyObject(const UMyObject& Copied)
 	{
 
 	}
 
 	// Move constructor
-	MyClass(MyClass&& Moved) noexcept
+	UMyObject(UMyObject&& Moved) noexcept
 	{
 
 	}
@@ -44,7 +45,7 @@ public:
 	// New constructors here
 
 	// Deconstructor
-	virtual ~MyClass()
+	virtual ~UMyObject()
 	{
 
 	}
@@ -58,13 +59,13 @@ public:
 	// OPERATORS
 
 	// Copy assignment operator
-	MyClass& operator=(const MyClass& Copied)
+	UMyObject& operator=(const UMyObject& Copied)
 	{
 		return *this;
 	}
 
 	// Move assignment operator
-	MyClass& operator=(MyClass&& Moved) noexcept
+	UMyObject& operator=(UMyObject&& Moved) noexcept
 	{
 		return *this;
 	}

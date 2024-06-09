@@ -9,9 +9,6 @@
 #include "GameFramework/Pawn.h"
 #include "MyPawn.generated.h"
 
-// Include this heading to use the class
-#include "MyPawn.h"
-
 // Template Unreal pawn script.
 UCLASS()
 class GAME_API AMyPawn : public APawn

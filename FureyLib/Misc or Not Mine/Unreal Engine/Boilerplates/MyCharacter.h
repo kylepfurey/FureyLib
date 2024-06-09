@@ -6,15 +6,12 @@
 
 #pragma once
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "MyActor.generated.h"
+#include "GameFramework/Character.h"
+#include "MyCharacter.generated.h"
 
-// Include this heading to use the class
-#include "MyActor.h"
-
-// Template Unreal actor script.
+// Template Unreal character script.
 UCLASS()
-class GAME_API AMyActor : public AActor
+class GAME_API AMyCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -23,25 +20,25 @@ public:
 	// CONSTRUCTORS AND DECONSTRUCTOR
 
 	// Default constructor
-	AMyActor()
+	AMyCharacter()
 	{
-		// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+		// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 		PrimaryActorTick.bCanEverTick = true;
 
 	}
 
 	// Copy constructor
-	AMyActor(const AMyActor& Copied)
+	AMyCharacter(const AMyCharacter& Copied)
 	{
-		// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+		// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 		PrimaryActorTick.bCanEverTick = true;
 
 	}
 
 	// Move constructor
-	AMyActor(AMyActor&& Moved) noexcept
+	AMyCharacter(AMyCharacter&& Moved) noexcept
 	{
-		// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+		// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 		PrimaryActorTick.bCanEverTick = true;
 
 	}
@@ -49,7 +46,7 @@ public:
 	// New constructors here
 
 	// Deconstructor
-	virtual ~AMyActor()
+	virtual ~AMyCharacter()
 	{
 
 	}
@@ -88,19 +85,26 @@ public:
 
 	}
 
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override
+	{
+		Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	}
+
 	// New functions here
 
 
 	// OPERATORS
 
 	// Copy assignment operator
-	AMyActor& operator=(const AMyActor& Copied)
+	AMyCharacter& operator=(const AMyCharacter& Copied)
 	{
 		return *this;
 	}
 
 	// Move assignment operator
-	AMyActor& operator=(AMyActor&& Moved) noexcept
+	AMyCharacter& operator=(AMyCharacter&& Moved) noexcept
 	{
 		return *this;
 	}

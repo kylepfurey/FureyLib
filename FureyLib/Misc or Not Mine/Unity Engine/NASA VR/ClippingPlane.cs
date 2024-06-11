@@ -40,7 +40,10 @@ public class ClippingPlane : MonoBehaviour
     [Header("\nHEIGHT MAP SETTINGS")]
 
     [Header("Whether to use the density map as the height map's texture:")]
-    [SerializeField] private bool useDensity = false;
+    public bool useDensity = false;
+
+    [Header("Whether to make the density map black and white:")]
+    public bool blackAndWhiteDensity = false;
 
     [Header("Scalar value used to represent the distance to earth in kilometers:")]
     public float distanceToEarth = 1;
@@ -238,7 +241,7 @@ public class ClippingPlane : MonoBehaviour
                     •	Jzi = 1e-6 * mu0 * { [By(i+1) - By(i-1)] / [x(i+1) - x(i-1)] - [Bx(i+1) - Bx(i-1)] / [y(i+1) - y(i-1)] }
                 */
 
-                Vector3 J = Vector3.zero;
+                Vector3 J;
 
                 J.x = (float)
                       (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
@@ -268,6 +271,17 @@ public class ClippingPlane : MonoBehaviour
                       ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y) * distanceToEarth));
 
                 J = J.normalized;
+
+                float average = (J.x + J.y + J.z) / 3;
+
+                J = new Vector3(average * J.x, average * J.y, average * J.z);
+
+                if (blackAndWhiteDensity)
+                {
+                    average = (J.x + J.y + J.z) / 3;
+
+                    J = new Vector3(average, average, average);
+                }
 
                 density.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
             }
@@ -354,7 +368,7 @@ public class ClippingPlane : MonoBehaviour
                     •	Jzi = 1e-6 * mu0 * { [By(i+1) - By(i-1)] / [x(i+1) - x(i-1)] - [Bx(i+1) - Bx(i-1)] / [y(i+1) - y(i-1)] }
                 */
 
-                Vector3 J = Vector3.zero;
+                Vector3 J;
 
                 J.x = (float)
                       (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
@@ -384,6 +398,17 @@ public class ClippingPlane : MonoBehaviour
                       ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y) * distanceToEarth));
 
                 J = J.normalized;
+
+                float average = (J.x + J.y + J.z) / 3;
+
+                J = new Vector3(average * J.x, average * J.y, average * J.z);
+
+                if (blackAndWhiteDensity)
+                {
+                    average = (J.x + J.y + J.z) / 3;
+
+                    J = new Vector3(average, average, average);
+                }
 
                 density.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
             }

@@ -10,10 +10,18 @@ using UnityEngine;
 /// </summary>
 public class FlowParticle : MonoBehaviour
 {
+    [Header("\nVelocity Settings")]
+    [SerializeField] private float velocitySpeed = 0.25f;
+    [SerializeField] private float velocityLerp = 0.25f;
+
+    [Header("Optimization")]
+    [SerializeField] private float maxDistance = 50;
+    [SerializeField] private float maxParticles = 5;
+
     /// <summary>
     /// The flow data file
     /// </summary>
-    [HideInInspector] public static FlowFile flowFile = null;
+    public static FlowFile flowFile = null;
 
     /// <summary>
     /// The flow particle's rigidbody
@@ -30,14 +38,6 @@ public class FlowParticle : MonoBehaviour
     /// </summary>
     private GameObject flowDataScaleParent = null;
 
-    [Header("Velocity Settings")]
-    [SerializeField] private float velocitySpeed = 0.25f;
-    [SerializeField] private float velocityLerp = 0.25f;
-
-    [Header("Optimization")]
-    [SerializeField] private float maxDistance = 50;
-    [SerializeField] private float maxParticles = 5;
-
     /// <summary>
     /// The number of particles currently spawned
     /// </summary>
@@ -47,6 +47,11 @@ public class FlowParticle : MonoBehaviour
     /// The stored gravity setting of the rigidbody
     /// </summary>
     private bool gravitySetting = false;
+
+    /// <summary>
+    /// The total elapsed time this particle has been active in the data field
+    /// </summary>
+    private float elapsedTime = 0;
 
     /// <summary>
     /// Get the flow data and track this particle's number
@@ -89,6 +94,12 @@ public class FlowParticle : MonoBehaviour
         {
             // Destroy this object
             Destroy(gameObject);
+        }
+
+        // Increment elapsed time
+        if (flowData != null)
+        {
+            elapsedTime += Time.deltaTime;
         }
     }
 
@@ -137,6 +148,9 @@ public class FlowParticle : MonoBehaviour
 
             // Reset the gravity setting
             rigidbody.useGravity = gravitySetting;
+
+            // Reset elapsed time
+            elapsedTime = 0;
         }
     }
 

@@ -7,7 +7,7 @@ using System;
 // Include this heading to use the class
 using static DeltaTime;
 
-// Delta time class.
+// Tracks the change in time between function calls.
 public static class DeltaTime
 {
     // DELTA TIME VARIABLES

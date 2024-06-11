@@ -16,11 +16,14 @@ namespace Application
         /// Entry point of the program
         /// </summary>
         /// <param name="args"></param>
-        public static void Main(params string[] args)
+        /// <returns>The return code of the program</returns>
+        public static int Main(params string[] args)
         {
             Console.WriteLine("Hello, Dinner!");
 
             // New code here
+
+            return 0;
         }
     }
 }

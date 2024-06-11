@@ -8,124 +8,134 @@
 // Include this heading to use the class
 #include "DeltaTime.h"
 
-
-// DELTA TIME VARIABLES
-
-// The current elapsed time in clock time (not in seconds)
-static std::clock_t clock_time = std::clock();
-
-// The time in seconds since the last time the loop was called
-static double delta_time = 0;
-
-// The number of loops that has occured since the program was started
-static int loop_count = 0;
-
-// The elapsed time since the program started
-static double elapsed_time = 0;
-
-// The current frame rate of the program
-static double frame_rate = 0;
-
-
-// DELTA TIME FUNCTIONS
-
-// Updates the current delta time and returns it (call once at the start of each main tick)
-static double update_delta_time()
+// Tracks the change in time between function calls.
+class delta_time
 {
-    delta_time = (std::clock() - clock_time) / (double)CLOCKS_PER_SEC;
+public:
 
-    clock_time = std::clock();
+	// DELTA TIME VARIABLES
 
-    loop_count++;
+	// The current elapsed time in clock time (not in seconds)
+	static std::clock_t clock_time = std::clock();
 
-    elapsed_time = (clock_time / (double)CLOCKS_PER_SEC);
+	// The time in seconds since the last time the loop was called
+	static double delta_time = 0;
 
-    frame_rate = (loop_count / elapsed_time);
+	// The number of loops that has occured since the program was started
+	static int loop_count = 0;
 
-    return delta_time;
-}
+	// The elapsed time since the program started
+	static double elapsed_time = 0;
 
-// Get the time in seconds since delta time was last updated
-static double get_delta_time()
+	// The current frame rate of the program
+	static double frame_rate = 0;
+
+
+	// DELTA TIME FUNCTIONS
+
+	// Updates the current delta time and returns it (call once at the start of each main tick)
+	static double update_delta_time()
+	{
+		delta_time = (std::clock() - clock_time) / (double)CLOCKS_PER_SEC;
+
+		clock_time = std::clock();
+
+		loop_count++;
+
+		elapsed_time = (clock_time / (double)CLOCKS_PER_SEC);
+
+		frame_rate = (loop_count / elapsed_time);
+
+		return delta_time;
+	}
+
+	// Get the time in seconds since delta time was last updated
+	static double get_delta_time()
+	{
+		return delta_time;
+	}
+
+	// Get the number of loops since the program started
+	static int get_loop_count()
+	{
+		return loop_count;
+	}
+
+	// Get the time in seconds since the program started
+	static double get_elapsed_time()
+	{
+		return elapsed_time;
+	}
+
+	// Get the current frames per second of the program
+	static double get_frame_rate()
+	{
+		return frame_rate;
+	}
+};
+
+// Tracks the change in time between function calls.
+class DeltaTime
 {
-    return delta_time;
-}
+public:
 
-// Get the number of loops since the program started
-static int get_loop_count()
-{
-    return loop_count;
-}
+	// DELTA TIME VARIABLES
 
-// Get the time in seconds since the program started
-static double get_elapsed_time()
-{
-    return elapsed_time;
-}
+	// The current elapsed time in clock time (not in seconds)
+	static std::clock_t clockTime = std::clock();
 
-// Get the current frames per second of the program
-static double get_frame_rate()
-{
-    return frame_rate;
-}
+	// The time in seconds since the last time the loop was called
+	static double deltaTime = 0;
+
+	// The number of loops that has occured since the program was started
+	static int loopCount = 0;
+
+	// The elapsed time since the program started
+	static double elapsedTime = 0;
+
+	// The current frame rate of the program
+	static double frameRate = 0;
 
 
-// DELTA TIME VARIABLES
+	// DELTA TIME FUNCTIONS
 
-// The current elapsed time in clock time (not in seconds)
-static std::clock_t clockTime = std::clock();
+	// Updates the current delta time and returns it (call at the start of each main tick)
+	static double UpdateDeltaTime()
+	{
+		deltaTime = (std::clock() - clockTime) / (double)CLOCKS_PER_SEC;
 
-// The time in seconds since the last time the loop was called
-static double deltaTime = 0;
+		clockTime = std::clock();
 
-// The number of loops that has occured since the program was started
-static int loopCount = 0;
+		loopCount++;
 
-// The elapsed time since the program started
-static double elapsedTime = 0;
+		elapsedTime = (clockTime / (double)CLOCKS_PER_SEC);
 
-// The current frame rate of the program
-static double frameRate = 0;
+		frameRate = (loopCount / elapsedTime);
 
+		return deltaTime;
+	}
 
-// DELTA TIME FUNCTIONS
+	// Get the time in seconds since delta time was last updated
+	static double GetDeltaTime()
+	{
+		return deltaTime;
+	}
 
-// Updates the current delta time and returns it (call at the start of each main tick)
-static double UpdateDeltaTime()
-{
-    deltaTime = (std::clock() - clockTime) / (double)CLOCKS_PER_SEC;
+	// Get the number of loops since the program started
+	static int GetLoopCount()
+	{
+		return loopCount;
+	}
 
-    clockTime = std::clock();
+	// Get the time in seconds since the program started
+	static double GetElapsedTime()
+	{
+		return elapsedTime;
+	}
 
-    loopCount++;
-
-    elapsedTime = (clockTime / (double)CLOCKS_PER_SEC);
-
-    frameRate = (loopCount / elapsedTime);
-
-    return deltaTime;
-}
-
-// Get the time in seconds since delta time was last updated
-static double GetDeltaTime()
-{
-    return deltaTime;
-}
-
-// Get the number of loops since the program started
-static int GetLoopCount()
-{
-    return loopCount;
-}
-
-// Get the time in seconds since the program started
-static double GetElapsedTime()
-{
-    return elapsedTime;
-}
-
-// Get the current frames per second of the program
-static double GetFrameRate()
-{
-    return frameRate;
-}
+	// Get the current frames per second of the program
+	static double GetFrameRate()
+	{
+		return frameRate;
+	}
+};

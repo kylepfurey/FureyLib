@@ -1,19 +1,18 @@
 ﻿
-// Async Task Manager Script
+// Static Asynchronous Function Library Script
 // by Kyle Furey
 
 using System;
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Reflection;
 
 // Include this heading to use the class
-using static TaskManager;
+using static Async;
 
 /// <summary>
 /// Creates and runs asynchronous tasks.
 /// </summary>
-public static class TaskManager
+public static class Async
 {
     // CONVERT TO SECONDS
 
@@ -27,11 +26,21 @@ public static class TaskManager
         return (int)(1000 * seconds);
     }
 
+    /// <summary>
+    /// Converts the given number of milliseconds to a count of seconds
+    /// </summary>
+    /// <param name="milliseconds"></param>
+    /// <returns></returns>
+    public static float ToSeconds(int milliseconds)
+    {
+        return milliseconds / 1000;
+    }
+
 
     // DELAY FOR ONE TICK
 
     /// <summary>
-    /// Delays a thread by one tick
+    /// Delays the current thread by one tick when awaited
     /// </summary>
     /// <returns></returns>
     public static async Task DelayForTick()
@@ -63,7 +72,7 @@ public static class TaskManager
     }
 
     /// <summary>
-    /// Invokes the given void function after one tick and returns the result
+    /// Invokes the given void function after one tick
     /// </summary>
     /// <param name="function"></param>
     /// <param name="parameters"></param>
@@ -91,7 +100,7 @@ public static class TaskManager
     // DELAY FOR TICKS
 
     /// <summary>
-    /// Delays a thread by the given number of ticks
+    /// Delays the current thread by the given number of ticks when awaited
     /// </summary>
     /// <returns></returns>
     public static async Task DelayForTicks(int numberOfTicks)
@@ -126,7 +135,7 @@ public static class TaskManager
     }
 
     /// <summary>
-    /// Invokes the given void function after the given number of ticks and returns the result
+    /// Invokes the given void function after the given number of ticks
     /// </summary>
     /// <param name="function"></param>
     /// <param name="parameters"></param>
@@ -154,7 +163,7 @@ public static class TaskManager
     // DELAY FOR MILLISECONDS
 
     /// <summary>
-    /// Delays a thread by the given number of milliseconds when awaited
+    /// Delays the current thread by the given number of milliseconds when awaited
     /// </summary>
     /// <param name="milliseconds"></param>
     /// <returns></returns>
@@ -189,7 +198,7 @@ public static class TaskManager
     }
 
     /// <summary>
-    /// Invokes the given void function after the given number of milliseconds and returns the result
+    /// Invokes the given void function after the given number of milliseconds
     /// </summary>
     /// <param name="function"></param>
     /// <param name="parameters"></param>
@@ -217,7 +226,7 @@ public static class TaskManager
     // DELAY FOR SECONDS
 
     /// <summary>
-    /// Delays a thread by the given number of seconds when awaited
+    /// Delays the current thread by the given number of seconds when awaited
     /// </summary>
     /// <param name="seconds"></param>
     /// <returns></returns>
@@ -252,7 +261,7 @@ public static class TaskManager
     }
 
     /// <summary>
-    /// Invokes the given void function after the given number of seconds and returns the result
+    /// Invokes the given void function after the given number of seconds
     /// </summary>
     /// <param name="function"></param>
     /// <param name="parameters"></param>
@@ -274,5 +283,37 @@ public static class TaskManager
         await DelayForSeconds(seconds);
 
         return (ReturnType)function.DynamicInvoke(parameters);
+    }
+
+
+    // AWAIT
+
+    /// <summary>
+    /// Delays the current thread until the given condition is met
+    /// </summary>
+    /// <param name="condition"></param>
+    public static void Await(ref bool condition)
+    {
+        while (!condition) { Thread.Yield(); }
+    }
+
+    /// <summary>
+    /// Delays the current thread until the given task is complete
+    /// </summary>
+    /// <param name="task"></param>
+    public static void Await(Task task)
+    {
+        while (!task.IsCompleted) { Thread.Yield(); }
+    }
+
+    /// <summary>
+    /// Delays the current thread until the given task is complete
+    /// </summary>
+    /// <param name="task"></param>
+    public static async Task<ReturnType> Await<ReturnType>(Task<ReturnType> task)
+    {
+        while (!task.IsCompleted) { Thread.Yield(); }
+
+        return task.Result;
     }
 }

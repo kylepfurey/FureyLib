@@ -33,19 +33,21 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            if (player == null)
+            if (_player == null)
             {
-                player = FindObjectOfType<PlayerClass>();
+                _player = FindObjectOfType<PlayerClass>();
             }
 
-            return player;
+            return _player;
         }
 
-        set
+        private set
         {
-            player = value;
+            _player = value;
         }
     }
+
+    private static PlayerClass _player = null;
 
     // New properties here
 

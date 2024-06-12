@@ -393,6 +393,12 @@ public static class IMEF
             // Compute B-field [T]
             var B0 = BDipole(r * RE, false);
 
+            // Compute convection E-field [mV/m]
+            var EC = VSEField(r, gs, kp, false);
+
+            // Compute corotation E-field [mV/m]
+            var ER = CorotationEField(r, false);
+
             // Compute total E-field and covert to [V/m]
             var E0 = zero;
 
@@ -862,6 +868,12 @@ public static class imef
 
             // Compute B-field [T]
             var B0 = B_dipole(r * RE, false);
+
+            // Compute convection E-field [mV/m]
+            var EC = vs_efield(r, gs, kp, false);
+
+            // Compute corotation E-field [mV/m]
+            var ER = corotation_efield(r, false);
 
             // Compute total E-field and covert to [V/m]
             var E0 = zero;

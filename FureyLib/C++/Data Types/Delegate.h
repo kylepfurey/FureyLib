@@ -16,32 +16,59 @@
 // Define the function data type
 #define FUNCTION(variable) ReturnType (*variable) (ParameterTypes...)
 
+
+// Forward declaration of event
+template <typename ... ParameterTypes> class event;
+
+// Forward declaration of delegate
+template  <typename ReturnType, typename ... ParameterTypes> class delegate;
+
 // Wrapper class for a collection of functions.
-// All stored functions must share the same parameters.
 // All stored functions must return void.
+// All stored functions must share the same parameters.
 template <typename ... ParameterTypes> class event
 {
 private:
+
+	// STATIC DELEGATE DATA
+
+	// Global list of all delegates
+	static std::vector<event<ParameterTypes...>*> all_delegates;
+
+	// Global cancellation token
+	static bool cancelled_all;
+
+	// Index of current invoked delegate
+	static int invoke_index;
+
 
 	// DELEGATE DATA
 
 	// List of functions included in the delegate
 	std::vector<METHOD()> functions = std::vector<METHOD()>();
 
+	// Whether the delegate is currently invoking functions
+	bool invoking = false;
+
 	// Delegate cancellation token
 	bool cancel_invoke = false;
 
-	// Whether the delegate is currently invoking functions
-	bool is_invoking = false;
+	// Index of current delegate
+	int index = 0;
+
 
 public:
 
-	// DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
+	// DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
 
 	// Default constructor
 	event()
 	{
 		functions = std::vector<METHOD()>();
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
 	}
 
 	// Function constructor
@@ -50,6 +77,10 @@ public:
 		this->functions = std::vector<METHOD()>();
 
 		this->functions.push_back(function);
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
 	}
 
 	// Array constructor
@@ -61,6 +92,10 @@ public:
 		{
 			this->functions.push_back(functions[i]);
 		}
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
 	}
 
 	// Parameter constructor
@@ -71,6 +106,10 @@ public:
 		METHOD(function13) = nullptr, METHOD(function14) = nullptr, METHOD(function15) = nullptr, METHOD(function16) = nullptr)
 	{
 		this->functions = std::vector<METHOD()>();
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
 
 		if (number_of_functions >= 1) {
 			this->functions.push_back(function1);
@@ -189,6 +228,10 @@ public:
 	event(std::vector<METHOD()> functions)
 	{
 		functions = functions;
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
 	}
 
 	// List constructor
@@ -200,6 +243,10 @@ public:
 		{
 			this->functions.push_back(*(functions.begin() + i));
 		}
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
 	}
 
 	// Delegate constructor
@@ -211,6 +258,21 @@ public:
 		{
 			this->functions.push_back(functions[i]);
 		}
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
+	}
+
+	// Deconstructor
+	~event()
+	{
+		for (int i = index + 1; i < all_delegates.size(); i++)
+		{
+			all_delegates[i]->index--;
+		}
+
+		all_delegates.erase(std::find(all_delegates.begin(), all_delegates.end(), this));
 	}
 
 
@@ -221,23 +283,47 @@ public:
 	{
 		cancel_invoke = false;
 
-		is_invoking = true;
+		cancelled_all = false;
+
+		invoke_index = index;
+
+		invoking = true;
 
 		for (int i = 0; i < functions.size(); i++)
 		{
 			functions[i](parameters...);
 
-			if (cancel_invoke)
+			if (cancel_invoke || cancelled_all)
 			{
-				is_invoking = false;
+				invoking = false;
 
 				return false;
 			}
 		}
 
-		is_invoking = false;
+		invoking = false;
 
 		return true;
+	}
+
+	// Invokes every delegate
+	static bool invoke_all(ParameterTypes... parameters)
+	{
+		for (int i = 0; i < all_delegates.size(); i++)
+		{
+			if (!all_delegates[i]->invoke(parameters...))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	// Reinvokes the current delegate
+	static bool invoke_current(ParameterTypes... parameters)
+	{
+		return all_delegates[invoke_index]->invoke(parameters...);
 	}
 
 	// Cancel an invoke
@@ -246,10 +332,22 @@ public:
 		cancel_invoke = true;
 	}
 
+	// Cancel all invokes
+	static void cancel_all()
+	{
+		cancelled_all = true;
+	}
+
+	// Cancel the current invoke
+	static void cancel_current()
+	{
+		all_delegates[invoke_index]->cancel_invoke = true;
+	}
+
 	// Returns whether the delegate is currently being invoked
 	bool is_invoking()
 	{
-		return is_invoking;
+		return invoking;
 	}
 
 
@@ -426,32 +524,56 @@ public:
 	}
 };
 
+// Static variable initialization
+template <typename ... ParameterTypes> std::vector<event<ParameterTypes...>*> event<ParameterTypes...>::all_delegates = std::vector<event<ParameterTypes...>*>();
+template <typename ... ParameterTypes> bool event<ParameterTypes...>::cancelled_all = false;
+template <typename ... ParameterTypes> int event<ParameterTypes...>::invoke_index = 0;
+
 // Wrapper class for a collection of functions.
-// All stored functions must share the same parameters.
 // All stored functions must share the same return type.
+// All stored functions must share the same parameters.
 template <typename ReturnType, typename ... ParameterTypes> class delegate
 {
 private:
+
+	// STATIC DELEGATE DATA
+
+	// Global list of all delegates
+	static std::vector<delegate<ReturnType, ParameterTypes...>*> all_delegates;
+
+	// Global cancellation token
+	static bool cancelled_all;
+
+	// Index of current invoked delegate
+	static int invoke_index;
+
 
 	// DELEGATE DATA
 
 	// List of functions included in the delegate
 	std::vector<FUNCTION()> functions = std::vector<FUNCTION()>();
 
+	// Whether the delegate is currently invoking functions
+	bool invoking = false;
+
 	// Delegate cancellation token
 	bool cancel_invoke = false;
 
-	// Whether the delegate is currently invoking functions
-	bool is_invoking = false;
+	// Index of current delegate
+	int index = 0;
 
 public:
 
-	// DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
+	// DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
 
 	// Default constructor
 	delegate()
 	{
 		functions = std::vector<FUNCTION()>();
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
 	}
 
 	// Function constructor
@@ -460,6 +582,10 @@ public:
 		this->functions = std::vector<FUNCTION()>();
 
 		this->functions.push_back(function);
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
 	}
 
 	// Array constructor
@@ -471,6 +597,10 @@ public:
 		{
 			this->functions.push_back(functions[i]);
 		}
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
 	}
 
 	// Parameter constructor
@@ -481,6 +611,10 @@ public:
 		FUNCTION(function13) = nullptr, FUNCTION(function14) = nullptr, FUNCTION(function15) = nullptr, FUNCTION(function16) = nullptr)
 	{
 		this->functions = std::vector<FUNCTION()>();
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
 
 		if (number_of_functions >= 1) {
 			this->functions.push_back(function1);
@@ -599,6 +733,10 @@ public:
 	delegate(std::vector<FUNCTION()> functions)
 	{
 		functions = functions;
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
 	}
 
 	// List constructor
@@ -610,6 +748,10 @@ public:
 		{
 			this->functions.push_back(*(functions.begin() + i));
 		}
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
 	}
 
 	// Delegate constructor
@@ -621,6 +763,21 @@ public:
 		{
 			this->functions.push_back(functions[i]);
 		}
+
+		all_delegates.push_back(this);
+
+		index = all_delegates.size() - 1;
+	}
+
+	// Deconstructor
+	~delegate()
+	{
+		for (int i = index + 1; i < all_delegates.size(); i++)
+		{
+			all_delegates[i]->index--;
+		}
+
+		all_delegates.erase(std::find(all_delegates.begin(), all_delegates.end(), this));
 	}
 
 
@@ -631,7 +788,11 @@ public:
 	{
 		cancel_invoke = false;
 
-		is_invoking = true;
+		cancelled_all = false;
+
+		invoke_index = index;
+
+		invoking = true;
 
 		std::map<FUNCTION(), ReturnType> returns = std::map<FUNCTION(), ReturnType>();
 
@@ -639,7 +800,7 @@ public:
 		{
 			returns[functions[i]] = functions[i](parameters...);
 
-			if (cancel_invoke)
+			if (cancel_invoke || cancelled_all)
 			{
 				for (int j = i + 1; j < functions.size(); j++)
 				{
@@ -650,9 +811,33 @@ public:
 			}
 		}
 
-		is_invoking = false;
+		invoking = false;
 
 		return returns;
+	}
+
+	// Invokes every delegate
+	static auto invoke_all(ParameterTypes... parameters)
+	{
+		auto returns = std::map<delegate<ReturnType, ParameterTypes...>*, std::map<FUNCTION(), ReturnType>>();
+
+		for (int i = 0; i < all_delegates.size(); i++)
+		{
+			returns[all_delegates[i]] = all_delegates[i]->invoke(parameters...);
+
+			if (all_delegates[i]->cancel_invoke || cancelled_all)
+			{
+				break;
+			}
+		}
+
+		return returns;
+	}
+
+	// Reinvokes the current delegate
+	static std::map<FUNCTION(), ReturnType> invoke_current(ParameterTypes... parameters)
+	{
+		return all_delegates[invoke_index]->invoke(parameters...);
 	}
 
 	// Cancel an invoke
@@ -661,10 +846,22 @@ public:
 		cancel_invoke = true;
 	}
 
+	// Cancel all invokes
+	static void cancel_all()
+	{
+		cancelled_all = true;
+	}
+
+	// Cancel the current invoke
+	static void cancel_current()
+	{
+		all_delegates[invoke_index]->cancel_invoke = true;
+	}
+
 	// Returns whether the delegate is currently being invoked
 	bool is_invoking()
 	{
-		return is_invoking;
+		return invoking;
 	}
 
 
@@ -841,32 +1038,63 @@ public:
 	}
 };
 
+// Static variable initialization
+template <typename ReturnType, typename ... ParameterTypes> std::vector<delegate<ReturnType, ParameterTypes...>*> delegate<ReturnType, ParameterTypes...>::all_delegates = std::vector<delegate<ReturnType, ParameterTypes...>*>();
+template <typename ReturnType, typename ... ParameterTypes> bool delegate<ReturnType, ParameterTypes...>::cancelled_all = false;
+template <typename ReturnType, typename ... ParameterTypes> int delegate<ReturnType, ParameterTypes...>::invoke_index = 0;
+
+// Forward declaration of event
+template <typename ... ParameterTypes> class Event;
+
+// Forward declaration of delegate
+template  <typename ReturnType, typename ... ParameterTypes> class Delegate;
+
 // Wrapper class for a collection of functions.
-// All stored functions must share the same parameters.
 // All stored functions must return void.
+// All stored functions must share the same parameters.
 template <typename ... ParameterTypes> class Event
 {
 private:
+
+	// STATIC DELEGATE DATA
+
+	// Global list of all delegates
+	static std::vector<Event<ParameterTypes...>*> allDelegates;
+
+	// Global cancellation token
+	static bool cancelledAll;
+
+	// Index of current invoked delegate
+	static int invokeIndex;
+
 
 	// DELEGATE DATA
 
 	// List of functions included in the delegate
 	std::vector<METHOD()> functions = std::vector<METHOD()>();
 
+	// Whether the delegate is currently invoking functions
+	bool invoking = false;
+
 	// Delegate cancellation token
 	bool cancelInvoke = false;
 
-	// Whether the delegate is currently invoking functions
-	bool isInvoking = false;
+	// Index of current delegate
+	int index = 0;
+
 
 public:
 
-	// DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
+	// DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
 
 	// Default constructor
 	Event()
 	{
 		functions = std::vector<METHOD()>();
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
 	}
 
 	// Function constructor
@@ -875,6 +1103,10 @@ public:
 		this->functions = std::vector<METHOD()>();
 
 		this->functions.push_back(function);
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
 	}
 
 	// Array constructor
@@ -886,6 +1118,10 @@ public:
 		{
 			this->functions.push_back(functions[i]);
 		}
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
 	}
 
 	// Parameter constructor
@@ -896,6 +1132,10 @@ public:
 		METHOD(function13) = nullptr, METHOD(function14) = nullptr, METHOD(function15) = nullptr, METHOD(function16) = nullptr)
 	{
 		this->functions = std::vector<METHOD()>();
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
 
 		if (number_of_functions >= 1) {
 			this->functions.push_back(function1);
@@ -1014,6 +1254,10 @@ public:
 	Event(std::vector<METHOD()> functions)
 	{
 		functions = functions;
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
 	}
 
 	// List constructor
@@ -1025,6 +1269,10 @@ public:
 		{
 			this->functions.push_back(*(functions.begin() + i));
 		}
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
 	}
 
 	// Delegate constructor
@@ -1032,10 +1280,25 @@ public:
 	{
 		this->functions = std::vector<METHOD()>();
 
-		for (int i = 0; i < functions.count(); i++)
+		for (int i = 0; i < functions.Count(); i++)
 		{
 			this->functions.push_back(functions[i]);
 		}
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
+	}
+
+	// Deconstructor
+	~Event()
+	{
+		for (int i = index + 1; i < allDelegates.size(); i++)
+		{
+			allDelegates[i]->index--;
+		}
+
+		allDelegates.erase(std::find(allDelegates.begin(), allDelegates.end(), this));
 	}
 
 
@@ -1046,23 +1309,47 @@ public:
 	{
 		cancelInvoke = false;
 
-		isInvoking = true;
+		cancelledAll = false;
+
+		invokeIndex = index;
+
+		invoking = true;
 
 		for (int i = 0; i < functions.size(); i++)
 		{
 			functions[i](parameters...);
 
-			if (cancelInvoke)
+			if (cancelInvoke || cancelledAll)
 			{
-				isInvoking = false;
+				invoking = false;
 
 				return false;
 			}
 		}
 
-		isInvoking = false;
+		invoking = false;
 
 		return true;
+	}
+
+	// Invokes every delegate
+	static bool InvokeAll(ParameterTypes... parameters)
+	{
+		for (int i = 0; i < allDelegates.size(); i++)
+		{
+			if (!allDelegates[i]->Invoke(parameters...))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	// Reinvokes the current delegate
+	static bool InvokeCurrent(ParameterTypes... parameters)
+	{
+		return allDelegates[invokeIndex]->invoke(parameters...);
 	}
 
 	// Cancel an invoke
@@ -1071,10 +1358,22 @@ public:
 		cancelInvoke = true;
 	}
 
+	// Cancel all invokes
+	static void CancelAll()
+	{
+		cancelledAll = true;
+	}
+
+	// Cancel the current invoke
+	static void CancelCurrent()
+	{
+		allDelegates[invokeIndex]->cancelInvoke = true;
+	}
+
 	// Returns whether the delegate is currently being invoked
 	bool IsInvoking()
 	{
-		return isInvoking;
+		return invoking;
 	}
 
 
@@ -1148,7 +1447,7 @@ public:
 	{
 		for (int i = 0; i < functions.Count(); i++)
 		{
-			this->functions.erase(std::find(this->functions.begin(), this->functions.end(), functions[i]));
+			functions.erase(std::find(this->functions.begin(), this->functions.end(), functions[i]));
 		}
 
 		return *this;
@@ -1251,32 +1550,56 @@ public:
 	}
 };
 
+// Static variable initialization
+template <typename ... ParameterTypes> std::vector<Event<ParameterTypes...>*> Event<ParameterTypes...>::allDelegates = std::vector<Event<ParameterTypes...>*>();
+template <typename ... ParameterTypes> bool Event<ParameterTypes...>::cancelledAll = false;
+template <typename ... ParameterTypes> int Event<ParameterTypes...>::invokeIndex = 0;
+
 // Wrapper class for a collection of functions.
-// All stored functions must share the same parameters.
 // All stored functions must share the same return type.
+// All stored functions must share the same parameters.
 template <typename ReturnType, typename ... ParameterTypes> class Delegate
 {
 private:
+
+	// STATIC DELEGATE DATA
+
+	// Global list of all delegates
+	static std::vector<Delegate<ReturnType, ParameterTypes...>*> allDelegates;
+
+	// Global cancellation token
+	static bool cancelledAll;
+
+	// Index of current invoked delegate
+	static int invokeIndex;
+
 
 	// DELEGATE DATA
 
 	// List of functions included in the delegate
 	std::vector<FUNCTION()> functions = std::vector<FUNCTION()>();
 
+	// Whether the delegate is currently invoking functions
+	bool invoking = false;
+
 	// Delegate cancellation token
 	bool cancelInvoke = false;
 
-	// Whether the delegate is currently invoking functions
-	bool isInvoking = false;
+	// Index of current delegate
+	int index = 0;
 
 public:
 
-	// DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
+	// DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
 
 	// Default constructor
 	Delegate()
 	{
 		functions = std::vector<FUNCTION()>();
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
 	}
 
 	// Function constructor
@@ -1285,6 +1608,10 @@ public:
 		this->functions = std::vector<FUNCTION()>();
 
 		this->functions.push_back(function);
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
 	}
 
 	// Array constructor
@@ -1296,6 +1623,10 @@ public:
 		{
 			this->functions.push_back(functions[i]);
 		}
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
 	}
 
 	// Parameter constructor
@@ -1306,6 +1637,10 @@ public:
 		FUNCTION(function13) = nullptr, FUNCTION(function14) = nullptr, FUNCTION(function15) = nullptr, FUNCTION(function16) = nullptr)
 	{
 		this->functions = std::vector<FUNCTION()>();
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
 
 		if (number_of_functions >= 1) {
 			this->functions.push_back(function1);
@@ -1424,6 +1759,10 @@ public:
 	Delegate(std::vector<FUNCTION()> functions)
 	{
 		functions = functions;
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
 	}
 
 	// List constructor
@@ -1435,6 +1774,10 @@ public:
 		{
 			this->functions.push_back(*(functions.begin() + i));
 		}
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
 	}
 
 	// Delegate constructor
@@ -1442,10 +1785,25 @@ public:
 	{
 		this->functions = std::vector<FUNCTION()>();
 
-		for (int i = 0; i < functions.count(); i++)
+		for (int i = 0; i < functions.Count(); i++)
 		{
 			this->functions.push_back(functions[i]);
 		}
+
+		allDelegates.push_back(this);
+
+		index = allDelegates.size() - 1;
+	}
+
+	// Deconstructor
+	~Delegate()
+	{
+		for (int i = index + 1; i < allDelegates.size(); i++)
+		{
+			allDelegates[i]->index--;
+		}
+
+		allDelegates.erase(std::find(allDelegates.begin(), allDelegates.end(), this));
 	}
 
 
@@ -1456,7 +1814,11 @@ public:
 	{
 		cancelInvoke = false;
 
-		isInvoking = true;
+		cancelledAll = false;
+
+		invokeIndex = index;
+
+		invoking = true;
 
 		std::map<FUNCTION(), ReturnType> returns = std::map<FUNCTION(), ReturnType>();
 
@@ -1464,7 +1826,7 @@ public:
 		{
 			returns[functions[i]] = functions[i](parameters...);
 
-			if (cancelInvoke)
+			if (cancelInvoke || cancelledAll)
 			{
 				for (int j = i + 1; j < functions.size(); j++)
 				{
@@ -1475,9 +1837,33 @@ public:
 			}
 		}
 
-		isInvoking = false;
+		invoking = false;
 
 		return returns;
+	}
+
+	// Invokes every delegate
+	static auto InvokeAll(ParameterTypes... parameters)
+	{
+		auto returns = std::map<Delegate<ReturnType, ParameterTypes...>*, std::map<FUNCTION(), ReturnType>>();
+
+		for (int i = 0; i < allDelegates.size(); i++)
+		{
+			returns[allDelegates[i]] = allDelegates[i]->Invoke(parameters...);
+
+			if (allDelegates[i]->cancelInvoke || cancelledAll)
+			{
+				break;
+			}
+		}
+
+		return returns;
+	}
+
+	// Reinvokes the current delegate
+	static std::map<FUNCTION(), ReturnType> InvokeCurrent(ParameterTypes... parameters)
+	{
+		return allDelegates[invokeIndex]->invoke(parameters...);
 	}
 
 	// Cancel an invoke
@@ -1486,10 +1872,22 @@ public:
 		cancelInvoke = true;
 	}
 
+	// Cancel all invokes
+	static void CancelAll()
+	{
+		cancelledAll = true;
+	}
+
+	// Cancel the current invoke
+	static void CancelCurrent()
+	{
+		allDelegates[invokeIndex]->cancelInvoke = true;
+	}
+
 	// Returns whether the delegate is currently being invoked
 	bool IsInvoking()
 	{
-		return isInvoking;
+		return invoking;
 	}
 
 
@@ -1665,3 +2063,8 @@ public:
 		return remove(function);
 	}
 };
+
+// Static variable initialization
+template <typename ReturnType, typename ... ParameterTypes> std::vector<Delegate<ReturnType, ParameterTypes...>*> Delegate<ReturnType, ParameterTypes...>::allDelegates = std::vector<Delegate<ReturnType, ParameterTypes...>*>();
+template <typename ReturnType, typename ... ParameterTypes> bool Delegate<ReturnType, ParameterTypes...>::cancelledAll = false;
+template <typename ReturnType, typename ... ParameterTypes> int Delegate<ReturnType, ParameterTypes...>::invokeIndex = 0;

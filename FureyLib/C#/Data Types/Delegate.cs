@@ -34,11 +34,6 @@ public class Event : IEnumerable
     /// </summary>
     private static int invokeIndex = 0;
 
-    /// <summary>
-    /// Whether the delegate is currently invoking functions
-    /// </summary>
-    private bool isInvoking = false;
-
 
     // DELEGATE DATA
 
@@ -46,6 +41,11 @@ public class Event : IEnumerable
     /// List of functions included in the delegate
     /// </summary>
     private List<Action> functions = new List<Action>();
+
+    /// <summary>
+    /// Whether the delegate is currently invoking functions
+    /// </summary>
+    private bool isInvoking = false;
 
     /// <summary>
     /// Delegate cancellation token
@@ -58,7 +58,7 @@ public class Event : IEnumerable
     private int index = 0;
 
 
-    // DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
+    // DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
 
     /// <summary>
     /// Default constructor
@@ -453,8 +453,8 @@ public class Event : IEnumerable
 
 /// <summary>
 /// Wrapper class for a collection of functions.
-/// All stored functions must have no parameters.
 /// All stored functions must share the same return type.
+/// All stored functions must have no parameters.
 /// </summary>
 public class Event<ReturnType> : IEnumerable
 {
@@ -475,11 +475,6 @@ public class Event<ReturnType> : IEnumerable
     /// </summary>
     private static int invokeIndex = 0;
 
-    /// <summary>
-    /// Whether the delegate is currently invoking functions
-    /// </summary>
-    private bool isInvoking = false;
-
 
     // DELEGATE DATA
 
@@ -487,6 +482,11 @@ public class Event<ReturnType> : IEnumerable
     /// List of functions included in the delegate
     /// </summary>
     private List<Func<ReturnType>> functions = new List<Func<ReturnType>>();
+
+    /// <summary>
+    /// Whether the delegate is currently invoking functions
+    /// </summary>
+    private bool isInvoking = false;
 
     /// <summary>
     /// Delegate cancellation token
@@ -499,7 +499,7 @@ public class Event<ReturnType> : IEnumerable
     private int index = 0;
 
 
-    // DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
+    // DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
 
     /// <summary>
     /// Default constructor
@@ -974,11 +974,6 @@ public class DynamicEvent : IEnumerable
     /// </summary>
     private static int invokeIndex = 0;
 
-    /// <summary>
-    /// Whether the delegate is currently invoking functions
-    /// </summary>
-    private bool isInvoking = false;
-
 
     // DELEGATE DATA
 
@@ -986,6 +981,11 @@ public class DynamicEvent : IEnumerable
     /// List of functions included in the delegate
     /// </summary>
     private List<Function> functions = new List<Function>();
+
+    /// <summary>
+    /// Whether the delegate is currently invoking functions
+    /// </summary>
+    private bool isInvoking = false;
 
     /// <summary>
     /// Delegate cancellation token
@@ -998,7 +998,7 @@ public class DynamicEvent : IEnumerable
     private int index = 0;
 
 
-    // DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
+    // DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
 
     /// <summary>
     /// Default constructor
@@ -1474,11 +1474,6 @@ public class Delegate : IEnumerable
     /// </summary>
     private static int invokeIndex = 0;
 
-    /// <summary>
-    /// Whether the delegate is currently invoking functions
-    /// </summary>
-    private bool isInvoking = false;
-
 
     // DELEGATE DATA
 
@@ -1486,6 +1481,11 @@ public class Delegate : IEnumerable
     /// List of functions included in the delegate
     /// </summary>
     private List<Function> functions = new List<Function>();
+
+    /// <summary>
+    /// Whether the delegate is currently invoking functions
+    /// </summary>
+    private bool isInvoking = false;
 
     /// <summary>
     /// Delegate cancellation token
@@ -1503,7 +1503,7 @@ public class Delegate : IEnumerable
     private Type[] parameterTypes = null;
 
 
-    // DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
+    // DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
 
     /// <summary>
     /// Default constructor
@@ -2110,8 +2110,8 @@ public class Delegate : IEnumerable
 
 /// <summary>
 /// Wrapper class for a collection of functions.
-/// All stored functions must share the same parameters.
 /// All stored functions must share the same return type.
+/// All stored functions must share the same parameters.
 /// </summary>
 public class Delegate<ReturnType> : IEnumerable
 {
@@ -2132,11 +2132,6 @@ public class Delegate<ReturnType> : IEnumerable
     /// </summary>
     private static int invokeIndex = 0;
 
-    /// <summary>
-    /// Whether the delegate is currently invoking functions
-    /// </summary>
-    private bool isInvoking = false;
-
 
     // DELEGATE DATA
 
@@ -2144,6 +2139,11 @@ public class Delegate<ReturnType> : IEnumerable
     /// List of functions included in the delegate
     /// </summary>
     private List<Function> functions = new List<Function>();
+
+    /// <summary>
+    /// Whether the delegate is currently invoking functions
+    /// </summary>
+    private bool isInvoking = false;
 
     /// <summary>
     /// Delegate cancellation token
@@ -2161,7 +2161,7 @@ public class Delegate<ReturnType> : IEnumerable
     private Type[] parameterTypes = null;
 
 
-    // DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
+    // DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
 
     /// <summary>
     /// Default constructor
@@ -2831,11 +2831,6 @@ public class DynamicDelegate : IEnumerable
     /// </summary>
     private static int invokeIndex = 0;
 
-    /// <summary>
-    /// Whether the delegate is currently invoking functions
-    /// </summary>
-    private bool isInvoking = false;
-
 
     // DELEGATE DATA
 
@@ -2843,6 +2838,11 @@ public class DynamicDelegate : IEnumerable
     /// List of functions included in the delegate
     /// </summary>
     private List<Function> functions = new List<Function>();
+
+    /// <summary>
+    /// Whether the delegate is currently invoking functions
+    /// </summary>
+    private bool isInvoking = false;
 
     /// <summary>
     /// Delegate cancellation token
@@ -2855,7 +2855,7 @@ public class DynamicDelegate : IEnumerable
     private int index = 0;
 
 
-    // DELEGATE CONSTRUCTOR AND DECONSTRUCTOR
+    // DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
 
     /// <summary>
     /// Default constructor

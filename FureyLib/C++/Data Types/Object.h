@@ -15,12 +15,15 @@
 // •  If you intend on storing the object in a vector, use vobject instead.
 #define object object
 
+// The state of when an object or pointer has no memory allocated.
+#define null nullptr
+
 // Object class that functions as a universal container which can hold and return data of any type.
 // •  Can be inherited from to share common methods and storage between different types.
 // •  If you intend on storing the object in a vector, use vobject instead.
 class object
 {
-private:
+protected:
 
 	// VARIABLES
 
@@ -175,6 +178,18 @@ public:
 		return std::to_string(*(DataType*)data);
 	}
 
+	// Returns whether this object is null
+	virtual bool is_null()
+	{
+		return data == nullptr;
+	}
+
+	// Returns whether the given object is null
+	static bool is_null(object& object)
+	{
+		return object.data == nullptr;
+	}
+
 
 	// OPERATORS
 
@@ -217,6 +232,24 @@ public:
 	{
 		return data != object.data;
 	}
+
+	// Returns whether this object's instance is equal to a pointer (overridable)
+	virtual bool operator==(void* object)
+	{
+		return data == object;
+	}
+
+	// Returns whether this object's instance is not equal to a pointer (overridable)
+	virtual bool operator!=(void* object)
+	{
+		return data != object;
+	}
+
+	// Returns whether this object is null
+	virtual operator bool()
+	{
+		return data != nullptr;
+	}
 };
 
 // Variant of the object class that allows it to be used in vectors.
@@ -229,7 +262,7 @@ public:
 // •  Does not automatically deallocate when not in a vector!
 class vobject : public object
 {
-private:
+protected:
 
 	// VARIABLES
 
@@ -382,6 +415,18 @@ public:
 		return std::to_string(*(DataType*)data);
 	}
 
+	// Returns whether this object is null
+	virtual bool is_null()
+	{
+		return data == nullptr;
+	}
+
+	// Returns whether the given object is null
+	static bool is_null(vobject& object)
+	{
+		return object.data == nullptr;
+	}
+
 
 	// OPERATORS
 
@@ -424,6 +469,24 @@ public:
 	{
 		return data != vobject.data;
 	}
+
+	// Returns whether this object's instance is equal to a pointer (overridable)
+	virtual bool operator==(void* vobject)
+	{
+		return data == vobject;
+	}
+
+	// Returns whether this object's instance is not equal to a pointer (overridable)
+	virtual bool operator!=(void* vobject)
+	{
+		return data != vobject;
+	}
+
+	// Returns whether this object is null
+	virtual operator bool()
+	{
+		return data != nullptr;
+	}
 };
 
 // Object class that functions as a universal container which can hold and return data of any type.
@@ -431,12 +494,15 @@ public:
 // •  If you intend on storing the object in a vector, use VObject instead.
 #define Object Object
 
+// The state of when an object or pointer has no memory allocated.
+#define Null nullptr
+
 // Object class that functions as a universal container which can hold and return data of any type.
 // •  Can be inherited from to share common methods and storage between different types.
 // •  If you intend on storing the object in a vector, use VObject instead.
 class Object
 {
-private:
+protected:
 
 	// VARIABLES
 
@@ -591,6 +657,18 @@ public:
 		return std::to_string(*(DataType*)data);
 	}
 
+	// Returns whether this object is null
+	virtual bool IsNull()
+	{
+		return data == nullptr;
+	}
+
+	// Returns whether the given object is null
+	static bool IsNull(Object& object)
+	{
+		return object.data == nullptr;
+	}
+
 
 	// OPERATORS
 
@@ -633,6 +711,24 @@ public:
 	{
 		return data != Object.data;
 	}
+
+	// Returns whether this object's instance is equal to a pointer (overridable)
+	virtual bool operator==(void* Object)
+	{
+		return data == Object;
+	}
+
+	// Returns whether this object's instance is not equal to a pointer (overridable)
+	virtual bool operator!=(void* Object)
+	{
+		return data != Object;
+	}
+
+	// Returns whether this object is null
+	virtual operator bool()
+	{
+		return data != nullptr;
+	}
 };
 
 // Variant of the Object class that allows it to be used in vectors.
@@ -645,7 +741,7 @@ public:
 // •  Does not automatically deallocate when not in a vector!
 class VObject : public Object
 {
-private:
+protected:
 
 	// VARIABLES
 
@@ -798,6 +894,18 @@ public:
 		return std::to_string(*(DataType*)data);
 	}
 
+	// Returns whether this object is null
+	virtual bool IsNull()
+	{
+		return data == nullptr;
+	}
+
+	// Returns whether the given object is null
+	static bool IsNull(VObject& object)
+	{
+		return object.data == nullptr;
+	}
+
 
 	// OPERATORS
 
@@ -839,5 +947,23 @@ public:
 	virtual bool operator!=(VObject& Object)
 	{
 		return data != Object.data;
+	}
+
+	// Returns whether this object's instance is equal to a pointer (overridable)
+	virtual bool operator==(void* Object)
+	{
+		return data == Object;
+	}
+
+	// Returns whether this object's instance is not equal to a pointer (overridable)
+	virtual bool operator!=(void* Object)
+	{
+		return data != Object;
+	}
+
+	// Returns whether this object is null
+	virtual operator bool()
+	{
+		return data != nullptr;
 	}
 };

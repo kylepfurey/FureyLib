@@ -614,7 +614,7 @@ public class Event<ReturnType> : IEnumerable
         {
             try
             {
-                returns[functions[i]] = (ReturnType)functions[i].DynamicInvoke();
+                returns[functions[i]] = functions[i].Invoke();
             }
             catch
             {

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
 
 // Include this heading to use the class
@@ -135,7 +134,7 @@ public static class Multithreading
 
             runningThreads.Add(_main);
 
-            cancellationTokens[Thread.CurrentThread] = false;
+            cancellationTokens[_main] = false;
         }
     }
 
@@ -161,30 +160,42 @@ public static class Multithreading
     }
 
     /// <summary>
-    /// Joins and completes the given non-running thread before the main thread resumes and returns whether it was successful
+    /// Joins and locks the given non-running thread until after the main thread finishes and returns whether it was successful
     /// </summary>
-    /// <param name="thread"></param>
-    /// <returns></returns>
-    public static bool JoinMainThread(Thread thread)
-    {
-        return Join(thread);
-    }
-
-    /// <summary>
-    /// Joins and locks the given non-running thread until after the main thread finishes and returns whether it was successful    /// </summary>
     /// <param name="thread"></param>
     /// <returns></returns>
     public static bool FollowMainThread(Thread thread)
     {
-        return Follow(thread);
+        return Follow(thread, main);
     }
 
     /// <summary>
-    /// Call this function when the main thread ends
+    /// Locks the main thread until it is cancelled (current thread must be main thread)
     /// </summary>
-    public static void TerminateMainThread(bool cancelAll = false)
+    public static void LockMainThread()
     {
         SetMainThread();
+
+        if (current == main)
+        {
+            while (!cancellationTokens[main]) { Thread.Yield(); }
+        }
+    }
+
+    /// <summary>
+    /// Call this function to end the main thread
+    /// </summary>
+    /// <param name="cancelAllThreads"></param>
+    public static void CancelMainThread(bool cancelAllThreads = false)
+    {
+        SetMainThread();
+
+        cancellationTokens[main] = true;
+
+        if (current == main)
+        {
+            Thread.Yield();
+        }
 
         threads.Remove(main);
 
@@ -194,28 +205,10 @@ public static class Multithreading
 
         cancellationTokens.Remove(main);
 
-        lockedThreads.Remove(main);
-
-        if (cancelAll)
+        if (cancelAllThreads)
         {
             CancelAll();
         }
-    }
-
-    /// <summary>
-    /// Call this function when the main thread ends
-    /// </summary>
-    public static void CancelMainThread(bool cancelAll = false)
-    {
-        TerminateMainThread(cancelAll);
-    }
-
-    /// <summary>
-    /// Call this function when the main thread ends
-    /// </summary>
-    public static void EndMainThread(bool cancelAll = false)
-    {
-        TerminateMainThread(cancelAll);
     }
 
 
@@ -352,6 +345,15 @@ public static class Multithreading
         return current;
     }
 
+    /// <summary>
+    /// Get the total number of logical processors on this device
+    /// </summary>
+    /// <returns></returns>
+    public static int NumberOfProcessors()
+    {
+        return Environment.ProcessorCount;
+    }
+
 
     // ACTIVE AND RUNNING
 
@@ -380,7 +382,7 @@ public static class Multithreading
     }
 
     /// <summary>
-    /// Returns whether the given thread is not active and not currently running (and therefore can be started)
+    /// Returns whether the given thread is active and not currently running (and therefore can be started)
     /// </summary>
     /// <param name="thread"></param>
     /// <returns></returns>
@@ -398,7 +400,7 @@ public static class Multithreading
     /// Delays the current thread until the given condition is met
     /// </summary>
     /// <param name="condition"></param>
-    public static void Lock(ref bool condition)
+    public static void Block(ref bool condition)
     {
         SetMainThread();
 
@@ -406,14 +408,112 @@ public static class Multithreading
     }
 
     /// <summary>
-    /// Delays the current thread until the given thread completes
+    /// Delays the current thread until it is is unlocked
     /// </summary>
-    /// <param name="condition"></param>
+    public static void Lock()
+    {
+        SetMainThread();
+
+        lockedThreads[current] = null;
+
+        while (lockedThreads.ContainsKey(current)) { Thread.Yield(); }
+
+        lockedThreads.Remove(current);
+    }
+
+    /// <summary>
+    /// Delays the current thread until the given thread completes or this thread is unlocked
+    /// </summary>
+    /// <param name="thread"></param>
     public static void Lock(Thread thread)
     {
         SetMainThread();
 
-        while (threads.Contains(thread) && thread.IsAlive) { Thread.Yield(); }
+        lockedThreads[current] = thread;
+
+        while (lockedThreads.ContainsKey(current) && threads.Contains(lockedThreads[current])) { Thread.Yield(); }
+
+        lockedThreads.Remove(current);
+    }
+
+    /// <summary>
+    /// Relocks the given locked thread to the current thread and return whether it was successful
+    /// </summary>
+    /// <param name="lockedThread"></param>
+    public static bool Relock(Thread lockedThread)
+    {
+        SetMainThread();
+
+        if (lockedThreads.ContainsKey(lockedThread))
+        {
+            lockedThreads[lockedThread] = current;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Relocks the given locked thread to the given thread and return whether it was successful
+    /// </summary>
+    /// <param name="lockedThread"></param>
+    /// <param name="thread"></param>
+    public static bool Relock(Thread lockedThread, Thread thread)
+    {
+        SetMainThread();
+
+        if (lockedThreads.ContainsKey(lockedThread))
+        {
+            lockedThreads[lockedThread] = thread;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Unlocks the given thread and returns whether it was successful
+    /// </summary>
+    /// <param name="unlockedThread"></param>
+    /// <returns></returns>
+    public static bool Unlock(Thread unlockedThread)
+    {
+        SetMainThread();
+
+        return lockedThreads.Remove(unlockedThread);
+    }
+
+    /// <summary>
+    /// Returns whether the given thread is locked
+    /// </summary>
+    /// <param name="thread"></param>
+    /// <returns></returns>
+    public static bool IsLocked(Thread thread)
+    {
+        SetMainThread();
+
+        return lockedThreads.ContainsKey(thread);
+    }
+
+    /// <summary>
+    /// Returns the thread that is locking the given thread or null if it is unlocked
+    /// </summary>
+    /// <param name="thread"></param>
+    /// <returns></returns>
+    public static Thread LockedBy(Thread thread)
+    {
+        SetMainThread();
+
+        if (lockedThreads.ContainsKey(thread))
+        {
+            return lockedThreads[thread];
+        }
+        else
+        {
+            return null;
+        }
     }
 
 
@@ -422,7 +522,7 @@ public static class Multithreading
     /// <summary>
     /// Creates a new thread that can run code independently of other threads.
     /// </summary>
-    /// <param name="method">The code this thread will execute. Use a lambda function "() => { }" to add code.</param>
+    /// <param name="method">The code this thread will execute. Use a lambda expression "() => { }" to add code.</param>
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(Action method)
     {
@@ -435,8 +535,6 @@ public static class Multithreading
             if (lockedThreads.ContainsKey(newThread))
             {
                 Lock(lockedThreads[newThread]);
-
-                lockedThreads.Remove(newThread);
             }
 
             runningThreads.Add(newThread);
@@ -448,19 +546,17 @@ public static class Multithreading
             runningThreads.Remove(newThread);
 
             cancellationTokens.Remove(newThread);
-
-            lockedThreads.Remove(newThread);
         });
 
         threads.Add(newThread);
-
-        cancellationTokens[newThread] = false;
 
         newThread.Name = "New Thread";
 
         newThread.IsBackground = true;
 
         newThread.Priority = ThreadPriority.Normal;
+
+        cancellationTokens[newThread] = false;
 
         newThread.Start();
 
@@ -471,7 +567,7 @@ public static class Multithreading
     /// Creates a new thread that can run code independently of other threads.
     /// </summary>
     /// <param name="start">Whether to run this thread immediately.</param>
-    /// <param name="method">The code this thread will execute. Use a lambda function "() => { }" to add code.</param>
+    /// <param name="method">The code this thread will execute. Use a lambda expression "() => { }" to add code.</param>
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(bool start, Action method)
     {
@@ -484,8 +580,6 @@ public static class Multithreading
             if (lockedThreads.ContainsKey(newThread))
             {
                 Lock(lockedThreads[newThread]);
-
-                lockedThreads.Remove(newThread);
             }
 
             runningThreads.Add(newThread);
@@ -497,19 +591,17 @@ public static class Multithreading
             runningThreads.Remove(newThread);
 
             cancellationTokens.Remove(newThread);
-
-            lockedThreads.Remove(newThread);
         });
 
         threads.Add(newThread);
-
-        cancellationTokens[newThread] = false;
 
         newThread.Name = "New Thread";
 
         newThread.IsBackground = true;
 
         newThread.Priority = ThreadPriority.Normal;
+
+        cancellationTokens[newThread] = false;
 
         if (start)
         {
@@ -524,7 +616,7 @@ public static class Multithreading
     /// </summary>
     /// <param name="start">Whether to start this thread immediately.</param>
     /// <param name="name">The name of this thread.</param>
-    /// <param name="method">The code this thread will execute. Use a lambda function "() => { }" to add code.</param>
+    /// <param name="method">The code this thread will execute. Use a lambda expression "() => { }" to add code.</param>
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(bool start, bool join, Action method)
     {
@@ -537,8 +629,6 @@ public static class Multithreading
             if (lockedThreads.ContainsKey(newThread))
             {
                 Lock(lockedThreads[newThread]);
-
-                lockedThreads.Remove(newThread);
             }
 
             runningThreads.Add(newThread);
@@ -550,19 +640,17 @@ public static class Multithreading
             runningThreads.Remove(newThread);
 
             cancellationTokens.Remove(newThread);
-
-            lockedThreads.Remove(newThread);
         });
 
         threads.Add(newThread);
-
-        cancellationTokens[newThread] = false;
 
         newThread.Name = "New Thread";
 
         newThread.IsBackground = true;
 
         newThread.Priority = ThreadPriority.Normal;
+
+        cancellationTokens[newThread] = false;
 
         if (start)
         {
@@ -583,7 +671,7 @@ public static class Multithreading
     /// <param name="start">Whether to start this thread immediately.</param>
     /// <param name="join">Whether to complete this new thread before the current thread resumes.</param>
     /// <param name="name">The name of this thread.</param>
-    /// <param name="method">The code this thread will execute. Use a lambda function "() => { }" to add code.</param>
+    /// <param name="method">The code this thread will execute. Use a lambda expression "() => { }" to add code.</param>
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(bool start, bool join, string name, Action method)
     {
@@ -596,9 +684,9 @@ public static class Multithreading
             if (lockedThreads.ContainsKey(newThread))
             {
                 Lock(lockedThreads[newThread]);
-
-                lockedThreads.Remove(newThread);
             }
+
+            runningThreads.Add(newThread);
 
             method.Invoke();
 
@@ -609,13 +697,9 @@ public static class Multithreading
             runningThreads.Remove(newThread);
 
             cancellationTokens.Remove(newThread);
-
-            lockedThreads.Remove(newThread);
         });
 
         threads.Add(newThread);
-
-        cancellationTokens[newThread] = false;
 
         newThread.Name = name;
 
@@ -624,6 +708,8 @@ public static class Multithreading
         newThread.IsBackground = true;
 
         newThread.Priority = ThreadPriority.Normal;
+
+        cancellationTokens[newThread] = false;
 
         if (start)
         {
@@ -645,7 +731,7 @@ public static class Multithreading
     /// <param name="join">Whether to complete this new thread before the current thread resumes.</param>
     /// <param name="name">The name of this thread.</param>
     /// <param name="isBackground">Whether this thread will terminate when the main thread ends.</param>
-    /// <param name="method">The code this thread will execute. Use a lambda function "() => { }" to add code.</param>
+    /// <param name="method">The code this thread will execute. Use a lambda expression "() => { }" to add code.</param>
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(bool start, bool join, string name, bool isBackground, Action method)
     {
@@ -658,8 +744,6 @@ public static class Multithreading
             if (lockedThreads.ContainsKey(newThread))
             {
                 Lock(lockedThreads[newThread]);
-
-                lockedThreads.Remove(newThread);
             }
 
             runningThreads.Add(newThread);
@@ -673,13 +757,9 @@ public static class Multithreading
             runningThreads.Remove(newThread);
 
             cancellationTokens.Remove(newThread);
-
-            lockedThreads.Remove(newThread);
         });
 
         threads.Add(newThread);
-
-        cancellationTokens[newThread] = false;
 
         newThread.Name = name;
 
@@ -688,6 +768,8 @@ public static class Multithreading
         newThread.IsBackground = isBackground;
 
         newThread.Priority = ThreadPriority.Normal;
+
+        cancellationTokens[newThread] = false;
 
         if (start)
         {
@@ -710,7 +792,7 @@ public static class Multithreading
     /// <param name="name">The name of this thread.</param>
     /// <param name="isBackground">Whether this thread will terminate when the main thread ends.</param>
     /// <param name="priority">The priority of this thread.</param>
-    /// <param name="method">The code this thread will execute. Use a lambda function "() => { }" to add code.</param>
+    /// <param name="method">The code this thread will execute. Use a lambda expression "() => { }" to add code.</param>
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(bool start, bool join, string name, bool isBackground, ThreadPriority priority, Action method)
     {
@@ -723,8 +805,6 @@ public static class Multithreading
             if (lockedThreads.ContainsKey(newThread))
             {
                 Lock(lockedThreads[newThread]);
-
-                lockedThreads.Remove(newThread);
             }
 
             runningThreads.Add(newThread);
@@ -738,13 +818,9 @@ public static class Multithreading
             runningThreads.Remove(newThread);
 
             cancellationTokens.Remove(newThread);
-
-            lockedThreads.Remove(newThread);
         });
 
         threads.Add(newThread);
-
-        cancellationTokens[newThread] = false;
 
         newThread.Name = name;
 
@@ -753,6 +829,8 @@ public static class Multithreading
         newThread.IsBackground = isBackground;
 
         newThread.Priority = priority;
+
+        cancellationTokens[newThread] = false;
 
         if (start)
         {
@@ -771,7 +849,7 @@ public static class Multithreading
     /// Creates a new thread that can run code independently of other threads.
     /// </summary>
     /// <param name="followedThread">The thread to follow this new thread after.</param>
-    /// <param name="method">The code this thread will execute. Use a lambda function "() => { }" to add code.</param>
+    /// <param name="method">The code this thread will execute. Use a lambda expression "() => { }" to add code.</param>
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(Thread followedThread, Action method)
     {
@@ -783,8 +861,6 @@ public static class Multithreading
         {
             Lock(followedThread);
 
-            lockedThreads.Remove(newThread);
-
             runningThreads.Add(newThread);
 
             method.Invoke();
@@ -794,19 +870,17 @@ public static class Multithreading
             runningThreads.Remove(newThread);
 
             cancellationTokens.Remove(newThread);
-
-            lockedThreads.Remove(newThread);
         });
 
         threads.Add(newThread);
-
-        cancellationTokens[newThread] = false;
 
         newThread.Name = "New Thread";
 
         newThread.IsBackground = true;
 
         newThread.Priority = ThreadPriority.Normal;
+
+        cancellationTokens[newThread] = false;
 
         newThread.Start();
 
@@ -818,7 +892,7 @@ public static class Multithreading
     /// </summary>
     /// <param name="followedThread">The thread to follow this new thread after.</param>
     /// <param name="name">The name of this thread.</param>
-    /// <param name="method">The code this thread will execute. Use a lambda function "() => { }" to add code.</param>
+    /// <param name="method">The code this thread will execute. Use a lambda expression "() => { }" to add code.</param>
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(Thread followedThread, string name, Action method)
     {
@@ -830,8 +904,6 @@ public static class Multithreading
         {
             Lock(followedThread);
 
-            lockedThreads.Remove(newThread);
-
             runningThreads.Add(newThread);
 
             method.Invoke();
@@ -841,13 +913,9 @@ public static class Multithreading
             runningThreads.Remove(newThread);
 
             cancellationTokens.Remove(newThread);
-
-            lockedThreads.Remove(newThread);
         });
 
         threads.Add(newThread);
-
-        cancellationTokens[newThread] = false;
 
         newThread.Name = name;
 
@@ -856,6 +924,8 @@ public static class Multithreading
         newThread.IsBackground = true;
 
         newThread.Priority = ThreadPriority.Normal;
+
+        cancellationTokens[newThread] = false;
 
         newThread.Start();
 
@@ -868,7 +938,7 @@ public static class Multithreading
     /// <param name="followedThread">The thread to follow this new thread after.</param>
     /// <param name="name">The name of this thread.</param>
     /// <param name="isBackground">Whether this thread will terminate when the main thread ends.</param>
-    /// <param name="method">The code this thread will execute. Use a lambda function "() => { }" to add code.</param>
+    /// <param name="method">The code this thread will execute. Use a lambda expression "() => { }" to add code.</param>
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(Thread followedThread, string name, bool isBackground, Action method)
     {
@@ -880,8 +950,6 @@ public static class Multithreading
         {
             Lock(followedThread);
 
-            lockedThreads.Remove(newThread);
-
             runningThreads.Add(newThread);
 
             method.Invoke();
@@ -891,13 +959,9 @@ public static class Multithreading
             runningThreads.Remove(newThread);
 
             cancellationTokens.Remove(newThread);
-
-            lockedThreads.Remove(newThread);
         });
 
         threads.Add(newThread);
-
-        cancellationTokens[newThread] = false;
 
         newThread.Name = name;
 
@@ -906,6 +970,8 @@ public static class Multithreading
         newThread.IsBackground = isBackground;
 
         newThread.Priority = ThreadPriority.Normal;
+
+        cancellationTokens[newThread] = false;
 
         newThread.Start();
 
@@ -920,7 +986,7 @@ public static class Multithreading
     /// <param name="isBackground">Whether this thread will terminate when the main thread ends.</param>
     /// <param name="priority">The priority of this thread.</param>
     /// <param name="followedThread">The thread to have this new thread start after.</param>
-    /// <param name="method">The code this thread will execute. Use a lambda function "() => { }" to add code.</param>
+    /// <param name="method">The code this thread will execute. Use a lambda expression "() => { }" to add code.</param>
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(Thread followedThread, string name, bool isBackground, ThreadPriority priority, Action method)
     {
@@ -932,8 +998,6 @@ public static class Multithreading
         {
             Lock(followedThread);
 
-            lockedThreads.Remove(newThread);
-
             runningThreads.Add(newThread);
 
             method.Invoke();
@@ -943,13 +1007,9 @@ public static class Multithreading
             runningThreads.Remove(newThread);
 
             cancellationTokens.Remove(newThread);
-
-            lockedThreads.Remove(newThread);
         });
 
         threads.Add(newThread);
-
-        cancellationTokens[newThread] = false;
 
         newThread.Name = name;
 
@@ -958,6 +1018,8 @@ public static class Multithreading
         newThread.IsBackground = isBackground;
 
         newThread.Priority = priority;
+
+        cancellationTokens[newThread] = false;
 
         newThread.Start();
 
@@ -973,7 +1035,7 @@ public static class Multithreading
     /// <param name="thread"></param>
     /// <param name="join"></param>
     /// <returns></returns>
-    public static bool Start(Thread thread, bool join)
+    public static bool Start(Thread thread, bool join = false)
     {
         SetMainThread();
 
@@ -1053,15 +1115,15 @@ public static class Multithreading
     /// Joins and locks the given non-running thread after after the given following thread finishes and returns whether it was successful
     /// </summary>
     /// <param name="thread"></param>
-    /// <param name="followingThread"></param>
+    /// <param name="followedThread"></param>
     /// <returns></returns>
-    public static bool Follow(Thread thread, Thread followingThread)
+    public static bool Follow(Thread thread, Thread followedThread)
     {
         SetMainThread();
 
         if (lockedThreads.ContainsKey(thread))
         {
-            lockedThreads[thread] = followingThread;
+            lockedThreads[thread] = followedThread;
         }
         else if (threads.Contains(thread) && !thread.IsAlive)
         {
@@ -1070,7 +1132,7 @@ public static class Multithreading
                 thread.IsBackground = false;
             }
 
-            lockedThreads[thread] = followingThread;
+            lockedThreads[thread] = followedThread;
 
             thread.Start();
         }
@@ -1083,10 +1145,10 @@ public static class Multithreading
     }
 
 
-    // TERMINATING THREADS
+    // CANCELLING THREADS
 
     /// <summary>
-    /// Gets the current thread's cancellation token (set to true on when Terminate() is called)
+    /// Gets the current thread's cancellation token (set to true on when Cancel() is called)
     /// </summary>
     /// <returns></returns>
     public static bool GetCancellationToken()
@@ -1097,7 +1159,7 @@ public static class Multithreading
     }
 
     /// <summary>
-    /// Gets the given thread's cancellation token (set to true on when Terminate() is called)
+    /// Gets the given thread's cancellation token (set to true on when Cancel() is called)
     /// </summary>
     /// <returns></returns>
     public static bool GetCancellationToken(Thread thread)
@@ -1111,7 +1173,7 @@ public static class Multithreading
     /// Cancels the current thread and returns whether it was successful. You need to program cancellation logic in the thread using GetCancellationToken() for it to cancel.
     /// </summary>
     /// <returns></returns>
-    public static bool Terminate()
+    public static bool Cancel()
     {
         SetMainThread();
 
@@ -1121,7 +1183,7 @@ public static class Multithreading
 
             if (current == main)
             {
-                TerminateMainThread();
+                CancelMainThread();
             }
         }
         else
@@ -1130,82 +1192,6 @@ public static class Multithreading
         }
 
         return true;
-    }
-
-    /// <summary>
-    /// Cancels the given thread and returns whether it was successful. You need to program cancellation logic in the thread using GetToken() for it to cancel.
-    /// </summary>
-    /// <param name="thread"></param>
-    /// <returns></returns>
-    public static bool Terminate(Thread thread)
-    {
-        SetMainThread();
-
-        if (runningThreads.Contains(thread) && thread.IsAlive)
-        {
-            cancellationTokens[thread] = true;
-
-            if (thread == main)
-            {
-                TerminateMainThread();
-            }
-        }
-        else
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// Cancels all of the given threads except the main thread. You need to program cancellation logic in the thread using GetCancellationToken() for it to cancel.
-    /// </summary>
-    /// <returns></returns>
-    public static int TerminateAll()
-    {
-        SetMainThread();
-
-        int count = runningThreads.Count - 1;
-
-        while (runningThreads.Count > 1)
-        {
-            Terminate(runningThreads[1]);
-        }
-
-        return count;
-    }
-
-    /// <summary>
-    /// Cancels all of the given threads except the current thread. You need to program cancellation logic in the thread using GetCancellationToken() for it to cancel.
-    /// </summary>
-    /// <returns></returns>
-    public static int TerminateOthers()
-    {
-        SetMainThread();
-
-        int count = runningThreads.Count - 1;
-
-        while (runningThreads[0] != current)
-        {
-            Terminate(runningThreads[0]);
-        }
-
-        while (runningThreads.Count > 1)
-        {
-            Terminate(runningThreads[1]);
-        }
-
-        return count;
-    }
-
-    /// <summary>
-    /// Cancels the current thread and returns whether it was successful. You need to program cancellation logic in the thread using GetCancellationToken() for it to cancel.
-    /// </summary>
-    /// <returns></returns>
-    public static bool Cancel()
-    {
-        return Cancel();
     }
 
     /// <summary>
@@ -1215,7 +1201,23 @@ public static class Multithreading
     /// <returns></returns>
     public static bool Cancel(Thread thread)
     {
-        return Cancel(thread);
+        SetMainThread();
+
+        if (runningThreads.Contains(thread) && thread.IsAlive)
+        {
+            cancellationTokens[thread] = true;
+
+            if (thread == main)
+            {
+                CancelMainThread();
+            }
+        }
+        else
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -1224,7 +1226,16 @@ public static class Multithreading
     /// <returns></returns>
     public static int CancelAll()
     {
-        return TerminateAll();
+        SetMainThread();
+
+        int count = runningThreads.Count - 1;
+
+        while (runningThreads.Count > 1)
+        {
+            Cancel(runningThreads[1]);
+        }
+
+        return count;
     }
 
     /// <summary>
@@ -1233,12 +1244,25 @@ public static class Multithreading
     /// <returns></returns>
     public static int CancelOthers()
     {
-        return TerminateOthers();
+        SetMainThread();
+
+        int count = runningThreads.Count - 1;
+
+        while (runningThreads[0] != current)
+        {
+            Cancel(runningThreads[0]);
+        }
+
+        while (runningThreads.Count > 1)
+        {
+            Cancel(runningThreads[1]);
+        }
+
+        return count;
     }
 
 
     // DELAYING THREAD
-    // CONVERT TO SECONDS
 
     /// <summary>
     /// Converts the given number of seconds to a count of milliseconds
@@ -1247,8 +1271,6 @@ public static class Multithreading
     /// <returns></returns>
     public static int ToMilliseconds(float seconds)
     {
-        SetMainThread();
-
         return (int)(1000 * seconds);
     }
 
@@ -1259,8 +1281,6 @@ public static class Multithreading
     /// <returns></returns>
     public static float ToSeconds(int milliseconds)
     {
-        SetMainThread();
-
         return milliseconds / 1000;
     }
 
@@ -1269,8 +1289,6 @@ public static class Multithreading
     /// </summary>
     public static void Yield()
     {
-        SetMainThread();
-
         Thread.Yield();
     }
 
@@ -1280,8 +1298,6 @@ public static class Multithreading
     /// </summary>
     public static void Yield(int numberOfTicks)
     {
-        SetMainThread();
-
         for (int i = 0; i < numberOfTicks; i++)
         {
             Thread.Yield();
@@ -1294,8 +1310,6 @@ public static class Multithreading
     /// </summary>
     public static void SleepForMilliseconds(int milliseconds)
     {
-        SetMainThread();
-
         Thread.Sleep(milliseconds);
     }
 
@@ -1305,43 +1319,6 @@ public static class Multithreading
     /// </summary>
     public static void SleepForSeconds(float seconds)
     {
-        SetMainThread();
-
         Thread.Sleep(ToMilliseconds(seconds));
-    }
-
-    /// <summary>
-    /// Delay the current thread for one tick
-    /// </summary>
-    public static void DelayForTick()
-    {
-        Yield();
-    }
-
-    /// <summary>
-    /// Delay the current thread for the given number of ticks
-    /// <param name="numberOfTicks"></param>
-    /// </summary>
-    public static void DelayForTicks(int numberOfTicks)
-    {
-        Yield(numberOfTicks);
-    }
-
-    /// <summary>
-    /// Delay the current thread for the given number of milliseconds
-    /// <param name="milliseconds"></param>
-    /// </summary>
-    public static void DelayForMilliseconds(int milliseconds)
-    {
-        SleepForMilliseconds(milliseconds);
-    }
-
-    /// <summary>
-    /// Delay the current for the given number of seconds
-    /// <param name="seconds"></param>
-    /// </summary>
-    public static void DelayForSeconds(float seconds)
-    {
-        SleepForSeconds(seconds);
     }
 }

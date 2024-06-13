@@ -14,6 +14,57 @@ using static Async;
 /// </summary>
 public static class Async
 {
+    // RUN FUNCTION
+
+    /// <summary>
+    /// Runs the given function asynchronously
+    /// </summary>
+    /// <param name="function"></param>
+    /// <returns></returns>
+    public static async Task Run(Action function)
+    {
+        await Task.Run(function);
+    }
+
+    /// <summary>
+    /// Runs the given function asynchronously and returns the result
+    /// </summary>
+    /// <typeparam name="ReturnType"></typeparam>
+    /// <param name="function"></param>
+    /// <returns></returns>
+    public static async Task<ReturnType> Run<ReturnType>(Func<ReturnType> function)
+    {
+        ReturnType returns = await Task.Run(function);
+
+        return returns;
+    }
+
+    /// <summary>
+    /// Runs the given function asynchronously and returns the result
+    /// </summary>
+    /// <param name="function"></param>
+    /// <param name="parameters"></param>
+    /// <returns></returns>
+    public static async Task Run(Delegate function, params object[] parameters)
+    {
+        await Task.Run(() => { function.DynamicInvoke(parameters); });
+    }
+
+    /// <summary>
+    /// Runs the given function asynchronously and returns the result
+    /// </summary>
+    /// <typeparam name="ReturnType"></typeparam>
+    /// <param name="function"></param>
+    /// <param name="parameters"></param>
+    /// <returns></returns>
+    public static async Task<ReturnType> Run<ReturnType>(Delegate function, params object[] parameters)
+    {
+        ReturnType returns = await Task.Run(ReturnType () => { return (ReturnType)function.DynamicInvoke(parameters); });
+
+        return returns;
+    }
+
+
     // CONVERT TO SECONDS
 
     /// <summary>
@@ -64,11 +115,11 @@ public static class Async
     /// </summary>
     /// <typeparam></typeparam>
     /// <param name="function"></param>
-    public static async Task<ReturnType> InvokeAfterTick<ReturnType>(Delegate function)
+    public static async Task<ReturnType> InvokeAfterTick<ReturnType>(Func<ReturnType> function)
     {
         await DelayForTick();
 
-        return (ReturnType)function.DynamicInvoke();
+        return function.Invoke();
     }
 
     /// <summary>
@@ -127,11 +178,11 @@ public static class Async
     /// </summary>
     /// <typeparam></typeparam>
     /// <param name="function"></param>
-    public static async Task<ReturnType> InvokeAfterTicks<ReturnType>(int numberOfTicks, Delegate function)
+    public static async Task<ReturnType> InvokeAfterTicks<ReturnType>(int numberOfTicks, Func<ReturnType> function)
     {
         await DelayForTicks(numberOfTicks);
 
-        return (ReturnType)function.DynamicInvoke();
+        return function.Invoke();
     }
 
     /// <summary>
@@ -190,11 +241,11 @@ public static class Async
     /// <typeparam></typeparam>
     /// <param name="function"></param>
     /// <param name="milliseconds"></param>
-    public static async Task<ReturnType> InvokeAfterMilliseconds<ReturnType>(int milliseconds, Delegate function)
+    public static async Task<ReturnType> InvokeAfterMilliseconds<ReturnType>(int milliseconds, Func<ReturnType> function)
     {
         await DelayForSeconds(milliseconds);
 
-        return (ReturnType)function.DynamicInvoke();
+        return function.Invoke();
     }
 
     /// <summary>
@@ -253,11 +304,11 @@ public static class Async
     /// <typeparam></typeparam>
     /// <param name="function"></param>
     /// <param name="seconds"></param>
-    public static async Task<ReturnType> InvokeAfterSeconds<ReturnType>(float seconds, Delegate function)
+    public static async Task<ReturnType> InvokeAfterSeconds<ReturnType>(float seconds, Func<ReturnType> function)
     {
         await DelayForSeconds(seconds);
 
-        return (ReturnType)function.DynamicInvoke();
+        return function.Invoke();
     }
 
     /// <summary>
@@ -310,7 +361,7 @@ public static class Async
     /// Delays the current thread until the given task is complete
     /// </summary>
     /// <param name="task"></param>
-    public static async Task<ReturnType> Await<ReturnType>(Task<ReturnType> task)
+    public static ReturnType Await<ReturnType>(Task<ReturnType> task)
     {
         while (!task.IsCompleted) { Thread.Yield(); }
 

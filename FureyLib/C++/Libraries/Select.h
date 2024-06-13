@@ -6,8 +6,7 @@
 #include <cstdarg> 
 
 // Include this heading to use the class
-
-// Select statements.
+#define "Select.h"
 
 // Select from a boolean and return the chosen data
 template <class DataType> static DataType select(bool condition, DataType trueData, DataType falseData)

@@ -11,24 +11,57 @@
 #include "Async.h"
 
 // Define the lambda expression
-#define LAMBDA(expression) [=] () mutable -> void { expression }
+#define _LAMBDA(expression) [=] () mutable -> void { expression }
 
 // Define the method data type
-#define METHOD(variable) void (*variable) (ParameterTypes...)
+#define _METHOD(variable) void (*variable) (ParameterTypes...)
 
 // Define the function data type
-#define FUNCTION(variable) ReturnType (*variable) (ParameterTypes...)
-
-// Delays the current thread until the given condition is met or result is obtained.
-#define await(result) async::await(result)
-
-// Delays the current thread until the given condition is met or result is obtained.
-#define awaitref(result) async::awaitref(result)
+#define _FUNCTION(variable) ReturnType (*variable) (ParameterTypes...)
 
 // Creates and runs asynchronous tasks.
 class async
 {
 public:
+
+	// RUN FUNCTION
+
+	// Runs the given function asynchronously
+	template <typename ... ParameterTypes> static void run(_METHOD(function), ParameterTypes... parameters)
+	{
+		std::thread async
+		(
+			_LAMBDA
+			(
+				function(parameters...);
+			)
+		);
+
+		async.detach();
+	}
+
+	// Runs the given function asynchronously and returns a future with its result
+	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> run(_FUNCTION(function), ParameterTypes... parameters)
+	{
+		std::promise<ReturnType>* promise = new std::promise<ReturnType>();
+
+		std::thread async
+		(
+			_LAMBDA
+			(
+				promise->set_value(function(parameters...));
+
+				delete promise;
+
+				promise = nullptr;
+			)
+		);
+
+		async.detach();
+
+		return promise->get_future();
+	}
+
 
 	// CONVERT TO SECONDS
 
@@ -54,11 +87,11 @@ public:
 	}
 
 	// Invokes the given void function after one tick
-	template <typename ... ParameterTypes> static void invoke_after_tick(METHOD(function), ParameterTypes... parameters)
+	template <typename ... ParameterTypes> static void invoke_after_tick(_METHOD(function), ParameterTypes... parameters)
 	{
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				delay_for_tick();
 
@@ -70,13 +103,13 @@ public:
 	}
 
 	// Invokes the given function after one tick and returns the result
-	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> invoke_after_tick(FUNCTION(function), ParameterTypes... parameters)
+	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> invoke_after_tick(_FUNCTION(function), ParameterTypes... parameters)
 	{
 		std::promise<ReturnType>* promise = new std::promise<ReturnType>();
 
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				delay_for_tick();
 
@@ -106,11 +139,11 @@ public:
 	}
 
 	// Invokes the given void function after the given number of ticks
-	template <typename ... ParameterTypes> static void invoke_after_ticks(int number_of_ticks, METHOD(function), ParameterTypes... parameters)
+	template <typename ... ParameterTypes> static void invoke_after_ticks(int number_of_ticks, _METHOD(function), ParameterTypes... parameters)
 	{
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				delay_for_ticks(number_of_ticks);
 
@@ -122,13 +155,13 @@ public:
 	}
 
 	// Invokes the given function after the given number of ticks and returns the result
-	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> invoke_after_ticks(int number_of_ticks, FUNCTION(function), ParameterTypes... parameters)
+	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> invoke_after_ticks(int number_of_ticks, _FUNCTION(function), ParameterTypes... parameters)
 	{
 		std::promise<ReturnType>* promise = new std::promise<ReturnType>();
 
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				delay_for_ticks(number_of_ticks);
 
@@ -155,11 +188,11 @@ public:
 	}
 
 	// Invokes the given void function after the given number of milliseconds
-	template <typename ... ParameterTypes> static void invoke_after_milliseconds(int milliseconds, METHOD(function), ParameterTypes... parameters)
+	template <typename ... ParameterTypes> static void invoke_after_milliseconds(int milliseconds, _METHOD(function), ParameterTypes... parameters)
 	{
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				delay_for_milliseconds(milliseconds);
 
@@ -171,13 +204,13 @@ public:
 	}
 
 	// Invokes the given function after the given number of milliseconds and returns the result
-	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> invoke_after_milliseconds(int milliseconds, FUNCTION(function), ParameterTypes... parameters)
+	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> invoke_after_milliseconds(int milliseconds, _FUNCTION(function), ParameterTypes... parameters)
 	{
 		std::promise<ReturnType>* promise = new std::promise<ReturnType>();
 
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				delay_for_milliseconds(milliseconds);
 
@@ -204,11 +237,11 @@ public:
 	}
 
 	// Invokes the given void function after the given number of seconds
-	template <typename ... ParameterTypes> static void invoke_after_seconds(float seconds, METHOD(function), ParameterTypes... parameters)
+	template <typename ... ParameterTypes> static void invoke_after_seconds(float seconds, _METHOD(function), ParameterTypes... parameters)
 	{
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				delay_for_seconds(seconds);
 
@@ -220,13 +253,13 @@ public:
 	}
 
 	// Invokes the given function after the given number of seconds and returns the result
-	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> invoke_after_seconds(float seconds, FUNCTION(function), ParameterTypes... parameters)
+	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> invoke_after_seconds(float seconds, _FUNCTION(function), ParameterTypes... parameters)
 	{
 		std::promise<ReturnType>* promise = new std::promise<ReturnType>();
 
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				delay_for_seconds(seconds);
 
@@ -270,6 +303,45 @@ class Async
 {
 public:
 
+	// RUN FUNCTION
+
+	// Runs the given function asynchronously
+	template <typename ... ParameterTypes> static void Run(_METHOD(function), ParameterTypes... parameters)
+	{
+		std::thread async
+		(
+			_LAMBDA
+			(
+				function(parameters...);
+			)
+		);
+
+		async.detach();
+	}
+
+	// Runs the given function asynchronously and returns a future with its result
+	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> Run(_FUNCTION(function), ParameterTypes... parameters)
+	{
+		std::promise<ReturnType>* promise = new std::promise<ReturnType>();
+
+		std::thread async
+		(
+			_LAMBDA
+			(
+				promise->set_value(function(parameters...));
+
+				delete promise;
+
+				promise = nullptr;
+			)
+		);
+
+		async.detach();
+
+		return promise->get_future();
+	}
+
+
 	// CONVERT TO SECONDS
 
 	// Converts the given number of seconds to a count of milliseconds
@@ -294,11 +366,11 @@ public:
 	}
 
 	// Invokes the given void function after one tick
-	template <typename ... ParameterTypes> static void InvokeAfterTick(METHOD(function), ParameterTypes... parameters)
+	template <typename ... ParameterTypes> static void InvokeAfterTick(_METHOD(function), ParameterTypes... parameters)
 	{
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				DelayForTick();
 
@@ -310,13 +382,13 @@ public:
 	}
 
 	// Invokes the given function after one tick and returns the result
-	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> InvokeAfterTick(FUNCTION(function), ParameterTypes... parameters)
+	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> InvokeAfterTick(_FUNCTION(function), ParameterTypes... parameters)
 	{
 		std::promise<ReturnType>* promise = new std::promise<ReturnType>();
 
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				DelayForTick();
 
@@ -346,11 +418,11 @@ public:
 	}
 
 	// Invokes the given void function after the given number of ticks
-	template <typename ... ParameterTypes> static void InvokeAfterTicks(int number_of_ticks, METHOD(function), ParameterTypes... parameters)
+	template <typename ... ParameterTypes> static void InvokeAfterTicks(int number_of_ticks, _METHOD(function), ParameterTypes... parameters)
 	{
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				DelayForTicks(number_of_ticks);
 
@@ -362,13 +434,13 @@ public:
 	}
 
 	// Invokes the given function after the given number of ticks and returns the result
-	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> InvokeAfterTicks(int number_of_ticks, FUNCTION(function), ParameterTypes... parameters)
+	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> InvokeAfterTicks(int number_of_ticks, _FUNCTION(function), ParameterTypes... parameters)
 	{
 		std::promise<ReturnType>* promise = new std::promise<ReturnType>();
 
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				DelayForTicks(number_of_ticks);
 
@@ -395,11 +467,11 @@ public:
 	}
 
 	// Invokes the given void function after the given number of milliseconds
-	template <typename ... ParameterTypes> static void InvokeAfterMilliseconds(int milliseconds, METHOD(function), ParameterTypes... parameters)
+	template <typename ... ParameterTypes> static void InvokeAfterMilliseconds(int milliseconds, _METHOD(function), ParameterTypes... parameters)
 	{
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				DelayForMilliseconds(milliseconds);
 
@@ -411,13 +483,13 @@ public:
 	}
 
 	// Invokes the given function after the given number of milliseconds and returns the result
-	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> InvokeAfterMilliseconds(int milliseconds, FUNCTION(function), ParameterTypes... parameters)
+	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> InvokeAfterMilliseconds(int milliseconds, _FUNCTION(function), ParameterTypes... parameters)
 	{
 		std::promise<ReturnType>* promise = new std::promise<ReturnType>();
 
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				DelayForMilliseconds(milliseconds);
 
@@ -444,11 +516,11 @@ public:
 	}
 
 	// Invokes the given void function after the given number of seconds
-	template <typename ... ParameterTypes> static void InvokeAfterSeconds(float seconds, METHOD(function), ParameterTypes... parameters)
+	template <typename ... ParameterTypes> static void InvokeAfterSeconds(float seconds, _METHOD(function), ParameterTypes... parameters)
 	{
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				DelayForSeconds(seconds);
 
@@ -460,13 +532,13 @@ public:
 	}
 
 	// Invokes the given function after the given number of seconds and returns the result
-	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> InvokeAfterSeconds(float seconds, FUNCTION(function), ParameterTypes... parameters)
+	template <typename ReturnType, typename ... ParameterTypes> static std::future<ReturnType> InvokeAfterSeconds(float seconds, _FUNCTION(function), ParameterTypes... parameters)
 	{
 		std::promise<ReturnType>* promise = new std::promise<ReturnType>();
 
 		std::thread delay
 		(
-			LAMBDA
+			_LAMBDA
 			(
 				DelayForSeconds(seconds);
 

@@ -1,10 +1,10 @@
 ﻿
-// Delta Time Script
+// Static Delta Time Functions Script
 // by Kyle Furey
 
 using System;
 
-// Include this heading to use the class
+// Include this heading to use the library
 using static DeltaTime;
 
 // Tracks the change in time between function calls.

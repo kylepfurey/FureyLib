@@ -12,7 +12,7 @@ def main():
     # New code here
 
 
-# Starts the application.
+# Starts the application
 if __name__ == "__main__":
     main();
     

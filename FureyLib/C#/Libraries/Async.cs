@@ -1,12 +1,12 @@
 ﻿
-// Static Asynchronous Function Library Script
+// Static Asynchronous Functions Script
 // by Kyle Furey
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-// Include this heading to use the class
+// Include this heading to use the library
 using static Async;
 
 /// <summary>

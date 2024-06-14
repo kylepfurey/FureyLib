@@ -1,12 +1,12 @@
 ﻿
-// Static Multithreading Function Library Script
+// Static Multithreading Functions Script
 // by Kyle Furey
 
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
-// Include this heading to use the class
+// Include this heading to use the library
 using static Multithreading;
 
 /// <summary>

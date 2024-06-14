@@ -2,7 +2,7 @@
 // Static Select Statement Functions Script
 // by Kyle Furey
 
-// Include this heading to use the class
+// Include this heading to use the library
 using static Select;
 
 /// Select statements.

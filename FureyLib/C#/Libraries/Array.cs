@@ -5,7 +5,7 @@
 using System;
 using System.Diagnostics;
 
-// Include this heading to use the class
+// Include this heading to use the library
 using static Array;
 
 /// <summary>

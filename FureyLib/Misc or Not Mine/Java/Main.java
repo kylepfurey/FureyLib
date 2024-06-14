@@ -1,11 +1,14 @@
-public class MyFirstJavaProgram {
 
-   /*
-    * This is my first java program.
-    * This will print 'Hello, Dinner!' as the output
-    */
+// Program Main Entry Point Script
 
-   public static void main(String[] args) {
+// The class representing the program that the application is running on.
+public class Application
+{
+   // Entry point of the program
+   public static void main(String[] args)
+   {
       System.out.println("Hello, Dinner!");
+	  
+	  // New code here
    }
 }

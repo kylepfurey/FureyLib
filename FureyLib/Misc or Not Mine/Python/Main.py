@@ -1,20 +1,18 @@
-#!/usr/bin/env python3
-"""
-Module Docstring
-"""
-
-__author__ = "Your Name"
-__version__ = "1.0.0"
-__license__ = "Public Domain"
 
 
+# Program Main Entry Point Script
+
+# Entry point of the program
 def main():
-    """ Main entry point of the app """
+    
     print("Hello, Dinner!\n")
-    input('Press ENTER to exit . . . ')
+    
+    input("Press ENTER to exit . . . ")
+    
+    # New code here
 
 
+# Starts the application.
 if __name__ == "__main__":
-    """ This is executed when run from the command line """
-    main()
+    main();
     

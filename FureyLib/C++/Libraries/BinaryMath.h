@@ -4,7 +4,7 @@
 
 #pragma once
 
-// Include this heading to use the class
+// Include this heading to use the library
 #include "BinaryMath.h"
 
 // Binary Math Function Libary

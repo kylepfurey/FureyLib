@@ -1,5 +1,5 @@
 
-// Static Asynchronous Function Library Script
+// Static Asynchronous Functions Script
 // by Kyle Furey
 
 #pragma once
@@ -7,7 +7,7 @@
 #include <future>
 #include <chrono>
 
-// Include this heading to use the class
+// Include this heading to use the library
 #include "Async.h"
 
 // Define the lambda expression

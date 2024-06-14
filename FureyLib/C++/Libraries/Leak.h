@@ -1,5 +1,5 @@
 
-// Leak Detection Library Script
+// Leak Detection Macros Script
 // by Kyle Furey
 
 #pragma once

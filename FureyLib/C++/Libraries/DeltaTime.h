@@ -1,35 +1,36 @@
 
-// Delta Time Script
+// Static Delta Time Functions Script
 // by Kyle FUrey
 
 #pragma once
 #include <chrono>
 
-// Include this heading to use the class
+// Include this heading to use the library
 #include "DeltaTime.h"
 
 // Tracks the change in time between function calls.
 class delta_time
 {
-public:
+private:
 
 	// DELTA TIME VARIABLES
 
 	// The current elapsed time in clock time (not in seconds)
-	static std::clock_t clock_time = std::clock();
+	static std::clock_t clock_time;
 
 	// The time in seconds since the last time the loop was called
-	static double delta_time = 0;
+	static double delta_time;
 
 	// The number of loops that has occured since the program was started
-	static int loop_count = 0;
+	static int loop_count;
 
 	// The elapsed time since the program started
-	static double elapsed_time = 0;
+	static double elapsed_time;
 
 	// The current frame rate of the program
-	static double frame_rate = 0;
+	static double frame_rate;
 
+public:
 
 	// DELTA TIME FUNCTIONS
 
@@ -74,28 +75,36 @@ public:
 	}
 };
 
+// Static variable initialization
+std::clock_t delta_time::clock_time = std::clock();
+double delta_time::delta_time = 0;
+int delta_time::loop_count = 0;
+double delta_time::elapsed_time = 0;
+double delta_time::frame_rate = 0;
+
 // Tracks the change in time between function calls.
 class DeltaTime
 {
-public:
+private:
 
 	// DELTA TIME VARIABLES
 
 	// The current elapsed time in clock time (not in seconds)
-	static std::clock_t clockTime = std::clock();
+	static std::clock_t clockTime;
 
 	// The time in seconds since the last time the loop was called
-	static double deltaTime = 0;
+	static double deltaTime;
 
 	// The number of loops that has occured since the program was started
-	static int loopCount = 0;
+	static int loopCount;
 
 	// The elapsed time since the program started
-	static double elapsedTime = 0;
+	static double elapsedTime;
 
 	// The current frame rate of the program
-	static double frameRate = 0;
+	static double frameRate;
 
+public:
 
 	// DELTA TIME FUNCTIONS
 
@@ -139,3 +148,10 @@ public:
 		return frameRate;
 	}
 };
+
+// Static variable initialization
+std::clock_t DeltaTime::clock_time = std::clock();
+double DeltaTime::delta_time = 0;
+int DeltaTime::loop_count = 0;
+double DeltaTime::elapsed_time = 0;
+double DeltaTime::frame_rate = 0;

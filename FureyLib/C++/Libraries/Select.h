@@ -5,7 +5,7 @@
 #pragma once
 #include <cstdarg> 
 
-// Include this heading to use the class
+// Include this heading to use the library
 #define "Select.h"
 
 // Select from a boolean and return the chosen data

@@ -11,7 +11,7 @@
 #include "Async.h"
 
 // Define the lambda expression
-#define _LAMBDA(expression) [=] () mutable -> void { expression }
+#define _LAMBDA(captures) [captures] () mutable -> void
 
 // Define the method data type
 #define _METHOD(variable) void (*variable) (ParameterTypes...)
@@ -31,10 +31,10 @@ public:
 	{
 		std::thread async
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				function(parameters...);
-			)
+			}
 		);
 
 		async.detach();
@@ -47,14 +47,14 @@ public:
 
 		std::thread async
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				promise->set_value(function(parameters...));
 
 				delete promise;
 
 				promise = nullptr;
-			)
+			}
 		);
 
 		async.detach();
@@ -91,12 +91,12 @@ public:
 	{
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				delay_for_tick();
 
 				function(parameters...);
-			)
+			}
 		);
 
 		delay.detach();
@@ -109,8 +109,8 @@ public:
 
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				delay_for_tick();
 
 				promise->set_value(function(parameters...));
@@ -118,7 +118,7 @@ public:
 				delete promise;
 
 				promise = nullptr;
-			)
+			}
 		);
 
 		delay.detach();
@@ -143,12 +143,12 @@ public:
 	{
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				delay_for_ticks(number_of_ticks);
 
 				function(parameters...);
-			)
+			}
 		);
 
 		delay.detach();
@@ -161,8 +161,8 @@ public:
 
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				delay_for_ticks(number_of_ticks);
 
 				promise->set_value(function(parameters...));
@@ -170,7 +170,7 @@ public:
 				delete promise;
 
 				promise = nullptr;
-			)
+			}
 		);
 
 		delay.detach();
@@ -192,12 +192,12 @@ public:
 	{
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				delay_for_milliseconds(milliseconds);
 
 				function(parameters...);
-			)
+			}
 		);
 
 		delay.detach();
@@ -210,8 +210,8 @@ public:
 
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				delay_for_milliseconds(milliseconds);
 
 				promise->set_value(function(parameters...));
@@ -219,7 +219,7 @@ public:
 				delete promise;
 
 				promise = nullptr;
-			)
+			}
 		);
 
 		delay.detach();
@@ -241,12 +241,12 @@ public:
 	{
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				delay_for_seconds(seconds);
 
 				function(parameters...);
-			)
+			}
 		);
 
 		delay.detach();
@@ -259,8 +259,8 @@ public:
 
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				delay_for_seconds(seconds);
 
 				promise->set_value(function(parameters...));
@@ -268,7 +268,7 @@ public:
 				delete promise;
 
 				promise = nullptr;
-			)
+			}
 		);
 
 		delay.detach();
@@ -310,10 +310,10 @@ public:
 	{
 		std::thread async
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				function(parameters...);
-			)
+			}
 		);
 
 		async.detach();
@@ -326,14 +326,14 @@ public:
 
 		std::thread async
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				promise->set_value(function(parameters...));
 
 				delete promise;
 
 				promise = nullptr;
-			)
+			}
 		);
 
 		async.detach();
@@ -370,12 +370,12 @@ public:
 	{
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				DelayForTick();
 
 				function(parameters...);
-			)
+			}
 		);
 
 		delay.detach();
@@ -388,8 +388,8 @@ public:
 
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				DelayForTick();
 
 				promise->set_value(function(parameters...));
@@ -397,7 +397,7 @@ public:
 				delete promise;
 
 				promise = nullptr;
-			)
+			}
 		);
 
 		delay.detach();
@@ -422,12 +422,12 @@ public:
 	{
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				DelayForTicks(number_of_ticks);
 
 				function(parameters...);
-			)
+			}
 		);
 
 		delay.detach();
@@ -440,8 +440,8 @@ public:
 
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				DelayForTicks(number_of_ticks);
 
 				promise->set_value(function(parameters...));
@@ -449,7 +449,7 @@ public:
 				delete promise;
 
 				promise = nullptr;
-			)
+			}
 		);
 
 		delay.detach();
@@ -471,12 +471,12 @@ public:
 	{
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				DelayForMilliseconds(milliseconds);
 
 				function(parameters...);
-			)
+			}
 		);
 
 		delay.detach();
@@ -489,8 +489,8 @@ public:
 
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				DelayForMilliseconds(milliseconds);
 
 				promise->set_value(function(parameters...));
@@ -498,7 +498,7 @@ public:
 				delete promise;
 
 				promise = nullptr;
-			)
+			}
 		);
 
 		delay.detach();
@@ -520,12 +520,12 @@ public:
 	{
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				DelayForSeconds(seconds);
 
 				function(parameters...);
-			)
+			}
 		);
 
 		delay.detach();
@@ -538,8 +538,8 @@ public:
 
 		std::thread delay
 		(
-			_LAMBDA
-			(
+			_LAMBDA(=)
+			{
 				DelayForSeconds(seconds);
 
 				promise->set_value(function(parameters...));
@@ -547,7 +547,7 @@ public:
 				delete promise;
 
 				promise = nullptr;
-			)
+			}
 		);
 
 		delay.detach();

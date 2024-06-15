@@ -1,16 +1,17 @@
 
-// Byte Data Type and Functions Definitions Script
+// Byte Data Type Function Definitions Script
 // by Kyle Furey
 
+#pragma once
 #include <string>
 
 // Include this heading to use the class
 #include "Byte.h"
 
-// Byte Functions
+// Byte functions
 byte::byte()
 {
-	is_unsigned = false;
+	is_unsigned = true;
 
 	bits[0] = false;
 	bits[1] = false;
@@ -52,7 +53,7 @@ byte::byte(bool boolean, bool isUnsigned)
 
 byte::byte(bool newBits[8])
 {
-	is_unsigned = false;
+	is_unsigned = true;
 
 	bits[0] = newBits[0];
 	bits[1] = newBits[1];
@@ -80,7 +81,7 @@ byte::byte(bool newBits[8], bool isUnsigned)
 
 byte::byte(int newBits[8])
 {
-	is_unsigned = false;
+	is_unsigned = true;
 
 	bits[0] = newBits[0];
 	bits[1] = newBits[1];
@@ -220,7 +221,7 @@ byte::byte(unsigned int integer, bool isUnsigned)
 
 byte::byte(std::string newString)
 {
-	is_unsigned = false;
+	is_unsigned = true;
 
 	bits[0] = newString[7] - 48;
 	bits[1] = newString[6] - 48;
@@ -2988,10 +2989,10 @@ bool byte::operator!()
 	return not_boolean();
 }
 
-// Byte Functions
+// Byte functions
 Byte::Byte()
 {
-	isUnsigned = false;
+	isUnsigned = true;
 
 	bits[0] = false;
 	bits[1] = false;
@@ -3033,7 +3034,7 @@ Byte::Byte(bool boolean, bool is_unsigned)
 
 Byte::Byte(bool newBits[8])
 {
-	isUnsigned = false;
+	isUnsigned = true;
 
 	bits[0] = newBits[0];
 	bits[1] = newBits[1];
@@ -3061,7 +3062,7 @@ Byte::Byte(bool newBits[8], bool is_unsigned)
 
 Byte::Byte(int newBits[8])
 {
-	isUnsigned = false;
+	isUnsigned = true;
 
 	bits[0] = newBits[0];
 	bits[1] = newBits[1];
@@ -3201,7 +3202,7 @@ Byte::Byte(unsigned int integer, bool is_unsigned)
 
 Byte::Byte(std::string newString)
 {
-	isUnsigned = false;
+	isUnsigned = true;
 
 	bits[0] = newString[7] - 48;
 	bits[1] = newString[6] - 48;

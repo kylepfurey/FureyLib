@@ -595,7 +595,10 @@ public class List<DataType> : IEnumerable
         return newData;
     }
 
-    // Remove and return the first element of the list
+    /// <summary>
+    /// Remove and return the first element of the list
+    /// </summary>
+    /// <returns></returns>
     public DataType Dequeue()
     {
         return Pop();

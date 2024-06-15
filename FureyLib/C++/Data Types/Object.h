@@ -10,7 +10,7 @@
 // Include this heading to use the class
 #include "Object.h"
 
-// Define the variable used for conversions (must be larger then any variable)
+// Define the variable used for conversions (must be larger then any variable).
 #define CONVERSION_TYPE long long
 
 // Object class that functions as a universal container which can hold and return data of any type.

@@ -1,5 +1,5 @@
 
-// Byte Data Type and Static Functions Header Script
+// Byte Data Type Header Script
 // by Kyle Furey
 
 #pragma once
@@ -8,14 +8,14 @@
 // Include this heading to use the class
 #include "Byte.h"
 
-// Byte Class
+// Emulates a single byte of memory through 8 boolean bits.
 class byte
 {
 public:
 																			// Instance Byte Data
 
 	bool bits[8];															// The 8 bits that make up the Byte
-	bool is_unsigned = false;												// Whether this Byte is unsigned
+	bool is_unsigned = true;												// Whether this Byte is unsigned
 
 
 																			// Constructors and Deconstructors
@@ -256,14 +256,14 @@ public:
 	bool operator!();														// Not Boolean Operator
 };
 
-// Byte Class
+// Emulates a single byte of memory through 8 boolean bits.
 class Byte
 {
 public:
 																			// Instance Byte Data
 
 	bool bits[8];															// The 8 bits that make up the Byte
-	bool isUnsigned = false;												// Whether this Byte is unsigned
+	bool isUnsigned = true;													// Whether this Byte is unsigned
 
 
 																			// Constructors and Deconstructors

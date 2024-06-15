@@ -13,10 +13,10 @@
 // Include this heading to use the class
 #include "Vector.h"
 
-// Data type used for sorting
+// Data type used for sorting.
 #define SORT_TYPE float
 
-// Vector Class
+// Vector container class.
 template <class DataType> class vector
 {
 private:
@@ -1158,7 +1158,7 @@ public:
 	}
 };
 
-// Vector Class
+// Vector container class.
 template <class DataType> class Vector
 {
 private:

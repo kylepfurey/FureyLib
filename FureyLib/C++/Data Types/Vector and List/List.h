@@ -13,10 +13,10 @@
 // Include this heading to use the class
 #include "List.h"
 
-// Data type used for sorting
+// Data type used for sorting.
 #define SORT_TYPE float
 
-// List Class
+// List container class.
 template <class DataType> class list
 {
 private:
@@ -1158,7 +1158,7 @@ public:
 	}
 };
 
-// List Class
+// List container class.
 template <class DataType> class List
 {
 private:

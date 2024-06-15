@@ -13,18 +13,28 @@
 #define new GC + new
 
 // Overrides the malloc() function to store newly allocated memory to the garbage collector.
-#define malloc GC + malloc
+#define malloc GC - malloc
+
+// Overrides the calloc() function to store newly allocated memory to the garbage collector.
+#define calloc GC - calloc
+
+// Overrides the realloc() function to store newly allocated memory to the garbage collector.
+#define realloc GC - realloc
 
 // •  Collects and stores pointers to newly allocated memory for automatic deallocation at the end of the program.
 // •  Do not make an instance of this class as there is already a global instance named "GC".
+// •  Note:  Use containers such as std::array and std::vector for allocation of multiple variables instead of C arrays.
 class GarbageCollector
 {
 private:
 
 	// ALLOCATED MEMORY
 
-	// All of the garbage collector's newly allocated memory.
-	std::vector<void*> memory = std::vector<void*>();
+	// All of the garbage collector's newly allocated memory using the new keyword.
+	std::vector<void*> cppMemory = std::vector<void*>();
+
+	// All of the garbage collector's newly allocated memory using the malloc() functions.
+	std::vector<void*> cMemory = std::vector<void*>();
 
 public:
 
@@ -37,16 +47,27 @@ public:
 	{
 		int total = 0;
 
-		for (int i = 0; i < memory.size(); i++)
+		for (int i = 0; i < cppMemory.size(); i++)
 		{
-			total += sizeof(memory[i]);
+			total += sizeof(cppMemory[i]);
 
-			delete memory[i];
+			delete cppMemory[i];
 
-			memory[i] = nullptr;
+			cppMemory[i] = nullptr;
 		}
 
-		memory.clear();
+		cppMemory.clear();
+
+		for (int i = 0; i < cMemory.size(); i++)
+		{
+			total += sizeof(cMemory[i]);
+
+			free(cMemory[i]);
+
+			cMemory[i] = nullptr;
+		}
+
+		cMemory.clear();
 
 		std::cout << std::endl << "Garbage Collector successfully deallocated " << total << " total bytes of memory." << std::endl;
 
@@ -67,18 +88,18 @@ public:
 
 	// •  Allocates new memory in place of the new keyword.
 	// •  Stores the pointer in the garbage collector's memory before returning the new pointer.
-	template<typename DataType> DataType* AllocateNewMemory(DataType* ptr)
+	template<typename DataType> DataType* AllocateNewCPPMemory(DataType* ptr)
 	{
-		memory.push_back(ptr);
+		cppMemory.push_back(ptr);
 
 		return ptr;
 	}
 
-	// •  Allocates new memory in place of the malloc() function.
+	// •  Allocates new memory in place of the malloc() functions.
 	// •  Stores the pointer in the garbage collector's memory before returning the new pointer.
-	void* AllocateNewMemory(void* ptr)
+	void* AllocateNewCMemory(void* ptr)
 	{
-		memory.push_back(ptr);
+		cMemory.push_back(ptr);
 
 		return ptr;
 	}
@@ -86,16 +107,16 @@ public:
 
 	// MEMORY ALLOCATION OPERATOR
 
-	// Operator used to take new pointers as a parameter in the new macro for the AllocateNewMemory() functions.
+	// Operator used to take new pointers as a parameter in the new macro for the AllocateNewCPPMemory() functions.
 	template<typename DataType> DataType* operator+(DataType* ptr)
 	{
-		return AllocateNewMemory(ptr);
+		return AllocateNewCPPMemory(ptr);
 	}
 
-	// Operator used to take new pointers as a parameter in the malloc macro for the AllocateNewMemory() functions.
-	void* operator+(void* ptr)
+	// Operator used to take new pointers as a parameter in the malloc macro for the AllocateNewCMemory() functions.
+	void* operator-(void* ptr)
 	{
-		return AllocateNewMemory(ptr);
+		return AllocateNewCMemory(ptr);
 	}
 };
 

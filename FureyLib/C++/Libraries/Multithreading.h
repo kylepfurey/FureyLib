@@ -6,15 +6,15 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <thread>
 #include <functional>
+#include <thread>
 #include <chrono>
 
 // Include this heading to use the library
 #include "Multithreading.h"
 
 // Shorthand for std::find().
-#define _FIND(vector, element) std::find(vector.begin(), vector.end(), element)
+#define FIND(vector, element) std::find(vector.begin(), vector.end(), element)
 
 // Creates a lambda expression with the given captures and code.
 #define LAMBDA(captures) [captures] () mutable -> void
@@ -483,28 +483,28 @@ public:
 		std::thread temp_thread
 		(
 			LAMBDA(&)
+		{
+			if (locked_threads.count(&new_thread))
 			{
-				if (locked_threads.count(&new_thread))
-				{
-					lock(*locked_threads[&new_thread]);
-				}
-
-				running_threads.push_back(&new_thread);
-
-				method();
-
-				threads.erase(_FIND(threads, &new_thread));
-
-				thread_ids.erase(_FIND(thread_ids, get_id(new_thread)));
-
-				find_thread.erase(find_id[&new_thread]);
-
-				find_id.erase(&new_thread);
-
-				running_threads.erase(_FIND(running_threads, &new_thread));
-
-				cancellation_tokens.erase(&new_thread);
+				lock(*locked_threads[&new_thread]);
 			}
+
+			running_threads.push_back(&new_thread);
+
+			method();
+
+			threads.erase(FIND(threads, &new_thread));
+
+			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
+
+			find_thread.erase(find_id[&new_thread]);
+
+			find_id.erase(&new_thread);
+
+			running_threads.erase(FIND(running_threads, &new_thread));
+
+			cancellation_tokens.erase(&new_thread);
+		}
 		);
 
 		threads.push_back(&new_thread);
@@ -538,28 +538,28 @@ public:
 		std::thread temp_thread
 		(
 			LAMBDA(&)
+		{
+			if (locked_threads.count(&new_thread))
 			{
-				if (locked_threads.count(&new_thread))
-				{
-					lock(*locked_threads[&new_thread]);
-				}
-
-				running_threads.push_back(&new_thread);
-
-				method();
-
-				threads.erase(_FIND(threads, &new_thread));
-
-				thread_ids.erase(_FIND(thread_ids, get_id(new_thread)));
-
-				find_thread.erase(find_id[&new_thread]);
-
-				find_id.erase(&new_thread);
-
-				running_threads.erase(_FIND(running_threads, &new_thread));
-
-				cancellation_tokens.erase(&new_thread);
+				lock(*locked_threads[&new_thread]);
 			}
+
+			running_threads.push_back(&new_thread);
+
+			method();
+
+			threads.erase(FIND(threads, &new_thread));
+
+			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
+
+			find_thread.erase(find_id[&new_thread]);
+
+			find_id.erase(&new_thread);
+
+			running_threads.erase(FIND(running_threads, &new_thread));
+
+			cancellation_tokens.erase(&new_thread);
+		}
 		);
 
 		threads.push_back(&new_thread);
@@ -613,30 +613,30 @@ public:
 		std::thread temp_thread
 		(
 			LAMBDA(&)
+		{
+			if (locked_threads.count(&new_thread))
 			{
-				if (locked_threads.count(&new_thread))
-				{
-					lock(*locked_threads[&new_thread]);
-				}
-
-				running_threads.push_back(&new_thread);
-
-				method();
-
-				threads.erase(_FIND(threads, &new_thread));
-
-				thread_ids.erase(_FIND(thread_ids, get_id(new_thread)));
-
-				find_thread.erase(find_id[&new_thread]);
-
-				find_id.erase(&new_thread);
-
-				thread_names.erase(get_name(new_thread));
-
-				running_threads.erase(_FIND(running_threads, &new_thread));
-
-				cancellation_tokens.erase(&new_thread);
+				lock(*locked_threads[&new_thread]);
 			}
+
+			running_threads.push_back(&new_thread);
+
+			method();
+
+			threads.erase(FIND(threads, &new_thread));
+
+			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
+
+			find_thread.erase(find_id[&new_thread]);
+
+			find_id.erase(&new_thread);
+
+			thread_names.erase(get_name(new_thread));
+
+			running_threads.erase(FIND(running_threads, &new_thread));
+
+			cancellation_tokens.erase(&new_thread);
+		}
 		);
 
 		threads.push_back(&new_thread);
@@ -691,25 +691,25 @@ public:
 		std::thread temp_thread
 		(
 			LAMBDA(&)
-			{
-				lock(followed_thread);
+		{
+			lock(followed_thread);
 
-				running_threads.push_back(&new_thread);
+			running_threads.push_back(&new_thread);
 
-				method();
+			method();
 
-				threads.erase(_FIND(threads, &new_thread));
+			threads.erase(FIND(threads, &new_thread));
 
-				thread_ids.erase(_FIND(thread_ids, get_id(new_thread)));
+			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
 
-				find_thread.erase(find_id[&new_thread]);
+			find_thread.erase(find_id[&new_thread]);
 
-				find_id.erase(&new_thread);
+			find_id.erase(&new_thread);
 
-				running_threads.erase(_FIND(running_threads, &new_thread));
+			running_threads.erase(FIND(running_threads, &new_thread));
 
-				cancellation_tokens.erase(&new_thread);
-			}
+			cancellation_tokens.erase(&new_thread);
+		}
 		);
 
 		threads.push_back(&new_thread);
@@ -744,27 +744,27 @@ public:
 		std::thread temp_thread
 		(
 			LAMBDA(&)
-			{
-				lock(followed_thread);
+		{
+			lock(followed_thread);
 
-				running_threads.push_back(&new_thread);
+			running_threads.push_back(&new_thread);
 
-				method();
+			method();
 
-				threads.erase(_FIND(threads, &new_thread));
+			threads.erase(FIND(threads, &new_thread));
 
-				thread_ids.erase(_FIND(thread_ids, get_id(new_thread)));
+			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
 
-				find_thread.erase(find_id[&new_thread]);
+			find_thread.erase(find_id[&new_thread]);
 
-				find_id.erase(&new_thread);
+			find_id.erase(&new_thread);
 
-				thread_names.erase(get_name(new_thread));
+			thread_names.erase(get_name(new_thread));
 
-				running_threads.erase(_FIND(running_threads, &new_thread));
+			running_threads.erase(FIND(running_threads, &new_thread));
 
-				cancellation_tokens.erase(&new_thread);
-			}
+			cancellation_tokens.erase(&new_thread);
+		}
 		);
 
 		threads.push_back(&new_thread);
@@ -800,25 +800,25 @@ public:
 		std::thread temp_thread
 		(
 			LAMBDA(&)
-			{
-				lock(*find_thread[followed_id]);
+		{
+			lock(*find_thread[followed_id]);
 
-				running_threads.push_back(&new_thread);
+			running_threads.push_back(&new_thread);
 
-				method();
+			method();
 
-				threads.erase(_FIND(threads, &new_thread));
+			threads.erase(FIND(threads, &new_thread));
 
-				thread_ids.erase(_FIND(thread_ids, get_id(new_thread)));
+			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
 
-				find_thread.erase(find_id[&new_thread]);
+			find_thread.erase(find_id[&new_thread]);
 
-				find_id.erase(&new_thread);
+			find_id.erase(&new_thread);
 
-				running_threads.erase(_FIND(running_threads, &new_thread));
+			running_threads.erase(FIND(running_threads, &new_thread));
 
-				cancellation_tokens.erase(&new_thread);
-			}
+			cancellation_tokens.erase(&new_thread);
+		}
 		);
 
 		threads.push_back(&new_thread);
@@ -853,27 +853,27 @@ public:
 		std::thread temp_thread
 		(
 			LAMBDA(&)
-			{
-				lock(*find_thread[followed_id]);
+		{
+			lock(*find_thread[followed_id]);
 
-				running_threads.push_back(&new_thread);
+			running_threads.push_back(&new_thread);
 
-				method();
+			method();
 
-				threads.erase(_FIND(threads, &new_thread));
+			threads.erase(FIND(threads, &new_thread));
 
-				thread_ids.erase(_FIND(thread_ids, get_id(new_thread)));
+			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
 
-				find_thread.erase(find_id[&new_thread]);
+			find_thread.erase(find_id[&new_thread]);
 
-				find_id.erase(&new_thread);
+			find_id.erase(&new_thread);
 
-				thread_names.erase(get_name(new_thread));
+			thread_names.erase(get_name(new_thread));
 
-				running_threads.erase(_FIND(running_threads, &new_thread));
+			running_threads.erase(FIND(running_threads, &new_thread));
 
-				cancellation_tokens.erase(&new_thread);
-			}
+			cancellation_tokens.erase(&new_thread);
+		}
 		);
 
 		threads.push_back(&new_thread);
@@ -1203,9 +1203,9 @@ public:
 			std::this_thread::yield();
 		}
 
-		threads.erase(_FIND(threads, nullptr));
+		threads.erase(FIND(threads, nullptr));
 
-		thread_ids.erase(_FIND(thread_ids, main_thread_id));
+		thread_ids.erase(FIND(thread_ids, main_thread_id));
 
 		find_thread.erase(find_id[nullptr]);
 
@@ -1213,7 +1213,7 @@ public:
 
 		thread_names.erase("Main Thread");
 
-		running_threads.erase(_FIND(running_threads, nullptr));
+		running_threads.erase(FIND(running_threads, nullptr));
 
 		cancellation_tokens.erase(nullptr);
 

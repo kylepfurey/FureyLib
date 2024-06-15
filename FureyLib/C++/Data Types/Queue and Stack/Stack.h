@@ -11,10 +11,10 @@
 // Include this heading to use the class
 #include "Stack.h"
 
-// Data type used for priority value
+// Data type used for priority value.
 #define PRIORITY float
 
-// Stack Class
+// A last in first out list of a specified data type.
 template <class DataType> class stack
 {
 private:
@@ -223,7 +223,7 @@ public:
 	}
 };
 
-// Priority Stack Class
+// A last in first out list of a specified data type with an associated priority value assigned to each element used for adding and removing data in a specific order.
 template <class DataType> class priority_stack
 {
 private:
@@ -538,7 +538,7 @@ public:
 	}
 };
 
-// Stack Class
+// A last in first out list of a specified data type.
 template <class DataType> class Stack
 {
 private:
@@ -747,7 +747,7 @@ public:
 	}
 };
 
-// Priority Stack Class
+// A last in first out list of a specified data type with an associated priority value assigned to each element used for adding and removing data in a specific order.
 template <class DataType> class PriorityStack
 {
 private:

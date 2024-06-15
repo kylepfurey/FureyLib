@@ -10,12 +10,11 @@
 // Include this heading to use the class
 #include "Delegate.h"
 
-// Define the method data type
-#define _METHOD(variable) void (*variable) (ParameterTypes...)
+// Represents a void function pointer either with or without parameters.
+#define METHOD(variable) void (*variable) (ParameterTypes...)
 
-// Define the function data type
-#define _FUNCTION(variable) ReturnType (*variable) (ParameterTypes...)
-
+// Represents a function pointer with a return type either with or without parameters.
+#define FUNCTION(variable) ReturnType (*variable) (ParameterTypes...)
 
 // Forward declaration of event
 template <typename ... ParameterTypes> class event;
@@ -45,7 +44,7 @@ private:
 	// DELEGATE DATA
 
 	// List of functions included in the delegate
-	std::vector<_METHOD()> functions = std::vector<_METHOD()>();
+	std::vector<METHOD()> functions = std::vector<METHOD()>();
 
 	// Whether the delegate is currently invoking functions
 	bool invoking = false;
@@ -64,7 +63,7 @@ public:
 	// Default constructor
 	event()
 	{
-		functions = std::vector<_METHOD()>();
+		functions = std::vector<METHOD()>();
 
 		all_delegates.push_back(this);
 
@@ -72,9 +71,9 @@ public:
 	}
 
 	// Function constructor
-	event(_METHOD(function))
+	event(METHOD(function))
 	{
-		this->functions = std::vector<_METHOD()>();
+		this->functions = std::vector<METHOD()>();
 
 		this->functions.push_back(function);
 
@@ -84,9 +83,9 @@ public:
 	}
 
 	// Array constructor
-	event(_METHOD(functions[]), int number_of_functions)
+	event(METHOD(functions[]), int number_of_functions)
 	{
-		this->functions = std::vector<_METHOD()>();
+		this->functions = std::vector<METHOD()>();
 
 		for (int i = 0; i < number_of_functions; i++)
 		{
@@ -100,12 +99,12 @@ public:
 
 	// Parameter constructor
 	event(int number_of_functions,
-		_METHOD(function1) = nullptr, _METHOD(function2) = nullptr, _METHOD(function3) = nullptr, _METHOD(function4) = nullptr,
-		_METHOD(function5) = nullptr, _METHOD(function6) = nullptr, _METHOD(function7) = nullptr, _METHOD(function8) = nullptr,
-		_METHOD(function9) = nullptr, _METHOD(function10) = nullptr, _METHOD(function11) = nullptr, _METHOD(function12) = nullptr,
-		_METHOD(function13) = nullptr, _METHOD(function14) = nullptr, _METHOD(function15) = nullptr, _METHOD(function16) = nullptr)
+		METHOD(function1) = nullptr, METHOD(function2) = nullptr, METHOD(function3) = nullptr, METHOD(function4) = nullptr,
+		METHOD(function5) = nullptr, METHOD(function6) = nullptr, METHOD(function7) = nullptr, METHOD(function8) = nullptr,
+		METHOD(function9) = nullptr, METHOD(function10) = nullptr, METHOD(function11) = nullptr, METHOD(function12) = nullptr,
+		METHOD(function13) = nullptr, METHOD(function14) = nullptr, METHOD(function15) = nullptr, METHOD(function16) = nullptr)
 	{
-		this->functions = std::vector<_METHOD()>();
+		this->functions = std::vector<METHOD()>();
 
 		all_delegates.push_back(this);
 
@@ -225,7 +224,7 @@ public:
 	}
 
 	// Vector constructor
-	event(std::vector<_METHOD()> functions)
+	event(std::vector<METHOD()> functions)
 	{
 		functions = functions;
 
@@ -235,9 +234,9 @@ public:
 	}
 
 	// List constructor
-	event(const std::initializer_list<_METHOD()> functions)
+	event(const std::initializer_list<METHOD()> functions)
 	{
-		this->functions = std::vector<_METHOD()>();
+		this->functions = std::vector<METHOD()>();
 
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -252,7 +251,7 @@ public:
 	// Delegate constructor
 	event(event<ParameterTypes...>& functions)
 	{
-		this->functions = std::vector<_METHOD()>();
+		this->functions = std::vector<METHOD()>();
 
 		for (int i = 0; i < functions.count(); i++)
 		{
@@ -360,7 +359,7 @@ public:
 	}
 
 	// Sets a function in the delegate
-	event<ParameterTypes...>& set(int index, _METHOD(function))
+	event<ParameterTypes...>& set(int index, METHOD(function))
 	{
 		functions[index] = function;
 
@@ -368,7 +367,7 @@ public:
 	}
 
 	// Add a new function to the delegate
-	event<ParameterTypes...>& add(_METHOD(function))
+	event<ParameterTypes...>& add(METHOD(function))
 	{
 		functions.push_back(function);
 
@@ -376,7 +375,7 @@ public:
 	}
 
 	// Adds new functions to the delegate
-	event<ParameterTypes...>& add(int number_of_functions, _METHOD(functions[]))
+	event<ParameterTypes...>& add(int number_of_functions, METHOD(functions[]))
 	{
 		for (int i = 0; i < number_of_functions; i++)
 		{
@@ -387,7 +386,7 @@ public:
 	}
 
 	// Adds new functions to the delegate
-	event<ParameterTypes...>& add(std::vector<_METHOD()> functions)
+	event<ParameterTypes...>& add(std::vector<METHOD()> functions)
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -409,7 +408,7 @@ public:
 	}
 
 	// Remove a function from the delegate
-	event<ParameterTypes...>& remove(_METHOD(function))
+	event<ParameterTypes...>& remove(METHOD(function))
 	{
 		functions.erase(std::find(functions.begin(), functions.end(), function));
 
@@ -450,7 +449,7 @@ public:
 	}
 
 	// Returns if the delegate contains a function
-	bool contains(_METHOD(function))
+	bool contains(METHOD(function))
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -464,7 +463,7 @@ public:
 	}
 
 	// Returns the index of the function in the delegate, or -1 if it was not found
-	int find(_METHOD(function))
+	int find(METHOD(function))
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -500,25 +499,25 @@ public:
 	// COLLECTION OPERATORS
 
 	// Adding a function
-	event<ParameterTypes...>& operator+(_METHOD(function))
+	event<ParameterTypes...>& operator+(METHOD(function))
 	{
 		return add(function);
 	}
 
 	// Adding a function
-	event<ParameterTypes...>& operator+=(_METHOD(function))
+	event<ParameterTypes...>& operator+=(METHOD(function))
 	{
 		return add(function);
 	}
 
 	// Removing a function
-	event<ParameterTypes...>& operator-(_METHOD(function))
+	event<ParameterTypes...>& operator-(METHOD(function))
 	{
 		return remove(function);
 	}
 
 	// Removing a function
-	event<ParameterTypes...>& operator-=(_METHOD(function))
+	event<ParameterTypes...>& operator-=(METHOD(function))
 	{
 		return remove(function);
 	}
@@ -551,7 +550,7 @@ private:
 	// DELEGATE DATA
 
 	// List of functions included in the delegate
-	std::vector<_FUNCTION()> functions = std::vector<_FUNCTION()>();
+	std::vector<FUNCTION()> functions = std::vector<FUNCTION()>();
 
 	// Whether the delegate is currently invoking functions
 	bool invoking = false;
@@ -569,7 +568,7 @@ public:
 	// Default constructor
 	delegate()
 	{
-		functions = std::vector<_FUNCTION()>();
+		functions = std::vector<FUNCTION()>();
 
 		all_delegates.push_back(this);
 
@@ -577,9 +576,9 @@ public:
 	}
 
 	// Function constructor
-	delegate(_FUNCTION(function))
+	delegate(FUNCTION(function))
 	{
-		this->functions = std::vector<_FUNCTION()>();
+		this->functions = std::vector<FUNCTION()>();
 
 		this->functions.push_back(function);
 
@@ -589,9 +588,9 @@ public:
 	}
 
 	// Array constructor
-	delegate(_FUNCTION(functions[]), int number_of_functions)
+	delegate(FUNCTION(functions[]), int number_of_functions)
 	{
-		this->functions = std::vector<_FUNCTION()>();
+		this->functions = std::vector<FUNCTION()>();
 
 		for (int i = 0; i < number_of_functions; i++)
 		{
@@ -605,12 +604,12 @@ public:
 
 	// Parameter constructor
 	delegate(int number_of_functions,
-		_FUNCTION(function1) = nullptr, _FUNCTION(function2) = nullptr, _FUNCTION(function3) = nullptr, _FUNCTION(function4) = nullptr,
-		_FUNCTION(function5) = nullptr, _FUNCTION(function6) = nullptr, _FUNCTION(function7) = nullptr, _FUNCTION(function8) = nullptr,
-		_FUNCTION(function9) = nullptr, _FUNCTION(function10) = nullptr, _FUNCTION(function11) = nullptr, _FUNCTION(function12) = nullptr,
-		_FUNCTION(function13) = nullptr, _FUNCTION(function14) = nullptr, _FUNCTION(function15) = nullptr, _FUNCTION(function16) = nullptr)
+		FUNCTION(function1) = nullptr, FUNCTION(function2) = nullptr, FUNCTION(function3) = nullptr, FUNCTION(function4) = nullptr,
+		FUNCTION(function5) = nullptr, FUNCTION(function6) = nullptr, FUNCTION(function7) = nullptr, FUNCTION(function8) = nullptr,
+		FUNCTION(function9) = nullptr, FUNCTION(function10) = nullptr, FUNCTION(function11) = nullptr, FUNCTION(function12) = nullptr,
+		FUNCTION(function13) = nullptr, FUNCTION(function14) = nullptr, FUNCTION(function15) = nullptr, FUNCTION(function16) = nullptr)
 	{
-		this->functions = std::vector<_FUNCTION()>();
+		this->functions = std::vector<FUNCTION()>();
 
 		all_delegates.push_back(this);
 
@@ -730,7 +729,7 @@ public:
 	}
 
 	// Vector constructor
-	delegate(std::vector<_FUNCTION()> functions)
+	delegate(std::vector<FUNCTION()> functions)
 	{
 		functions = functions;
 
@@ -740,9 +739,9 @@ public:
 	}
 
 	// List constructor
-	delegate(const std::initializer_list<_FUNCTION()> functions)
+	delegate(const std::initializer_list<FUNCTION()> functions)
 	{
-		this->functions = std::vector<_FUNCTION()>();
+		this->functions = std::vector<FUNCTION()>();
 
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -757,7 +756,7 @@ public:
 	// Delegate constructor
 	delegate(delegate<ReturnType, ParameterTypes...>& functions)
 	{
-		this->functions = std::vector<_FUNCTION()>();
+		this->functions = std::vector<FUNCTION()>();
 
 		for (int i = 0; i < functions.count(); i++)
 		{
@@ -784,7 +783,7 @@ public:
 	// DELEGATE FUNCTIONS
 
 	// Returns a dictionary with each key representing the function and the value being the returned data
-	std::map<_FUNCTION(), ReturnType> invoke(ParameterTypes... parameters)
+	std::map<FUNCTION(), ReturnType> invoke(ParameterTypes... parameters)
 	{
 		cancel_invoke = false;
 
@@ -794,7 +793,7 @@ public:
 
 		invoking = true;
 
-		std::map<_FUNCTION(), ReturnType> returns = std::map<_FUNCTION(), ReturnType>();
+		std::map<FUNCTION(), ReturnType> returns = std::map<FUNCTION(), ReturnType>();
 
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -819,7 +818,7 @@ public:
 	// Invokes every delegate
 	static auto invoke_all(ParameterTypes... parameters)
 	{
-		auto returns = std::map<delegate<ReturnType, ParameterTypes...>*, std::map<_FUNCTION(), ReturnType>>();
+		auto returns = std::map<delegate<ReturnType, ParameterTypes...>*, std::map<FUNCTION(), ReturnType>>();
 
 		for (int i = 0; i < all_delegates.size(); i++)
 		{
@@ -835,7 +834,7 @@ public:
 	}
 
 	// Reinvokes the current delegate
-	static std::map<_FUNCTION(), ReturnType> invoke_current(ParameterTypes... parameters)
+	static std::map<FUNCTION(), ReturnType> invoke_current(ParameterTypes... parameters)
 	{
 		return all_delegates[invoke_index]->invoke(parameters...);
 	}
@@ -874,7 +873,7 @@ public:
 	}
 
 	// Sets a function in the delegate
-	delegate<ReturnType, ParameterTypes...>& set(int index, _FUNCTION(function))
+	delegate<ReturnType, ParameterTypes...>& set(int index, FUNCTION(function))
 	{
 		functions[index] = function;
 
@@ -882,7 +881,7 @@ public:
 	}
 
 	// Add a new function to the delegate
-	delegate<ReturnType, ParameterTypes...>& add(_FUNCTION(function))
+	delegate<ReturnType, ParameterTypes...>& add(FUNCTION(function))
 	{
 		functions.push_back(function);
 
@@ -890,7 +889,7 @@ public:
 	}
 
 	// Adds new functions to the delegate
-	delegate<ReturnType, ParameterTypes...>& add(int number_of_functions, _FUNCTION(functions[]))
+	delegate<ReturnType, ParameterTypes...>& add(int number_of_functions, FUNCTION(functions[]))
 	{
 		for (int i = 0; i < number_of_functions; i++)
 		{
@@ -901,7 +900,7 @@ public:
 	}
 
 	// Adds new functions to the delegate
-	delegate<ReturnType, ParameterTypes...>& add(std::vector<_FUNCTION()> functions)
+	delegate<ReturnType, ParameterTypes...>& add(std::vector<FUNCTION()> functions)
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -923,7 +922,7 @@ public:
 	}
 
 	// Remove a function from the delegate
-	delegate<ReturnType, ParameterTypes...>& remove(_FUNCTION(function))
+	delegate<ReturnType, ParameterTypes...>& remove(FUNCTION(function))
 	{
 		functions.erase(std::find(functions.begin(), functions.end(), function));
 
@@ -964,7 +963,7 @@ public:
 	}
 
 	// Returns if the delegate contains a function
-	bool contains(_FUNCTION(function))
+	bool contains(FUNCTION(function))
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -978,7 +977,7 @@ public:
 	}
 
 	// Returns the index of the function in the delegate, or -1 if it was not found
-	int find(_FUNCTION(function))
+	int find(FUNCTION(function))
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -1014,25 +1013,25 @@ public:
 	// COLLECTION OPERATORS
 
 	// Adding a function
-	delegate<ReturnType, ParameterTypes...>& operator+(_FUNCTION(function))
+	delegate<ReturnType, ParameterTypes...>& operator+(FUNCTION(function))
 	{
 		return add(function);
 	}
 
 	// Adding a function
-	delegate<ReturnType, ParameterTypes...>& operator+=(_FUNCTION(function))
+	delegate<ReturnType, ParameterTypes...>& operator+=(FUNCTION(function))
 	{
 		return add(function);
 	}
 
 	// Removing a function
-	delegate<ReturnType, ParameterTypes...>& operator-(_FUNCTION(function))
+	delegate<ReturnType, ParameterTypes...>& operator-(FUNCTION(function))
 	{
 		return remove(function);
 	}
 
 	// Removing a function
-	delegate<ReturnType, ParameterTypes...>& operator-=(_FUNCTION(function))
+	delegate<ReturnType, ParameterTypes...>& operator-=(FUNCTION(function))
 	{
 		return remove(function);
 	}
@@ -1071,7 +1070,7 @@ private:
 	// DELEGATE DATA
 
 	// List of functions included in the delegate
-	std::vector<_METHOD()> functions = std::vector<_METHOD()>();
+	std::vector<METHOD()> functions = std::vector<METHOD()>();
 
 	// Whether the delegate is currently invoking functions
 	bool invoking = false;
@@ -1090,7 +1089,7 @@ public:
 	// Default constructor
 	Event()
 	{
-		functions = std::vector<_METHOD()>();
+		functions = std::vector<METHOD()>();
 
 		allDelegates.push_back(this);
 
@@ -1098,9 +1097,9 @@ public:
 	}
 
 	// Function constructor
-	Event(_METHOD(function))
+	Event(METHOD(function))
 	{
-		this->functions = std::vector<_METHOD()>();
+		this->functions = std::vector<METHOD()>();
 
 		this->functions.push_back(function);
 
@@ -1110,9 +1109,9 @@ public:
 	}
 
 	// Array constructor
-	Event(_METHOD(functions[]), int number_of_functions)
+	Event(METHOD(functions[]), int number_of_functions)
 	{
-		this->functions = std::vector<_METHOD()>();
+		this->functions = std::vector<METHOD()>();
 
 		for (int i = 0; i < number_of_functions; i++)
 		{
@@ -1126,12 +1125,12 @@ public:
 
 	// Parameter constructor
 	Event(int number_of_functions,
-		_METHOD(function1) = nullptr, _METHOD(function2) = nullptr, _METHOD(function3) = nullptr, _METHOD(function4) = nullptr,
-		_METHOD(function5) = nullptr, _METHOD(function6) = nullptr, _METHOD(function7) = nullptr, _METHOD(function8) = nullptr,
-		_METHOD(function9) = nullptr, _METHOD(function10) = nullptr, _METHOD(function11) = nullptr, _METHOD(function12) = nullptr,
-		_METHOD(function13) = nullptr, _METHOD(function14) = nullptr, _METHOD(function15) = nullptr, _METHOD(function16) = nullptr)
+		METHOD(function1) = nullptr, METHOD(function2) = nullptr, METHOD(function3) = nullptr, METHOD(function4) = nullptr,
+		METHOD(function5) = nullptr, METHOD(function6) = nullptr, METHOD(function7) = nullptr, METHOD(function8) = nullptr,
+		METHOD(function9) = nullptr, METHOD(function10) = nullptr, METHOD(function11) = nullptr, METHOD(function12) = nullptr,
+		METHOD(function13) = nullptr, METHOD(function14) = nullptr, METHOD(function15) = nullptr, METHOD(function16) = nullptr)
 	{
-		this->functions = std::vector<_METHOD()>();
+		this->functions = std::vector<METHOD()>();
 
 		allDelegates.push_back(this);
 
@@ -1251,7 +1250,7 @@ public:
 	}
 
 	// Vector constructor
-	Event(std::vector<_METHOD()> functions)
+	Event(std::vector<METHOD()> functions)
 	{
 		functions = functions;
 
@@ -1261,9 +1260,9 @@ public:
 	}
 
 	// List constructor
-	Event(const std::initializer_list<_METHOD()> functions)
+	Event(const std::initializer_list<METHOD()> functions)
 	{
-		this->functions = std::vector<_METHOD()>();
+		this->functions = std::vector<METHOD()>();
 
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -1278,7 +1277,7 @@ public:
 	// Delegate constructor
 	Event(Event<ParameterTypes...>& functions)
 	{
-		this->functions = std::vector<_METHOD()>();
+		this->functions = std::vector<METHOD()>();
 
 		for (int i = 0; i < functions.Count(); i++)
 		{
@@ -1386,7 +1385,7 @@ public:
 	}
 
 	// Sets a function in the delegate
-	Event<ParameterTypes...>& Set(int index, _METHOD(function))
+	Event<ParameterTypes...>& Set(int index, METHOD(function))
 	{
 		functions[index] = function;
 
@@ -1394,7 +1393,7 @@ public:
 	}
 
 	// Add a new function to the delegate
-	Event<ParameterTypes...>& Add(_METHOD(function))
+	Event<ParameterTypes...>& Add(METHOD(function))
 	{
 		functions.push_back(function);
 
@@ -1402,7 +1401,7 @@ public:
 	}
 
 	// Adds new functions to the delegate
-	Event<ParameterTypes...>& Add(int number_of_functions, _METHOD(functions[]))
+	Event<ParameterTypes...>& Add(int number_of_functions, METHOD(functions[]))
 	{
 		for (int i = 0; i < number_of_functions; i++)
 		{
@@ -1413,7 +1412,7 @@ public:
 	}
 
 	// Adds new functions to the delegate
-	Event<ParameterTypes...>& Add(std::vector<_METHOD()> functions)
+	Event<ParameterTypes...>& Add(std::vector<METHOD()> functions)
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -1435,7 +1434,7 @@ public:
 	}
 
 	// Remove a function from the delegate
-	Event<ParameterTypes...>& Remove(_METHOD(function))
+	Event<ParameterTypes...>& Remove(METHOD(function))
 	{
 		functions.erase(std::find(functions.begin(), functions.end(), function));
 
@@ -1476,7 +1475,7 @@ public:
 	}
 
 	// Returns if the delegate contains a function
-	bool Contains(_METHOD(function))
+	bool Contains(METHOD(function))
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -1490,7 +1489,7 @@ public:
 	}
 
 	// Returns the index of the function in the delegate, or -1 if it was not found
-	int Find(_METHOD(function))
+	int Find(METHOD(function))
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -1526,25 +1525,25 @@ public:
 	// COLLECTION OPERATORS
 
 	// Adding a function
-	Event<ParameterTypes...>& operator+(_METHOD(function))
+	Event<ParameterTypes...>& operator+(METHOD(function))
 	{
 		return add(function);
 	}
 
 	// Adding a function
-	Event<ParameterTypes...>& operator+=(_METHOD(function))
+	Event<ParameterTypes...>& operator+=(METHOD(function))
 	{
 		return add(function);
 	}
 
 	// Removing a function
-	Event<ParameterTypes...>& operator-(_METHOD(function))
+	Event<ParameterTypes...>& operator-(METHOD(function))
 	{
 		return remove(function);
 	}
 
 	// Removing a function
-	Event<ParameterTypes...>& operator-=(_METHOD(function))
+	Event<ParameterTypes...>& operator-=(METHOD(function))
 	{
 		return remove(function);
 	}
@@ -1577,7 +1576,7 @@ private:
 	// DELEGATE DATA
 
 	// List of functions included in the delegate
-	std::vector<_FUNCTION()> functions = std::vector<_FUNCTION()>();
+	std::vector<FUNCTION()> functions = std::vector<FUNCTION()>();
 
 	// Whether the delegate is currently invoking functions
 	bool invoking = false;
@@ -1595,7 +1594,7 @@ public:
 	// Default constructor
 	Delegate()
 	{
-		functions = std::vector<_FUNCTION()>();
+		functions = std::vector<FUNCTION()>();
 
 		allDelegates.push_back(this);
 
@@ -1603,9 +1602,9 @@ public:
 	}
 
 	// Function constructor
-	Delegate(_FUNCTION(function))
+	Delegate(FUNCTION(function))
 	{
-		this->functions = std::vector<_FUNCTION()>();
+		this->functions = std::vector<FUNCTION()>();
 
 		this->functions.push_back(function);
 
@@ -1615,9 +1614,9 @@ public:
 	}
 
 	// Array constructor
-	Delegate(_FUNCTION(functions[]), int number_of_functions)
+	Delegate(FUNCTION(functions[]), int number_of_functions)
 	{
-		this->functions = std::vector<_FUNCTION()>();
+		this->functions = std::vector<FUNCTION()>();
 
 		for (int i = 0; i < number_of_functions; i++)
 		{
@@ -1631,12 +1630,12 @@ public:
 
 	// Parameter constructor
 	Delegate(int number_of_functions,
-		_FUNCTION(function1) = nullptr, _FUNCTION(function2) = nullptr, _FUNCTION(function3) = nullptr, _FUNCTION(function4) = nullptr,
-		_FUNCTION(function5) = nullptr, _FUNCTION(function6) = nullptr, _FUNCTION(function7) = nullptr, _FUNCTION(function8) = nullptr,
-		_FUNCTION(function9) = nullptr, _FUNCTION(function10) = nullptr, _FUNCTION(function11) = nullptr, _FUNCTION(function12) = nullptr,
-		_FUNCTION(function13) = nullptr, _FUNCTION(function14) = nullptr, _FUNCTION(function15) = nullptr, _FUNCTION(function16) = nullptr)
+		FUNCTION(function1) = nullptr, FUNCTION(function2) = nullptr, FUNCTION(function3) = nullptr, FUNCTION(function4) = nullptr,
+		FUNCTION(function5) = nullptr, FUNCTION(function6) = nullptr, FUNCTION(function7) = nullptr, FUNCTION(function8) = nullptr,
+		FUNCTION(function9) = nullptr, FUNCTION(function10) = nullptr, FUNCTION(function11) = nullptr, FUNCTION(function12) = nullptr,
+		FUNCTION(function13) = nullptr, FUNCTION(function14) = nullptr, FUNCTION(function15) = nullptr, FUNCTION(function16) = nullptr)
 	{
-		this->functions = std::vector<_FUNCTION()>();
+		this->functions = std::vector<FUNCTION()>();
 
 		allDelegates.push_back(this);
 
@@ -1756,7 +1755,7 @@ public:
 	}
 
 	// Vector constructor
-	Delegate(std::vector<_FUNCTION()> functions)
+	Delegate(std::vector<FUNCTION()> functions)
 	{
 		functions = functions;
 
@@ -1766,9 +1765,9 @@ public:
 	}
 
 	// List constructor
-	Delegate(const std::initializer_list<_FUNCTION()> functions)
+	Delegate(const std::initializer_list<FUNCTION()> functions)
 	{
-		this->functions = std::vector<_FUNCTION()>();
+		this->functions = std::vector<FUNCTION()>();
 
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -1783,7 +1782,7 @@ public:
 	// Delegate constructor
 	Delegate(Delegate<ReturnType, ParameterTypes...>& functions)
 	{
-		this->functions = std::vector<_FUNCTION()>();
+		this->functions = std::vector<FUNCTION()>();
 
 		for (int i = 0; i < functions.Count(); i++)
 		{
@@ -1810,7 +1809,7 @@ public:
 	// DELEGATE FUNCTIONS
 
 	// Returns a dictionary with each key representing the function and the value being the returned data
-	std::map<_FUNCTION(), ReturnType> Invoke(ParameterTypes... parameters)
+	std::map<FUNCTION(), ReturnType> Invoke(ParameterTypes... parameters)
 	{
 		cancelInvoke = false;
 
@@ -1820,7 +1819,7 @@ public:
 
 		invoking = true;
 
-		std::map<_FUNCTION(), ReturnType> returns = std::map<_FUNCTION(), ReturnType>();
+		std::map<FUNCTION(), ReturnType> returns = std::map<FUNCTION(), ReturnType>();
 
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -1845,7 +1844,7 @@ public:
 	// Invokes every delegate
 	static auto InvokeAll(ParameterTypes... parameters)
 	{
-		auto returns = std::map<Delegate<ReturnType, ParameterTypes...>*, std::map<_FUNCTION(), ReturnType>>();
+		auto returns = std::map<Delegate<ReturnType, ParameterTypes...>*, std::map<FUNCTION(), ReturnType>>();
 
 		for (int i = 0; i < allDelegates.size(); i++)
 		{
@@ -1861,7 +1860,7 @@ public:
 	}
 
 	// Reinvokes the current delegate
-	static std::map<_FUNCTION(), ReturnType> InvokeCurrent(ParameterTypes... parameters)
+	static std::map<FUNCTION(), ReturnType> InvokeCurrent(ParameterTypes... parameters)
 	{
 		return allDelegates[invokeIndex]->invoke(parameters...);
 	}
@@ -1900,7 +1899,7 @@ public:
 	}
 
 	// Sets a function in the delegate
-	Delegate<ReturnType, ParameterTypes...>& Set(int index, _FUNCTION(function))
+	Delegate<ReturnType, ParameterTypes...>& Set(int index, FUNCTION(function))
 	{
 		functions[index] = function;
 
@@ -1908,7 +1907,7 @@ public:
 	}
 
 	// Add a new function to the delegate
-	Delegate<ReturnType, ParameterTypes...>& Add(_FUNCTION(function))
+	Delegate<ReturnType, ParameterTypes...>& Add(FUNCTION(function))
 	{
 		functions.push_back(function);
 
@@ -1916,7 +1915,7 @@ public:
 	}
 
 	// Adds new functions to the delegate
-	Delegate<ReturnType, ParameterTypes...>& Add(int number_of_functions, _FUNCTION(functions[]))
+	Delegate<ReturnType, ParameterTypes...>& Add(int number_of_functions, FUNCTION(functions[]))
 	{
 		for (int i = 0; i < number_of_functions; i++)
 		{
@@ -1927,7 +1926,7 @@ public:
 	}
 
 	// Adds new functions to the delegate
-	Delegate<ReturnType, ParameterTypes...>& Add(std::vector<_FUNCTION()> functions)
+	Delegate<ReturnType, ParameterTypes...>& Add(std::vector<FUNCTION()> functions)
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -1949,7 +1948,7 @@ public:
 	}
 
 	// Remove a function from the delegate
-	Delegate<ReturnType, ParameterTypes...>& Remove(_FUNCTION(function))
+	Delegate<ReturnType, ParameterTypes...>& Remove(FUNCTION(function))
 	{
 		functions.erase(std::find(functions.begin(), functions.end(), function));
 
@@ -1990,7 +1989,7 @@ public:
 	}
 
 	// Returns if the delegate contains a function
-	bool Contains(_FUNCTION(function))
+	bool Contains(FUNCTION(function))
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -2004,7 +2003,7 @@ public:
 	}
 
 	// Returns the index of the function in the delegate, or -1 if it was not found
-	int Find(_FUNCTION(function))
+	int Find(FUNCTION(function))
 	{
 		for (int i = 0; i < functions.size(); i++)
 		{
@@ -2040,25 +2039,25 @@ public:
 	// COLLECTION OPERATORS
 
 	// Adding a function
-	Delegate<ReturnType, ParameterTypes...>& operator+(_FUNCTION(function))
+	Delegate<ReturnType, ParameterTypes...>& operator+(FUNCTION(function))
 	{
 		return add(function);
 	}
 
 	// Adding a function
-	Delegate<ReturnType, ParameterTypes...>& operator+=(_FUNCTION(function))
+	Delegate<ReturnType, ParameterTypes...>& operator+=(FUNCTION(function))
 	{
 		return add(function);
 	}
 
 	// Removing a function
-	Delegate<ReturnType, ParameterTypes...>& operator-(_FUNCTION(function))
+	Delegate<ReturnType, ParameterTypes...>& operator-(FUNCTION(function))
 	{
 		return remove(function);
 	}
 
 	// Removing a function
-	Delegate<ReturnType, ParameterTypes...>& operator-=(_FUNCTION(function))
+	Delegate<ReturnType, ParameterTypes...>& operator-=(FUNCTION(function))
 	{
 		return remove(function);
 	}

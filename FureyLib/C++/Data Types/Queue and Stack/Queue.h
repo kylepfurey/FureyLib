@@ -11,10 +11,10 @@
 // Include this heading to use the class
 #include "Queue.h"
 
-// Data type used for priority value
+// Data type used for priority value.
 #define PRIORITY float
 
-// Queue Class
+// A first in first out list of a specified data type.
 template <class DataType> class queue
 {
 private:
@@ -223,7 +223,7 @@ public:
 	}
 };
 
-// Priority Queue Class
+// A first in first out list of a specified data type with an associated priority value assigned to each element used for adding and removing data in a specific order.
 template <class DataType> class priority_queue
 {
 private:
@@ -538,7 +538,7 @@ public:
 	}
 };
 
-// Queue Class
+// A first in first out list of a specified data type.
 template <class DataType> class Queue
 {
 private:
@@ -741,7 +741,7 @@ public:
 	}
 };
 
-// Priority Queue Class
+// A first in first out list of a specified data type with an associated priority value assigned to each element used for adding and removing data in a specific order.
 template <class DataType> class PriorityQueue
 {
 private:

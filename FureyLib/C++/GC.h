@@ -48,7 +48,7 @@ public:
 
 		memory.clear();
 
-		std::cout << "Garbage Collector successfully deallocated " << total << " total bytes of memory." << std::endl;
+		std::cout << std::endl << "Garbage Collector successfully deallocated " << total << " total bytes of memory." << std::endl;
 
 		return total;
 	}

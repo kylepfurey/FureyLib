@@ -5,6 +5,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <array>
 #include <vector>
 
 // Include this heading to use the structure

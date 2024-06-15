@@ -214,9 +214,3 @@ public:
 		return ptr;
 	}
 };
-
-// An exclusive wrapper for a newly created pointer that automatically deallocates on deconstruction.
-#define ptr smart_ptr
-
-// An exclusive wrapper for a newly created pointer that automatically deallocates on deconstruction.
-#define Ptr SmartPtr

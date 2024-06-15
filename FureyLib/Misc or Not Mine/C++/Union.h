@@ -5,6 +5,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <array>
 #include <vector>
 
 // Only one of the union's variables may be stored at a time

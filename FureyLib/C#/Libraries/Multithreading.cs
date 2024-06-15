@@ -324,6 +324,18 @@ public static class Multithreading
     }
 
     /// <summary>
+    /// Get the name of the given thread=
+    /// </summary>
+    /// <param name="thread"></param>
+    /// <returns></returns>
+    public static string GetName(Thread thread)
+    {
+        SetMainThread();
+
+        return thread.Name;
+    }
+
+    /// <summary>
     /// Get the program's main thread
     /// </summary>
     /// <returns></returns>

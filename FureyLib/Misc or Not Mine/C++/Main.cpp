@@ -1,9 +1,11 @@
 
 // Program Main Entry Point Script
 
+#pragma once
 #include <crtdbg.h>
 #include <iostream>
 #include <string>
+#include <array>
 #include <vector>
 
 using namespace std;

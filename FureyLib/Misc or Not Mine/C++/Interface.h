@@ -5,6 +5,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <array>
 #include <vector>
 
 // Inherit from this interface to implement it

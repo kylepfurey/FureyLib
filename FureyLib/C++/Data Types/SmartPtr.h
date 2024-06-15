@@ -9,10 +9,12 @@
 // Include this heading to use the class
 #include "SmartPtr.h"
 
-// Smart Pointer Class
+// An exclusive wrapper for a newly created pointer that automatically deallocates on deconstruction.
 template <class DataType> class smart_ptr
 {
 private:
+
+	// POINTER
 
 	// The stored pointer
 	DataType* ptr = nullptr;
@@ -82,7 +84,7 @@ public:
 	// Remove assignment operator
 	smart_ptr<DataType>& operator=(DataType* new_ptr) = delete;
 
-	// Assignment operator
+	// Move operator
 	smart_ptr<DataType>& operator=(smart_ptr<DataType>&& new_ptr) noexcept
 	{
 		if (this != &new_ptr)
@@ -110,13 +112,15 @@ public:
 	}
 };
 
-// Smart Pointer Class
+// An exclusive wrapper for a newly created pointer that automatically deallocates on deconstruction.
 template <class DataType> class SmartPtr
 {
 private:
 
+	// POINTER
+
 	// The stored pointer
-	DataType* Ptr = nullptr;
+	DataType* ptr = nullptr;
 
 public:
 
@@ -126,7 +130,7 @@ public:
 	SmartPtr(DataType* new_ptr = nullptr)
 	{
 		// Set the pointer
-		Ptr = new_ptr;
+		ptr = new_ptr;
 	}
 
 	// Remove copy constructor
@@ -135,17 +139,17 @@ public:
 	// Move construtor
 	SmartPtr(SmartPtr<DataType>&& new_ptr) noexcept
 	{
-		Ptr = new_ptr.Ptr;
+		ptr = new_ptr.ptr;
 
-		new_ptr.Ptr = nullptr;
+		new_ptr.ptr = nullptr;
 	}
 
 	// Deconstructor
 	~SmartPtr()
 	{
-		delete Ptr;
+		delete ptr;
 
-		Ptr = nullptr;
+		ptr = nullptr;
 	}
 
 
@@ -154,9 +158,9 @@ public:
 	// Release function
 	DataType* Release()
 	{
-		DataType* new_ptr = Ptr;
+		DataType* new_ptr = ptr;
 
-		Ptr = nullptr;
+		ptr = nullptr;
 
 		return new_ptr;
 	}
@@ -164,9 +168,9 @@ public:
 	// Reset function
 	SmartPtr<DataType>& Reset(DataType* new_ptr = nullptr)
 	{
-		delete Ptr;
+		delete ptr;
 
-		Ptr = new_ptr;
+		ptr = new_ptr;
 
 		return *this;
 	}
@@ -183,16 +187,16 @@ public:
 	// Remove assignment operator
 	SmartPtr<DataType>& operator=(DataType* new_ptr) = delete;
 
-	// Assignment operator
+	// Move operator
 	SmartPtr<DataType>& operator=(SmartPtr<DataType>&& new_ptr) noexcept
 	{
 		if (this != &new_ptr)
 		{
-			delete Ptr;
+			delete ptr;
 
-			Ptr = new_ptr.Ptr;
+			ptr = new_ptr.ptr;
 
-			new_ptr.Ptr = nullptr;
+			new_ptr.ptr = nullptr;
 		}
 
 		return *this;
@@ -201,12 +205,18 @@ public:
 	// Dereferencing pointer operator
 	DataType& operator*()
 	{
-		return *Ptr;
+		return *ptr;
 	}
 
 	// Arrow pointer operator
 	DataType* operator->()
 	{
-		return Ptr;
+		return ptr;
 	}
 };
+
+// An exclusive wrapper for a newly created pointer that automatically deallocates on deconstruction.
+#define ptr smart_ptr
+
+// An exclusive wrapper for a newly created pointer that automatically deallocates on deconstruction.
+#define Ptr SmartPtr

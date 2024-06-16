@@ -19,8 +19,18 @@
 // Creates a lambda expression with the given captures and code.
 #define LAMBDA(captures) [captures] () mutable -> void
 
-// Thread state behaviour enum
-enum thread_state { detach = 0, join = 1, follow = 2 };
+// Thread starting behaviour enum.
+enum thread_start
+{
+	// thread_state :: lock  =  Starts the thread in a locked state.
+	lock = 0,
+
+	// thread_state :: detach  =  Detaches and runs the thread asynchronously immediately.
+	detach = 1,
+
+	// thread_state :: join  =  Joins and runs the thread immediately before the current thread continues.
+	join = 2
+};
 
 // Creates and manages multiple threads of code.
 class multithreading
@@ -30,256 +40,230 @@ private:
 	// THREADS
 
 	// All of the program's currently active threads
-	static std::vector<std::thread*> threads;
+	static std::vector<std::thread> threads;
 
-	// All of the program's currently active threads' ids
+	// The ids of each active thread with a pointer to the thread
 	static std::vector<std::thread::id> thread_ids;
 
-	// The names of each active thread (KEY = NAME, VALUE = THREAD)
-	static std::map<std::string, std::thread*> thread_names;
+	// The names of each active thread
+	static std::vector<std::string> thread_names;
 
-	// The active threads of each thread id (KEY = THREAD ID, VALUE = THREAD)
-	static std::map<std::thread::id, std::thread*> find_thread;
+	// All of the ids to the program's currently running threads
+	static std::vector<std::thread::id> running_threads;
 
-	// The thread ids of each active thread (KEY = THREAD, VALUE = THREAD ID)
-	static std::map<std::thread*, std::thread::id> find_id;
+	// All of the ids to the running threads' cancellation tokens (KEY = THREAD ID, VALUE = CANCELLED)
+	static std::map<std::thread::id, bool> cancellation_tokens;
 
-	// All of the program's currently running threads
-	static std::vector<std::thread*> running_threads;
+	// All of the ids of the running threads' locking threads (KEY = LOCKED THREAD, VALUE = THREAD LOCKING KEY)
+	static std::map<std::thread::id, std::thread::id> locked_threads;
 
-	// All of the running thread's cancellation tokens (KEY = THREAD, VALUE = CANCELLED)
-	static std::map<std::thread*, bool> cancellation_tokens;
-
-	// All of the running thread's locking threads (KEY = LOCKED THREAD, VALUE = THREAD LOCKING KEY)
-	static std::map<std::thread*, std::thread*> locked_threads;
-
-	// Whether the main thread has been set
-	static bool main_set;
+	// A pointer to an empty thread that represents the presence of the main thread
+	static std::thread* _main;
 
 	// The id of the main thread
 	static std::thread::id main_thread_id;
 
 
-	// MAIN THREAD
+	// FIND FUNCTION
 
-	// Stores the main thread's information (automatically called)
-	static void set_main_thread()
+	// Finds the index of the given thread
+	static int find(std::thread& thread)
 	{
-		if (!main_set)
+		for (int i = 0; i < threads.size(); i++)
 		{
-			main_set = true;
+			if (&threads[i] == &thread)
+			{
+				return i;
+			}
+		}
 
-			main_thread_id = std::this_thread::get_id();
+		return -1;
+	}
 
-			threads.push_back(nullptr);
-
-			thread_ids.push_back(main_thread_id);
-
-			find_thread[main_thread_id] = nullptr;
-
-			find_id[nullptr] = main_thread_id;
-
-			thread_names["Main Thread"] = nullptr;
-
-			running_threads.push_back(nullptr);
-
-			cancellation_tokens[nullptr] = false;
+	// Finds the index of the given thread id
+	static int find(std::thread::id id)
+	{
+		for (int i = 0; i < thread_ids.size(); i++)
+		{
+			if (thread_ids[i] == id)
+			{
+				return i;
+			}
 		}
 	}
 
+	// Finds the index of the given name
+	static int find(std::string name)
+	{
+		for (int i = 0; i < thread_names.size(); i++)
+		{
+			if (thread_names[i] == name)
+			{
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+
+	// MAIN THREAD
+
+	// Stores the main thread (automatically called)
+	static void set_main_thread()
+	{
+		main_thread_id = std::this_thread::get_id();
+
+		threads.emplace_back(main_thread_id);
+
+		_main = &threads[0];
+
+		thread_ids.push_back(main_thread_id);
+
+		thread_names.push_back("Main Thread");
+
+		running_threads.push_back(main_thread_id);
+
+		cancellation_tokens[main_thread_id] = false;
+	}
+
 public:
+
+	// CONSTRUCTOR
+
+	// Marks and stores the main thread when the program starts
+	multithreading()
+	{
+		set_main_thread();
+	}
+
 
 	// GETTERS
 
 	// Returns the first active thread of the given name (the thread must have been assigned a name on creation)
 	static std::thread& get(std::string name)
 	{
-		set_main_thread();
-
-		return *thread_names[name];
+		return threads[find(name)];
 	}
 
 	// Returns the active thread at the given index
 	static std::thread& get(int index)
 	{
-		set_main_thread();
-
-		return *threads[index];
+		return threads[index];
 	}
 
 	// Returns the active thread of the given id
 	static std::thread& get(std::thread::id id)
 	{
-		set_main_thread();
-
-		return *find_thread[id];
+		return threads[find(id)];
 	}
 
 	// Returns the first active thread's id of the given name (the thread must have been assigned a name on creation)
 	static std::thread::id get_id(std::string name)
 	{
-		set_main_thread();
-
-		return find_id[thread_names[name]];
+		return thread_ids[find(name)];
 	}
 
 	// Returns the active thread's id at the given index
 	static std::thread::id get_id(int index)
 	{
-		set_main_thread();
-
 		return thread_ids[index];
 	}
 
 	// Returns the id of the given thread
 	static std::thread::id get_id(std::thread& thread)
 	{
-		set_main_thread();
-
-		return find_id[&thread];
+		return thread_ids[find(thread)];
 	}
 
 	// Returns a vector of pointers to all the active threads
 	static std::vector<std::thread*> get_threads()
 	{
-		set_main_thread();
+		std::vector<std::thread*> pointers = std::vector<std::thread*>();
 
-		return threads;
+		for (int i = 0; i < threads.size(); i++)
+		{
+			pointers.push_back(&threads[i]);
+		}
+
+		return pointers;
 	}
 
 	// Returns a vector of all the active threads' ids
 	static std::vector<std::thread::id> get_thread_ids()
 	{
-		set_main_thread();
-
 		return thread_ids;
 	}
 
-	// Returns a map of the active thread names to pointers to each active thread
-	static std::map<std::string, std::thread*> get_thread_names()
+	// Returns a vector of all the active threads' names
+	static std::vector<std::string> get_thread_names()
 	{
-		set_main_thread();
-
 		return thread_names;
 	}
 
-	// Returns a map of all the active threads' ids to pointers to their corresponding threads
-	static std::map<std::thread::id, std::thread*> get_id_to_thread_map()
+	// Returns a vector of the ids of the active and running threads in order
+	static std::vector<std::thread::id> get_running_threads()
 	{
-		set_main_thread();
-
-		return find_thread;
-	}
-
-	// Returns a map of pointers to all the active threads to their corresponding thread ids
-	static std::map<std::thread*, std::thread::id> get_thread_to_id_map()
-	{
-		set_main_thread();
-
-		return find_id;
-	}
-
-	// Returns a vector of the active and running threads in order
-	static std::vector<std::thread*> get_running_threads()
-	{
-		set_main_thread();
-
 		return running_threads;
 	}
 
-	// Returns a map of the currently locked threads to what thread is locking them
-	static std::map<std::thread*, std::thread*> get_locked_threads()
+	// Returns a map of the ids of the currently locked threads to what thread is locking them
+	static std::map<std::thread::id, std::thread::id> get_locked_threads()
 	{
-		set_main_thread();
-
 		return locked_threads;
 	}
 
 	// Returns the total number of active threads 
 	static int active_count()
 	{
-		set_main_thread();
-
 		return threads.size();
 	}
 
 	// Returns the total number of running threads 
 	static int running_count()
 	{
-		set_main_thread();
-
 		return threads.size();
 	}
 
 	// Get the name of the current running thread
 	static std::string get_name()
 	{
-		set_main_thread();
-
-		if (main_thread_id == std::this_thread::get_id())
-		{
-			return "Main Thread";
-		}
-
-		for (auto iterator = thread_names.begin(); iterator != thread_names.end(); ++iterator)
-		{
-			if (current_id() == get_id(*iterator->second))
-			{
-				return iterator->first;
-			}
-		}
-
-		return "";
+		return thread_names[find(std::this_thread::get_id())];
 	}
 
 	// Get the name of the given thread
 	static std::string get_name(std::thread& thread)
 	{
-		set_main_thread();
-
-		for (auto iterator = thread_names.begin(); iterator != thread_names.end(); ++iterator)
-		{
-			if (get_id(thread) == get_id(*iterator->second))
-			{
-				return iterator->first;
-			}
-		}
-
-		return "";
+		return thread_names[find(thread)];
 	}
 
 	// Get the name of the given thread by id
 	static std::string get_name(std::thread::id id)
 	{
-		if (main_thread_id == id)
-		{
-			return "Main Thread";
-		}
+		return thread_names[find(id)];
+	}
 
-		return get_name(*find_thread[id]);
+	// Get the name of the given thread by index
+	static std::string get_name(int index)
+	{
+		return thread_names[index];
 	}
 
 	// Get the program's main thread's id
 	static std::thread::id main_id()
 	{
-		set_main_thread();
-
 		return main_thread_id;
 	}
 
 	// Get the current running thread
 	static std::thread& current()
 	{
-		set_main_thread();
-
-		return *find_thread[std::this_thread::get_id()];
+		return threads[find(std::this_thread::get_id())];
 	}
 
 	// Get the current running thread's id
 	static std::thread::id current_id()
 	{
-		set_main_thread();
-
 		return std::this_thread::get_id();
 	}
 
@@ -295,51 +279,37 @@ public:
 	// Returns whether the given thread is currently active
 	static bool is_active(std::thread& thread)
 	{
-		set_main_thread();
-
-		for (int i = 0; i < threads.size(); i++)
-		{
-			if (get_id(thread) == get_id(*threads[i]))
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return find(thread) != -1;
 	}
 
 	// Returns whether the given thread by id is currently active
 	static bool is_active(std::thread::id id)
 	{
-		return is_active(*find_thread[id]);
+		return find(id) != -1;
 	}
 
 	// Returns whether the given thread is currently running
 	static bool is_running(std::thread& thread)
 	{
-		set_main_thread();
-
 		return !thread.joinable();
 	}
 
 	// Returns whether the given thread by id is currently running
 	static bool is_running(std::thread::id id)
 	{
-		return is_running(*find_thread[id]);
+		return !threads[find(id)].joinable();
 	}
 
 	// Returns whether the given thread is active and not currently running (and therefore can be started)
 	static bool is_ready(std::thread& thread)
 	{
-		set_main_thread();
-
 		return is_active(thread) && !is_running(thread);
 	}
 
 	// Returns whether the given thread by id is active and not currently running (and therefore can be started)
 	static bool is_ready(std::thread::id id)
 	{
-		return is_ready(*find_thread[id]);
+		return is_active(id) && !is_running(id);
 	}
 
 
@@ -348,49 +318,47 @@ public:
 	// Delays the current thread until the given condition is met
 	static void block(bool& condition)
 	{
-		set_main_thread();
-
 		while (!condition) { std::this_thread::yield(); }
 	}
 
 	// Delays the current thread until it is is unlocked
 	static void lock()
 	{
-		set_main_thread();
+		locked_threads[std::this_thread::get_id()] = std::thread::id();
 
-		locked_threads[&current()] = nullptr;
+		while (locked_threads.count(std::this_thread::get_id())) { std::this_thread::yield(); }
 
-		while (locked_threads.count(&current())) { std::this_thread::yield(); }
-
-		locked_threads.erase(&current());
+		locked_threads.erase(std::this_thread::get_id());
 	}
 
 	// Delays the current thread until the given thread completes or this thread is unlocked
 	static void lock(std::thread& thread)
 	{
-		set_main_thread();
+		locked_threads[std::this_thread::get_id()] = thread_ids[find(thread)];
 
-		locked_threads[&current()] = &thread;
+		while (locked_threads.count(std::this_thread::get_id()) && is_active(locked_threads[std::this_thread::get_id()])) { std::this_thread::yield(); }
 
-		while (locked_threads.count(&current()) && is_active(*locked_threads[&current()])) { std::this_thread::yield(); }
-
-		locked_threads.erase(&current());
+		locked_threads.erase(std::this_thread::get_id());
 	}
 
 	// Delays the current thread until the given thread by id completes or this thread is unlocked
 	static void lock(std::thread::id id)
 	{
-		return lock(*find_thread[id]);
+		locked_threads[std::this_thread::get_id()] = id;
+
+		while (locked_threads.count(std::this_thread::get_id()) && is_active(locked_threads[std::this_thread::get_id()])) { std::this_thread::yield(); }
+
+		locked_threads.erase(std::this_thread::get_id());
 	}
 
 	// Relocks the given locked thread to the current thread and return whether it was successful
 	static bool relock(std::thread& locked_thread)
 	{
-		set_main_thread();
+		int index = find(locked_thread);
 
-		if (locked_threads.count(&locked_thread))
+		if (locked_threads.count(thread_ids[index]))
 		{
-			locked_threads[&locked_thread] = &current();
+			locked_threads[thread_ids[index]] = std::this_thread::get_id();
 
 			return true;
 		}
@@ -401,17 +369,24 @@ public:
 	// Relocks the given locked thread by id to the current thread and return whether it was successful
 	static bool relock(std::thread::id locked_id)
 	{
-		return relock(*find_thread[locked_id]);
+		if (locked_threads.count(locked_id))
+		{
+			locked_threads[locked_id] = std::this_thread::get_id();
+
+			return true;
+		}
+
+		return false;
 	}
 
 	// Relocks the given locked thread to the given thread and return whether it was successful
 	static bool relock(std::thread& locked_thread, std::thread& thread)
 	{
-		set_main_thread();
+		int index = find(locked_thread);
 
-		if (locked_threads.count(&locked_thread))
+		if (locked_threads.count(thread_ids[index]))
 		{
-			locked_threads[&locked_thread] = &thread;
+			locked_threads[thread_ids[index]] = thread_ids[find(thread)];
 
 			return true;
 		}
@@ -422,477 +397,456 @@ public:
 	// Relocks the given locked thread by id to the given thread by id and return whether it was successful
 	static bool relock(std::thread::id locked_id, std::thread::id id)
 	{
-		return relock(*find_thread[locked_id], *find_thread[id]);
+		if (locked_threads.count(locked_id))
+		{
+			locked_threads[locked_id] = id;
+
+			return true;
+		}
+
+		return false;
 	}
 
 	// Unlocks the given thread and returns whether it was successful
 	static bool unlock(std::thread& unlocked_thread)
 	{
-		set_main_thread();
-
-		return locked_threads.erase(&unlocked_thread);
+		return locked_threads.erase(thread_ids[find(unlocked_thread)]);
 	}
 
 	// Unlocks the given thread by id and returns whether it was successful
 	static bool unlock(std::thread::id unlocked_id)
 	{
-		return unlock(*find_thread[unlocked_id]);
+		return locked_threads.erase(unlocked_id);
 	}
 
 	// Returns whether the given thread is locked
 	static bool is_locked(std::thread& thread)
 	{
-		set_main_thread();
-
-		return locked_threads.erase(&thread);
+		return locked_threads.count(thread_ids[find(thread)]);
 	}
 
 	// Returns whether the given thread by id is locked
 	static bool is_locked(std::thread::id id)
 	{
-		return is_locked(*find_thread[id]);
+		return locked_threads.count(id);
 	}
 
-	// Returns the thread that is locking the given thread or null if it is unlocked
-	static std::thread& locked_by(std::thread& thread)
+	// Returns the thread that is locking the given thread
+	static std::thread::id locked_by(std::thread& thread)
 	{
-		set_main_thread();
-
-		return *locked_threads[&thread];
+		return locked_threads[thread_ids[find(thread)]];
 	}
 
-	// Returns the thread that is locking the given thread or null if it is unlocked
-	static std::thread& locked_by(std::thread::id id)
+	// Returns the thread that is locking the given thread
+	static std::thread::id locked_by(std::thread::id id)
 	{
-		return locked_by(*find_thread[id]);
+		return locked_threads[id];
 	}
 
 
 	// NEW THREADS
 
-	// Creates a pointer to a new thread that can run code independently of other threads.
+	// •  Creates a new thread that can run code independently of other threads.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () -> void { }" or the LAMBDA macro to add code.
-	// Returns: A pointer to the newly created thread.
+	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Returns a pointer to the newly created thread.
 	static std::thread* new_thread(std::function<void()> method)
 	{
-		set_main_thread();
+		std::thread* new_thread;
 
-		std::thread new_thread;
-
-		std::thread temp_thread
+		threads.emplace_back
 		(
 			LAMBDA(&)
-		{
-			if (locked_threads.count(&new_thread))
 			{
-				lock(*locked_threads[&new_thread]);
+				std::this_thread::yield();
+
+				int index = find(*new_thread);
+
+				std::thread::id id = thread_ids[index];
+
+				if (locked_threads.count(id))
+				{
+					lock(id);
+				}
+
+				running_threads.push_back(id);
+
+				method();
+
+				threads.erase(threads.begin() + index);
+
+				thread_ids.erase(FIND(thread_ids, id));
+
+				thread_names.erase(FIND(thread_names, thread_names[index]));
+
+				running_threads.erase(FIND(running_threads, id));
+
+				cancellation_tokens.erase(id);
 			}
-
-			running_threads.push_back(&new_thread);
-
-			method();
-
-			threads.erase(FIND(threads, &new_thread));
-
-			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
-
-			find_thread.erase(find_id[&new_thread]);
-
-			find_id.erase(&new_thread);
-
-			running_threads.erase(FIND(running_threads, &new_thread));
-
-			cancellation_tokens.erase(&new_thread);
-		}
 		);
 
-		threads.push_back(&new_thread);
+		new_thread = &threads[threads.size()];
 
-		thread_ids.push_back(temp_thread.get_id());
+		thread_ids.push_back(new_thread->get_id());
 
-		find_thread[temp_thread.get_id()] = &new_thread;
+		thread_names.push_back("New Thread");
 
-		find_id[&new_thread] = temp_thread.get_id();
+		cancellation_tokens[new_thread->get_id()] = false;
 
-		cancellation_tokens[&new_thread] = false;
+		new_thread->detach();
 
-		temp_thread.detach();
-
-		new_thread = std::move(temp_thread);
-
-		return &new_thread;
+		return new_thread;
 	}
 
-	// Creates a pointer to a new thread that can run code independently of other threads.
-	// •  start_behaviour = Whether to not start, start immediately, or complete this new thread before the current thread resumes.
+	// •  Creates a new thread that can run code independently of other threads.
+	// •  start_behaviour = When to start the new thread.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () -> void { }" or the LAMBDA macro to add code.
-	// Returns: A pointer to the newly created thread.
-	static std::thread* new_thread(thread_state start_behaviour, std::function<void()> method)
+	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Returns a pointer to the newly created thread.
+	static std::thread* new_thread(thread_start start_behaviour, std::function<void()> method)
 	{
-		set_main_thread();
+		std::thread* new_thread;
 
-		std::thread new_thread;
-
-		std::thread temp_thread
+		threads.emplace_back
 		(
 			LAMBDA(&)
-		{
-			if (locked_threads.count(&new_thread))
 			{
-				lock(*locked_threads[&new_thread]);
+				std::this_thread::yield();
+
+				int index = find(*new_thread);
+
+				std::thread::id id = thread_ids[index];
+
+				if (locked_threads.count(id))
+				{
+					lock(id);
+				}
+
+				running_threads.push_back(id);
+
+				method();
+
+				threads.erase(threads.begin() + index);
+
+				thread_ids.erase(FIND(thread_ids, id));
+
+				thread_names.erase(FIND(thread_names, thread_names[index]));
+
+				running_threads.erase(FIND(running_threads, id));
+
+				cancellation_tokens.erase(id);
 			}
-
-			running_threads.push_back(&new_thread);
-
-			method();
-
-			threads.erase(FIND(threads, &new_thread));
-
-			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
-
-			find_thread.erase(find_id[&new_thread]);
-
-			find_id.erase(&new_thread);
-
-			running_threads.erase(FIND(running_threads, &new_thread));
-
-			cancellation_tokens.erase(&new_thread);
-		}
 		);
 
-		threads.push_back(&new_thread);
+		new_thread = &threads[threads.size()];
 
-		thread_ids.push_back(temp_thread.get_id());
+		thread_ids.push_back(new_thread->get_id());
 
-		find_thread[temp_thread.get_id()] = &new_thread;
+		thread_names.push_back("New Thread");
 
-		find_id[&new_thread] = temp_thread.get_id();
-
-		cancellation_tokens[&new_thread] = false;
+		cancellation_tokens[new_thread->get_id()] = false;
 
 		switch (start_behaviour)
 		{
-		case thread_state::detach:
+		case thread_start::lock:
 
-			temp_thread.detach();
+			locked_threads[new_thread->get_id()] = std::this_thread::get_id();
 
-			break;
-
-		case thread_state::join:
-
-			temp_thread.join();
+			new_thread->detach();
 
 			break;
 
-		case thread_state::follow:
+		case thread_start::detach:
 
-			follow(new_thread, current());
+			new_thread->detach();
+
+			break;
+
+		case thread_start::join:
+
+			new_thread->join();
 
 			break;
 		}
 
-		new_thread = std::move(temp_thread);
-
-		return &new_thread;
+		return new_thread;
 	}
 
-	// Creates a pointer to a new thread that can run code independently of other threads.
-	// •  start_behaviour = Whether to not start, start immediately, or complete this new thread before the current thread resumes.
+	// •  Creates a new thread that can run code independently of other threads.
+	// •  start_behaviour = When to start the new thread.
 	// •  name = The name of this thread.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () -> void { }" or the LAMBDA(){ } macro to add code.
-	// Returns: A pointer to the newly created thread.
-	static std::thread* new_thread(thread_state start_behaviour, std::string name, std::function<void()> method)
+	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Returns a pointer to the newly created thread.
+	static std::thread* new_thread(thread_start start_behaviour, std::string name, std::function<void()> method)
 	{
-		set_main_thread();
+		std::thread* new_thread;
 
-		std::thread new_thread;
-
-		std::thread temp_thread
+		threads.emplace_back
 		(
 			LAMBDA(&)
-		{
-			if (locked_threads.count(&new_thread))
 			{
-				lock(*locked_threads[&new_thread]);
+				std::this_thread::yield();
+
+				int index = find(*new_thread);
+
+				std::thread::id id = thread_ids[index];
+
+				if (locked_threads.count(id))
+				{
+					lock(id);
+				}
+
+				running_threads.push_back(id);
+
+				method();
+
+				threads.erase(threads.begin() + index);
+
+				thread_ids.erase(FIND(thread_ids, id));
+
+				thread_names.erase(FIND(thread_names, thread_names[index]));
+
+				running_threads.erase(FIND(running_threads, id));
+
+				cancellation_tokens.erase(id);
 			}
-
-			running_threads.push_back(&new_thread);
-
-			method();
-
-			threads.erase(FIND(threads, &new_thread));
-
-			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
-
-			find_thread.erase(find_id[&new_thread]);
-
-			find_id.erase(&new_thread);
-
-			thread_names.erase(get_name(new_thread));
-
-			running_threads.erase(FIND(running_threads, &new_thread));
-
-			cancellation_tokens.erase(&new_thread);
-		}
 		);
 
-		threads.push_back(&new_thread);
+		new_thread = &threads[threads.size()];
 
-		thread_ids.push_back(temp_thread.get_id());
+		thread_ids.push_back(new_thread->get_id());
 
-		find_thread[temp_thread.get_id()] = &new_thread;
+		thread_names.push_back(name);
 
-		find_id[&new_thread] = temp_thread.get_id();
-
-		thread_names[name] = &new_thread;
-
-		cancellation_tokens[&new_thread] = false;
+		cancellation_tokens[new_thread->get_id()] = false;
 
 		switch (start_behaviour)
 		{
-		case thread_state::detach:
+		case thread_start::lock:
 
-			temp_thread.detach();
+			locked_threads[new_thread->get_id()] = std::this_thread::get_id();
 
-			break;
-
-		case thread_state::join:
-
-			temp_thread.join();
+			new_thread->detach();
 
 			break;
 
-		case thread_state::follow:
+		case thread_start::detach:
 
-			follow(new_thread, current());
+			new_thread->detach();
+
+			break;
+
+		case thread_start::join:
+
+			new_thread->join();
 
 			break;
 		}
 
-		new_thread = std::move(temp_thread);
-
-		return &new_thread;
+		return new_thread;
 	}
 
-	// Creates a pointer to a new thread that can run code independently of other threads.
+	// •  Creates a new thread that can run code independently of other threads.
 	// •  followed_thread = The thread to follow this new thread after.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () -> void { }" or the LAMBDA(){ } macro to add code.
-	// Returns: A pointer to the newly created thread.
+	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Returns a pointer to the newly created thread.
 	static std::thread* new_thread(std::thread& followed_thread, std::function<void()> method)
 	{
-		set_main_thread();
+		std::thread* new_thread;
 
-		std::thread new_thread;
-
-		std::thread temp_thread
+		threads.emplace_back
 		(
 			LAMBDA(&)
-		{
-			lock(followed_thread);
+			{
+				std::this_thread::yield();
 
-			running_threads.push_back(&new_thread);
+				int index = find(*new_thread);
 
-			method();
+				std::thread::id id = thread_ids[index];
 
-			threads.erase(FIND(threads, &new_thread));
+				lock(followed_thread);
 
-			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
+				running_threads.push_back(id);
 
-			find_thread.erase(find_id[&new_thread]);
+				method();
 
-			find_id.erase(&new_thread);
+				threads.erase(threads.begin() + index);
 
-			running_threads.erase(FIND(running_threads, &new_thread));
+				thread_ids.erase(FIND(thread_ids, id));
 
-			cancellation_tokens.erase(&new_thread);
-		}
+				thread_names.erase(FIND(thread_names, thread_names[index]));
+
+				running_threads.erase(FIND(running_threads, id));
+
+				cancellation_tokens.erase(id);
+			}
 		);
 
-		threads.push_back(&new_thread);
+		new_thread = &threads[threads.size()];
 
-		thread_ids.push_back(temp_thread.get_id());
+		thread_ids.push_back(new_thread->get_id());
 
-		find_thread[temp_thread.get_id()] = &new_thread;
+		thread_names.push_back("New Thread");
 
-		find_id[&new_thread] = temp_thread.get_id();
+		cancellation_tokens[new_thread->get_id()] = false;
 
-		cancellation_tokens[&new_thread] = false;
+		new_thread->detach();
 
-		temp_thread.detach();
-
-		new_thread = std::move(temp_thread);
-
-		return &new_thread;
+		return new_thread;
 	}
 
-	// Creates a pointer to a new thread that can run code independently of other threads.
+	// •  Creates a new thread that can run code independently of other threads.
 	// •  followed_thread = The thread to follow this new thread after.
 	// •  name = The name of this thread.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () -> void { }" or the LAMBDA(){ } macro to add code.
-	// Returns: A pointer to the newly created thread.
+	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Returns a pointer to the newly created thread.
 	static std::thread* new_thread(std::thread& followed_thread, std::string name, std::function<void()> method)
 	{
-		set_main_thread();
+		std::thread* new_thread;
 
-		std::thread new_thread;
-
-		std::thread temp_thread
+		threads.emplace_back
 		(
 			LAMBDA(&)
-		{
-			lock(followed_thread);
+			{
+				std::this_thread::yield();
 
-			running_threads.push_back(&new_thread);
+				int index = find(*new_thread);
 
-			method();
+				std::thread::id id = thread_ids[index];
 
-			threads.erase(FIND(threads, &new_thread));
+				lock(followed_thread);
 
-			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
+				running_threads.push_back(id);
 
-			find_thread.erase(find_id[&new_thread]);
+				method();
 
-			find_id.erase(&new_thread);
+				threads.erase(threads.begin() + index);
 
-			thread_names.erase(get_name(new_thread));
+				thread_ids.erase(FIND(thread_ids, id));
 
-			running_threads.erase(FIND(running_threads, &new_thread));
+				thread_names.erase(FIND(thread_names, thread_names[index]));
 
-			cancellation_tokens.erase(&new_thread);
-		}
+				running_threads.erase(FIND(running_threads, id));
+
+				cancellation_tokens.erase(id);
+			}
 		);
 
-		threads.push_back(&new_thread);
+		new_thread = &threads[threads.size()];
 
-		thread_ids.push_back(temp_thread.get_id());
+		thread_ids.push_back(new_thread->get_id());
 
-		find_thread[temp_thread.get_id()] = &new_thread;
+		thread_names.push_back(name);
 
-		find_id[&new_thread] = temp_thread.get_id();
+		cancellation_tokens[new_thread->get_id()] = false;
 
-		thread_names[name] = &new_thread;
+		new_thread->detach();
 
-		cancellation_tokens[&new_thread] = false;
-
-		temp_thread.detach();
-
-		new_thread = std::move(temp_thread);
-
-		return &new_thread;
+		return new_thread;
 	}
 
-	// Creates a pointer to a new thread that can run code independently of other threads.
+	// •  Creates a new thread that can run code independently of other threads.
 	// •  followed_thread = The thread to follow this new thread after.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () -> void { }" or the LAMBDA(){ } macro to add code.
-	// Returns: A pointer to the newly created thread.
+	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Returns a pointer to the newly created thread.
 	static std::thread* new_thread(std::thread::id followed_id, std::function<void()> method)
 	{
-		set_main_thread();
+		std::thread* new_thread;
 
-		std::thread new_thread;
-
-		std::thread temp_thread
+		threads.emplace_back
 		(
 			LAMBDA(&)
-		{
-			lock(*find_thread[followed_id]);
+			{
+				std::this_thread::yield();
 
-			running_threads.push_back(&new_thread);
+				int index = find(*new_thread);
 
-			method();
+				std::thread::id id = thread_ids[index];
 
-			threads.erase(FIND(threads, &new_thread));
+				lock(followed_id);
 
-			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
+				running_threads.push_back(id);
 
-			find_thread.erase(find_id[&new_thread]);
+				method();
 
-			find_id.erase(&new_thread);
+				threads.erase(threads.begin() + index);
 
-			running_threads.erase(FIND(running_threads, &new_thread));
+				thread_ids.erase(FIND(thread_ids, id));
 
-			cancellation_tokens.erase(&new_thread);
-		}
+				thread_names.erase(FIND(thread_names, thread_names[index]));
+
+				running_threads.erase(FIND(running_threads, id));
+
+				cancellation_tokens.erase(id);
+			}
 		);
 
-		threads.push_back(&new_thread);
+		new_thread = &threads[threads.size()];
 
-		thread_ids.push_back(temp_thread.get_id());
+		thread_ids.push_back(new_thread->get_id());
 
-		find_thread[temp_thread.get_id()] = &new_thread;
+		thread_names.push_back("New Thread");
 
-		find_id[&new_thread] = temp_thread.get_id();
+		cancellation_tokens[new_thread->get_id()] = false;
 
-		cancellation_tokens[&new_thread] = false;
+		new_thread->detach();
 
-		temp_thread.detach();
-
-		new_thread = std::move(temp_thread);
-
-		return &new_thread;
+		return new_thread;
 	}
 
-	// Creates a pointer to a new thread that can run code independently of other threads.
+	// •  Creates a new thread that can run code independently of other threads.
 	// •  followed_thread = The thread to follow this new thread after.
 	// •  name = The name of this thread.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () -> void { }" or the LAMBDA(){ } macro to add code.
-	// Returns: A pointer to the newly created thread.
+	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Returns a pointer to the newly created thread.
 	static std::thread* new_thread(std::thread::id followed_id, std::string name, std::function<void()> method)
 	{
-		set_main_thread();
+		std::thread* new_thread;
 
-		std::thread new_thread;
-
-		std::thread temp_thread
+		threads.emplace_back
 		(
 			LAMBDA(&)
-		{
-			lock(*find_thread[followed_id]);
+			{
+				std::this_thread::yield();
 
-			running_threads.push_back(&new_thread);
+				int index = find(*new_thread);
 
-			method();
+				std::thread::id id = thread_ids[index];
 
-			threads.erase(FIND(threads, &new_thread));
+				lock(followed_id);
 
-			thread_ids.erase(FIND(thread_ids, get_id(new_thread)));
+				running_threads.push_back(id);
 
-			find_thread.erase(find_id[&new_thread]);
+				method();
 
-			find_id.erase(&new_thread);
+				threads.erase(threads.begin() + index);
 
-			thread_names.erase(get_name(new_thread));
+				thread_ids.erase(FIND(thread_ids, id));
 
-			running_threads.erase(FIND(running_threads, &new_thread));
+				thread_names.erase(FIND(thread_names, thread_names[index]));
 
-			cancellation_tokens.erase(&new_thread);
-		}
+				running_threads.erase(FIND(running_threads, id));
+
+				cancellation_tokens.erase(id);
+			}
 		);
 
-		threads.push_back(&new_thread);
+		new_thread = &threads[threads.size()];
 
-		thread_ids.push_back(temp_thread.get_id());
+		thread_ids.push_back(new_thread->get_id());
 
-		find_thread[temp_thread.get_id()] = &new_thread;
+		thread_names.push_back(name);
 
-		find_id[&new_thread] = temp_thread.get_id();
+		cancellation_tokens[new_thread->get_id()] = false;
 
-		thread_names[name] = &new_thread;
+		new_thread->detach();
 
-		cancellation_tokens[&new_thread] = false;
-
-		temp_thread.detach();
-
-		new_thread = std::move(temp_thread);
-
-		return &new_thread;
+		return new_thread;
 	}
 
 
@@ -901,8 +855,6 @@ public:
 	// Starts a non-running thread asynchronously and returns whether it was successful
 	static bool start(std::thread& thread, bool join = false)
 	{
-		set_main_thread();
-
 		if (is_active(thread) && !is_running(thread))
 		{
 			if (join)
@@ -925,14 +877,28 @@ public:
 	// Starts a non-running thread asynchronously by id and returns whether it was successful
 	static bool start(std::thread::id id, bool join = false)
 	{
-		return start(*find_thread[id], join);
+		if (is_active(id) && !is_running(id))
+		{
+			if (join)
+			{
+				threads[find(id)].join();
+			}
+			else
+			{
+				threads[find(id)].detach();
+			}
+		}
+		else
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	// Joins and completes the given non-running thread before the current thread resumes and returns whether it was successful
 	static bool join(std::thread& thread)
 	{
-		set_main_thread();
-
 		if (is_active(thread) && !is_running(thread))
 		{
 			thread.join();
@@ -948,21 +914,30 @@ public:
 	// Joins and completes the given non-running thread by id before the current thread resumes and returns whether it was successful
 	static bool join(std::thread::id id)
 	{
-		return join(*find_thread[id]);
+		if (is_active(id) && !is_running(id))
+		{
+			threads[find(id)].join();
+		}
+		else
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	// Joins and locks the given non-running thread until after the current thread finishes and returns whether it was successful
 	static bool follow(std::thread& thread)
 	{
-		set_main_thread();
+		int index = find(thread);
 
-		if (locked_threads.count(&thread))
+		if (locked_threads.count(thread_ids[index]))
 		{
-			locked_threads[&thread] = &current();
+			locked_threads[thread_ids[index]] = std::this_thread::get_id();
 		}
 		else if (is_active(thread) && !is_running(thread))
 		{
-			locked_threads[&thread] = &current();
+			locked_threads[thread_ids[index]] = std::this_thread::get_id();
 
 			thread.detach();
 		}
@@ -977,21 +952,36 @@ public:
 	// Joins and locks the given non-running thread by id until after the current thread finishes and returns whether it was successful
 	static bool follow(std::thread::id id)
 	{
-		return follow(*find_thread[id]);
+		if (locked_threads.count(id))
+		{
+			locked_threads[id] = std::this_thread::get_id();
+		}
+		else if (is_active(id) && !is_running(id))
+		{
+			locked_threads[id] = std::this_thread::get_id();
+
+			threads[find(id)].detach();
+		}
+		else
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	// Joins and locks the given non-running thread after after the given following thread finishes and returns whether it was successful
 	static bool follow(std::thread& thread, std::thread& followed_thread)
 	{
-		set_main_thread();
+		int index = find(thread);
 
-		if (locked_threads.count(&thread))
+		if (locked_threads.count(thread_ids[index]))
 		{
-			locked_threads[&thread] = &followed_thread;
+			locked_threads[thread_ids[index]] = thread_ids[find(followed_thread)];
 		}
 		else if (is_active(thread) && !is_running(thread))
 		{
-			locked_threads[&thread] = &followed_thread;
+			locked_threads[thread_ids[index]] = thread_ids[find(followed_thread)];
 
 			thread.detach();
 		}
@@ -1006,7 +996,22 @@ public:
 	// Joins and locks the given non-running thread by id after after the given following thread by id finishes and returns whether it was successful
 	static bool follow(std::thread::id id, std::thread::id followed_id)
 	{
-		return follow(*find_thread[id], *find_thread[followed_id]);
+		if (locked_threads.count(id))
+		{
+			locked_threads[id] = followed_id;
+		}
+		else if (is_active(id) && !is_running(id))
+		{
+			locked_threads[id] = followed_id;
+
+			threads[find(id)].detach();
+		}
+		else
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 
@@ -1015,35 +1020,29 @@ public:
 	// Gets the current thread's cancellation token (set to true on when cancel() is called)
 	static bool get_cancellation_token()
 	{
-		set_main_thread();
-
-		return cancellation_tokens[&current()];
+		return cancellation_tokens[std::this_thread::get_id()];
 	}
 
 	// Gets the given thread's cancellation token (set to true on when cancel() is called)
 	static bool get_cancellation_token(std::thread& thread)
 	{
-		set_main_thread();
-
-		return cancellation_tokens[&thread];
+		return cancellation_tokens[thread_ids[find(thread)]];
 	}
 
 	// Gets the given thread's cancellation token by id (set to true on when cancel() is called)
 	static bool get_cancellation_token(std::thread::id id)
 	{
-		return get_cancellation_token(*find_thread[id]);
+		return cancellation_tokens[id];
 	}
 
 	// Cancels the current thread and returns whether it was successful. You need to program cancellation logic in the thread using get_cancellation_token() for it to cancel.
 	static bool cancel()
 	{
-		set_main_thread();
-
-		if (is_active(current()) && is_running(current()))
+		if (is_active(std::this_thread::get_id()) && is_running(std::this_thread::get_id()))
 		{
-			cancellation_tokens[&current()] = true;
+			cancellation_tokens[std::this_thread::get_id()] = true;
 
-			if (current_id() == main_thread_id)
+			if (std::this_thread::get_id() == main_thread_id)
 			{
 				cancel_main_thread();
 			}
@@ -1059,13 +1058,13 @@ public:
 	// Cancels the given thread and returns whether it was successful. You need to program cancellation logic in the thread using get_cancellation_token() for it to cancel.
 	static bool cancel(std::thread& thread)
 	{
-		set_main_thread();
+		int index = find(thread);
 
-		if (is_active(thread) && is_running(thread))
+		if (is_active(thread_ids[index]) && is_running(thread_ids[index]))
 		{
-			cancellation_tokens[&thread] = true;
+			cancellation_tokens[thread_ids[index]] = true;
 
-			if (get_id(thread) == main_thread_id)
+			if (thread_ids[index] == main_thread_id)
 			{
 				cancel_main_thread();
 			}
@@ -1081,19 +1080,31 @@ public:
 	// Cancels the given thread by id and returns whether it was successful. You need to program cancellation logic in the thread using get_cancellation_token() for it to cancel.
 	static bool cancel(std::thread::id id)
 	{
-		return cancel(*find_thread[id]);
+		if (is_active(id) && is_running(id))
+		{
+			cancellation_tokens[id] = true;
+
+			if (id == main_thread_id)
+			{
+				cancel_main_thread();
+			}
+		}
+		else
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	// Cancels all of the given threads except the main thread. You need to program cancellation logic in the thread using get_cancellation_token() for it to cancel.
 	static int cancel_all()
 	{
-		set_main_thread();
-
 		int count = running_threads.size() - 1;
 
 		while (running_threads.size() > 1)
 		{
-			cancel(*running_threads[1]);
+			cancel(running_threads[1]);
 		}
 
 		return count;
@@ -1102,18 +1113,16 @@ public:
 	// Cancels all of the given threads except the current thread. You need to program cancellation logic in the thread using get_cancellation_token() for it to cancel.
 	static int cancel_others()
 	{
-		set_main_thread();
-
 		int count = running_threads.size() - 1;
 
-		while (get_id(*running_threads[0]) != current_id())
+		while (running_threads[0] != std::this_thread::get_id())
 		{
-			cancel(*running_threads[0]);
+			cancel(running_threads[0]);
 		}
 
 		while (running_threads.size() > 1)
 		{
-			cancel(*running_threads[1]);
+			cancel(running_threads[1]);
 		}
 
 		return count;
@@ -1167,71 +1176,90 @@ public:
 	// Returns whether the main thread is still running
 	static bool is_main_thread_active()
 	{
-		set_main_thread();
-
 		return is_active(main_thread_id);
 	}
 
 	// Retrieves the cancellation token of the main thread
 	static bool get_main_thread_cancellation_token()
 	{
-		set_main_thread();
+		return cancellation_tokens[main_thread_id];
+	}
 
-		return cancellation_tokens[nullptr];
+	// Joins and locks the given non-running thread until after the main thread finishes and returns whether it was successful
+	static bool follow_main_thread(std::thread& thread)
+	{
+		return follow(thread_ids[find(thread)], main_thread_id);
+	}
+
+	// Joins and locks the given non-running thread until after the main thread finishes and returns whether it was successful
+	static bool follow_main_thread(std::thread::id id)
+	{
+		return follow(id, main_thread_id);
 	}
 
 	// Locks the main thread until it is cancelled (current thread must be main thread)
 	static void lock_main_thread()
 	{
-		set_main_thread();
-
-		if (current_id() == main_thread_id)
+		if (std::this_thread::get_id() == main_thread_id)
 		{
-			while (!cancellation_tokens[nullptr]) { std::this_thread::yield(); }
+			while (!cancellation_tokens[main_thread_id]) { std::this_thread::yield(); }
 		}
 	}
 
-	// Call this function to end the main thread
+	// Call this function to end the main thread and preserve other threads until they complete
 	static void cancel_main_thread(bool cancel_all_threads = false)
 	{
-		set_main_thread();
+		cancellation_tokens[main_thread_id] = true;
 
-		cancellation_tokens[nullptr] = true;
-
-		if (current_id() == main_thread_id)
+		if (std::this_thread::get_id() == main_thread_id)
 		{
 			std::this_thread::yield();
 		}
 
-		threads.erase(FIND(threads, nullptr));
+		threads.erase(threads.begin());
 
 		thread_ids.erase(FIND(thread_ids, main_thread_id));
 
-		find_thread.erase(find_id[nullptr]);
+		thread_names.erase(FIND(thread_names, "Main Thread"));
 
-		find_id.erase(nullptr);
+		running_threads.erase(FIND(running_threads, main_thread_id));
 
-		thread_names.erase("Main Thread");
-
-		running_threads.erase(FIND(running_threads, nullptr));
-
-		cancellation_tokens.erase(nullptr);
+		cancellation_tokens.erase(main_thread_id);
 
 		if (cancel_all_threads)
 		{
 			cancel_all();
+
+			std::this_thread::yield();
+		}
+		else
+		{
+			while (threads.size() > 0)
+			{ 
+				// Prevent deadlocks
+				if (threads.size() == locked_threads.size()) 
+				{ 
+					cancel_all();
+
+					std::this_thread::yield();
+
+					break; 
+				}
+			}
 		}
 	}
 };
 
-// Static variable initialization
-std::vector<std::thread*> multithreading::threads = std::vector<std::thread*>();
-std::vector<std::thread::id> multithreading::thread_ids = std::vector<std::thread::id>();
-std::map<std::string, std::thread*> multithreading::thread_names = std::map<std::string, std::thread*>();
-std::map<std::thread::id, std::thread*> multithreading::find_thread = std::map<std::thread::id, std::thread*>();
-std::map<std::thread*, std::thread::id> multithreading::find_id = std::map<std::thread*, std::thread::id>();
-std::vector<std::thread*> multithreading::running_threads = std::vector<std::thread*>();
-std::map<std::thread*, bool> multithreading::cancellation_tokens = std::map<std::thread*, bool>();
-std::map<std::thread*, std::thread*> multithreading::locked_threads = std::map<std::thread*, std::thread*>();
-bool multithreading::main_set = false;
-std::thread::id multithreading::main_thread_id = std::thread::id();
+// Static variable initialization	
+std::vector<std::thread> threads;
+std::vector<std::thread::id> thread_ids = std::vector<std::thread::id>();
+std::vector<std::string> thread_names = std::vector<std::string>();
+std::vector<std::thread::id> multithreading::running_threads = std::vector<std::thread::id>();
+std::map<std::thread::id, bool> multithreading::cancellation_tokens = std::map<std::thread::id, bool>();
+std::map<std::thread::id, std::thread::id> multithreading::locked_threads = std::map<std::thread::id, std::thread::id>();
+std::thread* multithreading::_main;
+std::thread::id multithreading::main_thread_id;
+
+// •  The program's global instance of the thread pool used to initialize the main thread.
+// •  Do not access this instance directly, use the multithreading class's static functions.
+multithreading thread_pool = multithreading();

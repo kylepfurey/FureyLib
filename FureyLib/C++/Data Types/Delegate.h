@@ -5,34 +5,43 @@
 #pragma once
 #include <vector>
 #include <map>
+#include <functional>
 #include <initializer_list>
 
 // Include this heading to use the class
 #include "Delegate.h"
 
-// Represents a void function pointer either with or without parameters.
-#define METHOD(variable) void (*variable) (ParameterTypes...)
+// Represents a void function either with or without parameters.
+#define METHOD(variable) std::function<void(ParameterTypes...)> variable
 
-// Represents a function pointer with a return type either with or without parameters.
-#define FUNCTION(variable) ReturnType (*variable) (ParameterTypes...)
+// Represents a function with a return type either with or without parameters.
+#define FUNCTION(variable) std::function<ReturnType(ParameterTypes...)> variable
 
-// Forward declaration of event
-template <typename ... ParameterTypes> class event;
+// Event interface forward declaration
+class event_interface;
 
-// Forward declaration of delegate
-template  <typename ReturnType, typename ... ParameterTypes> class delegate;
+// Delegate interface forward declaration
+class delegate_interface;
 
-// Wrapper class for a collection of functions.
-// All stored functions must return void.
-// All stored functions must share the same parameters.
-template <typename ... ParameterTypes> class event
+// Event interface class
+class event_interface
 {
-private:
+public:
 
 	// STATIC DELEGATE DATA
 
 	// Global list of all delegates
-	static std::vector<event<ParameterTypes...>*> all_delegates;
+	static std::vector<event_interface*> all_delegates;
+
+
+	// DELEGATE DATA
+
+	// Index of current delegate
+	int index = 0;
+
+protected:
+
+	// STATIC DELEGATE DATA
 
 	// Global cancellation token
 	static bool cancelled_all;
@@ -43,18 +52,72 @@ private:
 
 	// DELEGATE DATA
 
-	// List of functions included in the delegate
-	std::vector<METHOD()> functions = std::vector<METHOD()>();
+	// Delegate cancellation token
+	bool cancel_invoke = false;
 
 	// Whether the delegate is currently invoking functions
 	bool invoking = false;
 
-	// Delegate cancellation token
-	bool cancel_invoke = false;
+
+	// CONTRACTED FUNCTIONS
+
+	// Cancel function
+	virtual void cancel() { }
+};
+
+// Delegate interface class
+class delegate_interface
+{
+public:
+
+	// STATIC DELEGATE DATA
+
+	// Global list of all delegates
+	static std::vector<delegate_interface*> all_delegates;
+
+
+	// DELEGATE DATA
 
 	// Index of current delegate
 	int index = 0;
 
+protected:
+
+	// STATIC DELEGATE DATA
+
+	// Global cancellation token
+	static bool cancelled_all;
+
+	// Index of current invoked delegate
+	static int invoke_index;
+
+
+	// DELEGATE DATA
+
+	// Delegate cancellation token
+	bool cancel_invoke = false;
+
+	// Whether the delegate is currently invoking functions
+	bool invoking = false;
+
+
+	// CONTRACTED FUNCTIONS
+
+	// Cancel function
+	virtual void cancel() { }
+};
+
+// •  Wrapper class for a collection of functions.
+// •  All stored functions must return void.
+// •  All stored functions must share the same parameters.
+template <typename ... ParameterTypes> class event : public event_interface
+{
+private:
+
+	// DELEGATE DATA
+
+	// List of functions included in the delegate
+	std::vector<METHOD()> functions = std::vector<METHOD()>();
 
 public:
 
@@ -65,9 +128,31 @@ public:
 	{
 		functions = std::vector<METHOD()>();
 
-		all_delegates.push_back(this);
+		event_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = event_interface::all_delegates.size() - 1;
+	}
+
+	// Copy constructor
+	event(const event<ParameterTypes...>& delegate)
+	{
+		functions = delegate.functions;
+
+		event_interface::all_delegates.push_back(this);
+
+		index = event_interface::all_delegates.size() - 1;
+	}
+
+	// Move constructor
+	event(event<ParameterTypes...>&& delegate) noexcept
+	{
+		functions = delegate.functions;
+
+		delegate.functions.clear();
+
+		event_interface::all_delegates.push_back(this);
+
+		index = event_interface::all_delegates.size() - 1;
 	}
 
 	// Function constructor
@@ -77,9 +162,9 @@ public:
 
 		this->functions.push_back(function);
 
-		all_delegates.push_back(this);
+		event_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = event_interface::all_delegates.size() - 1;
 	}
 
 	// Array constructor
@@ -92,9 +177,9 @@ public:
 			this->functions.push_back(functions[i]);
 		}
 
-		all_delegates.push_back(this);
+		event_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = event_interface::all_delegates.size() - 1;
 	}
 
 	// Parameter constructor
@@ -106,9 +191,9 @@ public:
 	{
 		this->functions = std::vector<METHOD()>();
 
-		all_delegates.push_back(this);
+		event_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = event_interface::all_delegates.size() - 1;
 
 		if (number_of_functions >= 1) {
 			this->functions.push_back(function1);
@@ -228,9 +313,9 @@ public:
 	{
 		functions = functions;
 
-		all_delegates.push_back(this);
+		event_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = event_interface::all_delegates.size() - 1;
 	}
 
 	// List constructor
@@ -243,9 +328,9 @@ public:
 			this->functions.push_back(*(functions.begin() + i));
 		}
 
-		all_delegates.push_back(this);
+		event_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = event_interface::all_delegates.size() - 1;
 	}
 
 	// Delegate constructor
@@ -258,20 +343,20 @@ public:
 			this->functions.push_back(functions[i]);
 		}
 
-		all_delegates.push_back(this);
+		event_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = event_interface::all_delegates.size() - 1;
 	}
 
 	// Deconstructor
 	~event()
 	{
-		for (int i = index + 1; i < all_delegates.size(); i++)
+		for (int i = index + 1; i < event_interface::all_delegates.size(); i++)
 		{
-			all_delegates[i]->index--;
+			event_interface::all_delegates[i]->index--;
 		}
 
-		all_delegates.erase(std::find(all_delegates.begin(), all_delegates.end(), this));
+		event_interface::all_delegates.erase(std::find(event_interface::all_delegates.begin(), event_interface::all_delegates.end(), this));
 	}
 
 
@@ -282,9 +367,9 @@ public:
 	{
 		cancel_invoke = false;
 
-		cancelled_all = false;
+		event_interface::cancelled_all = false;
 
-		invoke_index = index;
+		event_interface::invoke_index = index;
 
 		invoking = true;
 
@@ -292,7 +377,7 @@ public:
 		{
 			functions[i](parameters...);
 
-			if (cancel_invoke || cancelled_all)
+			if (cancel_invoke || event_interface::cancelled_all)
 			{
 				invoking = false;
 
@@ -305,28 +390,8 @@ public:
 		return true;
 	}
 
-	// Invokes every delegate
-	static bool invoke_all(ParameterTypes... parameters)
-	{
-		for (int i = 0; i < all_delegates.size(); i++)
-		{
-			if (!all_delegates[i]->invoke(parameters...))
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	// Reinvokes the current delegate
-	static bool invoke_current(ParameterTypes... parameters)
-	{
-		return all_delegates[invoke_index]->invoke(parameters...);
-	}
-
 	// Cancel an invoke
-	void cancel()
+	void cancel() override
 	{
 		cancel_invoke = true;
 	}
@@ -334,13 +399,13 @@ public:
 	// Cancel all invokes
 	static void cancel_all()
 	{
-		cancelled_all = true;
+		event_interface::cancelled_all = true;
 	}
 
 	// Cancel the current invoke
 	static void cancel_current()
 	{
-		all_delegates[invoke_index]->cancel_invoke = true;
+		event_interface::all_delegates[event_interface::invoke_index]->cancel_invoke = true;
 	}
 
 	// Returns whether the delegate is currently being invoked
@@ -496,6 +561,27 @@ public:
 	}
 
 
+	// ASSIGNMENT OPERATORS
+
+	// Copy assignment operator
+	event<ParameterTypes...>& operator=(const event<ParameterTypes...>& delegate)
+	{
+		functions = delegate.functions;
+
+		return *this;
+	}
+
+	// Move assignment operator
+	event<ParameterTypes...>& operator=(event<ParameterTypes...>&& delegate) noexcept
+	{
+		functions = delegate.functions;
+
+		delegate.functions.clear();
+
+		return *this;
+	}
+
+
 	// COLLECTION OPERATORS
 
 	// Adding a function
@@ -523,43 +609,17 @@ public:
 	}
 };
 
-// Static variable initialization
-template <typename ... ParameterTypes> std::vector<event<ParameterTypes...>*> event<ParameterTypes...>::all_delegates = std::vector<event<ParameterTypes...>*>();
-template <typename ... ParameterTypes> bool event<ParameterTypes...>::cancelled_all = false;
-template <typename ... ParameterTypes> int event<ParameterTypes...>::invoke_index = 0;
-
-// Wrapper class for a collection of functions.
-// All stored functions must share the same return type.
-// All stored functions must share the same parameters.
-template <typename ReturnType, typename ... ParameterTypes> class delegate
+// •  Wrapper class for a collection of functions.
+// •  All stored functions must share the same return type.
+// •  All stored functions must share the same parameters.
+template <typename ReturnType, typename ... ParameterTypes> class delegate : public delegate_interface
 {
 private:
-
-	// STATIC DELEGATE DATA
-
-	// Global list of all delegates
-	static std::vector<delegate<ReturnType, ParameterTypes...>*> all_delegates;
-
-	// Global cancellation token
-	static bool cancelled_all;
-
-	// Index of current invoked delegate
-	static int invoke_index;
-
 
 	// DELEGATE DATA
 
 	// List of functions included in the delegate
 	std::vector<FUNCTION()> functions = std::vector<FUNCTION()>();
-
-	// Whether the delegate is currently invoking functions
-	bool invoking = false;
-
-	// Delegate cancellation token
-	bool cancel_invoke = false;
-
-	// Index of current delegate
-	int index = 0;
 
 public:
 
@@ -570,9 +630,31 @@ public:
 	{
 		functions = std::vector<FUNCTION()>();
 
-		all_delegates.push_back(this);
+		delegate_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = delegate_interface::all_delegates.size() - 1;
+	}
+
+	// Copy constructor
+	delegate(const delegate<ReturnType, ParameterTypes...>& delegate)
+	{
+		functions = delegate.functions;
+
+		delegate_interface::all_delegates.push_back(this);
+
+		index = delegate_interface::all_delegates.size() - 1;
+	}
+
+	// Move constructor
+	delegate(event<ReturnType, ParameterTypes...>&& delegate) noexcept
+	{
+		functions = delegate.functions;
+
+		delegate.functions.clear();
+
+		delegate_interface::all_delegates.push_back(this);
+
+		index = delegate_interface::all_delegates.size() - 1;
 	}
 
 	// Function constructor
@@ -582,9 +664,9 @@ public:
 
 		this->functions.push_back(function);
 
-		all_delegates.push_back(this);
+		delegate_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = delegate_interface::all_delegates.size() - 1;
 	}
 
 	// Array constructor
@@ -597,9 +679,9 @@ public:
 			this->functions.push_back(functions[i]);
 		}
 
-		all_delegates.push_back(this);
+		delegate_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = delegate_interface::all_delegates.size() - 1;
 	}
 
 	// Parameter constructor
@@ -611,9 +693,9 @@ public:
 	{
 		this->functions = std::vector<FUNCTION()>();
 
-		all_delegates.push_back(this);
+		delegate_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = delegate_interface::all_delegates.size() - 1;
 
 		if (number_of_functions >= 1) {
 			this->functions.push_back(function1);
@@ -733,9 +815,9 @@ public:
 	{
 		functions = functions;
 
-		all_delegates.push_back(this);
+		delegate_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = delegate_interface::all_delegates.size() - 1;
 	}
 
 	// List constructor
@@ -748,9 +830,9 @@ public:
 			this->functions.push_back(*(functions.begin() + i));
 		}
 
-		all_delegates.push_back(this);
+		delegate_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = delegate_interface::all_delegates.size() - 1;
 	}
 
 	// Delegate constructor
@@ -763,33 +845,33 @@ public:
 			this->functions.push_back(functions[i]);
 		}
 
-		all_delegates.push_back(this);
+		delegate_interface::all_delegates.push_back(this);
 
-		index = all_delegates.size() - 1;
+		index = delegate_interface::all_delegates.size() - 1;
 	}
 
 	// Deconstructor
 	~delegate()
 	{
-		for (int i = index + 1; i < all_delegates.size(); i++)
+		for (int i = index + 1; i < delegate_interface::all_delegates.size(); i++)
 		{
-			all_delegates[i]->index--;
+			delegate_interface::all_delegates[i]->index--;
 		}
 
-		all_delegates.erase(std::find(all_delegates.begin(), all_delegates.end(), this));
+		delegate_interface::all_delegates.erase(std::find(delegate_interface::all_delegates.begin(), delegate_interface::all_delegates.end(), this));
 	}
 
 
 	// DELEGATE FUNCTIONS
 
 	// Returns a dictionary with each key representing the function and the value being the returned data
-	std::map<FUNCTION(), ReturnType> invoke(ParameterTypes... parameters)
+	auto invoke(ParameterTypes... parameters)
 	{
 		cancel_invoke = false;
 
-		cancelled_all = false;
+		delegate_interface::cancelled_all = false;
 
-		invoke_index = index;
+		delegate_interface::invoke_index = index;
 
 		invoking = true;
 
@@ -799,7 +881,7 @@ public:
 		{
 			returns[functions[i]] = functions[i](parameters...);
 
-			if (cancel_invoke || cancelled_all)
+			if (cancel_invoke || delegate_interface::cancelled_all)
 			{
 				for (int j = i + 1; j < functions.size(); j++)
 				{
@@ -815,32 +897,8 @@ public:
 		return returns;
 	}
 
-	// Invokes every delegate
-	static auto invoke_all(ParameterTypes... parameters)
-	{
-		auto returns = std::map<delegate<ReturnType, ParameterTypes...>*, std::map<FUNCTION(), ReturnType>>();
-
-		for (int i = 0; i < all_delegates.size(); i++)
-		{
-			returns[all_delegates[i]] = all_delegates[i]->invoke(parameters...);
-
-			if (all_delegates[i]->cancel_invoke || cancelled_all)
-			{
-				break;
-			}
-		}
-
-		return returns;
-	}
-
-	// Reinvokes the current delegate
-	static std::map<FUNCTION(), ReturnType> invoke_current(ParameterTypes... parameters)
-	{
-		return all_delegates[invoke_index]->invoke(parameters...);
-	}
-
 	// Cancel an invoke
-	void cancel()
+	void cancel() override
 	{
 		cancel_invoke = true;
 	}
@@ -848,13 +906,13 @@ public:
 	// Cancel all invokes
 	static void cancel_all()
 	{
-		cancelled_all = true;
+		delegate_interface::cancelled_all = true;
 	}
 
 	// Cancel the current invoke
 	static void cancel_current()
 	{
-		all_delegates[invoke_index]->cancel_invoke = true;
+		delegate_interface::all_delegates[delegate_interface::invoke_index]->cancel_invoke = true;
 	}
 
 	// Returns whether the delegate is currently being invoked
@@ -1010,6 +1068,27 @@ public:
 	}
 
 
+	// ASSIGNMENT OPERATORS
+
+	// Copy assignment operator
+	delegate<ReturnType, ParameterTypes...>& operator=(const delegate<ReturnType, ParameterTypes...>& delegate)
+	{
+		functions = delegate.functions;
+
+		return *this;
+	}
+
+	// Move assignment operator
+	delegate<ReturnType, ParameterTypes...>& operator=(delegate<ReturnType, ParameterTypes...>&& delegate) noexcept
+	{
+		functions = delegate.functions;
+
+		delegate.functions.clear();
+
+		return *this;
+	}
+
+
 	// COLLECTION OPERATORS
 
 	// Adding a function
@@ -1038,27 +1117,38 @@ public:
 };
 
 // Static variable initialization
-template <typename ReturnType, typename ... ParameterTypes> std::vector<delegate<ReturnType, ParameterTypes...>*> delegate<ReturnType, ParameterTypes...>::all_delegates = std::vector<delegate<ReturnType, ParameterTypes...>*>();
-template <typename ReturnType, typename ... ParameterTypes> bool delegate<ReturnType, ParameterTypes...>::cancelled_all = false;
-template <typename ReturnType, typename ... ParameterTypes> int delegate<ReturnType, ParameterTypes...>::invoke_index = 0;
+std::vector<event_interface*> event_interface::all_delegates = std::vector<event_interface*>();
+bool event_interface::cancelled_all = false;
+int event_interface::invoke_index = 0;
+std::vector<delegate_interface*> delegate_interface::all_delegates = std::vector<delegate_interface*>();
+bool delegate_interface::cancelled_all = false;
+int delegate_interface::invoke_index = 0;
 
-// Forward declaration of event
-template <typename ... ParameterTypes> class Event;
+// Event interface forward declaration
+class IEvent;
 
-// Forward declaration of delegate
-template  <typename ReturnType, typename ... ParameterTypes> class Delegate;
+// Delegate interface forward declaration
+class IDelegate;
 
-// Wrapper class for a collection of functions.
-// All stored functions must return void.
-// All stored functions must share the same parameters.
-template <typename ... ParameterTypes> class Event
+// Event interface class
+class IEvent
 {
-private:
+public:
 
 	// STATIC DELEGATE DATA
 
 	// Global list of all delegates
-	static std::vector<Event<ParameterTypes...>*> allDelegates;
+	static std::vector<IEvent*> allDelegates;
+
+
+	// DELEGATE DATA
+
+	// Index of current delegate
+	int index = 0;
+
+protected:
+
+	// STATIC DELEGATE DATA
 
 	// Global cancellation token
 	static bool cancelledAll;
@@ -1069,18 +1159,72 @@ private:
 
 	// DELEGATE DATA
 
-	// List of functions included in the delegate
-	std::vector<METHOD()> functions = std::vector<METHOD()>();
+	// Delegate cancellation token
+	bool cancelInvoke = false;
 
 	// Whether the delegate is currently invoking functions
 	bool invoking = false;
 
-	// Delegate cancellation token
-	bool cancelInvoke = false;
+
+	// CONTRACTED FUNCTIONS
+
+	// Cancel function
+	virtual void Cancel() { }
+};
+
+// Delegate interface class
+class IDelegate
+{
+public:
+
+	// STATIC DELEGATE DATA
+
+	// Global list of all delegates
+	static std::vector<IDelegate*> allDelegates;
+
+
+	// DELEGATE DATA
 
 	// Index of current delegate
 	int index = 0;
 
+protected:
+
+	// STATIC DELEGATE DATA
+
+	// Global cancellation token
+	static bool cancelledAll;
+
+	// Index of current invoked delegate
+	static int invokeIndex;
+
+
+	// DELEGATE DATA
+
+	// Delegate cancellation token
+	bool cancelInvoke = false;
+
+	// Whether the delegate is currently invoking functions
+	bool invoking = false;
+
+
+	// CONTRACTED FUNCTIONS
+
+	// Cancel function
+	virtual void Cancel() { }
+};
+
+// •  Wrapper class for a collection of functions.
+// •  All stored functions must return void.
+// •  All stored functions must share the same parameters.
+template <typename ... ParameterTypes> class Event : public IEvent
+{
+private:
+
+	// DELEGATE DATA
+
+	// List of functions included in the delegate
+	std::vector<METHOD()> functions = std::vector<METHOD()>();
 
 public:
 
@@ -1091,9 +1235,31 @@ public:
 	{
 		functions = std::vector<METHOD()>();
 
-		allDelegates.push_back(this);
+		IEvent::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IEvent::allDelegates.size() - 1;
+	}
+
+	// Copy constructor
+	Event(const Event<ParameterTypes...>& delegate)
+	{
+		functions = delegate.functions;
+
+		IEvent::allDelegates.push_back(this);
+
+		index = IEvent::allDelegates.size() - 1;
+	}
+
+	// Move constructor
+	Event(Event<ParameterTypes...>&& delegate) noexcept
+	{
+		functions = delegate.functions;
+
+		delegate.functions.clear();
+
+		IEvent::allDelegates.push_back(this);
+
+		index = IEvent::allDelegates.size() - 1;
 	}
 
 	// Function constructor
@@ -1103,9 +1269,9 @@ public:
 
 		this->functions.push_back(function);
 
-		allDelegates.push_back(this);
+		IEvent::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IEvent::allDelegates.size() - 1;
 	}
 
 	// Array constructor
@@ -1118,9 +1284,9 @@ public:
 			this->functions.push_back(functions[i]);
 		}
 
-		allDelegates.push_back(this);
+		IEvent::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IEvent::allDelegates.size() - 1;
 	}
 
 	// Parameter constructor
@@ -1132,9 +1298,9 @@ public:
 	{
 		this->functions = std::vector<METHOD()>();
 
-		allDelegates.push_back(this);
+		IEvent::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IEvent::allDelegates.size() - 1;
 
 		if (number_of_functions >= 1) {
 			this->functions.push_back(function1);
@@ -1254,9 +1420,9 @@ public:
 	{
 		functions = functions;
 
-		allDelegates.push_back(this);
+		IEvent::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IEvent::allDelegates.size() - 1;
 	}
 
 	// List constructor
@@ -1269,9 +1435,9 @@ public:
 			this->functions.push_back(*(functions.begin() + i));
 		}
 
-		allDelegates.push_back(this);
+		IEvent::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IEvent::allDelegates.size() - 1;
 	}
 
 	// Delegate constructor
@@ -1284,20 +1450,20 @@ public:
 			this->functions.push_back(functions[i]);
 		}
 
-		allDelegates.push_back(this);
+		IEvent::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IEvent::allDelegates.size() - 1;
 	}
 
 	// Deconstructor
 	~Event()
 	{
-		for (int i = index + 1; i < allDelegates.size(); i++)
+		for (int i = index + 1; i < IEvent::allDelegates.size(); i++)
 		{
-			allDelegates[i]->index--;
+			IEvent::allDelegates[i]->index--;
 		}
 
-		allDelegates.erase(std::find(allDelegates.begin(), allDelegates.end(), this));
+		IEvent::allDelegates.erase(std::find(IEvent::allDelegates.begin(), IEvent::allDelegates.end(), this));
 	}
 
 
@@ -1308,9 +1474,9 @@ public:
 	{
 		cancelInvoke = false;
 
-		cancelledAll = false;
+		IEvent::cancelledAll = false;
 
-		invokeIndex = index;
+		IEvent::invokeIndex = index;
 
 		invoking = true;
 
@@ -1318,7 +1484,7 @@ public:
 		{
 			functions[i](parameters...);
 
-			if (cancelInvoke || cancelledAll)
+			if (cancelInvoke || IEvent::cancelledAll)
 			{
 				invoking = false;
 
@@ -1331,28 +1497,8 @@ public:
 		return true;
 	}
 
-	// Invokes every delegate
-	static bool InvokeAll(ParameterTypes... parameters)
-	{
-		for (int i = 0; i < allDelegates.size(); i++)
-		{
-			if (!allDelegates[i]->Invoke(parameters...))
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	// Reinvokes the current delegate
-	static bool InvokeCurrent(ParameterTypes... parameters)
-	{
-		return allDelegates[invokeIndex]->invoke(parameters...);
-	}
-
 	// Cancel an invoke
-	void Cancel()
+	void Cancel() override
 	{
 		cancelInvoke = true;
 	}
@@ -1360,13 +1506,13 @@ public:
 	// Cancel all invokes
 	static void CancelAll()
 	{
-		cancelledAll = true;
+		IEvent::cancelledAll = true;
 	}
 
 	// Cancel the current invoke
 	static void CancelCurrent()
 	{
-		allDelegates[invokeIndex]->cancelInvoke = true;
+		IEvent::allDelegates[IEvent::invokeIndex]->cancelInvoke = true;
 	}
 
 	// Returns whether the delegate is currently being invoked
@@ -1522,6 +1668,27 @@ public:
 	}
 
 
+	// ASSIGNMENT OPERATORS
+
+	// Copy assignment operator
+	Event<ParameterTypes...>& operator=(const Event<ParameterTypes...>& delegate)
+	{
+		functions = delegate.functions;
+
+		return *this;
+	}
+
+	// Move assignment operator
+	Event<ParameterTypes...>& operator=(Event<ParameterTypes...>&& delegate) noexcept
+	{
+		functions = delegate.functions;
+
+		delegate.functions.clear();
+
+		return *this;
+	}
+
+
 	// COLLECTION OPERATORS
 
 	// Adding a function
@@ -1549,29 +1716,12 @@ public:
 	}
 };
 
-// Static variable initialization
-template <typename ... ParameterTypes> std::vector<Event<ParameterTypes...>*> Event<ParameterTypes...>::allDelegates = std::vector<Event<ParameterTypes...>*>();
-template <typename ... ParameterTypes> bool Event<ParameterTypes...>::cancelledAll = false;
-template <typename ... ParameterTypes> int Event<ParameterTypes...>::invokeIndex = 0;
-
-// Wrapper class for a collection of functions.
-// All stored functions must share the same return type.
-// All stored functions must share the same parameters.
-template <typename ReturnType, typename ... ParameterTypes> class Delegate
+// •  Wrapper class for a collection of functions.
+// •  All stored functions must share the same return type.
+// •  All stored functions must share the same parameters.
+template <typename ReturnType, typename ... ParameterTypes> class Delegate : public IDelegate
 {
 private:
-
-	// STATIC DELEGATE DATA
-
-	// Global list of all delegates
-	static std::vector<Delegate<ReturnType, ParameterTypes...>*> allDelegates;
-
-	// Global cancellation token
-	static bool cancelledAll;
-
-	// Index of current invoked delegate
-	static int invokeIndex;
-
 
 	// DELEGATE DATA
 
@@ -1596,9 +1746,31 @@ public:
 	{
 		functions = std::vector<FUNCTION()>();
 
-		allDelegates.push_back(this);
+		IDelegate::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IDelegate::allDelegates.size() - 1;
+	}
+
+	// Copy constructor
+	Delegate(const Delegate<ReturnType, ParameterTypes...>& delegate)
+	{
+		functions = delegate.functions;
+
+		IDelegate::allDelegates.push_back(this);
+
+		index = IDelegate::allDelegates.size() - 1;
+	}
+
+	// Move constructor
+	Delegate(Delegate<ReturnType, ParameterTypes...>&& delegate) noexcept
+	{
+		functions = delegate.functions;
+
+		delegate.functions.clear();
+
+		IDelegate::allDelegates.push_back(this);
+
+		index = IDelegate::allDelegates.size() - 1;
 	}
 
 	// Function constructor
@@ -1608,9 +1780,9 @@ public:
 
 		this->functions.push_back(function);
 
-		allDelegates.push_back(this);
+		IDelegate::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IDelegate::allDelegates.size() - 1;
 	}
 
 	// Array constructor
@@ -1623,9 +1795,9 @@ public:
 			this->functions.push_back(functions[i]);
 		}
 
-		allDelegates.push_back(this);
+		IDelegate::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IDelegate::allDelegates.size() - 1;
 	}
 
 	// Parameter constructor
@@ -1637,9 +1809,9 @@ public:
 	{
 		this->functions = std::vector<FUNCTION()>();
 
-		allDelegates.push_back(this);
+		IDelegate::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IDelegate::allDelegates.size() - 1;
 
 		if (number_of_functions >= 1) {
 			this->functions.push_back(function1);
@@ -1759,9 +1931,9 @@ public:
 	{
 		functions = functions;
 
-		allDelegates.push_back(this);
+		IDelegate::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IDelegate::allDelegates.size() - 1;
 	}
 
 	// List constructor
@@ -1774,9 +1946,9 @@ public:
 			this->functions.push_back(*(functions.begin() + i));
 		}
 
-		allDelegates.push_back(this);
+		IDelegate::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IDelegate::allDelegates.size() - 1;
 	}
 
 	// Delegate constructor
@@ -1789,33 +1961,33 @@ public:
 			this->functions.push_back(functions[i]);
 		}
 
-		allDelegates.push_back(this);
+		IDelegate::allDelegates.push_back(this);
 
-		index = allDelegates.size() - 1;
+		index = IDelegate::allDelegates.size() - 1;
 	}
 
 	// Deconstructor
 	~Delegate()
 	{
-		for (int i = index + 1; i < allDelegates.size(); i++)
+		for (int i = index + 1; i < IDelegate::allDelegates.size(); i++)
 		{
-			allDelegates[i]->index--;
+			IDelegate::allDelegates[i]->index--;
 		}
 
-		allDelegates.erase(std::find(allDelegates.begin(), allDelegates.end(), this));
+		IDelegate::allDelegates.erase(std::find(IDelegate::allDelegates.begin(), IDelegate::allDelegates.end(), this));
 	}
 
 
 	// DELEGATE FUNCTIONS
 
 	// Returns a dictionary with each key representing the function and the value being the returned data
-	std::map<FUNCTION(), ReturnType> Invoke(ParameterTypes... parameters)
+	auto Invoke(ParameterTypes... parameters)
 	{
 		cancelInvoke = false;
 
-		cancelledAll = false;
+		IDelegate::cancelledAll = false;
 
-		invokeIndex = index;
+		IDelegate::invokeIndex = index;
 
 		invoking = true;
 
@@ -1825,7 +1997,7 @@ public:
 		{
 			returns[functions[i]] = functions[i](parameters...);
 
-			if (cancelInvoke || cancelledAll)
+			if (cancelInvoke || IDelegate::cancelledAll)
 			{
 				for (int j = i + 1; j < functions.size(); j++)
 				{
@@ -1841,32 +2013,8 @@ public:
 		return returns;
 	}
 
-	// Invokes every delegate
-	static auto InvokeAll(ParameterTypes... parameters)
-	{
-		auto returns = std::map<Delegate<ReturnType, ParameterTypes...>*, std::map<FUNCTION(), ReturnType>>();
-
-		for (int i = 0; i < allDelegates.size(); i++)
-		{
-			returns[allDelegates[i]] = allDelegates[i]->Invoke(parameters...);
-
-			if (allDelegates[i]->cancelInvoke || cancelledAll)
-			{
-				break;
-			}
-		}
-
-		return returns;
-	}
-
-	// Reinvokes the current delegate
-	static std::map<FUNCTION(), ReturnType> InvokeCurrent(ParameterTypes... parameters)
-	{
-		return allDelegates[invokeIndex]->invoke(parameters...);
-	}
-
 	// Cancel an invoke
-	void Cancel()
+	void Cancel() override
 	{
 		cancelInvoke = true;
 	}
@@ -1874,13 +2022,13 @@ public:
 	// Cancel all invokes
 	static void CancelAll()
 	{
-		cancelledAll = true;
+		IDelegate::cancelledAll = true;
 	}
 
 	// Cancel the current invoke
 	static void CancelCurrent()
 	{
-		allDelegates[invokeIndex]->cancelInvoke = true;
+		IDelegate::allDelegates[IDelegate::invokeIndex]->cancelInvoke = true;
 	}
 
 	// Returns whether the delegate is currently being invoked
@@ -2036,6 +2184,27 @@ public:
 	}
 
 
+	// ASSIGNMENT OPERATORS
+
+	// Copy assignment operator
+	Delegate<ReturnType, ParameterTypes...>& operator=(const Delegate<ReturnType, ParameterTypes...>& delegate)
+	{
+		functions = delegate.functions;
+
+		return *this;
+	}
+
+	// Move assignment operator
+	Delegate<ReturnType, ParameterTypes...>& operator=(Delegate<ReturnType, ParameterTypes...>&& delegate) noexcept
+	{
+		functions = delegate.functions;
+
+		delegate.functions.clear();
+
+		return *this;
+	}
+
+
 	// COLLECTION OPERATORS
 
 	// Adding a function
@@ -2064,6 +2233,9 @@ public:
 };
 
 // Static variable initialization
-template <typename ReturnType, typename ... ParameterTypes> std::vector<Delegate<ReturnType, ParameterTypes...>*> Delegate<ReturnType, ParameterTypes...>::allDelegates = std::vector<Delegate<ReturnType, ParameterTypes...>*>();
-template <typename ReturnType, typename ... ParameterTypes> bool Delegate<ReturnType, ParameterTypes...>::cancelledAll = false;
-template <typename ReturnType, typename ... ParameterTypes> int Delegate<ReturnType, ParameterTypes...>::invokeIndex = 0;
+std::vector<IEvent*> IEvent::allDelegates = std::vector<IEvent*>();
+bool IEvent::cancelledAll = false;
+int IEvent::invokeIndex = 0;
+std::vector<IDelegate*> IDelegate::allDelegates = std::vector<IDelegate*>();
+bool IDelegate::cancelledAll = false;
+int IDelegate::invokeIndex = 0;

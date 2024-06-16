@@ -32,12 +32,12 @@ public static class Multithreading
     private static List<Thread> runningThreads = new List<Thread>();
 
     /// <summary>
-    /// All of the running thread's cancellation tokens (KEY = THREAD, VALUE = CANCELLED)
+    /// All of the running threads' cancellation tokens (KEY = THREAD, VALUE = CANCELLED)
     /// </summary>
     private static Dictionary<Thread, bool> cancellationTokens = new Dictionary<Thread, bool>();
 
     /// <summary>
-    /// All of the running thread's locking threads (KEY = LOCKED THREAD, VALUE = THREAD LOCKING KEY)
+    /// All of the running threads' locking threads (KEY = LOCKED THREAD, VALUE = THREAD LOCKING KEY)
     /// </summary>
     private static Dictionary<Thread, Thread> lockedThreads = new Dictionary<Thread, Thread>();
 
@@ -48,8 +48,6 @@ public static class Multithreading
     {
         get
         {
-            SetMainThread();
-
             return threads.Count;
         }
     }
@@ -61,8 +59,6 @@ public static class Multithreading
     {
         get
         {
-            SetMainThread();
-
             return runningThreads.Count;
         }
     }
@@ -74,8 +70,6 @@ public static class Multithreading
     {
         get
         {
-            SetMainThread();
-
             return Thread.CurrentThread.Name;
         }
     }
@@ -88,8 +82,6 @@ public static class Multithreading
     {
         get
         {
-            SetMainThread();
-
             return _main;
         }
 
@@ -108,10 +100,19 @@ public static class Multithreading
     {
         get
         {
-            SetMainThread();
-
             return Thread.CurrentThread;
         }
+    }
+
+
+    // STATIC CONSTRUCTOR
+
+    /// <summary>
+    /// Marks and stores the main thread when the program starts
+    /// </summary>
+    static Multithreading()
+    {
+        SetMainThread();
     }
 
 
@@ -122,20 +123,17 @@ public static class Multithreading
     /// </summary>
     private static void SetMainThread()
     {
-        if (_main == null)
-        {
-            _main = Thread.CurrentThread;
+        _main = Thread.CurrentThread;
 
-            Thread.CurrentThread.Name = "Main Thread";
+        Thread.CurrentThread.Name = "Main Thread";
 
-            threads.Add(_main);
+        threads.Add(_main);
 
-            threadNames["Main Thread"] = _main;
+        threadNames["Main Thread"] = _main;
 
-            runningThreads.Add(_main);
+        runningThreads.Add(_main);
 
-            cancellationTokens[_main] = false;
-        }
+        cancellationTokens[_main] = false;
     }
 
     /// <summary>
@@ -144,9 +142,7 @@ public static class Multithreading
     /// <returns></returns>
     public static bool IsMainThreadActive()
     {
-        SetMainThread();
-
-        return main.IsAlive;
+        return threads.Contains(main);
     }
 
     /// <summary>
@@ -154,8 +150,6 @@ public static class Multithreading
     /// </summary>
     public static bool GetMainThreadCancellationToken()
     {
-        SetMainThread();
-
         return cancellationTokens[main];
     }
 
@@ -174,8 +168,6 @@ public static class Multithreading
     /// </summary>
     public static void LockMainThread()
     {
-        SetMainThread();
-
         if (current == main)
         {
             while (!cancellationTokens[main]) { Thread.Yield(); }
@@ -183,13 +175,11 @@ public static class Multithreading
     }
 
     /// <summary>
-    /// Call this function to end the main thread
+    /// Call this function to end the main thread and preserve other non-background threads until they complete
     /// </summary>
     /// <param name="cancelAllThreads"></param>
     public static void CancelMainThread(bool cancelAllThreads = false)
     {
-        SetMainThread();
-
         cancellationTokens[main] = true;
 
         if (current == main)
@@ -208,6 +198,23 @@ public static class Multithreading
         if (cancelAllThreads)
         {
             CancelAll();
+
+            Thread.Yield();
+        }
+        else
+        {
+            while (threads.Count > 0)
+            {
+                // Prevent deadlocks
+                if (threads.Count == lockedThreads.Count)
+                {
+                    CancelAll();
+
+                    Thread.Yield();
+
+                    break;
+                }
+            }
         }
     }
 
@@ -221,8 +228,6 @@ public static class Multithreading
     /// <returns></returns>
     public static Thread Get(string name)
     {
-        SetMainThread();
-
         if (!threadNames.ContainsKey(name))
         {
             return null;
@@ -238,8 +243,6 @@ public static class Multithreading
     /// <returns></returns>
     public static Thread Get(int index)
     {
-        SetMainThread();
-
         if (index < 0 || index >= threads.Count)
         {
             return null;
@@ -254,8 +257,6 @@ public static class Multithreading
     /// <returns></returns>
     public static List<Thread> GetThreads()
     {
-        SetMainThread();
-
         return threads;
     }
 
@@ -265,8 +266,6 @@ public static class Multithreading
     /// <returns></returns>
     public static Dictionary<string, Thread> GetThreadNames()
     {
-        SetMainThread();
-
         return threadNames;
     }
 
@@ -275,8 +274,6 @@ public static class Multithreading
     /// </summary>
     public static List<Thread> GetRunningThreads()
     {
-        SetMainThread();
-
         return runningThreads;
     }
 
@@ -285,8 +282,6 @@ public static class Multithreading
     /// </summary>
     public static Dictionary<Thread, Thread> GetLockedThreads()
     {
-        SetMainThread();
-
         return lockedThreads;
     }
 
@@ -296,8 +291,6 @@ public static class Multithreading
     /// <returns></returns>
     public static int ActiveCount()
     {
-        SetMainThread();
-
         return threads.Count;
     }
 
@@ -307,8 +300,6 @@ public static class Multithreading
     /// <returns></returns>
     public static int RunningCount()
     {
-        SetMainThread();
-
         return threads.Count;
     }
 
@@ -318,21 +309,27 @@ public static class Multithreading
     /// <returns></returns>
     public static string GetName()
     {
-        SetMainThread();
-
         return current.Name;
     }
 
     /// <summary>
-    /// Get the name of the given thread=
+    /// Get the name of the given thread
     /// </summary>
     /// <param name="thread"></param>
     /// <returns></returns>
     public static string GetName(Thread thread)
     {
-        SetMainThread();
-
         return thread.Name;
+    }
+
+    /// <summary>
+    /// Get the name of the given thread's index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public static string GetName(int index)
+    {
+        return threads[index].Name;
     }
 
     /// <summary>
@@ -341,8 +338,6 @@ public static class Multithreading
     /// <returns></returns>
     public static Thread Main()
     {
-        SetMainThread();
-
         return main;
     }
 
@@ -352,8 +347,6 @@ public static class Multithreading
     /// <returns></returns>
     public static Thread Current()
     {
-        SetMainThread();
-
         return current;
     }
 
@@ -376,8 +369,6 @@ public static class Multithreading
     /// <returns></returns>
     public static bool IsActive(Thread thread)
     {
-        SetMainThread();
-
         return threads.Contains(thread);
     }
 
@@ -388,8 +379,6 @@ public static class Multithreading
     /// <returns></returns>
     public static bool IsRunning(Thread thread)
     {
-        SetMainThread();
-
         return thread.IsAlive;
     }
 
@@ -400,8 +389,6 @@ public static class Multithreading
     /// <returns></returns>
     public static bool IsReady(Thread thread)
     {
-        SetMainThread();
-
         return threads.Contains(thread) && !thread.IsAlive;
     }
 
@@ -414,8 +401,6 @@ public static class Multithreading
     /// <param name="condition"></param>
     public static void Block(ref bool condition)
     {
-        SetMainThread();
-
         while (!condition) { Thread.Yield(); }
     }
 
@@ -424,8 +409,6 @@ public static class Multithreading
     /// </summary>
     public static void Lock()
     {
-        SetMainThread();
-
         lockedThreads[current] = null;
 
         while (lockedThreads.ContainsKey(current)) { Thread.Yield(); }
@@ -439,8 +422,6 @@ public static class Multithreading
     /// <param name="thread"></param>
     public static void Lock(Thread thread)
     {
-        SetMainThread();
-
         lockedThreads[current] = thread;
 
         while (lockedThreads.ContainsKey(current) && threads.Contains(lockedThreads[current])) { Thread.Yield(); }
@@ -454,8 +435,6 @@ public static class Multithreading
     /// <param name="lockedThread"></param>
     public static bool Relock(Thread lockedThread)
     {
-        SetMainThread();
-
         if (lockedThreads.ContainsKey(lockedThread))
         {
             lockedThreads[lockedThread] = current;
@@ -473,8 +452,6 @@ public static class Multithreading
     /// <param name="thread"></param>
     public static bool Relock(Thread lockedThread, Thread thread)
     {
-        SetMainThread();
-
         if (lockedThreads.ContainsKey(lockedThread))
         {
             lockedThreads[lockedThread] = thread;
@@ -492,8 +469,6 @@ public static class Multithreading
     /// <returns></returns>
     public static bool Unlock(Thread unlockedThread)
     {
-        SetMainThread();
-
         return lockedThreads.Remove(unlockedThread);
     }
 
@@ -504,8 +479,6 @@ public static class Multithreading
     /// <returns></returns>
     public static bool IsLocked(Thread thread)
     {
-        SetMainThread();
-
         return lockedThreads.ContainsKey(thread);
     }
 
@@ -516,8 +489,6 @@ public static class Multithreading
     /// <returns></returns>
     public static Thread LockedBy(Thread thread)
     {
-        SetMainThread();
-
         if (lockedThreads.ContainsKey(thread))
         {
             return lockedThreads[thread];
@@ -538,8 +509,6 @@ public static class Multithreading
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(Action method)
     {
-        SetMainThread();
-
         Thread newThread = null;
 
         newThread = new Thread(() =>
@@ -583,8 +552,6 @@ public static class Multithreading
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(bool start, Action method)
     {
-        SetMainThread();
-
         Thread newThread = null;
 
         newThread = new Thread(() =>
@@ -632,8 +599,6 @@ public static class Multithreading
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(bool start, bool join, Action method)
     {
-        SetMainThread();
-
         Thread newThread = null;
 
         newThread = new Thread(() =>
@@ -687,8 +652,6 @@ public static class Multithreading
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(bool start, bool join, string name, Action method)
     {
-        SetMainThread();
-
         Thread newThread = null;
 
         newThread = new Thread(() =>
@@ -747,8 +710,6 @@ public static class Multithreading
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(bool start, bool join, string name, bool isBackground, Action method)
     {
-        SetMainThread();
-
         Thread newThread = null;
 
         newThread = new Thread(() =>
@@ -808,8 +769,6 @@ public static class Multithreading
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(bool start, bool join, string name, bool isBackground, ThreadPriority priority, Action method)
     {
-        SetMainThread();
-
         Thread newThread = null;
 
         newThread = new Thread(() =>
@@ -865,8 +824,6 @@ public static class Multithreading
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(Thread followedThread, Action method)
     {
-        SetMainThread();
-
         Thread newThread = null;
 
         newThread = new Thread(() =>
@@ -908,8 +865,6 @@ public static class Multithreading
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(Thread followedThread, string name, Action method)
     {
-        SetMainThread();
-
         Thread newThread = null;
 
         newThread = new Thread(() =>
@@ -954,8 +909,6 @@ public static class Multithreading
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(Thread followedThread, string name, bool isBackground, Action method)
     {
-        SetMainThread();
-
         Thread newThread = null;
 
         newThread = new Thread(() =>
@@ -1002,8 +955,6 @@ public static class Multithreading
     /// <returns>The newly created thread.</returns>
     public static Thread NewThread(Thread followedThread, string name, bool isBackground, ThreadPriority priority, Action method)
     {
-        SetMainThread();
-
         Thread newThread = null;
 
         newThread = new Thread(() =>
@@ -1049,8 +1000,6 @@ public static class Multithreading
     /// <returns></returns>
     public static bool Start(Thread thread, bool join = false)
     {
-        SetMainThread();
-
         if (threads.Contains(thread) && !thread.IsAlive)
         {
             thread.Start();
@@ -1075,8 +1024,6 @@ public static class Multithreading
     /// <returns></returns>
     public static bool Join(Thread thread)
     {
-        SetMainThread();
-
         if (threads.Contains(thread) && !thread.IsAlive)
         {
             thread.Start();
@@ -1098,10 +1045,13 @@ public static class Multithreading
     /// <returns></returns>
     public static bool Follow(Thread thread)
     {
-        SetMainThread();
-
         if (lockedThreads.ContainsKey(thread))
         {
+            if (current == main)
+            {
+                thread.IsBackground = false;
+            }
+
             lockedThreads[thread] = current;
         }
         else if (threads.Contains(thread) && !thread.IsAlive)
@@ -1131,15 +1081,18 @@ public static class Multithreading
     /// <returns></returns>
     public static bool Follow(Thread thread, Thread followedThread)
     {
-        SetMainThread();
-
         if (lockedThreads.ContainsKey(thread))
         {
+            if (followedThread == main)
+            {
+                thread.IsBackground = false;
+            }
+
             lockedThreads[thread] = followedThread;
         }
         else if (threads.Contains(thread) && !thread.IsAlive)
         {
-            if (current == main)
+            if (followedThread == main)
             {
                 thread.IsBackground = false;
             }
@@ -1165,8 +1118,6 @@ public static class Multithreading
     /// <returns></returns>
     public static bool GetCancellationToken()
     {
-        SetMainThread();
-
         return cancellationTokens[current];
     }
 
@@ -1176,8 +1127,6 @@ public static class Multithreading
     /// <returns></returns>
     public static bool GetCancellationToken(Thread thread)
     {
-        SetMainThread();
-
         return cancellationTokens[thread];
     }
 
@@ -1187,8 +1136,6 @@ public static class Multithreading
     /// <returns></returns>
     public static bool Cancel()
     {
-        SetMainThread();
-
         if (runningThreads.Contains(current) && current.IsAlive)
         {
             cancellationTokens[current] = true;
@@ -1213,8 +1160,6 @@ public static class Multithreading
     /// <returns></returns>
     public static bool Cancel(Thread thread)
     {
-        SetMainThread();
-
         if (runningThreads.Contains(thread) && thread.IsAlive)
         {
             cancellationTokens[thread] = true;
@@ -1238,8 +1183,6 @@ public static class Multithreading
     /// <returns></returns>
     public static int CancelAll()
     {
-        SetMainThread();
-
         int count = runningThreads.Count - 1;
 
         while (runningThreads.Count > 1)
@@ -1256,8 +1199,6 @@ public static class Multithreading
     /// <returns></returns>
     public static int CancelOthers()
     {
-        SetMainThread();
-
         int count = runningThreads.Count - 1;
 
         while (runningThreads[0] != current)

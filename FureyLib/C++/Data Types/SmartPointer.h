@@ -7,7 +7,7 @@
 #pragma once
 
 // Include this heading to use the class
-#include "SmartPtr.h"
+#include "SmartPointer.h"
 
 // An exclusive wrapper for a newly created pointer that automatically deallocates on deconstruction.
 template <class DataType> class smart_ptr
@@ -113,7 +113,7 @@ public:
 };
 
 // An exclusive wrapper for a newly created pointer that automatically deallocates on deconstruction.
-template <class DataType> class SmartPtr
+template <class DataType> class SmartPointer
 {
 private:
 
@@ -127,17 +127,17 @@ public:
 	// CONSTRUCTORS AND DECONSTRUCTOR
 
 	// Default constructor
-	SmartPtr(DataType* new_ptr = nullptr)
+	SmartPointer(DataType* new_ptr = nullptr)
 	{
 		// Set the pointer
 		ptr = new_ptr;
 	}
 
 	// Remove copy constructor
-	SmartPtr(const SmartPtr<DataType>& new_ptr) = delete;
+	SmartPointer(const SmartPointer<DataType>& new_ptr) = delete;
 
 	// Move construtor
-	SmartPtr(SmartPtr<DataType>&& new_ptr) noexcept
+	SmartPointer(SmartPointer<DataType>&& new_ptr) noexcept
 	{
 		ptr = new_ptr.ptr;
 
@@ -145,7 +145,7 @@ public:
 	}
 
 	// Deconstructor
-	~SmartPtr()
+	~SmartPointer()
 	{
 		delete ptr;
 
@@ -166,7 +166,7 @@ public:
 	}
 
 	// Reset function
-	SmartPtr<DataType>& Reset(DataType* new_ptr = nullptr)
+	SmartPointer<DataType>& Reset(DataType* new_ptr = nullptr)
 	{
 		delete ptr;
 
@@ -176,7 +176,7 @@ public:
 	}
 
 	// Delete function
-	SmartPtr<DataType>& Destroy()
+	SmartPointer<DataType>& Destroy()
 	{
 		return Reset(nullptr);
 	}
@@ -185,10 +185,10 @@ public:
 	// OPERATORS
 
 	// Remove assignment operator
-	SmartPtr<DataType>& operator=(DataType* new_ptr) = delete;
+	SmartPointer<DataType>& operator=(DataType* new_ptr) = delete;
 
 	// Move operator
-	SmartPtr<DataType>& operator=(SmartPtr<DataType>&& new_ptr) noexcept
+	SmartPointer<DataType>& operator=(SmartPointer<DataType>&& new_ptr) noexcept
 	{
 		if (this != &new_ptr)
 		{

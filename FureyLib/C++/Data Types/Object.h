@@ -13,15 +13,15 @@
 // Define the variable used for conversions (must be larger then any variable).
 #define CONVERSION_TYPE long long
 
-// Object class that functions as a universal container which can hold and return data of any type.
-// Inherit from object to share common methods and storage between different types.
+// •  Object class that functions as a universal container which can hold and return data of any type.
+// •  Inherit from object to share common methods and storage between different types.
 #define object object
 
 // The state of when an object or pointer has no memory allocated.
 #define null nullptr
 
-// Object class that functions as a universal container which can hold and return data of any type.
-// Inherit from object to share common methods and storage between different types.
+// •  Object class that functions as a universal container which can hold and return data of any type.
+// •  Inherit from object to share common methods and storage between different types.
 class object
 {
 private:
@@ -394,17 +394,15 @@ public:
 	}
 };
 
-// Object class that functions as a universal container which can hold and return data of any type.
+// •  Object class that functions as a universal container which can hold and return data of any type.
 // •  Can be inherited from to share common methods and storage between different types.
-// •  If you intend on storing the object in a vector, use VObject instead.
 #define Object Object
 
 // The state of when an object or pointer has no memory allocated.
 #define Null nullptr
 
-// Object class that functions as a universal container which can hold and return data of any type.
+// •  Object class that functions as a universal container which can hold and return data of any type.
 // •  Can be inherited from to share common methods and storage between different types.
-// •  If you intend on storing the object in a vector, use VObject instead.
 class Object
 {
 private:
@@ -776,9 +774,6 @@ public:
 		return data == nullptr;
 	}
 };
-
-
-// OTHER KEYWORDS
 
 // Implicitly-typed local variable.
 #define var auto

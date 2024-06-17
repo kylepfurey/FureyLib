@@ -9,17 +9,76 @@
 // Include this heading to enable safe garbage collection
 #include "GC.h"
 
-// Overrides the new keyword to store newly allocated memory to the garbage collector.
-#define new GC += new
+// Forward declaration of Garbage class.
+template <typename DataType> class Garbage;
 
-// Overrides the malloc() function to store newly allocated memory to the garbage collector.
-#define malloc GC + malloc
+// •  Base class for the Garbage class.
+// •  Used as type safe storage for pointers of varying types.
+// •  Provides a virtual destructor for the Garbage class to properly destroy its pointer regardless of its type.
+class GarbageBase
+{
+public:
 
-// Overrides the calloc() function to store newly allocated memory to the garbage collector.
-#define calloc GC + calloc
+	// CONSTRUCTORS AND DECONSTRUCTOR
 
-// Overrides the realloc() function to store newly allocated memory to the garbage collector.
-#define realloc GC + realloc
+	// Default constructor.
+	GarbageBase() { }
+
+	// Garbage constructor.
+	template<typename DataType> GarbageBase(DataType* ptr)
+	{
+		*this = Garbage<DataType>(ptr);
+	}
+
+	// Virtual deconstructor used to properly deallocate the pointer class's pointer.
+	virtual ~GarbageBase() { }
+
+
+	// GET POINTER
+
+	// Cast to shared pointer.
+	template<typename DataType> std::shared_ptr<DataType>& Get()
+	{
+		return ((pointer<DataType>*)this)->ptr;
+	}
+
+
+	// ASSIGNMENT OPERATORS
+
+	// Garbage assignment operator.
+	template<typename DataType> Garbage<DataType> operator=(DataType* ptr)
+	{
+		return Garbage<DataType>(ptr);
+	}
+};
+
+// •  Represents a shared pointer that will be deallocated at the end of the program with type safety.
+// •  Inherits from the GarbageBase storage class.
+template <typename DataType> class Garbage : public GarbageBase
+{
+public:
+
+	// DATA
+
+	// The stored pointer to be deallocated.
+	std::shared_ptr<DataType> ptr = nullptr;
+
+
+	// CONSTRUCTORS
+
+	// Garbage constructor.
+	Garbage(DataType* ptr)
+	{
+		this->ptr = std::shared_ptr<DataType>(ptr);
+	}
+
+private:
+
+	// DELETE GET POINTER
+
+	// Delete the cast function.
+	std::shared_ptr<DataType>& Get() = delete;
+};
 
 // •  Collects and stores pointers to newly allocated memory for automatic deallocation at the end of the program.
 // •  Do not make an instance of this class as there is already a global instance named "GC".
@@ -31,7 +90,7 @@ private:
 	// ALLOCATED MEMORY
 
 	// All of the garbage collector's newly allocated memory using the new keyword.
-	std::vector<void*> cppMemory = std::vector<void*>();
+	std::vector<GarbageBase*> cppMemory = std::vector<GarbageBase*>();
 
 	// All of the garbage collector's newly allocated memory using the malloc() functions.
 	std::vector<void*> cMemory = std::vector<void*>();
@@ -44,7 +103,7 @@ public:
 	// •  Stores the pointer in the garbage collector's memory before returning the new pointer.
 	template<typename DataType> DataType*& AllocateCPPMemory(DataType*& ptr)
 	{
-		cppMemory.push_back(ptr);
+		cppMemory.push_back(new Garbage<DataType>(ptr));
 
 		return ptr;
 	}
@@ -118,8 +177,10 @@ public:
 		{
 			for (int i = 0; i < cppMemory.size(); i++)
 			{
-				if (cppMemory[i] == ptr)
+				if ((cppMemory[i])->Get() == ptr)
 				{
+					delete cppMemory[i];
+
 					cppMemory[i] = nullptr;
 
 					cppMemory.erase(cppMemory.begin() + i);
@@ -127,8 +188,6 @@ public:
 					break;
 				}
 			}
-
-			delete ptr;
 
 			ptr = nullptr;
 		}
@@ -200,6 +259,18 @@ public:
 		CollectGarbage();
 	}
 };
+
+// Overrides the new keyword to store newly allocated memory to the garbage collector.
+#define new GC += new 
+
+// Overrides the malloc() function to store newly allocated memory to the garbage collector.
+#define malloc GC + malloc
+
+// Overrides the calloc() function to store newly allocated memory to the garbage collector.
+#define calloc GC + calloc
+
+// Overrides the realloc() function to store newly allocated memory to the garbage collector.
+#define realloc GC + realloc
 
 // Overrides the delete keyword to safely delete and remove memory from the garbage collector while also deleteing the memory.
 #define delete GC -= 

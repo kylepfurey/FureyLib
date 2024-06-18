@@ -22,36 +22,16 @@ class GarbageBase
 {
 public:
 
-	// CONSTRUCTORS AND DECONSTRUCTOR
-
 	// Default constructor.
 	GarbageBase() { }
-
-	// Garbage constructor.
-	template<typename DataType> GarbageBase(DataType* ptr)
-	{
-		*this = Garbage<DataType>(ptr);
-	}
 
 	// Virtual deconstructor used to properly deallocate the pointer class's pointer.
 	virtual ~GarbageBase() { }
 
-
-	// GET POINTER
-
 	// Cast to shared pointer.
 	template<typename DataType> std::shared_ptr<DataType>& Get()
 	{
-		return ((pointer<DataType>*)this)->ptr;
-	}
-
-
-	// ASSIGNMENT OPERATORS
-
-	// Garbage assignment operator.
-	template<typename DataType> Garbage<DataType> operator=(DataType* ptr)
-	{
-		return Garbage<DataType>(ptr);
+		return ((Garbage<DataType>*)this)->ptr;
 	}
 };
 
@@ -61,23 +41,14 @@ template <typename DataType> class Garbage : public GarbageBase
 {
 public:
 
-	// DATA
-
 	// The stored pointer to be deallocated.
 	std::shared_ptr<DataType> ptr = nullptr;
-
-
-	// CONSTRUCTORS
 
 	// Garbage constructor.
 	Garbage(DataType* ptr)
 	{
 		this->ptr = std::shared_ptr<DataType>(ptr);
 	}
-
-private:
-
-	// DELETE GET POINTER
 
 	// Delete the cast function.
 	std::shared_ptr<DataType>& Get() = delete;

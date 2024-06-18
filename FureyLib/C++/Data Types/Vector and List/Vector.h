@@ -1281,7 +1281,7 @@ public:
 	}
 
 	// Return a pointer to the beginning
-	DataType* Ptr()
+	DataType* Pointer()
 	{
 		return Begin();
 	}
@@ -1301,13 +1301,13 @@ public:
 	}
 
 	// Return a pointer to the end
-	DataType* PtrEnd()
+	DataType* PointerEnd()
 	{
 		return End();
 	}
 
 	// Return a pointer to the given index
-	DataType* Ptr(int index)
+	DataType* Pointer(int index)
 	{
 		DataType* pointer = &vectorData[index];
 
@@ -1545,7 +1545,7 @@ public:
 	// Return a pointer to the given index
 	DataType* Data(int index)
 	{
-		return Ptr(index);
+		return Pointer(index);
 	}
 
 

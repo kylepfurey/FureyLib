@@ -2,6 +2,9 @@
 // Automatic Garbage Collector Script
 // by Kyle Furey
 
+// ERROR: Currently ends the program with dangling pointers.
+// CAUSE: The new keyword stores the pointer before returning it to the variable. The variable then acts as a copy of the pointer and will be left dangling when the garbage is collected.
+
 #pragma once
 #include <iostream>
 #include <vector>

@@ -17,9 +17,6 @@
 // •  Inherit from object to share common methods and storage between different types.
 #define object object
 
-// The state of when an object or pointer has no memory allocated.
-#define null nullptr
-
 // •  Object class that functions as a universal container which can hold and return data of any type.
 // •  Inherit from object to share common methods and storage between different types.
 class object
@@ -398,9 +395,6 @@ public:
 // •  Can be inherited from to share common methods and storage between different types.
 #define Object Object
 
-// The state of when an object or pointer has no memory allocated.
-#define Null nullptr
-
 // •  Object class that functions as a universal container which can hold and return data of any type.
 // •  Can be inherited from to share common methods and storage between different types.
 class Object
@@ -774,6 +768,12 @@ public:
 		return data == nullptr;
 	}
 };
+
+// The state of when an object or pointer has no memory allocated.
+#define null nullptr
+
+// The state of when an object or pointer has no memory allocated.
+#define Null nullptr
 
 // Implicitly-typed local variable.
 #define var auto

@@ -11,7 +11,7 @@
 #include "Async.h"
 
 // Creates a lambda expression with the given captures and code.
-#define LAMBDA(captures) [captures] () mutable -> void
+#define LAMBDA(...) [__VA_ARGS__] () mutable -> void
 
 // Represents a void function pointer either with or without parameters.
 #define METHOD(variable) void (*variable) (ParameterTypes...)
@@ -282,7 +282,7 @@ public:
 	// Delays the current thread until the given condition is met
 	static void await(bool& condition)
 	{
-		while (!condition) { std::this_thread::yield(); }
+		while (!condition) { }
 	}
 
 	// Delays the current thread until the given future is ready and returns the future's result
@@ -561,7 +561,7 @@ public:
 	// Delays the current thread until the given condition is met
 	static void Await(bool& condition)
 	{
-		while (!condition) { std::this_thread::yield(); }
+		while (!condition) { }
 	}
 
 	// Delays the current thread until the given future is ready and returns the future's result

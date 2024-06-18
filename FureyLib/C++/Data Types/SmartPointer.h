@@ -136,7 +136,7 @@ public:
 	// Remove copy constructor
 	SmartPointer(const SmartPointer<DataType>& new_ptr) = delete;
 
-	// Move construtor
+	// Move constructor
 	SmartPointer(SmartPointer<DataType>&& new_ptr) noexcept
 	{
 		ptr = new_ptr.ptr;

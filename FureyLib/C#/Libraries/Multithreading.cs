@@ -108,17 +108,6 @@ public static class Multithreading
     // STATIC CONSTRUCTOR
 
     /// <summary>
-    /// Marks and stores the main thread when the program starts
-    /// </summary>
-    static Multithreading()
-    {
-        SetMainThread();
-    }
-
-
-    // MAIN THREAD
-
-    /// <summary>
     /// Stores the main thread (automatically called)
     /// </summary>
     private static void SetMainThread()
@@ -137,85 +126,11 @@ public static class Multithreading
     }
 
     /// <summary>
-    /// Returns whether the main thread is still running
+    /// Marks and stores the main thread when the program starts
     /// </summary>
-    /// <returns></returns>
-    public static bool IsMainThreadActive()
+    static Multithreading()
     {
-        return threads.Contains(main);
-    }
-
-    /// <summary>
-    /// Retrieves the cancellation token of the main thread
-    /// </summary>
-    public static bool GetMainThreadCancellationToken()
-    {
-        return cancellationTokens[main];
-    }
-
-    /// <summary>
-    /// Joins and locks the given non-running thread until after the main thread finishes and returns whether it was successful
-    /// </summary>
-    /// <param name="thread"></param>
-    /// <returns></returns>
-    public static bool FollowMainThread(Thread thread)
-    {
-        return Follow(thread, main);
-    }
-
-    /// <summary>
-    /// Locks the main thread until it is cancelled (current thread must be main thread)
-    /// </summary>
-    public static void LockMainThread()
-    {
-        if (current == main)
-        {
-            while (!cancellationTokens[main]) { Thread.Yield(); }
-        }
-    }
-
-    /// <summary>
-    /// Call this function to end the main thread and preserve other non-background threads until they complete
-    /// </summary>
-    /// <param name="cancelAllThreads"></param>
-    public static void CancelMainThread(bool cancelAllThreads = false)
-    {
-        cancellationTokens[main] = true;
-
-        if (current == main)
-        {
-            Thread.Yield();
-        }
-
-        threads.Remove(main);
-
-        threadNames.Remove(main.Name);
-
-        runningThreads.Remove(main);
-
-        cancellationTokens.Remove(main);
-
-        if (cancelAllThreads)
-        {
-            CancelAll();
-
-            Thread.Yield();
-        }
-        else
-        {
-            while (threads.Count > 0)
-            {
-                // Prevent deadlocks
-                if (threads.Count == lockedThreads.Count)
-                {
-                    CancelAll();
-
-                    Thread.Yield();
-
-                    break;
-                }
-            }
-        }
+        SetMainThread();
     }
 
 
@@ -401,7 +316,7 @@ public static class Multithreading
     /// <param name="condition"></param>
     public static void Block(ref bool condition)
     {
-        while (!condition) { Thread.Yield(); }
+        while (!condition) { }
     }
 
     /// <summary>
@@ -411,7 +326,7 @@ public static class Multithreading
     {
         lockedThreads[current] = null;
 
-        while (lockedThreads.ContainsKey(current)) { Thread.Yield(); }
+        while (lockedThreads.ContainsKey(current)) { }
 
         lockedThreads.Remove(current);
     }
@@ -422,9 +337,14 @@ public static class Multithreading
     /// <param name="thread"></param>
     public static void Lock(Thread thread)
     {
+        if (!threads.Contains(thread))
+        {
+            return;
+        }
+
         lockedThreads[current] = thread;
 
-        while (lockedThreads.ContainsKey(current) && threads.Contains(lockedThreads[current])) { Thread.Yield(); }
+        while (lockedThreads.ContainsKey(current) && threads.Contains(lockedThreads[current])) { }
 
         lockedThreads.Remove(current);
     }
@@ -1136,13 +1056,13 @@ public static class Multithreading
     /// <returns></returns>
     public static bool Cancel()
     {
-        if (runningThreads.Contains(current) && current.IsAlive)
+        if (current.IsAlive)
         {
             cancellationTokens[current] = true;
 
             if (current == main)
             {
-                CancelMainThread();
+                EndMainThread();
             }
         }
         else
@@ -1160,13 +1080,13 @@ public static class Multithreading
     /// <returns></returns>
     public static bool Cancel(Thread thread)
     {
-        if (runningThreads.Contains(thread) && thread.IsAlive)
+        if (thread.IsAlive)
         {
             cancellationTokens[thread] = true;
 
             if (thread == main)
             {
-                CancelMainThread();
+                EndMainThread();
             }
         }
         else
@@ -1183,11 +1103,17 @@ public static class Multithreading
     /// <returns></returns>
     public static int CancelAll()
     {
-        int count = runningThreads.Count - 1;
+        int count = 0;
 
-        while (runningThreads.Count > 1)
+        for (int i = 0; i < threads.Count; i++)
         {
-            Cancel(runningThreads[1]);
+            if (main != threads[i])
+            {
+                if (Cancel(threads[i]))
+                {
+                    count++;
+                }
+            }
         }
 
         return count;
@@ -1199,16 +1125,17 @@ public static class Multithreading
     /// <returns></returns>
     public static int CancelOthers()
     {
-        int count = runningThreads.Count - 1;
+        int count = 0;
 
-        while (runningThreads[0] != current)
+        for (int i = 0; i < threads.Count; i++)
         {
-            Cancel(runningThreads[0]);
-        }
-
-        while (runningThreads.Count > 1)
-        {
-            Cancel(runningThreads[1]);
+            if (current != threads[i])
+            {
+                if (Cancel(threads[i]))
+                {
+                    count++;
+                }
+            }
         }
 
         return count;
@@ -1273,5 +1200,66 @@ public static class Multithreading
     public static void SleepForSeconds(float seconds)
     {
         Thread.Sleep(ToMilliseconds(seconds));
+    }
+
+
+    // MAIN THREAD
+
+    /// <summary>
+    /// Returns whether the main thread is still running
+    /// </summary>
+    /// <returns></returns>
+    public static bool IsMainThreadActive()
+    {
+        return threads.Contains(main);
+    }
+
+    /// <summary>
+    /// Retrieves the cancellation token of the main thread
+    /// </summary>
+    public static bool GetMainThreadCancellationToken()
+    {
+        return cancellationTokens[main];
+    }
+
+    /// <summary>
+    /// Joins and locks the given non-running thread until after the main thread finishes and returns whether it was successful
+    /// </summary>
+    /// <param name="thread"></param>
+    /// <returns></returns>
+    public static bool FollowMainThread(Thread thread)
+    {
+        return Follow(thread, main);
+    }
+
+    /// <summary>
+    /// Locks the main thread until it is cancelled (current thread must be main thread)
+    /// </summary>
+    public static void LockMainThread()
+    {
+        if (current == main)
+        {
+            while (!cancellationTokens[main]) { }
+        }
+    }
+
+    /// <summary>
+    /// Call this function to properly end the main thread (non-background threads will continue until they complete).
+    /// </summary>
+    /// <param name="cancelAllThreads"></param>
+    public static void EndMainThread(bool cancelAllThreads = false)
+    {
+        threads.RemoveAt(0);
+
+        threadNames.Remove(main.Name);
+
+        runningThreads.RemoveAt(0);
+
+        cancellationTokens.Remove(main);
+
+        if (cancelAllThreads)
+        {
+            CancelAll();
+        }
     }
 }

@@ -246,7 +246,7 @@ public:
 // Overrides the realloc() function to store newly allocated memory to the garbage collector.
 #define realloc GC + realloc
 
-// Overrides the delete keyword to safely delete and remove memory from the garbage collector while also deleteing the memory.
+// Overrides the delete keyword to safely delete and remove memory from the garbage collector.
 #define delete GC -= 
 
 // Overrides the free() function to safely delete and remove memory from the garbage collector.

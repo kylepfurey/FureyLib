@@ -115,7 +115,7 @@ public static class IMEF
     /// <summary>
     /// Compute corotation electric field in equatorial plane from given coordinates.
     /// </summary>
-    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x,y,z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
+    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x, y, z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
     /// <param name="sph">sph (bool, optional): deterimes if input coordinates are in cartesian (False) or spherical (True); Defaults to False.</param>
     /// <returns>ndarray: coration E-field in 3 dimensions in units [mV/m]</returns>
     public static Vector3 CorotationEField(Vector3 coords, bool sph = false)
@@ -156,7 +156,7 @@ public static class IMEF
     /// <summary>
     /// Compute corotation potential field in equatorial plane from given coordinates.
     /// </summary>
-    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x,y,z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
+    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x, y, z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
     /// <param name="sph">sph (bool, optional): deterimes if input coordinates are in cartesian (False) or spherical (True); Defaults to False.</param>
     /// <returns>ndarray: magnitude of corotation potential in units [kV]</returns>
     public static double CorotationPotential(Vector3 coords, bool sph = false)
@@ -212,7 +212,7 @@ public static class IMEF
     /// <summary>
     /// Compute Volland-Stern potential field. Model based on Volland 1973 (doi:10.1029/JA078i001p00171) and Stern 1975 (doi:10.1029/JA080i004p00595).
     /// </summary>
-    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x,y,z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
+    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x, y, z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
     /// <param name="gs">gs (float): shielding constant</param>
     /// <param name="kp">kp (float): kp index</param>
     /// <param name="sph">sph (bool, optional): deterimes if input coordinates are in cartesian (False) or spherical (True); Defaults to False.</param>
@@ -250,7 +250,7 @@ public static class IMEF
     /// <summary>
     /// Compute Volland-Stern conevction electric field.
     /// </summary>
-    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x,y,z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
+    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x, y, z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
     /// <param name="gs">gs (float): shielding constant</param>
     /// <param name="kp">kp (float): kp index</param>
     /// <param name="sph">sph (bool, optional): deterimes if input coordinates are in cartesian (False) or spherical (True); Defaults to False.</param>
@@ -331,7 +331,7 @@ public static class IMEF
     /// <param name="r">r -> x : radial distance</param>
     /// <param name="theta">theta -> y : polar angle (radians)</param>
     /// <param name="phi">phi -> z : azimuthal angle (radians)</param>
-    /// <returns>(r, theta, phi) to (x,y,z)</returns>
+    /// <returns>(r, theta, phi) to (x, y, z)</returns>
     public static Vector3 SphToCrt(float r, float theta, float phi)
     {
         var x = r * Sin(theta) * Cos(phi);
@@ -591,7 +591,7 @@ public static class imef
     /// <summary>
     /// Compute corotation electric field in equatorial plane from given coordinates.
     /// </summary>
-    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x,y,z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
+    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x, y, z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
     /// <param name="sph">sph (bool, optional): deterimes if input coordinates are in cartesian (False) or spherical (True); Defaults to False.</param>
     /// <returns>ndarray: coration E-field in 3 dimensions in units [mV/m]</returns>
     public static Vector3 corotation_efield(Vector3 coords, bool sph = false)
@@ -632,7 +632,7 @@ public static class imef
     /// <summary>
     /// Compute corotation potential field in equatorial plane from given coordinates.
     /// </summary>
-    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x,y,z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
+    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x, y, z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
     /// <param name="sph">sph (bool, optional): deterimes if input coordinates are in cartesian (False) or spherical (True); Defaults to False.</param>
     /// <returns>ndarray: magnitude of corotation potential in units [kV]</returns>
     public static double corotation_potential(Vector3 coords, bool sph = false)
@@ -688,7 +688,7 @@ public static class imef
     /// <summary>
     /// Compute Volland-Stern potential field. Model based on Volland 1973 (doi:10.1029/JA078i001p00171) and Stern 1975 (doi:10.1029/JA080i004p00595).
     /// </summary>
-    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x,y,z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
+    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x, y, z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
     /// <param name="gs">gs (float): shielding constant</param>
     /// <param name="kp">kp (float): kp index</param>
     /// <param name="sph">sph (bool, optional): deterimes if input coordinates are in cartesian (False) or spherical (True); Defaults to False.</param>
@@ -726,7 +726,7 @@ public static class imef
     /// <summary>
     /// Compute Volland-Stern conevction electric field.
     /// </summary>
-    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x,y,z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
+    /// <param name="coords">coords (ndarray): array of coordinates to compute efield in (x, y, z) or (r, theta, phi), with units in [m]; see 'sph' condition.</param>
     /// <param name="gs">gs (float): shielding constant</param>
     /// <param name="kp">kp (float): kp index</param>
     /// <param name="sph">sph (bool, optional): deterimes if input coordinates are in cartesian (False) or spherical (True); Defaults to False.</param>
@@ -807,7 +807,7 @@ public static class imef
     /// <param name="r">r -> x : radial distance</param>
     /// <param name="theta">theta -> y : polar angle (radians)</param>
     /// <param name="phi">phi -> z : azimuthal angle (radians)</param>
-    /// <returns>(r, theta, phi) to (x,y,z)</returns>
+    /// <returns>(r, theta, phi) to (x, y, z)</returns>
     public static Vector3 sph_to_crt(float r, float theta, float phi)
     {
         var x = r * Sin(theta) * Cos(phi);

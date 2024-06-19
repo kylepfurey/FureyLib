@@ -160,8 +160,6 @@ public class ButtonVR : MonoBehaviour, IHandInteractableVR
             transform.localPosition = new Vector3(transform.localPosition.x, clickedHeight, transform.localPosition.z);
 
             GetComponent<Renderer>().material = clickedMaterial == null ? GetComponent<Renderer>().material : clickedMaterial;
-
-            onClick.Invoke();
         }
     }
 

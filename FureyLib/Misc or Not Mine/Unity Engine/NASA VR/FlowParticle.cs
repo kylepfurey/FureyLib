@@ -10,6 +10,8 @@ using UnityEngine;
 /// </summary>
 public class FlowParticle : MonoBehaviour
 {
+    [Header("Movable rigidbody that is affected by particle field data.")]
+
     [Header("\nVelocity Settings")]
     [SerializeField] private float velocitySpeed = 0.25f;
     [SerializeField] private float velocityLerp = 0.25f;

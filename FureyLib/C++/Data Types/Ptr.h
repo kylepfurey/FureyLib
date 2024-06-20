@@ -2,7 +2,7 @@
 // Smart Pointer Classes
 // by Kyle Furey
 
-// REFERENCES: https://en.cppreference.com/w/cpp/memory/shared_ptr, https://en.cppreference.com/w/cpp/memory/unique_ptr, https://blog.devgenius.io/unique-pointer-and-implementation-in-c-ec6599a518e5
+// REFERENCE: https://blog.devgenius.io/unique-pointer-and-implementation-in-c-ec6599a518e5
 
 #pragma once
 #include <map>
@@ -12,8 +12,8 @@
 
 // Forward declaration of pointer classes
 class ptr_base;
-template <typename DataType = void*> class ptr;
-template <typename DataType = void*> class uptr;
+template <typename DataType> class ptr;
+template <typename DataType> class uptr;
 
 // •  Base class for the pointer classes.
 // •  Used as type safe storage for pointers of varying types.
@@ -560,8 +560,8 @@ public:
 
 // Forward declaration of pointer classes
 class PointerBase;
-template <typename DataType = void*> class Pointer;
-template <typename DataType = void*> class UniquePointer;
+template <typename DataType> class Pointer;
+template <typename DataType> class UniquePointer;
 
 // •  Base class for the pointer classes.
 // •  Used as type safe storage for pointers of varying types.

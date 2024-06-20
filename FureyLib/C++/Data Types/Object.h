@@ -2,23 +2,28 @@
 // Generic Object Class Script
 // by Kyle Furey
 
-// REFERENCE: https://learn.microsoft.com/en-us/dotnet/api/system.object?view=net-8.0, https://www.geeksforgeeks.org/cpp-void-pointer/
+// REQUIREMENTS: Ptr.h
+
+// REFERENCE: https://learn.microsoft.com/en-us/dotnet/api/system.object?view=net-8.0
 
 #pragma once
 #include <string>
+#include "Ptr.h"
 
 // Include this heading to use the class
 #include "Object.h"
 
-// Define the variable used for conversions (must be larger then any variable).
+// Type to be used for converting typeless objects.
 #define CONVERSION_TYPE long long
 
 // •  Object class that functions as a universal container which can hold and return data of any type.
-// •  Inherit from object to share common methods and storage between different types.
+// •  Inherit from the object class to share common methods and storage between different types.
+// •  Preserves type safety of the data it is holding.
 #define object object
 
 // •  Object class that functions as a universal container which can hold and return data of any type.
-// •  Inherit from object to share common methods and storage between different types.
+// •  Inherit from the object class to share common methods and storage between different types.
+// •  Preserves type safety of the data it is holding.
 class object
 {
 private:
@@ -26,7 +31,7 @@ private:
 	// DATA
 
 	// The data this object owns
-	void* data = nullptr;
+	ptr_base* data = nullptr;
 
 public:
 
@@ -41,16 +46,7 @@ public:
 	// Copy constructor
 	object(const object& copied)
 	{
-		if (copied.data == nullptr)
-		{
-			data = nullptr;
-
-			return;
-		}
-
-		data = malloc(sizeof(copied.data));
-
-		*(CONVERSION_TYPE*)data = *(CONVERSION_TYPE*)copied.data;
+		data = new ptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->get<CONVERSION_TYPE>()));
 	}
 
 	// Move constructor
@@ -62,9 +58,15 @@ public:
 	}
 
 	// Data constructor
-	template <class DataType> object(DataType data)
+	template <typename DataType> object(DataType data)
 	{
-		this->data = new DataType(data);
+		this->data = new ptr<DataType>(new DataType(data));
+	}
+
+	// Pointer constructor
+	template <typename DataType> object(DataType* data)
+	{
+		this->data = new ptr<DataType>(data);
 	}
 
 	// Deconstructor
@@ -78,45 +80,128 @@ public:
 
 	// GETTERS AND SETTERS
 
-	// Get the data as the given type
-	template <class DataType> DataType get()
+	// Get the data as an object
+	virtual object get()
 	{
-		return *(DataType*)data;
+		return *this;
+	}
+
+	// Get the data as the given type (use get_string() for std::string casting)
+	template <typename DataType> DataType get()
+	{
+		return *data->get<DataType>();
 	}
 
 	// Retrieve a string representation of the given data (prevents string length exceptions)
 	std::string get_string()
 	{
-		return *(char**)data;
+		return *data->get<char*>();
 	}
 
 	// Set the current data to the given object's data
-	object& set(object& object)
+	virtual object& set(object obj)
 	{
 		delete data;
 
-		data = malloc(sizeof(object.data));
-
-		*(CONVERSION_TYPE*)data = *(CONVERSION_TYPE*)object.data;
+		data = new ptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*obj.data->get<CONVERSION_TYPE>()));
 
 		return *this;
 	}
 
 	// Set the current data to the given data
-	template <class DataType> object& set(DataType data)
+	template <typename DataType> object& set(DataType data)
 	{
 		delete this->data;
 
-		this->data = new DataType(data);
+		this->data = new ptr<DataType>(new DataType(data));
 
 		return *this;
+	}
+
+	// Set the current data to the given pointer
+	template <typename DataType> object& set(DataType* data)
+	{
+		delete this->data;
+
+		this->data = new ptr<DataType>(data);
+
+		return *this;
+	}
+
+
+	// TO STRING
+
+	// Retrieve a string representation of the given data
+	virtual std::string to_string()
+	{
+		return *data->get<char*>();
+	}
+
+	// Retrieve a string representation of the given data after being casted to the given type
+	template <typename DataType> std::string to_string()
+	{
+		return std::to_string(*data->get<DataType>());
+	}
+
+
+	// COPY AND MOVE
+
+	// Copy another object's data
+	virtual object& copy(object copied)
+	{
+		delete data;
+
+		data = new ptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->get<CONVERSION_TYPE>()));
+
+		return *this;
+	}
+
+	// Copy another object's data as the given type
+	template <typename DataType> object& copy(object copied)
+	{
+		delete data;
+
+		data = new ptr<DataType>(new DataType(*copied.data->get<DataType>()));
+
+		return *this;
+	}
+
+	// Move another object's data to this object
+	virtual object& move(object moved)
+	{
+		data = moved.data;
+
+		moved.data = nullptr;
+
+		return *this;
+	}
+
+
+	// CLONE
+
+	// Returns a memberwise clone of this object
+	virtual object memberwise_clone()
+	{
+		return object(data->get<CONVERSION_TYPE>());
+	}
+
+	// Returns a reference to this object
+	virtual object& ref()
+	{
+		return *this;
+	}
+
+	// Returns a pointer to this object
+	virtual object* get_ptr()
+	{
+		return this;
 	}
 
 
 	// DESTROY AND RELEASE
 
 	// Deallocate memory
-	void destroy()
+	virtual void destroy()
 	{
 		delete data;
 
@@ -124,9 +209,9 @@ public:
 	}
 
 	// Get data as the given type and deallocate
-	template <class DataType> DataType release()
+	template <typename DataType> DataType release()
 	{
-		DataType data = *(DataType*)this->data;
+		DataType data = *this->data->get<DataType>();
 
 		delete this->data;
 
@@ -136,122 +221,85 @@ public:
 	}
 
 
-	// COPY AND MOVE
+	// EQUALITY
 
-	// Copy another object's data
-	object& copy(object& copied)
+	// Returns whether the given object is equal to this object
+	virtual bool equals(object obj)
 	{
-		delete data;
-
-		if (copied.data == nullptr)
+		if (data == nullptr || obj.data == nullptr)
 		{
-			data = nullptr;
-
-			return *this;
+			return data == obj.data;
 		}
 
-		data = malloc(sizeof(copied.data));
-
-		*(CONVERSION_TYPE*)data = *(CONVERSION_TYPE*)copied.data;
-
-		return *this;
+		return *data->get<CONVERSION_TYPE>() == *obj.data->get<CONVERSION_TYPE>();
 	}
 
-	// Copy another object's data
-	template <class DataType> object& copy(object& copied)
+	// Returns whether the given data is equal to this object's data
+	template<typename DataType> bool equals(DataType data)
 	{
-		delete data;
-
-		data = new DataType(*(DataType*)copied.data);
-
-		return *this;
+		return *this->data->get<DataType>() == data;
 	}
 
-	// Move another object's data to this object
-	object& move(object& moved)
-	{
-		if (this != &moved)
-		{
-			delete data;
-
-			data = moved.data;
-
-			moved.data = nullptr;
-		}
-
-		return *this;
-	}
-
-
-	// EQUALITY BY VALUE
-
-	// Returns whether this object's data is equal to another object's data by value
-	virtual bool equals(object& object)
-	{
-		if (data == nullptr || object.data == nullptr)
-		{
-			return data == object.data;
-		}
-
-		return *(CONVERSION_TYPE*)data == *(CONVERSION_TYPE*)object.data;
-	}
-
-	// Returns whether this object's data is equal to the given data by value
-	template <class DataType> bool equals(DataType data)
-	{
-		if (this->data == nullptr || data == nullptr)
-		{
-			return this->data == data;
-		}
-
-		return *(DataType*)this->data == data;
-	}
-
-	// Returns whether this object's data is equal to another object's data by value
-	static bool equals(object& object1, object object2)
+	// Returns whether the given objects are equal
+	static bool equals(object object1, object object2)
 	{
 		if (object1.data == nullptr || object2.data == nullptr)
 		{
 			return object1.data == object2.data;
 		}
 
-		return *(CONVERSION_TYPE*)object1.data == *(CONVERSION_TYPE*)object2.data;
+		return *object1.data->get<CONVERSION_TYPE>() == *object2.data->get<CONVERSION_TYPE>();
 	}
 
-
-	// EQUALITY BY REFERENCE
-
-	// Returns whether this object's data is equal to another object's data by reference
-	virtual bool ref_equals(object& object)
+	// Returns whether the given object pointer is equal to this object
+	virtual bool ref_equals(object* obj)
 	{
-		return data == object.data;
+		if (data == nullptr || obj.data == nullptr)
+		{
+			return false;
+		}
+
+		return data == *obj.data;
 	}
 
-	// Returns whether this object's data is equal to the given data by reference
-	template <class DataType> bool ref_equals(DataType& data)
+	// Returns whether the given pointer is equal to this object's data
+	template<typename DataType> bool ref_equals(DataType* data)
 	{
-		return this->data == &data;
+		if (this->data == nullptr || data == nullptr)
+		{
+			return false;
+		}
+
+		return *this->data->get<DataType*>() == data;
 	}
 
-	// Returns whether this object's data is equal to another object's data by reference
-	static bool ref_equals(object& object1, object& object2)
+	// Returns whether the given object pointers are equal
+	static bool ref_equals(object* object1, object* object2)
 	{
+		if (object1.data == nullptr || object2.data == nullptr)
+		{
+			return false;
+		}
+
 		return object1.data == object2.data;
 	}
 
-
-	// TO STRING
-
-	// Retrieve a string representation of the given data
-	virtual std::string to_string()
+	// Returns whether the given object's type is equal to this object's type
+	virtual bool type_equals(object obj)
 	{
-		return *(char**)data;
+		return typeid(*this) == typeid(obj);
 	}
 
-	// Retrieve a string representation of the given data after being casted to the given type
-	template <class DataType> std::string to_string()
+	// Returns whether the given data's type is equal to this object's type
+	template<typename DataType> bool type_equals(DataType data)
 	{
-		return std::to_string(*(DataType*)data);
+		return typeid(*this) == typeid(data);
+	}
+
+	// Returns whether the given objects' types are equal
+	static bool type_equal(object object1, object object2)
+	{
+		return typeid(object1) == typeid(object2);
 	}
 
 
@@ -264,9 +312,9 @@ public:
 	}
 
 	// Returns whether the given object is null
-	static bool is_null(object& object)
+	static bool is_null(object obj)
 	{
-		return object.data == nullptr;
+		return obj.data == nullptr;
 	}
 
 	// Returns whether this object is not null
@@ -276,54 +324,50 @@ public:
 	}
 
 	// Returns whether the given object is not null
-	static bool is_not_null(object& object)
+	static bool is_not_null(object& obj)
 	{
-		return object.data != nullptr;
+		return obj.data != nullptr;
 	}
 
 
 	// ASSIGNMENT OPERATORS
 
 	// Copy assignment operator
-	object& operator=(const object& copied)
+	virtual object& operator=(const object& copied)
 	{
 		delete data;
 
-		if (copied.data == nullptr)
-		{
-			data = nullptr;
-
-			return *this;
-		}
-
-		data = malloc(sizeof(copied.data));
-
-		*(CONVERSION_TYPE*)data = *(CONVERSION_TYPE*)copied.data;
+		data = new ptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->get<CONVERSION_TYPE>()));
 
 		return *this;
 	}
 
 	// Move assignment operator
-	object& operator=(object&& moved) noexcept
+	virtual object& operator=(object&& moved) noexcept
 	{
-		if (this != &moved)
-		{
-			delete data;
+		data = moved.data;
 
-			data = moved.data;
-
-			moved.data = nullptr;
-		}
+		moved.data = nullptr;
 
 		return *this;
 	}
 
 	// Data assignment operator
-	template <class DataType> object& operator=(DataType data)
+	template <typename DataType> object& operator=(DataType data)
 	{
 		delete this->data;
 
-		this->data = new DataType(data);
+		this->data = new ptr<DataType>(new DataType(data));
+
+		return *this;
+	}
+
+	// Pointer assignment operator
+	template <typename DataType> object& operator=(DataType* data)
+	{
+		delete this->data;
+
+		this->data = new ptr<DataType>(data);
 
 		return *this;
 	}
@@ -331,52 +375,42 @@ public:
 
 	// EQUALITY OPERATORS
 
-	// Returns whether this object's data is equal to another object's data by value
-	bool operator==(object& object)
+	// Returns whether this object's data is equal to another object's data 
+	virtual bool operator==(object obj)
 	{
-		if (data == nullptr || object.data == nullptr)
+		if (data == nullptr || obj.data == nullptr)
 		{
-			return data == object.data;
+			return data == obj.data;
 		}
 
-		return *(CONVERSION_TYPE*)data == *(CONVERSION_TYPE*)object.data;
+		return *data->get<CONVERSION_TYPE>() == *obj.data->get<CONVERSION_TYPE>();
 	}
 
-	// Returns whether this object's data is not equal to another object's data by value
-	bool operator!=(object& object)
+	// Returns whether this object's data is not equal to another object's data 
+	virtual bool operator!=(object obj)
 	{
-		if (data == nullptr || object.data == nullptr)
+		if (data == nullptr || obj.data == nullptr)
 		{
-			return data != object.data;
+			return data != obj.data;
 		}
 
-		return *(CONVERSION_TYPE*)data != *(CONVERSION_TYPE*)object.data;
+		return *data->get<CONVERSION_TYPE>() != *obj.data->get<CONVERSION_TYPE>();
 	}
 
-	// Returns whether this object's data is equal to the given data by value
-	template <class DataType> bool operator==(DataType data)
+	// Returns whether this object's data is equal to the given data 
+	template <typename DataType> bool operator==(DataType data)
 	{
-		if (this->data == nullptr || &data == nullptr)
-		{
-			return this->data == &data;
-		}
-
-		return *(DataType*)this->data == data;
+		return *this->data->get<DataType>() == data;
 	}
 
-	// Returns whether this object's data is not equal to another object's data by value
-	template <class DataType> bool operator!=(DataType data)
+	// Returns whether this object's data is not equal to another object's data 
+	template <typename DataType> bool operator!=(DataType data)
 	{
-		if (this->data == nullptr || &data == nullptr)
-		{
-			return this->data == &data;
-		}
-
-		return *(DataType*)this->data != data;
+		return *this->data->get<DataType>() != data;
 	}
 
 
-	// NULL CHECK OPERATOR
+	// NULL CHECK OPERATORS
 
 	// Returns whether this object is not null
 	virtual operator bool()
@@ -392,11 +426,13 @@ public:
 };
 
 // •  Object class that functions as a universal container which can hold and return data of any type.
-// •  Can be inherited from to share common methods and storage between different types.
+// •  Inherit from the Object class to share common methods and storage between different types.
+// •  Preserves type safety of the data it is holding.
 #define Object Object
 
 // •  Object class that functions as a universal container which can hold and return data of any type.
-// •  Can be inherited from to share common methods and storage between different types.
+// •  Inherit from the Object class to share common methods and storage between different types.
+// •  Preserves type safety of the data it is holding.
 class Object
 {
 private:
@@ -404,7 +440,7 @@ private:
 	// DATA
 
 	// The data this object owns
-	void* data = nullptr;
+	PointerBase* data = nullptr;
 
 public:
 
@@ -419,16 +455,7 @@ public:
 	// Copy constructor
 	Object(const Object& copied)
 	{
-		if (copied.data == nullptr)
-		{
-			data = nullptr;
-
-			return;
-		}
-
-		data = malloc(sizeof(copied.data));
-
-		*(CONVERSION_TYPE*)data = *(CONVERSION_TYPE*)copied.data;
+		data = new Pointer<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->Get<CONVERSION_TYPE>()));
 	}
 
 	// Move constructor
@@ -440,9 +467,15 @@ public:
 	}
 
 	// Data constructor
-	template <class DataType> Object(DataType data)
+	template <typename DataType> Object(DataType data)
 	{
-		this->data = new DataType(data);
+		this->data = new Pointer<DataType>(new DataType(data));
+	}
+
+	// Data constructor
+	template <typename DataType> Object(DataType* data)
+	{
+		this->data = new Pointer<DataType>(data);
 	}
 
 	// Deconstructor
@@ -456,45 +489,138 @@ public:
 
 	// GETTERS AND SETTERS
 
-	// Get the data as the given type
-	template <class DataType> DataType Get()
+	// Get the data as an object
+	virtual Object Get()
 	{
-		return *(DataType*)data;
+		return *this;
+	}
+
+	// Get the data as the given type (use GetString() for std::string casting)
+	template <typename DataType> DataType Get()
+	{
+		return *data->Get<DataType>();
 	}
 
 	// Retrieve a string representation of the given data (prevents string length exceptions)
 	std::string GetString()
 	{
-		return *(char**)data;
+		return *data->Get<char*>();
 	}
 
 	// Set the current data to the given object's data
-	Object& Set(Object& object)
+	virtual Object& Set(Object obj)
 	{
 		delete data;
 
-		data = malloc(sizeof(object.data));
-
-		*(CONVERSION_TYPE*)data = *(CONVERSION_TYPE*)object.data;
+		data = new Pointer<CONVERSION_TYPE>(new CONVERSION_TYPE(*obj.data->Get<CONVERSION_TYPE>()));
 
 		return *this;
 	}
 
 	// Set the current data to the given data
-	template <class DataType> Object& Set(DataType data)
+	template <typename DataType> Object& Set(DataType data)
 	{
 		delete this->data;
 
-		this->data = new DataType(data);
+		this->data = new Pointer<DataType>(new DataType(data));
 
 		return *this;
+	}
+
+	// Set the current data to the given pointer
+	template <typename DataType> Object& Set(DataType* data)
+	{
+		delete this->data;
+
+		this->data = new Pointer<DataType>(new DataType(data));
+
+		return *this;
+	}
+
+	// Set the current data to the given pointer
+	template <typename DataType> Object& Set(DataType* data)
+	{
+		delete this->data;
+
+		this->data = new Pointer<DataType>(data);
+
+		return *this;
+	}
+
+
+	// TO STRING
+
+	// Retrieve a string representation of the given data
+	virtual std::string ToString()
+	{
+		return *data->Get<char*>();
+	}
+
+	// Retrieve a string representation of the given data after being casted to the given type
+	template <typename DataType> std::string ToString()
+	{
+		return std::to_string(*data->Get<DataType>());
+	}
+
+
+	// COPY AND MOVE
+
+	// Copy another object's data
+	virtual Object& Copy(Object copied)
+	{
+		delete data;
+
+		data = new Pointer<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->Get<CONVERSION_TYPE>()));
+
+		return *this;
+	}
+
+	// Copy another object's data as the given type
+	template <typename DataType> Object& Copy(Object copied)
+	{
+		delete data;
+
+		data = new Pointer<DataType>(new DataType(*copied.data->Get<DataType>()));
+
+		return *this;
+	}
+
+	// Move another object's data to this object
+	virtual Object& Move(Object moved)
+	{
+		data = moved.data;
+
+		moved.data = nullptr;
+
+		return *this;
+	}
+
+
+	// CLONE
+
+	// Returns a memberwise clone of this object
+	virtual Object MemberwiseClone()
+	{
+		return Object(data->Get<CONVERSION_TYPE>());
+	}
+
+	// Returns a reference to this object
+	virtual Object& Reference()
+	{
+		return *this;
+	}
+
+	// Returns a pointer to this object
+	virtual Object* GetPointer()
+	{
+		return this;
 	}
 
 
 	// DESTROY AND RELEASE
 
 	// Deallocate memory
-	void Destroy()
+	virtual void Destroy()
 	{
 		delete data;
 
@@ -502,9 +628,9 @@ public:
 	}
 
 	// Get data as the given type and deallocate
-	template <class DataType> DataType Release()
+	template <typename DataType> DataType Release()
 	{
-		DataType data = *(DataType*)this->data;
+		DataType data = *this->data->Get<DataType>();
 
 		delete this->data;
 
@@ -514,122 +640,85 @@ public:
 	}
 
 
-	// COPY AND MOVE
+	// EQUALITY
 
-	// Copy another object's data
-	Object& Copy(Object& copied)
+	// Returns whether the given object is equal to this object
+	virtual bool Equals(Object obj)
 	{
-		delete data;
-
-		if (copied.data == nullptr)
+		if (data == nullptr || obj.data == nullptr)
 		{
-			data = nullptr;
-
-			return *this;
+			return data == obj.data;
 		}
 
-		data = malloc(sizeof(copied.data));
-
-		*(CONVERSION_TYPE*)data = *(CONVERSION_TYPE*)copied.data;
-
-		return *this;
+		return *data->Get<CONVERSION_TYPE>() == *obj.data->Get<CONVERSION_TYPE>();
 	}
 
-	// Copy another object's data
-	template <class DataType> Object& Copy(Object& copied)
+	// Returns whether the given data is equal to this object's data
+	template<typename DataType> bool Equals(DataType data)
 	{
-		delete data;
-
-		data = new DataType(*(DataType*)copied.data);
-
-		return *this;
+		return *this->data->Get<DataType>() == data;
 	}
 
-	// Move another object's data to this object
-	Object& Move(Object& moved)
-	{
-		if (this != &moved)
-		{
-			delete data;
-
-			data = moved.data;
-
-			moved.data = nullptr;
-		}
-
-		return *this;
-	}
-
-
-	// EQUALITY BY VALUE
-
-	// Returns whether this object's data is equal to another object's data by value
-	virtual bool Equals(Object& object)
-	{
-		if (data == nullptr || object.data == nullptr)
-		{
-			return data == object.data;
-		}
-
-		return *(CONVERSION_TYPE*)data == *(CONVERSION_TYPE*)object.data;
-	}
-
-	// Returns whether this object's data is equal to the given data by value
-	template <class DataType> bool Equals(DataType data)
-	{
-		if (this->data == nullptr || &data == nullptr)
-		{
-			return this->data == &data;
-		}
-
-		return *(DataType*)this->data == data;
-	}
-
-	// Returns whether this object's data is equal to another object's data by value
-	static bool Equals(Object& object1, Object object2)
+	// Returns whether the given objects are equal
+	static bool Equals(Object object1, Object object2)
 	{
 		if (object1.data == nullptr || object2.data == nullptr)
 		{
 			return object1.data == object2.data;
 		}
 
-		return *(CONVERSION_TYPE*)object1.data == *(CONVERSION_TYPE*)object2.data;
+		return *object1.data->Get<CONVERSION_TYPE>() == *object2.data->Get<CONVERSION_TYPE>();
 	}
 
-
-	// EQUALITY BY REFERENCE
-
-	// Returns whether this object's data is equal to another object's data by reference
-	virtual bool ReferenceEquals(Object& object)
+	// Returns whether the given object is equal to this object
+	virtual bool ReferenceEquals(Object* obj)
 	{
-		return data == object.data;
+		if (data == nullptr || obj.data == nullptr)
+		{
+			return false;
+		}
+
+		return *data->Get<CONVERSION_TYPE>() == *obj.data->Get<CONVERSION_TYPE>();
 	}
 
-	// Returns whether this object's data is equal to the given data by reference
-	template <class DataType> bool ReferenceEquals(DataType& data)
+	// Returns whether the given data is equal to this object's data
+	template<typename DataType> bool ReferenceEquals(DataType* data)
 	{
-		return this->data == &data;
+		if (this->data == nullptr || data == nullptr)
+		{
+			return false;
+		}
+
+		return *this->data->Get<DataType*>() == data;
 	}
 
-	// Returns whether this object's data is equal to another object's data by reference
-	static bool ReferenceEquals(Object& object1, Object& object2)
+	// Returns whether the given objects are equal
+	static bool ReferenceEquals(Object* object1, Object* object2)
 	{
+		if (object1.data == nullptr || object2.data == nullptr)
+		{
+			return false;
+		}
+
 		return object1.data == object2.data;
 	}
 
-
-	// TO STRING
-
-	// Retrieve a string representation of the given data
-	virtual std::string ToString()
+	// Returns whether the given object's type is equal to this object's type
+	virtual bool TypeEquals(Object obj)
 	{
-		return *(char**)data;
+		return typeid(*this) == typeid(obj);
 	}
 
-	// Retrieve a string representation of the given data after being casted to the given type
-	template <class DataType> std::string ToString()
+	// Returns whether the given data's type is equal to this object's type
+	template<typename DataType> bool TypeEquals(DataType data)
 	{
-		return std::to_string(*(DataType*)data);
+		return typeid(*this) == typeid(data);
+	}
+
+	// Returns whether the given objects' types are equal
+	static bool TypeEquals(Object object1, Object object2)
+	{
+		return typeid(object1) == typeid(object2);
 	}
 
 
@@ -642,9 +731,9 @@ public:
 	}
 
 	// Returns whether the given object is null
-	static bool IsNull(Object& object)
+	static bool IsNull(Object obj)
 	{
-		return object.data == nullptr;
+		return obj.data == nullptr;
 	}
 
 	// Returns whether this object is not null
@@ -654,54 +743,50 @@ public:
 	}
 
 	// Returns whether the given object is not null
-	static bool IsNotNull(Object& object)
+	static bool IsNotNull(Object& obj)
 	{
-		return object.data != nullptr;
+		return obj.data != nullptr;
 	}
 
 
 	// ASSIGNMENT OPERATORS
 
 	// Copy assignment operator
-	Object& operator=(const Object& copied)
+	virtual Object& operator=(const Object& copied)
 	{
 		delete data;
 
-		if (copied.data == nullptr)
-		{
-			data = nullptr;
-
-			return *this;
-		}
-
-		data = malloc(sizeof(copied.data));
-
-		*(CONVERSION_TYPE*)data = *(CONVERSION_TYPE*)copied.data;
+		data = new Pointer<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->Get<CONVERSION_TYPE>()));
 
 		return *this;
 	}
 
 	// Move assignment operator
-	Object& operator=(Object&& moved) noexcept
+	virtual Object& operator=(Object&& moved) noexcept
 	{
-		if (this != &moved)
-		{
-			delete data;
+		data = moved.data;
 
-			data = moved.data;
-
-			moved.data = nullptr;
-		}
+		moved.data = nullptr;
 
 		return *this;
 	}
 
 	// Data assignment operator
-	template <class DataType> Object& operator=(DataType data)
+	template <typename DataType> Object& operator=(DataType data)
 	{
 		delete this->data;
 
-		this->data = new DataType(data);
+		this->data = new Pointer<DataType>(new DataType(data));
+
+		return *this;
+	}
+
+	// Pointer assignment operator
+	template <typename DataType> Object& operator=(DataType* data)
+	{
+		delete this->data;
+
+		this->data = new Pointer<DataType>(data);
 
 		return *this;
 	}
@@ -709,52 +794,42 @@ public:
 
 	// EQUALITY OPERATORS
 
-	// Returns whether this object's data is equal to another object's data by value
-	bool operator==(Object& object)
+	// Returns whether this object's data is equal to another object's data 
+	virtual bool operator==(Object obj)
 	{
-		if (data == nullptr || object.data == nullptr)
+		if (data == nullptr || obj.data == nullptr)
 		{
-			return data == object.data;
+			return data == obj.data;
 		}
 
-		return *(CONVERSION_TYPE*)data == *(CONVERSION_TYPE*)object.data;
+		return *data->Get<CONVERSION_TYPE>() == *obj.data->Get<CONVERSION_TYPE>();
 	}
 
-	// Returns whether this object's data is not equal to another object's data by value
-	bool operator!=(Object& object)
+	// Returns whether this object's data is not equal to another object's data 
+	virtual bool operator!=(Object obj)
 	{
-		if (data == nullptr || object.data == nullptr)
+		if (data == nullptr || obj.data == nullptr)
 		{
-			return data != object.data;
+			return data != obj.data;
 		}
 
-		return *(CONVERSION_TYPE*)data != *(CONVERSION_TYPE*)object.data;
+		return *data->Get<CONVERSION_TYPE>() != *obj.data->Get<CONVERSION_TYPE>();
 	}
 
-	// Returns whether this object's data is equal to the given data by value
-	template <class DataType> bool operator==(DataType data)
+	// Returns whether this object's data is equal to the given data 
+	template <typename DataType> bool operator==(DataType data)
 	{
-		if (this->data == nullptr || &data == nullptr)
-		{
-			return this->data == &data;
-		}
-
-		return *(DataType*)this->data == data;
+		return *this->data->Get<DataType>() == data;
 	}
 
-	// Returns whether this object's data is not equal to another object's data by value
-	template <class DataType> bool operator!=(DataType data)
+	// Returns whether this object's data is not equal to another object's data 
+	template <typename DataType> bool operator!=(DataType data)
 	{
-		if (this->data == nullptr || &data == nullptr)
-		{
-			return this->data == &data;
-		}
-
-		return *(DataType*)this->data != data;
+		return *this->data->Get<DataType>() != data;
 	}
 
 
-	// NULL CHECK OPERATOR
+	// NULL CHECK OPERATORS
 
 	// Returns whether this object is not null
 	virtual operator bool()

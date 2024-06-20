@@ -134,6 +134,12 @@ public:
 	// Delete cast
 	template<typename DataType> ptr<DataType>& get() = delete;
 
+	// Returns a pointer to the given data
+	virtual DataType* get()
+	{
+		return data;
+	}
+
 	// Releases and returns the pointer
 	virtual DataType* release()
 	{
@@ -513,6 +519,12 @@ public:
 	// Delete cast
 	template<typename DataType> ptr<DataType>& get() = delete;
 
+	// Returns a pointer to the given data
+	virtual DataType* get()
+	{
+		return data;
+	}
+
 	// Releases and returns the pointer
 	virtual DataType* release()
 	{
@@ -650,6 +662,77 @@ public:
 	}
 };
 
+// •  A wrapper for a shared pointer that does not own the original pointer: a weak pointer.
+// •  Useful if there is a circular dependency between shared pointers to ensure memory does not persist.
+// •  Use check() and get() to test and receive a shared pointer of the original pointer.
+// •  Inherits from the ptr_base storage class.
+template <typename DataType> class wptr : public ptr_base
+{
+protected:
+
+	// POINTER
+
+	// The stored pointer
+	ptr<DataType>* shared = nullptr;
+
+public:
+
+	// CONSTRUCTORS AND DECONSTRUCTOR
+
+	// Default constructor
+	wptr() { shared = nullptr; }
+
+	// Shared pointer constructor
+	wptr(ptr<DataType>& shared)
+	{
+		this->shared = &shared;
+	}
+
+	// Deconstructor
+	virtual ~wptr() { }
+
+
+	// FUNCTIONS
+
+	// Delete cast
+	template<typename DataType> ptr<DataType>& get() = delete;
+
+	// Check if the shared pointer is valid
+	virtual bool check()
+	{
+		return shared->is_not_null();
+	}
+
+	// Receive the shared pointer
+	virtual ptr<DataType> get()
+	{
+		return *shared;
+	}
+
+
+	// OPERATORS
+
+	// Set the shared pointer
+	virtual wptr<DataType>& operator=(ptr<DataType>& shared)
+	{
+		this->shared = &shared;
+
+		return *this;
+	}
+
+	// Receive the shared pointer
+	virtual ptr<DataType> operator*()
+	{
+		return *shared;
+	}
+
+	// Check if the shared pointer is valid
+	virtual operator bool()
+	{
+		return shared->is_not_null();
+	}
+};
+
 // Forward declaration of the pointer class
 template <typename DataType> class Pointer;
 
@@ -773,6 +856,12 @@ public:
 
 	// Delete cast
 	template<typename DataType> Pointer<DataType>& Get() = delete;
+
+	// Returns a pointer to the given data
+	virtual DataType* Get()
+	{
+		return data;
+	}
 
 	// Releases and returns the pointer
 	virtual DataType* Release()
@@ -1153,6 +1242,12 @@ public:
 	// Delete cast
 	template<typename DataType> Pointer<DataType>& Get() = delete;
 
+	// Returns a pointer to the given data
+	virtual DataType* Get()
+	{
+		return data;
+	}
+
 	// Releases and returns the pointer
 	virtual DataType* Release()
 	{
@@ -1287,5 +1382,76 @@ public:
 	virtual bool operator!()
 	{
 		return data == nullptr;
+	}
+};
+
+// •  A wrapper for a shared pointer that does not own the original pointer: a weak pointer.
+// •  Useful if there is a circular dependency between shared pointers to ensure memory does not persist.
+// •  Use Check() and Get() to test and receive a shared pointer of the original pointer.
+// •  Inherits from the PointerBase storage class.
+template <typename DataType> class WeakPointer : public PointerBase
+{
+protected:
+
+	// POINTER
+
+	// The stored pointer
+	Pointer<DataType>* shared = nullptr;
+
+public:
+
+	// CONSTRUCTORS AND DECONSTRUCTOR
+
+	// Default constructor
+	WeakPointer() { shared = nullptr; }
+
+	// Shared pointer constructor
+	WeakPointer(Pointer<DataType>& shared)
+	{
+		this->shared = &shared;
+	}
+
+	// Deconstructor
+	virtual ~WeakPointer() { }
+
+
+	// FUNCTIONS
+
+	// Delete cast
+	template<typename DataType> Pointer<DataType>& Get() = delete;
+
+	// Check if the shared pointer is valid
+	virtual bool Check()
+	{
+		return shared->IsNotNull();
+	}
+
+	// Receive the shared pointer
+	virtual Pointer<DataType> Get()
+	{
+		return *shared;
+	}
+
+
+	// OPERATORS
+
+	// Set the shared pointer
+	virtual WeakPointer<DataType>& operator=(Pointer<DataType>& shared)
+	{
+		this->shared = &shared;
+
+		return *this;
+	}
+
+	// Receive the shared pointer
+	virtual Pointer<DataType> operator*()
+	{
+		return *shared;
+	}
+
+	// Check if the shared pointer is valid
+	virtual operator bool()
+	{
+		return shared->IsNotNull();
 	}
 };

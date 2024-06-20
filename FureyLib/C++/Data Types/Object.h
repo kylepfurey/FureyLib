@@ -167,11 +167,23 @@ public:
 	}
 
 	// Move another object's data to this object
-	virtual object& move(object moved)
+	virtual object& move(object& moved)
 	{
 		data = moved.data;
 
 		moved.data = nullptr;
+
+		return *this;
+	}
+
+	// Swap this object's data with another object's data
+	virtual object& swap(object& swapped)
+	{
+		ptr_base* data = this->data;
+
+		this->data = swapped.data;
+
+		swapped.data = data;
 
 		return *this;
 	}
@@ -182,7 +194,7 @@ public:
 	// Returns a memberwise clone of this object
 	virtual object memberwise_clone()
 	{
-		return object(data->get<CONVERSION_TYPE>());
+		return object(*data->get<CONVERSION_TYPE>());
 	}
 
 	// Returns a reference to this object
@@ -254,12 +266,12 @@ public:
 	// Returns whether the given object pointer is equal to this object
 	virtual bool ref_equals(object* obj)
 	{
-		if (data == nullptr || obj.data == nullptr)
+		if (data == nullptr || obj->data == nullptr)
 		{
 			return false;
 		}
 
-		return data == *obj.data;
+		return data == obj->data;
 	}
 
 	// Returns whether the given pointer is equal to this object's data
@@ -276,12 +288,12 @@ public:
 	// Returns whether the given object pointers are equal
 	static bool ref_equals(object* object1, object* object2)
 	{
-		if (object1.data == nullptr || object2.data == nullptr)
+		if (object1->data == nullptr || object2->data == nullptr)
 		{
 			return false;
 		}
 
-		return object1.data == object2.data;
+		return object1->data == object2->data;
 	}
 
 	// Returns whether the given object's type is equal to this object's type
@@ -532,16 +544,6 @@ public:
 	{
 		delete this->data;
 
-		this->data = new Pointer<DataType>(new DataType(data));
-
-		return *this;
-	}
-
-	// Set the current data to the given pointer
-	template <typename DataType> Object& Set(DataType* data)
-	{
-		delete this->data;
-
 		this->data = new Pointer<DataType>(data);
 
 		return *this;
@@ -586,11 +588,23 @@ public:
 	}
 
 	// Move another object's data to this object
-	virtual Object& Move(Object moved)
+	virtual Object& Move(Object& moved)
 	{
 		data = moved.data;
 
 		moved.data = nullptr;
+
+		return *this;
+	}
+
+	// Swap this object's data with another object's data
+	virtual Object& Swap(Object& swapped)
+	{
+		PointerBase* data = this->data;
+
+		this->data = swapped.data;
+
+		swapped.data = data;
 
 		return *this;
 	}
@@ -601,7 +615,7 @@ public:
 	// Returns a memberwise clone of this object
 	virtual Object MemberwiseClone()
 	{
-		return Object(data->Get<CONVERSION_TYPE>());
+		return Object(*data->Get<CONVERSION_TYPE>());
 	}
 
 	// Returns a reference to this object
@@ -673,12 +687,12 @@ public:
 	// Returns whether the given object is equal to this object
 	virtual bool ReferenceEquals(Object* obj)
 	{
-		if (data == nullptr || obj.data == nullptr)
+		if (data == nullptr || obj->data == nullptr)
 		{
 			return false;
 		}
 
-		return *data->Get<CONVERSION_TYPE>() == *obj.data->Get<CONVERSION_TYPE>();
+		return data == obj->data;
 	}
 
 	// Returns whether the given data is equal to this object's data
@@ -695,12 +709,12 @@ public:
 	// Returns whether the given objects are equal
 	static bool ReferenceEquals(Object* object1, Object* object2)
 	{
-		if (object1.data == nullptr || object2.data == nullptr)
+		if (object1->data == nullptr || object2->data == nullptr)
 		{
 			return false;
 		}
 
-		return object1.data == object2.data;
+		return object1->data == object2->data;
 	}
 
 	// Returns whether the given object's type is equal to this object's type

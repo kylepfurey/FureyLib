@@ -10,10 +10,8 @@
 // Include this heading to use the classes
 #include "Ptr.h"
 
-// Forward declaration of pointer classes
-class ptr_base;
+// Forward declaration of the ptr class
 template <typename DataType> class ptr;
-template <typename DataType> class uptr;
 
 // •  Base class for the pointer classes.
 // •  Used as type safe storage for pointers of varying types.
@@ -209,6 +207,43 @@ public:
 		return *this;
 	}
 
+	// Swaps the pointer's data with another pointer
+	virtual ptr<DataType>& swap(DataType*& ptr)
+	{
+		if (this->data != nullptr)
+		{
+			// Decrement the pointer count
+			count[this->data]--;
+		}
+
+		DataType* data = this->data;
+
+		this->data = ptr;
+
+		ptr = data;
+
+		// Check if the data is not null
+		if (ptr != nullptr)
+		{
+			// Increment the pointer count
+			count[ptr]++;
+		}
+
+		return *this;
+	}
+
+	// Swaps the pointer's data with another pointer
+	virtual ptr<DataType>& swap(ptr<DataType>& ptr)
+	{
+		DataType* data = this->data;
+
+		this->data = ptr.data;
+
+		ptr.data = data;
+
+		return *this;
+	}
+
 	// Deletes the pointer
 	virtual ptr<DataType>& destroy()
 	{
@@ -274,6 +309,39 @@ public:
 		}
 
 		return count[ptr.data];
+	}
+
+	// Returns if the given pointer is unique
+	virtual bool is_unique()
+	{
+		if (data == nullptr)
+		{
+			return false;
+		}
+
+		return count[data] == 1;
+	}
+
+	// Returns if the given pointer is unique
+	static bool is_unique(DataType* ptr)
+	{
+		if (ptr == nullptr || !count.count(ptr))
+		{
+			return false;
+		}
+
+		return count[ptr] == 1;
+	}
+
+	// Returns if the given pointer is unique
+	static bool is_unique(ptr<DataType>& ptr)
+	{
+		if (ptr.data == nullptr || !count.count(ptr.data))
+		{
+			return false;
+		}
+
+		return count[ptr.data] == 1;
 	}
 
 
@@ -475,6 +543,30 @@ public:
 		return *this;
 	}
 
+	// Swaps the pointer's data with another pointer
+	virtual uptr<DataType>& swap(DataType*& ptr)
+	{
+		DataType* data = this->data;
+
+		this->data = ptr;
+
+		ptr = data;
+
+		return *this;
+	}
+
+	// Swaps the pointer's data with another pointer
+	virtual uptr<DataType>& swap(uptr<DataType>& ptr)
+	{
+		DataType* data = this->data;
+
+		this->data = ptr.data;
+
+		ptr.data = data;
+
+		return *this;
+	}
+
 	// Deletes the pointer
 	virtual uptr<DataType>& destroy()
 	{
@@ -558,10 +650,8 @@ public:
 	}
 };
 
-// Forward declaration of pointer classes
-class PointerBase;
+// Forward declaration of the pointer class
 template <typename DataType> class Pointer;
-template <typename DataType> class UniquePointer;
 
 // •  Base class for the pointer classes.
 // •  Used as type safe storage for pointers of varying types.
@@ -757,6 +847,43 @@ public:
 		return *this;
 	}
 
+	// Swaps the pointer's data with another pointer
+	virtual Pointer<DataType>& Swap(DataType*& ptr)
+	{
+		if (this->data != nullptr)
+		{
+			// Decrement the pointer count
+			count[this->data]--;
+		}
+
+		DataType* data = this->data;
+
+		this->data = ptr;
+
+		ptr = data;
+
+		// Check if the data is not null
+		if (ptr != nullptr)
+		{
+			// Increment the pointer count
+			count[ptr]++;
+		}
+
+		return *this;
+	}
+
+	// Swaps the pointer's data with another pointer
+	virtual Pointer<DataType>& Swap(Pointer<DataType>& ptr)
+	{
+		DataType* data = this->data;
+
+		this->data = ptr.data;
+
+		ptr.data = data;
+
+		return *this;
+	}
+
 	// Deletes the pointer
 	virtual Pointer<DataType>& Destroy()
 	{
@@ -822,6 +949,39 @@ public:
 		}
 
 		return count[ptr.data];
+	}
+
+	// Returns if the given pointer is unique
+	virtual bool IsUnique()
+	{
+		if (data == nullptr)
+		{
+			return false;
+		}
+
+		return count[data] == 1;
+	}
+
+	// Returns if the given pointer is unique
+	static bool IsUnique(DataType* ptr)
+	{
+		if (ptr == nullptr || !count.count(ptr))
+		{
+			return false;
+		}
+
+		return count[ptr] == 1;
+	}
+
+	// Returns if the given pointer is unique
+	static bool IsUnique(ptr<DataType>& ptr)
+	{
+		if (ptr.data == nullptr || !count.count(ptr.data))
+		{
+			return false;
+		}
+
+		return count[ptr.data] == 1;
 	}
 
 
@@ -1019,6 +1179,30 @@ public:
 		delete data;
 
 		data = ptr.data;
+
+		return *this;
+	}
+
+	// Swaps the pointer's data with another pointer
+	virtual UniquePointer<DataType>& Swap(DataType*& ptr)
+	{
+		DataType* data = this->data;
+
+		this->data = ptr;
+
+		ptr = data;
+
+		return *this;
+	}
+
+	// Swaps the pointer's data with another pointer
+	virtual UniquePointer<DataType>& Swap(UniquePointer<DataType>& ptr)
+	{
+		DataType* data = this->data;
+
+		this->data = ptr.data;
+
+		ptr.data = data;
 
 		return *this;
 	}

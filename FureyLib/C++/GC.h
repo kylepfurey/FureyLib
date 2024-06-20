@@ -2,12 +2,10 @@
 // Automatic Garbage Collector Script
 // by Kyle Furey
 
-// ERROR: Currently ends the program with dangling pointers.
-// CAUSE: The new keyword stores the pointer before returning it to the variable. The variable then acts as a copy of the pointer and will be left dangling when the garbage is collected.
-
 #pragma once
 #include <iostream>
 #include <vector>
+#include <memory>
 
 // Include this heading to enable safe garbage collection
 #include "GC.h"
@@ -69,6 +67,41 @@ private:
 	// All of the garbage collector's newly allocated memory using the malloc() functions.
 	std::vector<void*> cMemory = std::vector<void*>();
 
+
+	// GARBAGE COLLECTION
+
+	// •  Deletes all of the garbage collector's current memory.
+	// •  Automatically called when the garbage collector deconstructs at the end of the program.
+	// •  Returns the total number of bytes deallocated.
+	int CollectGarbage()
+	{
+		int total = 0;
+
+		for (int i = 0; i < cppMemory.size(); i++)
+		{
+			total += sizeof(cppMemory[i]);
+
+			delete cppMemory[i];
+
+			cppMemory[i] = nullptr;
+		}
+
+		cppMemory.clear();
+
+		for (int i = 0; i < cMemory.size(); i++)
+		{
+			total += sizeof(cMemory[i]);
+
+			free(cMemory[i]);
+
+			cMemory[i] = nullptr;
+		}
+
+		cMemory.clear();
+
+		return total;
+	}
+
 public:
 
 	// MEMORY ALLOCATION
@@ -109,40 +142,6 @@ public:
 
 	// MEMORY DEALLOCATION
 
-	// •  Deletes all of the garbage collector's current memory.
-	// •  Automatically called when the garbage collector deconstructs at the end of the program.
-	// •  Prints and returns the total number of bytes deallocated.
-	int CollectGarbage()
-	{
-		int total = 0;
-
-		for (int i = 0; i < cppMemory.size(); i++)
-		{
-			total += sizeof(cppMemory[i]);
-
-			delete cppMemory[i];
-
-			cppMemory[i] = nullptr;
-		}
-
-		cppMemory.clear();
-
-		for (int i = 0; i < cMemory.size(); i++)
-		{
-			total += sizeof(cMemory[i]);
-
-			free(cMemory[i]);
-
-			cMemory[i] = nullptr;
-		}
-
-		cMemory.clear();
-
-		std::cout << std::endl << "Garbage Collector successfully deallocated " << total << " total bytes of memory." << std::endl;
-
-		return total;
-	}
-
 	// •  Deallocates new memory in place of the delete keyword.
 	// •  Removes the pointer from the garbage collector's memory.
 	template <typename DataType> void DeallocateCPPMemory(DataType*& ptr)
@@ -151,7 +150,7 @@ public:
 		{
 			for (int i = 0; i < cppMemory.size(); i++)
 			{
-				if ((cppMemory[i])->Get() == ptr)
+				if (cppMemory[i]->Get<DataType>().get() == ptr)
 				{
 					delete cppMemory[i];
 
@@ -177,6 +176,8 @@ public:
 			{
 				if (cMemory[i] == ptr)
 				{
+					free(cMemory[i]);
+
 					cMemory[i] = nullptr;
 
 					cMemory.erase(cMemory.begin() + i);
@@ -184,8 +185,6 @@ public:
 					break;
 				}
 			}
-
-			free(ptr);
 
 			ptr = nullptr;
 		}
@@ -201,6 +200,8 @@ public:
 			{
 				if (cMemory[i] == ptr)
 				{
+					free(cMemory[i]);
+
 					cMemory[i] = nullptr;
 
 					cMemory.erase(cMemory.begin() + i);
@@ -208,8 +209,6 @@ public:
 					break;
 				}
 			}
-
-			free(ptr);
 
 			ptr = nullptr;
 		}
@@ -230,7 +229,9 @@ public:
 	// Deallocates the garbage collector's remaining memory when the program closes.
 	~GarbageCollector()
 	{
-		CollectGarbage();
+		int total = CollectGarbage();
+
+		std::cout << std::endl << "Garbage Collector successfully deallocated " << total << " total bytes of memory." << std::endl;
 	}
 };
 

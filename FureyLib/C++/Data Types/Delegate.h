@@ -5,7 +5,7 @@
 #pragma once
 #include <vector>
 #include <map>
-#include <functional>
+#include <algorithm>
 #include <initializer_list>
 
 // Include this heading to use the class

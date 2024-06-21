@@ -14,8 +14,8 @@ public class ClippingPlane : MonoBehaviour
 
     [Header("\nCONFIGURATION")]
 
-    [Header("Reference to the flow file:")]
-    [SerializeField] private FlowFile flowFile = null;
+    [Header("Reference to the flow file data and planes of visibility:")]
+    [SerializeField] private ParticleVisibility particleVisibility = null;
 
     [Header("The contour lines material used to represent the slice:")]
     [SerializeField] private Material material = null;
@@ -29,15 +29,10 @@ public class ClippingPlane : MonoBehaviour
     [Header("The depth of the slice of flow data to clip:")]
     public float depth = 50;
 
-    [Header("\nGRID SETTINGS")]
-
-    [Header("Optional reference to the planes of visibility:")]
-    [SerializeField] private ParticleVisibility particleVisibility = null;
+    [Header("\nHEIGHT MAP SETTINGS")]
 
     [Header("Whether to display the clipping plane's grid:")]
     public bool showPlane = true;
-
-    [Header("\nHEIGHT MAP SETTINGS")]
 
     [Header("Whether to use the density or magnetic field map as the height map's texture:")]
     public MapType calculation = MapType.Velocity;
@@ -135,7 +130,7 @@ public class ClippingPlane : MonoBehaviour
     {
         depth = Mathf.Clamp(depth, 0, ParticleVisibility.particleScale);
 
-        if (awake && flowFile != null && material != null)
+        if (awake && particleVisibility.flowFile != null && material != null)
         {
             RenderSlice(false);
         }
@@ -703,7 +698,7 @@ public class ClippingPlane : MonoBehaviour
     /// </summary>
     public Vector3[,] GetSlice()
     {
-        return slice = GetSlice(flowFile, resolution, resolution, axis, depth);
+        return slice = GetSlice(particleVisibility.flowFile, resolution, resolution, axis, depth);
     }
 
     /// <summary>
@@ -712,7 +707,7 @@ public class ClippingPlane : MonoBehaviour
     /// <returns></returns>
     public Vector3[,,] MakeSample()
     {
-        return sample = MakeSample(flowFile, 100, 100, 100);
+        return sample = MakeSample(particleVisibility.flowFile, 100, 100, 100);
     }
 
     /// <summary>
@@ -1058,6 +1053,16 @@ public class ClippingPlane : MonoBehaviour
     public void CycleMap()
     {
         SetMap((MapType)(((int)calculation + 1) % 3));
+
+        RenderSlice(false);
+    }
+
+    /// <summary>
+    /// Cycles which data field to show
+    /// </summary>
+    public void CycleFlowFile()
+    {
+        particleVisibility.CycleFlowFiles();
 
         RenderSlice(false);
     }

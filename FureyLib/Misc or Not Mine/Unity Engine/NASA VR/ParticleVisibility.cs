@@ -2,6 +2,7 @@
 // Flow Data Particles Script
 // by Kyle Furey for NASA VR Project
 
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -14,8 +15,36 @@ public class ParticleVisibility : MonoBehaviour
 
     [Header("\nDATA SETTINGS")]
 
-    [Header("The file containing the data for the particles to represent:")]
-    [SerializeField] private FlowFile flowFile;
+    [Header("The list of files containing flow data:")]
+    public List<FlowFile> flowFiles = null;
+
+    [Header("The current file containing the data for the particles to represent:")]
+    public FlowFile flowFile = null;
+
+    /// <summary>
+    /// The index of the current flow file
+    /// </summary>
+    private int index
+    {
+        get
+        {
+            return flowFiles.IndexOf(flowFile);
+        }
+
+        set
+        {
+            if (index >= 0 && index < flowFiles.Count && flowFiles[value] != null)
+            {
+                index = value;
+
+                flowFile = flowFiles[index];
+            }
+            else
+            {
+                index = index;
+            }
+        }
+    }
 
     [Header("Whether the bounds and origin for the particle system are static and do not change:")]
     public bool boundsAreStatic = true;
@@ -58,7 +87,7 @@ public class ParticleVisibility : MonoBehaviour
     private BoxCollider collider = null;
 
     /// <summary>
-    /// Storage of the plane counts to check if they need to be updated:
+    /// Storage of the plane counts to check if they need to be updated
     /// </summary>
     private Vector2Int[] planeCounts = new Vector2Int[3];
 
@@ -75,6 +104,17 @@ public class ParticleVisibility : MonoBehaviour
     /// </summary>
     private void Awake()
     {
+        // Set the current flow file
+        if (flowFile == null)
+        {
+            flowFile = flowFiles[0];
+
+            if (flowFiles == null || flowFiles.Count == 0)
+            {
+                Debug.LogError("ERROR: No flow files have been assigned!");
+            }
+        }
+
         // Clamp the bounds
         particleBounds.x = Mathf.Clamp(particleBounds.x, 0, 1);
         particleBounds.y = Mathf.Clamp(particleBounds.y, 0, 1);
@@ -335,5 +375,21 @@ public class ParticleVisibility : MonoBehaviour
     {
         particleBounds = bounds;
         particleOrigin = origin;
+    }
+
+    /// <summary>
+    /// Updates the flow file
+    /// </summary>
+    public void SetFlowFile(int index)
+    {
+        this.index = index;
+    }
+
+    /// <summary>
+    /// Cycles the flow file
+    /// </summary>
+    public void CycleFlowFiles(int cycles = 1)
+    {
+        index = (index + cycles) % flowFiles.Count;
     }
 }

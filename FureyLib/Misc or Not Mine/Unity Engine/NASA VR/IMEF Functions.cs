@@ -400,6 +400,7 @@ public static class IMEF
             var ER = CorotationEField(r, false);
 
             // Compute total E-field and covert to [V/m]
+            // var E0 = (EC + ER) * 1e-3f;
             var E0 = zero;
 
             // c0, ax, bx - arbitrary; to break down equation
@@ -876,6 +877,7 @@ public static class imef
             var ER = corotation_efield(r, false);
 
             // Compute total E-field and covert to [V/m]
+            // var E0 = (EC + ER) * 1e-3f;
             var E0 = zero;
 
             // c0, ax, bx - arbitrary; to break down equation

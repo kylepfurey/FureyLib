@@ -4,6 +4,9 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Mathf;
+using static UnityEngine.Vector3;
+using static IMEF;
 
 /// <summary>
 /// Movable rigidbody that is affected by particle field data.
@@ -13,12 +16,14 @@ public class FlowParticle : MonoBehaviour
     [Header("Movable rigidbody that is affected by particle field data.")]
 
     [Header("\nVelocity Settings")]
-    [SerializeField] private float velocitySpeed = 0.25f;
+    [SerializeField] private float velocitySpeed = 1;
     [SerializeField] private float velocityLerp = 0.25f;
 
     [Header("Particle Settings")]
-    public float particleCharge = 1;
-    public bool likeOceanCurrent = false;
+    public float q = 1;
+    public float gs = 1;
+    public float kp = 1;
+    public bool flowLikeOceanCurrent = false;
 
     [Header("Optimization")]
     [SerializeField] private float maxDistance = 50;
@@ -54,48 +59,38 @@ public class FlowParticle : MonoBehaviour
     /// </summary>
     private bool gravitySetting = false;
 
-    /// <summary>
-    /// The total elapsed time this particle has been active in the data field
-    /// </summary>
-    private float elapsedTime = 0;
-
-    /// <summary>
-    /// The starting position when entering a field
-    /// </summary>
-    private Vector3 startPosition = Vector3.zero;
-
-    /// <summary>
-    /// The starting position when entering a field
-    /// </summary>
-    private Vector3 startVelocity = Vector3.zero;
-
 
     // STATIC VARIABLES
 
     /// <summary>
+    /// The unmodified velocity of the boris function
+    /// </summary>
+    public static Vector3 borisVelocity = zero;
+
+    /// <summary>
     /// Position of particle in the flow data
     /// </summary>
-    public static Vector3 position = Vector3.zero;
+    public static Vector3 position = zero;
 
     /// <summary>
     /// Velocity of particle in the flow data
     /// </summary>
-    public static Vector3 velocity = Vector3.zero;
+    public static Vector3 velocity = zero;
 
     /// <summary>
     /// Density of particle in the flow data
     /// </summary>
-    public static Vector3 density = Vector3.zero;
+    public static Vector3 density = zero;
 
     /// <summary>
     /// Direction of particle in the flow data
     /// </summary>
-    public static Vector3 direction = Vector3.zero;
+    public static Vector3 direction = zero;
 
     /// <summary>
     /// Magnetic field of particle in the flow data
     /// </summary>
-    public static Vector3 magnetic = Vector3.zero;
+    public static Vector3 magnetic = zero;
 
 
     // FUNCTIONS
@@ -136,12 +131,6 @@ public class FlowParticle : MonoBehaviour
             // Destroy this object
             Destroy(gameObject);
         }
-
-        // Increment elapsed time
-        if (flowData != null)
-        {
-            elapsedTime += Time.deltaTime;
-        }
     }
 
     /// <summary>
@@ -172,10 +161,8 @@ public class FlowParticle : MonoBehaviour
 
                 rigidbody.useGravity = false;
 
-                // Set starting variables
-                startPosition = GetRelativeToBounds(transform.position);
-
-                startVelocity = rigidbody.velocity;
+                // Reset boris velocity
+                borisVelocity = zero;
             }
         }
     }
@@ -200,14 +187,6 @@ public class FlowParticle : MonoBehaviour
 
             // Reset the gravity setting
             rigidbody.useGravity = gravitySetting;
-
-            // Reset elapsed time
-            elapsedTime = 0;
-
-            // Set starting variables
-            startPosition = Vector3.zero;
-
-            startVelocity = Vector3.zero;
         }
     }
 
@@ -220,17 +199,13 @@ public class FlowParticle : MonoBehaviour
         if (flowData != null)
         {
             // Update the particle velocity
-            if (likeOceanCurrent)
+            if (flowLikeOceanCurrent)
             {
-                rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, TranslateRelative(flowDataScaleParent.transform, flowFile.Sample(GetRelativeToBounds(transform.position)) * velocitySpeed) - flowDataScaleParent.transform.position, velocityLerp);
+                rigidbody.velocity = Lerp(rigidbody.velocity, TranslateRelative(flowDataScaleParent.transform, flowFile.Sample(GetRelativeToBounds(transform.position)) * velocitySpeed / 4) - flowDataScaleParent.transform.position, velocityLerp);
             }
             else
             {
-                // OVERFLOW
-
-                var velocity = IMEF.Boris(elapsedTime, startPosition, startVelocity, rigidbody.mass, particleCharge, 1, 1);
-
-                rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, velocity.vdat[velocity.vdat.Length - 1], velocityLerp);
+                rigidbody.velocity = Lerp(rigidbody.velocity, TranslateRelative(flowDataScaleParent.transform, BorisStep(GetRelativeToBounds(transform.position), borisVelocity) * velocitySpeed * 100) - flowDataScaleParent.transform.position, velocityLerp);
             }
 
             // Update the static variables
@@ -268,6 +243,65 @@ public class FlowParticle : MonoBehaviour
         position.z /= flowDataScaleParent.transform.localScale.z;
 
         return position * ParticleVisibility.particleScale;
+    }
+
+    /// <summary>
+    /// Calculates the next velocity value using a modified version of the IMEF.Boris() function
+    /// </summary>
+    public Vector3 BorisStep(Vector3 r0, Vector3 v0)
+    {
+        var RE = 6371000;
+        RE = 1;
+
+        // Calculate stepsize (dt) to be no bigger than half the gyroperiod
+        var gyroperiod = (2 * PI) / ((Abs(q) * Mag(BDipole(r0 * RE))) / rigidbody.mass);
+        var dt = 0.01f * gyroperiod;
+
+        Vector3 rdat;
+        Vector3 vdat;
+
+        // Set initial conditions
+        var rnew = r0;
+        var vnew = v0;
+
+        // Set current position and velocity (cartesian coords)
+        var r = rnew; // rdat[i]
+        var v = vnew; // vdat[i]
+
+        // Compute B-field [T]
+        var B0 = BDipole(r * RE, false);
+
+        // Compute convection E-field [mV/m]
+        var EC = VSEField(r, gs, kp, false);
+
+        // Compute corotation E-field [mV/m]
+        var ER = CorotationEField(r, false);
+
+        // Compute total E-field and covert to [V/m]
+        var E0 = (EC + ER) * 1e-3f;
+        // var E0 = zero;
+
+        // c0, ax, bx - arbitrary; to break down equation
+        var c0 = (dt * q * B0) / (2 * rigidbody.mass);
+
+        // Push step 1 - update velocity with half electrostatic contribution
+        var v1 = v + ((q * E0 * dt) / (2 * rigidbody.mass));
+
+        // Push step 2 - rotated via the magnetic field contribution
+        var ax = v1 + (Cross(v1, c0));
+        // var bx = (2 * c0) / (1 + (n * Pow(c0, 2))); POWER OF c0
+        var bx = (2 * c0) / (1 + (Dot(c0, c0)));
+        var v2 = v1 + (Cross(ax, bx));
+
+        // Push step 3 - updated again with another half of the electrostatic push [m/s]
+        vnew = v2 + ((q * E0 * dt) / (2 * rigidbody.mass));
+
+        // Append to data arrays
+        vdat = vnew;             // Velcoity [m/s]
+
+        borisVelocity = vdat;
+
+        return vdat;
     }
 
     /// <summary>

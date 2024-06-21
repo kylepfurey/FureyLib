@@ -39,14 +39,11 @@ public class ClippingPlane : MonoBehaviour
 
     [Header("\nHEIGHT MAP SETTINGS")]
 
-    [Header("Whether to use the density map as the height map's texture:")]
-    public bool useDensity = false;
+    [Header("Whether to use the density or magnetic field map as the height map's texture:")]
+    public MapType calculation = MapType.Velocity;
 
-    [Header("Whether to make the density map black and white:")]
-    public bool blackAndWhiteDensity = false;
-
-    [Header("Scalar value used to represent the distance to earth in kilometers:")]
-    public float distanceToEarth = 1;
+    [Header("Whether to make the map black and white:")]
+    public bool blackAndWhite = false;
 
     [Header("The number of planes generated to display the flow data with:")]
     public int planeCount = 500;
@@ -89,14 +86,9 @@ public class ClippingPlane : MonoBehaviour
     public Vector3[,,] sample = null;
 
     /// <summary>
-    /// The stored texture that represents the clipped plane's positional values
-    /// </summary>
-    private Texture2D height = null;
-
-    /// <summary>
     /// The stored texture that represents the clipped plane's density values
     /// </summary>
-    private Texture2D density = null;
+    private Texture2D map = null;
 
     /// <summary>
     /// The starting position of the height map generator
@@ -109,9 +101,14 @@ public class ClippingPlane : MonoBehaviour
     private Vector3 startRotation = Vector3.zero;
 
     /// <summary>
+    /// Map type enum
+    /// </summary>
+    public enum MapType { Velocity, Density, MagneticField };
+
+    /// <summary>
     /// Color mode enum
     /// </summary>
-    public enum ColorMode { Default, Normal, Overlay, Multiply, Fill, BlackAndWhite, Density };
+    public enum ColorMode { Default, Normal, Overlay, Multiply, Fill, BlackAndWhite };
 
     /// <summary>
     /// Direction enum
@@ -191,114 +188,107 @@ public class ClippingPlane : MonoBehaviour
     {
         GetSlice();
 
-        if (height != null)
+        if (map != null)
         {
-            height.Reinitialize(resolution, resolution);
+            map.Reinitialize(resolution, resolution);
         }
         else
         {
-            height = new Texture2D(resolution, resolution);
+            map = new Texture2D(resolution, resolution);
         }
 
         for (int y = 0; y < resolution; y++)
         {
             for (int x = 0; x < resolution; x++)
             {
-                height.SetPixel(x, y, new Color(slice[x, y].normalized.x, slice[x, y].normalized.y, slice[x, y].normalized.z, 1));
-            }
-        }
+                Vector3 J = new Vector3();
 
-        height.Apply();
+                float average;
 
-        if (density != null)
-        {
-            density.Reinitialize(resolution, resolution);
-        }
-        else
-        {
-            density = new Texture2D(resolution, resolution);
-        }
+                switch (calculation)
+                {
+                    case MapType.Velocity:
 
-        for (int y = 0; y < resolution; y++)
-        {
-            for (int x = 0; x < resolution; x++)
-            {
-                /*
-                DENSITY EQUATION
+                        J = slice[x, y].normalized;
 
-                The current density, J, can be calculated from the magnetic field, B.
+                        break;
 
-                •	We know Bi = (Bxi, Byi, Bzi) at point xi = (xi, yi, zi), where i is a grid cell.
+                    case MapType.Density:
 
-                •	The current density Ji = (Jxi, Jyi, Jzi) at cell i can be calculated as:
+                        /*
+                        DENSITY EQUATION
 
-                    •	mu0 = 1.25663706 × 10-6
+                        The current density, J, can be calculated from the magnetic field, B.
 
-                    •	Jxi = 1e-6 * mu0 * { [Bz(i+1) - Bz(i-1)] / [y(i+1) - y(i-1)] - [By(i+1) - By(i-1)] / [z(i+1) - z(i-1)] }
+                        •	We know Bi = (Bxi, Byi, Bzi) at point xi = (xi, yi, zi), where i is a grid cell.
 
-                    •	Jyi = 1e-6 * mu0 * { [Bx(i+1) - Bx(i-1)] / [z(i+1) - z(i-1)] - [Bz(i+1) - Bz(i-1)] / [x(i+1) - x(i-1)] }
+                        •	The current density Ji = (Jxi, Jyi, Jzi) at cell i can be calculated as:
 
-                    •	Jzi = 1e-6 * mu0 * { [By(i+1) - By(i-1)] / [x(i+1) - x(i-1)] - [Bx(i+1) - Bx(i-1)] / [y(i+1) - y(i-1)] }
-                */
+                            •	mu0 = 1.25663706 × 10-6
 
-                Vector3 J;
+                            •	Jxi = 1e-6 * mu0 * { [Bz(i+1) - Bz(i-1)] / [y(i+1) - y(i-1)] - [By(i+1) - By(i-1)] / [z(i+1) - z(i-1)] }
 
-                J.x = (float)
-                      (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
-                      /
-                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y) * distanceToEarth)
-                      -
-                      (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
-                      /
-                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z) * distanceToEarth));
+                            •	Jyi = 1e-6 * mu0 * { [Bx(i+1) - Bx(i-1)] / [z(i+1) - z(i-1)] - [Bz(i+1) - Bz(i-1)] / [x(i+1) - x(i-1)] }
 
-                J.y = (float)
-                      (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
-                      /
-                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z) * distanceToEarth)
-                      -
-                      (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
-                      /
-                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x) * distanceToEarth));
+                            •	Jzi = 1e-6 * mu0 * { [By(i+1) - By(i-1)] / [x(i+1) - x(i-1)] - [Bx(i+1) - Bx(i-1)] / [y(i+1) - y(i-1)] }
+                        */
 
-                J.z = (float)
-                      (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
-                      /
-                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x) * distanceToEarth)
-                      -
-                      (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
-                      /
-                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y) * distanceToEarth));
+                        J.x = (float)
+                              (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
+                              /
+                              ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y))
+                              -
+                              (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
+                              /
+                              ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z)));
 
-                J = J.normalized;
+                        J.y = (float)
+                              (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
+                              /
+                              ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z))
+                              -
+                              (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
+                              /
+                              ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x)));
 
-                float average = (J.x + J.y + J.z) / 3;
+                        J.z = (float)
+                              (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
+                              /
+                              ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x))
+                              -
+                              (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
+                              /
+                              ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y)));
 
-                J = new Vector3(average * J.x, average * J.y, average * J.z);
+                        J = J.normalized;
 
-                if (blackAndWhiteDensity)
+                        average = (J.x + J.y + J.z) / 3;
+
+                        J = new Vector3(average * J.x, average * J.y, average * J.z);
+
+                        break;
+
+                    case MapType.MagneticField:
+
+                        J = IMEF.BDipole(GetSample(x, y, (int)depth)).normalized;
+
+                        break;
+                }
+
+                if (blackAndWhite)
                 {
                     average = (J.x + J.y + J.z) / 3;
 
                     J = new Vector3(average, average, average);
                 }
 
-                density.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
+                map.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
             }
         }
 
-        density.Apply();
+        map.Apply();
 
-        if (useDensity)
-        {
-            material.SetTexture("_Height", density);
-            material.SetTexture("_Density", density);
-        }
-        else
-        {
-            material.SetTexture("_Height", height);
-            material.SetTexture("_Density", density);
-        }
+        material.SetTexture("_Map", map);
 
         UpdateColor();
 
@@ -318,114 +308,107 @@ public class ClippingPlane : MonoBehaviour
     {
         GetSlice();
 
-        if (height != null)
+        if (map != null)
         {
-            height.Reinitialize(resolution, resolution);
+            map.Reinitialize(resolution, resolution);
         }
         else
         {
-            height = new Texture2D(resolution, resolution);
+            map = new Texture2D(resolution, resolution);
         }
 
         for (int y = 0; y < resolution; y++)
         {
             for (int x = 0; x < resolution; x++)
             {
-                height.SetPixel(x, y, new Color(slice[x, y].normalized.x, slice[x, y].normalized.y, slice[x, y].normalized.z, 1));
-            }
-        }
+                Vector3 J = new Vector3();
 
-        height.Apply();
+                float average = 0;
 
-        if (density != null)
-        {
-            density.Reinitialize(resolution, resolution);
-        }
-        else
-        {
-            density = new Texture2D(resolution, resolution);
-        }
+                switch (calculation)
+                {
+                    case MapType.Velocity:
 
-        for (int y = 0; y < resolution; y++)
-        {
-            for (int x = 0; x < resolution; x++)
-            {
-                /*
-                DENSITY EQUATION
+                        J = slice[x, y].normalized;
 
-                The current density, J, can be calculated from the magnetic field, B.
+                        break;
 
-                •	We know Bi = (Bxi, Byi, Bzi) at point xi = (xi, yi, zi), where i is a grid cell.
+                    case MapType.Density:
 
-                •	The current density Ji = (Jxi, Jyi, Jzi) at cell i can be calculated as:
+                        /*
+                        DENSITY EQUATION
 
-                    •	mu0 = 1.25663706 × 10-6
+                        The current density, J, can be calculated from the magnetic field, B.
 
-                    •	Jxi = 1e-6 * mu0 * { [Bz(i+1) - Bz(i-1)] / [y(i+1) - y(i-1)] - [By(i+1) - By(i-1)] / [z(i+1) - z(i-1)] }
+                        •	We know Bi = (Bxi, Byi, Bzi) at point xi = (xi, yi, zi), where i is a grid cell.
 
-                    •	Jyi = 1e-6 * mu0 * { [Bx(i+1) - Bx(i-1)] / [z(i+1) - z(i-1)] - [Bz(i+1) - Bz(i-1)] / [x(i+1) - x(i-1)] }
+                        •	The current density Ji = (Jxi, Jyi, Jzi) at cell i can be calculated as:
 
-                    •	Jzi = 1e-6 * mu0 * { [By(i+1) - By(i-1)] / [x(i+1) - x(i-1)] - [Bx(i+1) - Bx(i-1)] / [y(i+1) - y(i-1)] }
-                */
+                            •	mu0 = 1.25663706 × 10-6
 
-                Vector3 J;
+                            •	Jxi = 1e-6 * mu0 * { [Bz(i+1) - Bz(i-1)] / [y(i+1) - y(i-1)] - [By(i+1) - By(i-1)] / [z(i+1) - z(i-1)] }
 
-                J.x = (float)
-                      (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
-                      /
-                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y) * distanceToEarth)
-                      -
-                      (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
-                      /
-                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z) * distanceToEarth));
+                            •	Jyi = 1e-6 * mu0 * { [Bx(i+1) - Bx(i-1)] / [z(i+1) - z(i-1)] - [Bz(i+1) - Bz(i-1)] / [x(i+1) - x(i-1)] }
 
-                J.y = (float)
-                      (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
-                      /
-                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z) * distanceToEarth)
-                      -
-                      (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
-                      /
-                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x) * distanceToEarth));
+                            •	Jzi = 1e-6 * mu0 * { [By(i+1) - By(i-1)] / [x(i+1) - x(i-1)] - [Bx(i+1) - Bx(i-1)] / [y(i+1) - y(i-1)] }
+                        */
 
-                J.z = (float)
-                      (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
-                      /
-                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x) * distanceToEarth)
-                      -
-                      (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
-                      /
-                      ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y) * distanceToEarth));
+                        J.x = (float)
+                              (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
+                              /
+                              ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y))
+                              -
+                              (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
+                              /
+                              ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z)));
 
-                J = J.normalized;
+                        J.y = (float)
+                              (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
+                              /
+                              ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).z - OrientPoint(x - 1, y - 1, (int)(depth - 1)).z))
+                              -
+                              (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
+                              /
+                              ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x)));
 
-                float average = (J.x + J.y + J.z) / 3;
+                        J.z = (float)
+                              (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).y - GetSample(x - 1, y - 1, (int)(depth - 1)).y)
+                              /
+                              ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).x - OrientPoint(x - 1, y - 1, (int)(depth - 1)).x))
+                              -
+                              (GetSample(x + 1, y + 1, (int)(depth + 1)).x - GetSample(x - 1, y - 1, (int)(depth - 1)).x)
+                              /
+                              ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y)));
 
-                J = new Vector3(average * J.x, average * J.y, average * J.z);
+                        J = J.normalized;
 
-                if (blackAndWhiteDensity)
+                        average = (J.x + J.y + J.z) / 3;
+
+                        J = new Vector3(average * J.x, average * J.y, average * J.z);
+
+                        break;
+
+                    case MapType.MagneticField:
+
+                        J = IMEF.BDipole(GetSample(x, y, (int)depth)).normalized;
+
+                        break;
+                }
+
+                if (blackAndWhite)
                 {
                     average = (J.x + J.y + J.z) / 3;
 
                     J = new Vector3(average, average, average);
                 }
 
-                density.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
+                map.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
             }
         }
 
-        density.Apply();
+        map.Apply();
 
-        if (useDensity)
-        {
-            material.SetTexture("_Height", density);
-            material.SetTexture("_Density", density);
-        }
-        else
-        {
-            material.SetTexture("_Height", height);
-            material.SetTexture("_Density", density);
-        }
+        material.SetTexture("_Map", map);
 
         UpdateColor();
 
@@ -449,7 +432,6 @@ public class ClippingPlane : MonoBehaviour
         material.DisableKeyword(new LocalKeyword(material.shader, "_COLOR_MODE_MULTIPLY"));
         material.DisableKeyword(new LocalKeyword(material.shader, "_COLOR_MODE_FILL"));
         material.DisableKeyword(new LocalKeyword(material.shader, "_COLOR_MODE_BLACK_AND_WHITE"));
-        material.DisableKeyword(new LocalKeyword(material.shader, "_COLOR_MODE_DENSITY"));
 
         switch (colorMode)
         {
@@ -486,12 +468,6 @@ public class ClippingPlane : MonoBehaviour
             case ColorMode.BlackAndWhite:
 
                 material.SetKeyword(new LocalKeyword(material.shader, "_COLOR_MODE_BLACK_AND_WHITE"), true);
-
-                return;
-
-            case ColorMode.Density:
-
-                material.SetKeyword(new LocalKeyword(material.shader, "_COLOR_MODE_DENSITY"), true);
 
                 return;
         }
@@ -1018,5 +994,71 @@ public class ClippingPlane : MonoBehaviour
     public void SetPadding(float padding)
     {
         this.padding = padding;
+    }
+
+    /// <summary>
+    /// Updates the padding of the shader
+    /// </summary>
+    public void SetMap(MapType calculation)
+    {
+        this.calculation = calculation;
+    }
+
+
+    // UX FUNCTIONS
+
+    [Header("The lever that provides control over the clipping plane:")]
+    [SerializeField] private LeverVR controlLever = null;
+
+    /// <summary>
+    /// Increments depth by the given speed and lever's percentage
+    /// </summary>
+    /// <param name="speed"></param>
+    public void MoveDepthForward(float speed = 20)
+    {
+        SetDepth(depth + speed * Time.deltaTime * controlLever.GetLeverAxis(LeverVR.Direction2D.Backward));
+
+        RenderSlice(false);
+    }
+
+    /// <summary>
+    /// Decrements depth by the given speed and lever's percentage
+    /// </summary>
+    /// <param name="speed"></param>
+    public void MoveDepthBackward(float speed = 20)
+    {
+        SetDepth(depth - speed * Time.deltaTime * controlLever.GetLeverAxis(LeverVR.Direction2D.Backward));
+
+        RenderSlice(false);
+    }
+
+    /// <summary>
+    /// Cycles the current axis direction
+    /// </summary>
+    public void CycleAxis()
+    {
+        SetAxis((ParticleVisibility.Axis)(((int)axis + 1) % 3), direction);
+
+        RenderSlice(false);
+    }
+
+    /// <summary>
+    /// Toggles the clipping plane
+    /// </summary>
+    public void TogglePlane()
+    {
+        ShowPlane(!showPlane);
+
+        RenderSlice(false);
+    }
+
+    /// <summary>
+    /// Cycles which map to show
+    /// </summary>
+    public void CycleMap()
+    {
+        SetMap((MapType)(((int)calculation + 1) % 3));
+
+        RenderSlice(false);
     }
 }

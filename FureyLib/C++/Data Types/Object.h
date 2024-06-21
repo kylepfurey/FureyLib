@@ -18,12 +18,7 @@
 
 // •  Object class that functions as a universal container which can hold and return data of any type.
 // •  Inherit from the object class to share common methods and storage between different types.
-// •  Preserves type safety of the data it is holding.
-#define object object
-
-// •  Object class that functions as a universal container which can hold and return data of any type.
-// •  Inherit from the object class to share common methods and storage between different types.
-// •  Preserves type safety of the data it is holding.
+// •  Preserves type safety of the data it is holding. Cannot safely store array pointers without a wrapper class.
 class object
 {
 private:
@@ -46,7 +41,7 @@ public:
 	// Copy constructor
 	object(const object& copied)
 	{
-		data = new ptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->get<CONVERSION_TYPE>()));
+		data = new sptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->get<CONVERSION_TYPE>()));
 	}
 
 	// Move constructor
@@ -60,13 +55,13 @@ public:
 	// Data constructor
 	template <typename DataType> object(DataType data)
 	{
-		this->data = new ptr<DataType>(new DataType(data));
+		this->data = new sptr<DataType>(new DataType(data));
 	}
 
 	// Pointer constructor
 	template <typename DataType> object(DataType* data)
 	{
-		this->data = new ptr<DataType>(data);
+		this->data = new sptr<DataType>(data);
 	}
 
 	// Deconstructor
@@ -103,7 +98,7 @@ public:
 	{
 		delete data;
 
-		data = new ptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*obj.data->get<CONVERSION_TYPE>()));
+		data = new sptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*obj.data->get<CONVERSION_TYPE>()));
 
 		return *this;
 	}
@@ -113,7 +108,7 @@ public:
 	{
 		delete this->data;
 
-		this->data = new ptr<DataType>(new DataType(data));
+		this->data = new sptr<DataType>(new DataType(data));
 
 		return *this;
 	}
@@ -123,7 +118,7 @@ public:
 	{
 		delete this->data;
 
-		this->data = new ptr<DataType>(data);
+		this->data = new sptr<DataType>(data);
 
 		return *this;
 	}
@@ -151,7 +146,7 @@ public:
 	{
 		delete data;
 
-		data = new ptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->get<CONVERSION_TYPE>()));
+		data = new sptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->get<CONVERSION_TYPE>()));
 
 		return *this;
 	}
@@ -161,7 +156,7 @@ public:
 	{
 		delete data;
 
-		data = new ptr<DataType>(new DataType(*copied.data->get<DataType>()));
+		data = new sptr<DataType>(new DataType(*copied.data->get<DataType>()));
 
 		return *this;
 	}
@@ -349,7 +344,7 @@ public:
 	{
 		delete data;
 
-		data = new ptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->get<CONVERSION_TYPE>()));
+		data = new sptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->get<CONVERSION_TYPE>()));
 
 		return *this;
 	}
@@ -369,7 +364,7 @@ public:
 	{
 		delete this->data;
 
-		this->data = new ptr<DataType>(new DataType(data));
+		this->data = new sptr<DataType>(new DataType(data));
 
 		return *this;
 	}
@@ -379,7 +374,7 @@ public:
 	{
 		delete this->data;
 
-		this->data = new ptr<DataType>(data);
+		this->data = new sptr<DataType>(data);
 
 		return *this;
 	}
@@ -439,12 +434,7 @@ public:
 
 // •  Object class that functions as a universal container which can hold and return data of any type.
 // •  Inherit from the Object class to share common methods and storage between different types.
-// •  Preserves type safety of the data it is holding.
-#define Object Object
-
-// •  Object class that functions as a universal container which can hold and return data of any type.
-// •  Inherit from the Object class to share common methods and storage between different types.
-// •  Preserves type safety of the data it is holding.
+// •  Preserves type safety of the data it is holding. Cannot safely store array pointers without a wrapper class.
 class Object
 {
 private:
@@ -467,7 +457,7 @@ public:
 	// Copy constructor
 	Object(const Object& copied)
 	{
-		data = new Pointer<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->Get<CONVERSION_TYPE>()));
+		data = new SharedPointer<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->Get<CONVERSION_TYPE>()));
 	}
 
 	// Move constructor
@@ -481,13 +471,13 @@ public:
 	// Data constructor
 	template <typename DataType> Object(DataType data)
 	{
-		this->data = new Pointer<DataType>(new DataType(data));
+		this->data = new SharedPointer<DataType>(new DataType(data));
 	}
 
 	// Data constructor
 	template <typename DataType> Object(DataType* data)
 	{
-		this->data = new Pointer<DataType>(data);
+		this->data = new SharedPointer<DataType>(data);
 	}
 
 	// Deconstructor
@@ -524,7 +514,7 @@ public:
 	{
 		delete data;
 
-		data = new Pointer<CONVERSION_TYPE>(new CONVERSION_TYPE(*obj.data->Get<CONVERSION_TYPE>()));
+		data = new SharedPointer<CONVERSION_TYPE>(new CONVERSION_TYPE(*obj.data->Get<CONVERSION_TYPE>()));
 
 		return *this;
 	}
@@ -534,7 +524,7 @@ public:
 	{
 		delete this->data;
 
-		this->data = new Pointer<DataType>(new DataType(data));
+		this->data = new SharedPointer<DataType>(new DataType(data));
 
 		return *this;
 	}
@@ -544,7 +534,7 @@ public:
 	{
 		delete this->data;
 
-		this->data = new Pointer<DataType>(data);
+		this->data = new SharedPointer<DataType>(data);
 
 		return *this;
 	}
@@ -572,7 +562,7 @@ public:
 	{
 		delete data;
 
-		data = new Pointer<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->Get<CONVERSION_TYPE>()));
+		data = new SharedPointer<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->Get<CONVERSION_TYPE>()));
 
 		return *this;
 	}
@@ -582,7 +572,7 @@ public:
 	{
 		delete data;
 
-		data = new Pointer<DataType>(new DataType(*copied.data->Get<DataType>()));
+		data = new SharedPointer<DataType>(new DataType(*copied.data->Get<DataType>()));
 
 		return *this;
 	}
@@ -770,7 +760,7 @@ public:
 	{
 		delete data;
 
-		data = new Pointer<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->Get<CONVERSION_TYPE>()));
+		data = new SharedPointer<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->Get<CONVERSION_TYPE>()));
 
 		return *this;
 	}
@@ -790,7 +780,7 @@ public:
 	{
 		delete this->data;
 
-		this->data = new Pointer<DataType>(new DataType(data));
+		this->data = new SharedPointer<DataType>(new DataType(data));
 
 		return *this;
 	}
@@ -800,7 +790,7 @@ public:
 	{
 		delete this->data;
 
-		this->data = new Pointer<DataType>(data);
+		this->data = new SharedPointer<DataType>(data);
 
 		return *this;
 	}
@@ -857,6 +847,26 @@ public:
 		return data == nullptr;
 	}
 };
+
+// •  Object class that functions as a universal container which can hold and return data of any type.
+// •  Inherit from the object class to share common methods and storage between different types.
+// •  Preserves type safety of the data it is holding. Cannot safely store array pointers without a wrapper class.
+#define object object
+
+// •  Object class that functions as a universal container which can hold and return data of any type.
+// •  Inherit from the object class to share common methods and storage between different types.
+// •  Preserves type safety of the data it is holding. Cannot safely store array pointers without a wrapper class.
+#define obj object
+
+// •  Object class that functions as a universal container which can hold and return data of any type.
+// •  Inherit from the Object class to share common methods and storage between different types.
+// •  Preserves type safety of the data it is holding. Cannot safely store array pointers without a wrapper class.
+#define Object Object
+
+// •  Object class that functions as a universal container which can hold and return data of any type.
+// •  Inherit from the Object class to share common methods and storage between different types.
+// •  Preserves type safety of the data it is holding. Cannot safely store array pointers without a wrapper class.
+#define Obj Object
 
 // The state of when an object or pointer has no memory allocated.
 #define null nullptr

@@ -15,7 +15,7 @@ template <typename DataType> class sptr;
 
 // •  Base class for the smart pointer classes.
 // •  Used as type safe storage for pointers of varying types.
-// •  Provides a virtual destructor for the pointer classes to properly destroy its pointer regardless of their type.
+// •  Provides a virtual deconstructor for the pointer classes to properly destroy its pointer regardless of their type.
 class ptr_base
 {
 public:
@@ -2082,7 +2082,7 @@ template <typename DataType> class SharedPointer;
 
 // •  Base class for the smart pointer classes.
 // •  Used as type safe storage for pointers of varying types.
-// •  Provides a virtual destructor for the pointer classes to properly destroy its pointer regardless of their type.
+// •  Provides a virtual deconstructor for the pointer classes to properly destroy its pointer regardless of their type.
 class PointerBase
 {
 public:

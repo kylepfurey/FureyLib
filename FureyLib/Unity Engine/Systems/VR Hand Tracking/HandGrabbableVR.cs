@@ -2,6 +2,8 @@
 // VR Grabbable Object Script
 // by Kyle Furey
 
+// REQUIREMENTS: HandTrackerVR.cs
+
 using System.Collections.Generic;
 using UnityEngine;
 

@@ -2,6 +2,8 @@
 // VR Movable Lever Script
 // by Kyle Furey
 
+// REQUIREMENTS: HandTrackerVR.cs, HandGrabbableVR.cs
+
 using UnityEngine;
 using UnityEngine.Events;
 

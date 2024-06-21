@@ -2,6 +2,8 @@
 // VR Hand Interactable Object Template Script
 // by Kyle Furey
 
+// REQUIREMENTS: HandTrackerVR.cs
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

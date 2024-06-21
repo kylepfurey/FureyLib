@@ -2,6 +2,8 @@
 // VR Jetpack Locomotion Script
 // by Kyle Furey
 
+// REQUIREMENTS: HandTrackerVR.cs, HandGrabbableVR.cs
+
 using UnityEngine;
 
 /// <summary>

@@ -2,6 +2,8 @@
 // VR Finger Snap Event Script
 // by Kyle Furey
 
+// REQUIREMENTS: HandTrackerVR.cs
+
 using UnityEngine;
 using UnityEngine.Events;
 

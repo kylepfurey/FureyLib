@@ -2,6 +2,8 @@
 // VR Hand Pointer and Teleportation Script
 // by Kyle Furey
 
+// REQUIREMENTS: HandTrackerVR.cs
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

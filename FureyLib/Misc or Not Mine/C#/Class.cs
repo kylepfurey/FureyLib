@@ -37,14 +37,6 @@ public class Class
 
     // New constructors here
 
-    /// <summary>
-    /// Deconstructor
-    /// </summary>
-    ~Class()
-    {
-
-    }
-
 
     // FUNCTIONS
 

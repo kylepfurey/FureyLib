@@ -39,14 +39,6 @@ public partial class NewGodotScript : Node
 
     // New constructors here
 
-    /// <summary>
-    /// Deconstructor
-    /// </summary>
-    ~NewGodotScript()
-    {
-
-    }
-
 
     // FUNCTIONS
 

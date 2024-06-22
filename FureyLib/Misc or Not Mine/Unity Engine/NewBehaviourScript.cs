@@ -44,14 +44,6 @@ public class NewBehaviourScript : MonoBehaviour
 
     // New constructors here
 
-    /// <summary>
-    /// Deconstructor
-    /// </summary>
-    ~NewBehaviourScript()
-    {
-
-    }
-
 
     // FUNCTIONS
 

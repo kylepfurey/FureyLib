@@ -45,14 +45,6 @@ public class NewScriptableObject : ScriptableObject
 
     // New constructors here
 
-    /// <summary>
-    /// Deconstructor
-    /// </summary>
-    ~NewScriptableObject()
-    {
-
-    }
-
 
     // FUNCTIONS
 

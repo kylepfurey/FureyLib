@@ -3,10 +3,12 @@
 // by Kyle Furey
 
 #pragma once
+#include <memory>
 #include <iostream>
 #include <string>
 #include <array>
 #include <vector>
+#include <map>
 #include <cstdarg>
 
 // Include this heading to use the library

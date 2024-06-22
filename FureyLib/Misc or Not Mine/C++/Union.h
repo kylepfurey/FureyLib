@@ -3,10 +3,12 @@
 // Creator
 
 #pragma once
+#include <memory>
 #include <iostream>
 #include <string>
 #include <array>
 #include <vector>
+#include <map>
 
 // Only one of the union's variables may be stored at a time
 

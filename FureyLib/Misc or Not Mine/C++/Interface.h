@@ -4,9 +4,11 @@
 
 #pragma once
 #include <iostream>
+#include <memory>
 #include <string>
 #include <array>
 #include <vector>
+#include <map>
 
 // Inherit from this interface to implement it
 
@@ -14,7 +16,7 @@
 #include "Interface.h"
 
 // Template interface script.
-class Interface
+class IInterface
 {
 public:
 
@@ -26,19 +28,19 @@ public:
 	// CONSTRUCTORS AND DECONSTRUCTOR
 
 	// Default constructor
-	Interface()
+	IInterface()
 	{
 
 	}
 
 	// Copy constructor
-	Interface(const Interface& copied)
+	IInterface(const IInterface& copied)
 	{
 
 	}
 
 	// Move constructor
-	Interface(Interface&& moved) noexcept
+	IInterface(IInterface&& moved) noexcept
 	{
 
 	}
@@ -46,7 +48,7 @@ public:
 	// New constructors here
 
 	// Deconstructor
-	virtual ~Interface()
+	virtual ~IInterface()
 	{
 
 	}
@@ -66,13 +68,13 @@ public:
 	// OPERATORS
 
 	// Copy assignment operator
-	Interface& operator=(const Interface& copied)
+	IInterface& operator=(const IInterface& copied)
 	{
 		return *this;
 	}
 
 	// Move assignment operator
-	Interface& operator=(Interface&& moved) noexcept
+	IInterface& operator=(IInterface&& moved) noexcept
 	{
 		return *this;
 	}

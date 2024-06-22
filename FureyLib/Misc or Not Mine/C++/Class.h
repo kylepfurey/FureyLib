@@ -4,9 +4,11 @@
 
 #pragma once
 #include <iostream>
+#include <memory>
 #include <string>
 #include <array>
 #include <vector>
+#include <map>
 
 // Include this heading to use the class
 #include "Class.h"

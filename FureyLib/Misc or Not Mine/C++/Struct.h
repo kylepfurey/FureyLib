@@ -3,10 +3,12 @@
 // Creator
 
 #pragma once
+#include <memory>
 #include <iostream>
 #include <string>
 #include <array>
 #include <vector>
+#include <map>
 
 // Include this heading to use the structure
 #include "Struct.h"

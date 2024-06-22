@@ -95,9 +95,9 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     private Vector3 previousPosition = Vector3.zero;
 
     /// <summary>
-    /// IHandInteractableVR Interface - Adds the object as an implementation to the interface.
+    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
     /// </summary>
-    public HandGrabbableVR()
+    public void OnSetHands()
     {
         IHandInteractableVR.implementations.Add(this);
     }
@@ -105,21 +105,21 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
     /// </summary>
-    ~HandGrabbableVR()
+    private void OnDestroy()
     {
         IHandInteractableVR.implementations.Remove(this);
     }
-
-    /// <summary>
-    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
-    /// </summary>
-    public void OnSetHands() { }
 
     /// <summary>
     /// Find the object's rigidbody
     /// </summary>
     private void Awake()
     {
+        if (IHandInteractableVR.handsSet)
+        {
+            OnSetHands();
+        }
+
         // Get rigidbody
         rigidbody = GetComponent<Rigidbody>();
 

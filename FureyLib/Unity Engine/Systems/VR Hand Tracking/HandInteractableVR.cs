@@ -24,27 +24,23 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
     // New variables here
 
     /// <summary>
-    /// IHandInteractableVR Interface - Adds the object as an implementation to the interface.
+    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
     /// </summary>
-    public HandInteractableVR()
+    public void OnSetHands()
     {
         IHandInteractableVR.implementations.Add(this);
+
+        // New hand tracking code here
     }
 
     /// <summary>
     /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
     /// </summary>
-    ~HandInteractableVR()
+    private void OnDestroy()
     {
         IHandInteractableVR.implementations.Remove(this);
-    }
 
-    /// <summary>
-    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
-    /// </summary>
-    public void OnSetHands()
-    {
-
+        // New destructor code here
     }
 
     /// <summary>
@@ -52,7 +48,10 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     private void Awake()
     {
-
+        if (IHandInteractableVR.handsSet)
+        {
+            OnSetHands();
+        }
     }
 
     /// <summary>

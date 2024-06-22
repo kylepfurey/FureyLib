@@ -175,10 +175,7 @@ public class HandVR
     /// <summary>
     /// Default constructor
     /// </summary>
-    public HandVR()
-    {
-
-    }
+    public HandVR() { }
 
     /// <summary>
     /// Hand constructor

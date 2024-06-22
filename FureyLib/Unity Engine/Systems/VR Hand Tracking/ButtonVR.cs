@@ -125,9 +125,9 @@ public class ButtonVR : MonoBehaviour, IHandInteractableVR
     };
 
     /// <summary>
-    /// IHandInteractableVR Interface - Adds the object as an implementation to the interface.
+    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
     /// </summary>
-    public ButtonVR()
+    public void OnSetHands()
     {
         IHandInteractableVR.implementations.Add(this);
     }
@@ -135,17 +135,20 @@ public class ButtonVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
     /// </summary>
-    ~ButtonVR()
+    private void OnDestroy()
     {
         IHandInteractableVR.implementations.Remove(this);
     }
 
     /// <summary>
-    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
+    /// Sets the player's hands
     /// </summary>
-    public void OnSetHands()
+    private void Awake()
     {
-
+        if (IHandInteractableVR.handsSet)
+        {
+            OnSetHands();
+        }
     }
 
     /// <summary>

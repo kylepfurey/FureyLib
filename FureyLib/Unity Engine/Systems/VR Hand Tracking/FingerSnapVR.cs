@@ -50,9 +50,9 @@ public class FingerSnapVR : MonoBehaviour, IHandInteractableVR
     private float rightBuffer = 0;
 
     /// <summary>
-    /// IHandInteractableVR Interface - Adds the object as an implementation to the interface.
+    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
     /// </summary>
-    public FingerSnapVR()
+    public void OnSetHands()
     {
         IHandInteractableVR.implementations.Add(this);
     }
@@ -60,17 +60,9 @@ public class FingerSnapVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
     /// </summary>
-    ~FingerSnapVR()
+    private void OnDestroy()
     {
         IHandInteractableVR.implementations.Remove(this);
-    }
-
-    /// <summary>
-    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
-    /// </summary>
-    public void OnSetHands()
-    {
-
     }
 
     /// <summary>
@@ -78,6 +70,11 @@ public class FingerSnapVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     private void Awake()
     {
+        if (IHandInteractableVR.handsSet)
+        {
+            OnSetHands();
+        }
+
         if (instance == null)
         {
             instance = this;

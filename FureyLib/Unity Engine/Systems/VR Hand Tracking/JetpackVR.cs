@@ -100,9 +100,9 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
     private Color controlObjectEmissiveColor = Color.black;
 
     /// <summary>
-    /// IHandInteractableVR Interface - Adds the object as an implementation to the interface.
+    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
     /// </summary>
-    public JetpackVR()
+    public void OnSetHands()
     {
         IHandInteractableVR.implementations.Add(this);
     }
@@ -110,17 +110,17 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
     /// </summary>
-    ~JetpackVR()
+    private void OnDestroy()
     {
         IHandInteractableVR.implementations.Remove(this);
-    }
 
-    /// <summary>
-    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
-    /// </summary>
-    public void OnSetHands()
-    {
+        baseMaterial.color = baseColor;
 
+        baseMaterial.SetColor("_EmissionColor", baseEmissiveColor);
+
+        controlObjectMaterial.color = controlObjectColor;
+
+        controlObjectMaterial.SetColor("_EmissionColor", controlObjectEmissiveColor);
     }
 
     /// <summary>
@@ -128,6 +128,11 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     private void Awake()
     {
+        if (IHandInteractableVR.handsSet)
+        {
+            OnSetHands();
+        }
+
         if (camera == null)
         {
             camera = Camera.main;
@@ -182,20 +187,6 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
     private void LateUpdate()
     {
         UpdateJetpack();
-    }
-
-    /// <summary>
-    /// Resets the colors
-    /// </summary>
-    private void OnDestroy()
-    {
-        baseMaterial.color = baseColor;
-
-        baseMaterial.SetColor("_EmissionColor", baseEmissiveColor);
-
-        controlObjectMaterial.color = controlObjectColor;
-
-        controlObjectMaterial.SetColor("_EmissionColor", controlObjectEmissiveColor);
     }
 
     /// <summary>

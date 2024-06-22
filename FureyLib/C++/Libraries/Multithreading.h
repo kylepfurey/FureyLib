@@ -12,7 +12,7 @@
 #include <chrono>
 
 // Include this heading to use the library
-//#include "Multithreading.h"
+#include "Multithreading.h"
 
 // Shorthand for std::find().
 #define FIND(vector, element) std::find(vector.begin(), vector.end(), element)

@@ -45,7 +45,7 @@ public class StringAliases : IEnumerable
 
         value = RemoveWhitespace(value);
 
-        if (identifier == "" || value == "" || identifier == value)
+        if (identifier == value || value.Contains(identifier) || identifier == "" || value == "")
         {
             return this;
         }
@@ -124,37 +124,65 @@ public class StringAliases : IEnumerable
     /// <returns></returns>
     public string ReplaceAliases(string message)
     {
+        string tempMessage = message.Replace('.', ' ');
+
+        tempMessage = tempMessage.Replace('?', ' ');
+        tempMessage = tempMessage.Replace('!', ' ');
+
         for (int i = 0; i < identifiers.Count; i++)
         {
             if (message == identifiers[i])
             {
                 message = values[i];
 
+                continue;
+            }
+
+            int index = tempMessage.IndexOf(" " + identifiers[i] + " ");
+
+            if (index != -1)
+            {
+                message = message.Remove(index + 1, identifiers[i].Length);
+
+                message = message.Insert(index + 1, values[i]);
+
+                tempMessage = tempMessage.Remove(index + 1, identifiers[i].Length);
+
+                tempMessage = tempMessage.Insert(index + 1, values[i]);
+
                 i -= 1;
 
                 continue;
             }
 
-            int index = message.IndexOf(identifiers[i] + " ");
+            index = tempMessage.IndexOf(identifiers[i] + " ");
 
-            if (index != -1)
+            if (index == 0)
             {
-                message = message.Remove(index, identifiers[i].Length + 1);
+                message = message.Remove(index, identifiers[i].Length);
 
-                message = message.Insert(index, values[i] + " ");
+                message = message.Insert(index, values[i]);
+
+                tempMessage = tempMessage.Remove(index, identifiers[i].Length);
+
+                tempMessage = tempMessage.Insert(index, values[i]);
 
                 i -= 1;
 
                 continue;
             }
 
-            index = message.IndexOf(" " + identifiers[i]);
+            index = tempMessage.IndexOf(" " + identifiers[i]);
 
-            if (index != -1)
+            if (index == message.Length - identifiers[i].Length - 1)
             {
-                message = message.Remove(index, identifiers[i].Length + 1);
+                message = message.Remove(index + 1, identifiers[i].Length);
 
-                message = message.Insert(index, " " + values[i]);
+                message = message.Insert(index + 1, values[i]);
+
+                tempMessage = tempMessage.Remove(index + 1, identifiers[i].Length);
+
+                tempMessage = tempMessage.Insert(index + 1, values[i]);
 
                 i -= 1;
 
@@ -173,44 +201,72 @@ public class StringAliases : IEnumerable
     /// <returns></returns>
     public string ReplaceAliases(string message, params string[] identifiers)
     {
+        for (int i = 0; i < identifiers.Length; i++)
+        {
+            identifiers[i] = RemoveWhitespace(identifiers[i]);
+        }
+
+        string tempMessage = message.Replace('.', ' ');
+
+        tempMessage = tempMessage.Replace('?', ' ');
+        tempMessage = tempMessage.Replace('!', ' ');
+
         for (int j = 0; j < identifiers.Length; j++)
         {
             int i = this.identifiers.IndexOf(identifiers[j]);
-
-            if (i == -1)
-            {
-                continue;
-            }
 
             if (message == this.identifiers[i])
             {
                 message = values[i];
 
+                continue;
+            }
+
+            int index = tempMessage.IndexOf(" " + this.identifiers[i] + " ");
+
+            if (index != -1)
+            {
+                message = message.Remove(index + 1, this.identifiers[i].Length);
+
+                message = message.Insert(index + 1, values[i]);
+
+                tempMessage = tempMessage.Remove(index + 1, this.identifiers[i].Length);
+
+                tempMessage = tempMessage.Insert(index + 1, values[i]);
+
                 j -= 1;
 
                 continue;
             }
 
-            int index = message.IndexOf(this.identifiers[i] + " ");
+            index = tempMessage.IndexOf(this.identifiers[i] + " ");
 
-            if (index != -1)
+            if (index == 0)
             {
-                message = message.Remove(index, this.identifiers[i].Length + 1);
+                message = message.Remove(index, this.identifiers[i].Length);
 
-                message = message.Insert(index, values[i] + " ");
+                message = message.Insert(index, values[i]);
+
+                tempMessage = tempMessage.Remove(index, this.identifiers[i].Length);
+
+                tempMessage = tempMessage.Insert(index, values[i]);
 
                 j -= 1;
 
                 continue;
             }
 
-            index = message.IndexOf(" " + this.identifiers[i]);
+            index = tempMessage.IndexOf(" " + this.identifiers[i]);
 
-            if (index != -1)
+            if (index == message.Length - this.identifiers[i].Length - 1)
             {
-                message = message.Remove(index, this.identifiers[i].Length + 1);
+                message = message.Remove(index + 1, this.identifiers[i].Length);
 
-                message = message.Insert(index, " " + values[i]);
+                message = message.Insert(index + 1, values[i]);
+
+                tempMessage = tempMessage.Remove(index + 1, this.identifiers[i].Length);
+
+                tempMessage = tempMessage.Insert(index + 1, values[i]);
 
                 j -= 1;
 
@@ -340,7 +396,7 @@ public class StringAliases : IEnumerable
     {
         identifier = RemoveWhitespace(identifier);
 
-        int index = identifiers.IndexOf(identifier);
+        int index = values.IndexOf(identifier);
 
         if (index != -1)
         {
@@ -361,7 +417,7 @@ public class StringAliases : IEnumerable
     {
         value = RemoveWhitespace(value);
 
-        int index = values.IndexOf(value);
+        int index = identifiers.IndexOf(value);
 
         if (index != -1)
         {
@@ -423,12 +479,12 @@ public class StringAliases : IEnumerable
 
         while (value[0] == ' ')
         {
-            value = value.Remove(0);
+            value = value.Remove(0, 1);
         }
 
         while (value[value.Length - 1] == ' ')
         {
-            value = value.Remove(value.Length - 1);
+            value = value.Remove(value.Length - 1, 1);
         }
 
         return lower ? value.ToLower() : value;

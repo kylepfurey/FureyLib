@@ -65,6 +65,9 @@ public class ClippingPlane : MonoBehaviour
     [Header("The color assigned to the flow data based on the color mode:")]
     public float padding = 0.001f;
 
+    [Header("Maximum magnitude value (used for alpha coloring):")]
+    public float maxMagnitude = 1000;
+
     /// <summary>
     /// Automatically generated height map generator
     /// </summary>
@@ -198,13 +201,19 @@ public class ClippingPlane : MonoBehaviour
             {
                 Vector3 J = new Vector3();
 
+                Vector3 vec;
+
                 float average;
 
                 switch (calculation)
                 {
                     case MapType.Velocity:
 
-                        J = slice[x, y].normalized;
+                        vec = slice[x, y];
+
+                        J = vec.normalized;
+
+                        // J *= (vec.magnitude / maxMagnitude);
 
                         break;
 
@@ -255,7 +264,11 @@ public class ClippingPlane : MonoBehaviour
                               /
                               ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y)));
 
+                        vec = J;
+
                         J = J.normalized;
+
+                        // J *= (vec.magnitude / maxMagnitude);
 
                         average = (J.x + J.y + J.z) / 3;
 
@@ -265,7 +278,11 @@ public class ClippingPlane : MonoBehaviour
 
                     case MapType.MagneticField:
 
-                        J = IMEF.BDipole(GetSample(x, y, (int)depth)).normalized;
+                        vec = IMEF.BDipole(GetSample(x, y, (int)depth));
+
+                        J = vec.normalized;
+
+                        // J *= (vec.magnitude / maxMagnitude);
 
                         break;
                 }
@@ -318,13 +335,19 @@ public class ClippingPlane : MonoBehaviour
             {
                 Vector3 J = new Vector3();
 
-                float average = 0;
+                Vector3 vec;
+
+                float average;
 
                 switch (calculation)
                 {
                     case MapType.Velocity:
 
-                        J = slice[x, y].normalized;
+                        vec = slice[x, y];
+
+                        J = vec.normalized;
+
+                        // J *= (vec.magnitude / maxMagnitude);
 
                         break;
 
@@ -375,7 +398,11 @@ public class ClippingPlane : MonoBehaviour
                               /
                               ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y)));
 
+                        vec = J;
+
                         J = J.normalized;
+
+                        // J *= (vec.magnitude / maxMagnitude);
 
                         average = (J.x + J.y + J.z) / 3;
 
@@ -385,7 +412,11 @@ public class ClippingPlane : MonoBehaviour
 
                     case MapType.MagneticField:
 
-                        J = IMEF.BDipole(GetSample(x, y, (int)depth)).normalized;
+                        vec = IMEF.BDipole(GetSample(x, y, (int)depth));
+
+                        J = vec.normalized;
+
+                        // J *= (vec.magnitude / maxMagnitude);
 
                         break;
                 }
@@ -1063,6 +1094,8 @@ public class ClippingPlane : MonoBehaviour
     public void CycleFlowFile()
     {
         particleVisibility.CycleFlowFiles();
+
+        MakeSample();
 
         RenderSlice(false);
     }

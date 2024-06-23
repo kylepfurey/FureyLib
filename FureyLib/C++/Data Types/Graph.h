@@ -340,7 +340,7 @@ public:
 
 		va_list list;
 
-		va_start(list, 1);
+		va_start(list, 4);
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
@@ -362,7 +362,7 @@ public:
 
 		va_list list;
 
-		va_start(list, 1);
+		va_start(list, 4);
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
@@ -906,7 +906,7 @@ public:
 
 		va_list list;
 
-		va_start(list, 1);
+		va_start(list, 4);
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
@@ -928,7 +928,7 @@ public:
 
 		va_list list;
 
-		va_start(list, 1);
+		va_start(list, 4);
 
 		for (int i = 0; i < number_of_connections; i++)
 		{

@@ -6,19 +6,19 @@ using System.Collections;
 using System.Collections.Generic;
 
 // Include this heading to use the class
-using static StringAliases;
+using static StringAlias;
 
 /// <summary>
 /// Provides simple storage for string replacements.
 /// </summary>
-public class StringAliases : IEnumerable
+public class StringAlias : IEnumerable
 {
     // VARIABLES
 
     /// <summary>
     /// Collection of globally used aliases
     /// </summary>
-    public static StringAliases globalAliases = new StringAliases();
+    public static StringAlias globalAliases = new StringAlias();
 
     /// <summary>
     /// The strings to locate for replacement
@@ -30,6 +30,12 @@ public class StringAliases : IEnumerable
     /// </summary>
     private List<string> values = new List<string>();
 
+    /// <summary>
+    /// Whitespace characters to ignore when parsing messages
+    /// </summary>
+    public List<char> whitespaceCharacters = new List<char>
+    { '.', '?', '!', '+', '-', '*', '/', '=', '\n', '`', '~', '@', '#', '$', '%', '^', '&', '(', ')', '[', ']', '{', '}', '\\', ';', ':', '\'', ',', '<', '>', '"', '|' };
+
 
     // FUNCTIONS
 
@@ -39,15 +45,15 @@ public class StringAliases : IEnumerable
     /// <param name="identifier"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public StringAliases Add(string identifier, string value)
+    public int Add(string identifier, string value)
     {
         identifier = RemoveWhitespace(identifier);
 
         value = RemoveWhitespace(value);
 
-        if (identifier == value || value.Contains(identifier) || identifier == "" || value == "")
+        if (identifier == value || identifier == "" || value == "")
         {
-            return this;
+            return -1;
         }
 
         int index = identifiers.IndexOf(identifier);
@@ -57,13 +63,15 @@ public class StringAliases : IEnumerable
             identifiers.Add(identifier);
 
             values.Add(value);
+
+            return identifiers.Count - 1;
         }
         else
         {
             values[index] = value;
-        }
 
-        return this;
+            return index;
+        }
     }
 
     /// <summary>
@@ -92,42 +100,50 @@ public class StringAliases : IEnumerable
     /// </summary>
     /// <param name="index"></param>
     /// <returns></returns>
-    public StringAliases RemoveAt(int index)
+    public bool RemoveAt(int index)
     {
         if (index >= 0 && index < identifiers.Count)
         {
             identifiers.RemoveAt(index);
 
             values.RemoveAt(index);
-        }
 
-        return this;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /// <summary>
     /// Clears the list of aliases
     /// </summary>
     /// <returns></returns>
-    public StringAliases Clear()
+    public int Clear()
     {
+        int count = identifiers.Count;
+
         identifiers.Clear();
 
         values.Clear();
 
-        return this;
+        return count;
     }
 
     /// <summary>
-    /// Replaces all aliases in the given message with their corresponding values. Replaces once, in order of each alias.
+    /// Replaces all aliases in the given message with their corresponding values in order of each alias.
     /// </summary>
     /// <param name="message"></param>
     /// <returns></returns>
     public string ReplaceAliases(string message)
     {
-        string tempMessage = message.Replace('.', ' ');
+        string tempMessage = message;
 
-        tempMessage = tempMessage.Replace('?', ' ');
-        tempMessage = tempMessage.Replace('!', ' ');
+        for (int i = 0; i < whitespaceCharacters.Count; i++)
+        {
+            tempMessage = tempMessage.Replace(whitespaceCharacters[i], ' ');
+        }
 
         for (int i = 0; i < identifiers.Count; i++)
         {
@@ -136,6 +152,13 @@ public class StringAliases : IEnumerable
                 message = values[i];
 
                 continue;
+            }
+
+            string gap = "";
+
+            for (int j = 0; j < values[i].Length; j++)
+            {
+                gap += " ";
             }
 
             int index = tempMessage.IndexOf(" " + identifiers[i] + " ");
@@ -148,9 +171,9 @@ public class StringAliases : IEnumerable
 
                 tempMessage = tempMessage.Remove(index + 1, identifiers[i].Length);
 
-                tempMessage = tempMessage.Insert(index + 1, values[i]);
+                tempMessage = tempMessage.Insert(index + 1, gap);
 
-                i -= 1;
+                i--;
 
                 continue;
             }
@@ -165,9 +188,9 @@ public class StringAliases : IEnumerable
 
                 tempMessage = tempMessage.Remove(index, identifiers[i].Length);
 
-                tempMessage = tempMessage.Insert(index, values[i]);
+                tempMessage = tempMessage.Insert(index, gap);
 
-                i -= 1;
+                i--;
 
                 continue;
             }
@@ -182,9 +205,9 @@ public class StringAliases : IEnumerable
 
                 tempMessage = tempMessage.Remove(index + 1, identifiers[i].Length);
 
-                tempMessage = tempMessage.Insert(index + 1, values[i]);
+                tempMessage = tempMessage.Insert(index + 1, gap);
 
-                i -= 1;
+                i--;
 
                 continue;
             }
@@ -194,7 +217,7 @@ public class StringAliases : IEnumerable
     }
 
     /// <summary>
-    /// Replaces all of the given aliases in the given message with their corresponding values. Replaces once, in order of each alias.
+    /// Replaces all of the given aliases in the given message with their corresponding values in order of each alias.
     /// </summary>
     /// <param name="message"></param>
     /// <param name="identifiers"></param>
@@ -206,10 +229,12 @@ public class StringAliases : IEnumerable
             identifiers[i] = RemoveWhitespace(identifiers[i]);
         }
 
-        string tempMessage = message.Replace('.', ' ');
+        string tempMessage = message;
 
-        tempMessage = tempMessage.Replace('?', ' ');
-        tempMessage = tempMessage.Replace('!', ' ');
+        for (int i = 0; i < whitespaceCharacters.Count; i++)
+        {
+            tempMessage = tempMessage.Replace(whitespaceCharacters[i], ' ');
+        }
 
         for (int j = 0; j < identifiers.Length; j++)
         {
@@ -222,6 +247,13 @@ public class StringAliases : IEnumerable
                 continue;
             }
 
+            string gap = "";
+
+            for (int k = 0; k < values[i].Length; k++)
+            {
+                gap += " ";
+            }
+
             int index = tempMessage.IndexOf(" " + this.identifiers[i] + " ");
 
             if (index != -1)
@@ -232,9 +264,9 @@ public class StringAliases : IEnumerable
 
                 tempMessage = tempMessage.Remove(index + 1, this.identifiers[i].Length);
 
-                tempMessage = tempMessage.Insert(index + 1, values[i]);
+                tempMessage = tempMessage.Insert(index + 1, gap);
 
-                j -= 1;
+                j--;
 
                 continue;
             }
@@ -249,9 +281,9 @@ public class StringAliases : IEnumerable
 
                 tempMessage = tempMessage.Remove(index, this.identifiers[i].Length);
 
-                tempMessage = tempMessage.Insert(index, values[i]);
+                tempMessage = tempMessage.Insert(index, gap);
 
-                j -= 1;
+                j--;
 
                 continue;
             }
@@ -266,55 +298,12 @@ public class StringAliases : IEnumerable
 
                 tempMessage = tempMessage.Remove(index + 1, this.identifiers[i].Length);
 
-                tempMessage = tempMessage.Insert(index + 1, values[i]);
+                tempMessage = tempMessage.Insert(index + 1, gap);
 
-                j -= 1;
+                j--;
 
                 continue;
             }
-        }
-
-        return message;
-    }
-
-    /// <summary>
-    /// Replaces all aliases in the given message with their corresponding values. Repeats until all aliases are filled in.
-    /// </summary>
-    /// <param name="message"></param>
-    /// <returns></returns>
-    public string ReplaceAliasesRecursively(string message)
-    {
-        message = ReplaceAliases(message);
-
-        string newMessage = ReplaceAliases(message);
-
-        while (message != newMessage)
-        {
-            message = newMessage;
-
-            newMessage = ReplaceAliases(message);
-        }
-
-        return message;
-    }
-
-    /// <summary>
-    /// Replaces all of the given aliases in the given message with their corresponding values. Repeats until all aliases are filled in.
-    /// </summary>
-    /// <param name="message"></param>
-    /// <param name="identifiers"></param>
-    /// <returns></returns>
-    public string ReplaceAliasesRecursively(string message, params string[] identifiers)
-    {
-        message = ReplaceAliases(message, identifiers);
-
-        string newMessage = ReplaceAliases(message, identifiers);
-
-        while (message != newMessage)
-        {
-            message = newMessage;
-
-            newMessage = ReplaceAliases(message, identifiers);
         }
 
         return message;
@@ -468,26 +457,24 @@ public class StringAliases : IEnumerable
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static string RemoveWhitespace(string value, bool lower = false)
+    public string RemoveWhitespace(string value)
     {
         if (value == " ")
         {
             return "";
         }
 
-        value = value.Replace("\n", "");
-
-        while (value[0] == ' ')
+        while (value[0] == ' ' || whitespaceCharacters.Contains(value[0]))
         {
             value = value.Remove(0, 1);
         }
 
-        while (value[value.Length - 1] == ' ')
+        while (value[value.Length - 1] == ' ' || whitespaceCharacters.Contains(value[value.Length - 1]))
         {
             value = value.Remove(value.Length - 1, 1);
         }
 
-        return lower ? value.ToLower() : value;
+        return value;
     }
 
 

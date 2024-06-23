@@ -13,10 +13,10 @@
 #include "StringAliases.h"
 
 // Forward declaration of string_aliases
-class string_aliases;
+class string_alias;
 
 // Provides simple storage for string replacements.
-class string_aliases
+class string_alias
 {
 private:
 
@@ -63,61 +63,46 @@ public:
 	// VARIABLES
 
 	// Collection of globally used aliases
-	static string_aliases global_aliases;
+	static string_alias global_aliases;
+
+	// Whitespace characters to ignore when parsing messages
+	std::vector<char> whitespace_characters =
+	{ '.', '?', '!', '+', '-', '*', '/', '=', '\n', '`', '~', '@', '#', '$', '%', '^', '&', '(', ')', '[', ']', '{', '}', '\\', ';', ':', '\'', ',', '<', '>', '"', '|' };
 
 
 	// FUNCTIONS
 
 	// Removes whitespace characters from the beginning and end of a string
-	static std::string remove_whitespace(std::string value, bool lower = false)
+	std::string remove_whitespace(std::string value)
 	{
 		if (value == " ")
 		{
 			return "";
 		}
 
-		for (int i = 0; i < value.length(); i++)
-		{
-			if (value[i] == '\n')
-			{
-				value.replace(i, 1, "");
-
-				i--;
-			}
-		}
-
-		while (value[0] == ' ')
+		while (value[0] == ' ' || std::find(whitespace_characters.begin(), whitespace_characters.end(), value[0]) != whitespace_characters.end())
 		{
 			value = value.replace(0, 1, "");
 		}
 
-		while (value[value.length() - 1] == ' ')
+		while (value[value.length() - 1] == ' ' || std::find(whitespace_characters.begin(), whitespace_characters.end(), value[value.length() - 1]) != whitespace_characters.end())
 		{
 			value = value.replace(value.length() - 1, 1, "");
-		}
-
-		if (lower)
-		{
-			std::transform(value.begin(), value.end(), value.begin(),
-			[](unsigned char character)
-			{
-				return std::tolower(character);
-			});
 		}
 
 		return value;
 	}
 
 	// Adds a new entry or replaces a entry in the list of aliases
-	string_aliases& add(std::string identifier, std::string value)
+	int add(std::string identifier, std::string value)
 	{
 		identifier = remove_whitespace(identifier);
 
 		value = remove_whitespace(value);
 
-		if (identifier == value || value.find(identifier) != value.npos || identifier == "" || value == "")
+		if (identifier == value || identifier == "" || value == "")
 		{
-			return *this;
+			return -1;
 		}
 
 		int index = index_of(identifiers, identifier);
@@ -127,13 +112,15 @@ public:
 			identifiers.push_back(identifier);
 
 			values.push_back(value);
+
+			return identifiers.size() - 1;
 		}
 		else
 		{
 			values[index] = value;
-		}
 
-		return *this;
+			return index;
+		}
 	}
 
 	// Removes the given identifier from the list of aliases and return the index
@@ -154,35 +141,43 @@ public:
 	}
 
 	// Removes the given index from the list of aliases
-	string_aliases& remove_at(int index)
+	bool remove_at(int index)
 	{
 		if (index >= 0 && index < identifiers.size())
 		{
 			identifiers.erase(identifiers.begin() + index);
 
 			values.erase(identifiers.begin() + index);
-		}
 
-		return *this;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	// Clears the list of aliases
-	string_aliases& clear()
+	int clear()
 	{
+		int count = identifiers.size();
+
 		identifiers.clear();
 
 		values.clear();
 
-		return *this;
+		return count;
 	}
 
-	// Replaces all aliases in the given message with their corresponding values. Replaces once, in order of each alias.
+	// Replaces all aliases in the given message with their corresponding values in order of each alias.
 	std::string replace_aliases(std::string message)
 	{
-		std::string tempMessage = replace(message, '.', ' ');
+		std::string temp_message = message;
 
-		tempMessage = replace(tempMessage, '?', ' ');
-		tempMessage = replace(tempMessage, '!', ' ');
+		for (int i = 0; i < whitespace_characters.size(); i++)
+		{
+			temp_message = replace(temp_message, whitespace_characters[i], ' ');
+		}
 
 		for (int i = 0; i < identifiers.size(); i++)
 		{
@@ -193,7 +188,14 @@ public:
 				continue;
 			}
 
-			int index = tempMessage.find(" " + identifiers[i] + " ");
+			std::string gap = "";
+
+			for (int j = 0; j < values[i].length(); j++)
+			{
+				gap += " ";
+			}
+
+			int index = temp_message.find(" " + identifiers[i] + " ");
 
 			if (index != -1)
 			{
@@ -201,16 +203,16 @@ public:
 
 				message = message.insert(index + 1, values[i]);
 
-				tempMessage = tempMessage.erase(index + 1, identifiers[i].length());
+				temp_message = temp_message.erase(index + 1, identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index + 1, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				i -= 1;
+				i--;
 
 				continue;
 			}
 
-			index = tempMessage.find(identifiers[i] + " ");
+			index = temp_message.find(identifiers[i] + " ");
 
 			if (index == 0)
 			{
@@ -218,16 +220,16 @@ public:
 
 				message = message.insert(index, values[i]);
 
-				tempMessage = tempMessage.erase(index, identifiers[i].length());
+				temp_message = temp_message.erase(index, identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				i -= 1;
+				i--;
 
 				continue;
 			}
 
-			index = tempMessage.find(" " + identifiers[i]);
+			index = temp_message.find(" " + identifiers[i]);
 
 			if (index == message.length() - identifiers[i].length() - 1)
 			{
@@ -235,11 +237,11 @@ public:
 
 				message = message.insert(index + 1, values[i]);
 
-				tempMessage = tempMessage.erase(index + 1, identifiers[i].length());
+				temp_message = temp_message.erase(index + 1, identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index + 1, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				i -= 1;
+				i--;
 
 				continue;
 			}
@@ -248,7 +250,7 @@ public:
 		return message;
 	}
 
-	// Replaces all of the given aliases in the given message with their corresponding values. Replaces once, in order of each alias.
+	// Replaces all of the given aliases in the given message with their corresponding values in order of each alias.
 	std::string replace_aliases(std::string message, int count, std::string identifiers[])
 	{
 		for (int i = 0; i < count; i++)
@@ -256,10 +258,12 @@ public:
 			identifiers[i] = remove_whitespace(identifiers[i]);
 		}
 
-		std::string tempMessage = replace(message, '.', ' ');
+		std::string temp_message = message;
 
-		tempMessage = replace(tempMessage, '?', ' ');
-		tempMessage = replace(tempMessage, '!', ' ');
+		for (int i = 0; i < whitespace_characters.size(); i++)
+		{
+			temp_message = replace(temp_message, whitespace_characters[i], ' ');
+		}
 
 		for (int j = 0; j < count; j++)
 		{
@@ -272,7 +276,14 @@ public:
 				continue;
 			}
 
-			int index = tempMessage.find(" " + this->identifiers[i] + " ");
+			std::string gap = "";
+
+			for (int j = 0; j < values[i].length(); j++)
+			{
+				gap += " ";
+			}
+
+			int index = temp_message.find(" " + this->identifiers[i] + " ");
 
 			if (index != -1)
 			{
@@ -280,16 +291,16 @@ public:
 
 				message = message.insert(index + 1, values[i]);
 
-				tempMessage = tempMessage.erase(index + 1, this->identifiers[i].length());
+				temp_message = temp_message.erase(index + 1, this->identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index + 1, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				j -= 1;
+				j--;
 
 				continue;
 			}
 
-			index = tempMessage.find(this->identifiers[i] + " ");
+			index = temp_message.find(this->identifiers[i] + " ");
 
 			if (index == 0)
 			{
@@ -297,16 +308,16 @@ public:
 
 				message = message.insert(index, values[i]);
 
-				tempMessage = tempMessage.erase(index, this->identifiers[i].length());
+				temp_message = temp_message.erase(index, this->identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				j -= 1;
+				j--;
 
 				continue;
 			}
 
-			index = tempMessage.find(" " + this->identifiers[i]);
+			index = temp_message.find(" " + this->identifiers[i]);
 
 			if (index == message.length() - this->identifiers[i].length() - 1)
 			{
@@ -314,11 +325,11 @@ public:
 
 				message = message.insert(index + 1, values[i]);
 
-				tempMessage = tempMessage.erase(index + 1, this->identifiers[i].length());
+				temp_message = temp_message.erase(index + 1, this->identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index + 1, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				j -= 1;
+				j--;
 
 				continue;
 			}
@@ -327,7 +338,7 @@ public:
 		return message;
 	}
 
-	// Replaces all of the given aliases in the given message with their corresponding values. Replaces once, in order of each alias.
+	// Replaces all of the given aliases in the given message with their corresponding values in order of each alias.
 	std::string replace_aliases(std::string message, int count, std::string strings...)
 	{
 		std::string* identifiers = new std::string[count];
@@ -339,15 +350,18 @@ public:
 		for (int i = 0; i < count; i++)
 		{
 			identifiers[i] = va_arg(list, std::string);
+
 			identifiers[i] = remove_whitespace(identifiers[i]);
 		}
 
 		va_end(list);
 
-		std::string tempMessage = replace(message, '.', ' ');
+		std::string temp_message = message;
 
-		tempMessage = replace(tempMessage, '?', ' ');
-		tempMessage = replace(tempMessage, '!', ' ');
+		for (int i = 0; i < whitespace_characters.size(); i++)
+		{
+			temp_message = replace(temp_message, whitespace_characters[i], ' ');
+		}
 
 		for (int j = 0; j < count; j++)
 		{
@@ -360,7 +374,14 @@ public:
 				continue;
 			}
 
-			int index = tempMessage.find(" " + this->identifiers[i] + " ");
+			std::string gap = "";
+
+			for (int j = 0; j < values[i].length(); j++)
+			{
+				gap += " ";
+			}
+
+			int index = temp_message.find(" " + this->identifiers[i] + " ");
 
 			if (index != -1)
 			{
@@ -368,16 +389,16 @@ public:
 
 				message = message.insert(index + 1, values[i]);
 
-				tempMessage = tempMessage.erase(index + 1, this->identifiers[i].length());
+				temp_message = temp_message.erase(index + 1, this->identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index + 1, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				j -= 1;
+				j--;
 
 				continue;
 			}
 
-			index = tempMessage.find(this->identifiers[i] + " ");
+			index = temp_message.find(this->identifiers[i] + " ");
 
 			if (index == 0)
 			{
@@ -385,16 +406,16 @@ public:
 
 				message = message.insert(index, values[i]);
 
-				tempMessage = tempMessage.erase(index, this->identifiers[i].length());
+				temp_message = temp_message.erase(index, this->identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				j -= 1;
+				j--;
 
 				continue;
 			}
 
-			index = tempMessage.find(" " + this->identifiers[i]);
+			index = temp_message.find(" " + this->identifiers[i]);
 
 			if (index == message.length() - this->identifiers[i].length() - 1)
 			{
@@ -402,80 +423,14 @@ public:
 
 				message = message.insert(index + 1, values[i]);
 
-				tempMessage = tempMessage.erase(index + 1, this->identifiers[i].length());
+				temp_message = temp_message.erase(index + 1, this->identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index + 1, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				j -= 1;
+				j--;
 
 				continue;
 			}
-		}
-
-		delete[] identifiers;
-
-		return message;
-	}
-
-	// Replaces all aliases in the given message with their corresponding values. Repeats until all aliases are filled in.
-	std::string replace_aliases_recursively(std::string message)
-	{
-		message = replace_aliases(message);
-
-		std::string new_message = replace_aliases(message);
-
-		while (message != new_message)
-		{
-			message = new_message;
-
-			new_message = replace_aliases(message);
-		}
-
-		return message;
-	}
-
-	// Replaces all of the given aliases in the given message with their corresponding values. Repeats until all aliases are filled in.
-	std::string replace_aliases_recursively(std::string message, int count, std::string identifiers[])
-	{
-		message = replace_aliases(message, count, identifiers);
-
-		std::string new_message = replace_aliases(message, count, identifiers);
-
-		while (message != new_message)
-		{
-			message = new_message;
-
-			new_message = replace_aliases(message, count, identifiers);
-		}
-
-		return message;
-	}
-
-	// Replaces all of the given aliases in the given message with their corresponding values. Repeats until all aliases are filled in.
-	std::string replace_aliases_recursively(std::string message, int count, std::string strings...)
-	{
-		std::string* identifiers = new std::string[count];
-
-		va_list list;
-
-		va_start(list, 2);
-
-		for (int i = 0; i < count; i++)
-		{
-			identifiers[i] = va_arg(list, std::string);
-		}
-
-		va_end(list);
-
-		message = replace_aliases(message, count, identifiers);
-
-		std::string new_message = replace_aliases(message, count, identifiers);
-
-		while (message != new_message)
-		{
-			message = new_message;
-
-			new_message = replace_aliases(message, count, identifiers);
 		}
 
 		delete[] identifiers;
@@ -592,13 +547,13 @@ public:
 };
 
 // Static variable initialization
-string_aliases string_aliases::global_aliases = string_aliases();
+string_alias string_alias::global_aliases = string_alias();
 
 // Forward declaration of StringAliases
-class StringAliases;
+class StringAlias;
 
 // Provides simple storage for string replacements.
-class StringAliases
+class StringAlias
 {
 private:
 
@@ -609,6 +564,10 @@ private:
 
 	// The strings to replace the identifier with
 	std::vector<std::string> values = std::vector<std::string>();
+
+	// Whitespace characters to ignore when parsing messages
+	std::vector<char> whitespaceCharacters =
+	{ '.', '?', '!', '+', '-', '*', '/', '=', '\n', '`', '~', '@', '#', '$', '%', '^', '&', '(', ')', '[', ']', '{', '}', '\\', ';', ':', '\'', ',', '<', '>', '"', '|' };
 
 
 	// FUNCTIONS
@@ -645,61 +604,42 @@ public:
 	// VARIABLES
 
 	// Collection of globally used aliases
-	static StringAliases globalAliases;
+	static StringAlias globalAliases;
 
 
 	// FUNCTIONS
 
 	// Removes whitespace characters from the beginning and end of a string
-	static std::string RemoveWhitespace(std::string value, bool lower = false)
+	std::string RemoveWhitespace(std::string value)
 	{
 		if (value == " ")
 		{
 			return "";
 		}
 
-		for (int i = 0; i < value.length(); i++)
-		{
-			if (value[i] == '\n')
-			{
-				value.replace(i, 1, "");
-
-				i--;
-			}
-		}
-
-		while (value[0] == ' ')
+		while (value[0] == ' ' || std::find(whitespaceCharacters.begin(), whitespaceCharacters.end(), value[0]) != whitespaceCharacters.end())
 		{
 			value = value.replace(0, 1, "");
 		}
 
-		while (value[value.length() - 1] == ' ')
+		while (value[value.length() - 1] == ' ' || std::find(whitespaceCharacters.begin(), whitespaceCharacters.end(), value[value.length() - 1]) != whitespaceCharacters.end())
 		{
 			value = value.replace(value.length() - 1, 1, "");
-		}
-
-		if (lower)
-		{
-			std::transform(value.begin(), value.end(), value.begin(),
-			[](unsigned char character)
-			{
-				return std::tolower(character);
-			});
 		}
 
 		return value;
 	}
 
 	// Adds a new entry or replaces a entry in the list of aliases
-	StringAliases& Add(std::string identifier, std::string value)
+	int Add(std::string identifier, std::string value)
 	{
 		identifier = RemoveWhitespace(identifier);
 
 		value = RemoveWhitespace(value);
 
-		if (identifier == value || value.find(identifier) != value.npos || identifier == "" || value == "")
+		if (identifier == value || identifier == "" || value == "")
 		{
-			return *this;
+			return -1;
 		}
 
 		int index = IndexOf(identifiers, identifier);
@@ -709,13 +649,15 @@ public:
 			identifiers.push_back(identifier);
 
 			values.push_back(value);
+
+			return identifiers.size() - 1;
 		}
 		else
 		{
 			values[index] = value;
-		}
 
-		return *this;
+			return index;
+		}
 	}
 
 	// Removes the given identifier from the list of aliases and return the index
@@ -736,35 +678,43 @@ public:
 	}
 
 	// Removes the given identifier from the list of aliases
-	StringAliases& RemoveAt(int index)
+	bool RemoveAt(int index)
 	{
 		if (index >= 0 && index < identifiers.size())
 		{
 			identifiers.erase(identifiers.begin() + index);
 
 			values.erase(identifiers.begin() + index);
-		}
 
-		return *this;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	// Clears the list of aliases
-	StringAliases& Clear()
+	int Clear()
 	{
+		int count = identifiers.size();
+
 		identifiers.clear();
 
 		values.clear();
 
-		return *this;
+		return count;
 	}
 
-	// Replaces all aliases in the given message with their corresponding values. Replaces once, in order of each alias.
+	// Replaces all aliases in the given message with their corresponding values in order of each alias.
 	std::string ReplaceAliases(std::string message)
 	{
-		std::string tempMessage = Replace(message, '.', ' ');
+		std::string temp_message = message;
 
-		tempMessage = Replace(tempMessage, '?', ' ');
-		tempMessage = Replace(tempMessage, '!', ' ');
+		for (int i = 0; i < whitespaceCharacters.size(); i++)
+		{
+			temp_message = Replace(temp_message, whitespaceCharacters[i], ' ');
+		}
 
 		for (int i = 0; i < identifiers.size(); i++)
 		{
@@ -775,7 +725,14 @@ public:
 				continue;
 			}
 
-			int index = tempMessage.find(" " + identifiers[i] + " ");
+			std::string gap = "";
+
+			for (int j = 0; j < values[i].length(); j++)
+			{
+				gap += " ";
+			}
+
+			int index = temp_message.find(" " + identifiers[i] + " ");
 
 			if (index != -1)
 			{
@@ -783,16 +740,16 @@ public:
 
 				message = message.insert(index + 1, values[i]);
 
-				tempMessage = tempMessage.erase(index + 1, identifiers[i].length());
+				temp_message = temp_message.erase(index + 1, identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index + 1, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				i -= 1;
+				i--;
 
 				continue;
 			}
 
-			index = tempMessage.find(identifiers[i] + " ");
+			index = temp_message.find(identifiers[i] + " ");
 
 			if (index == 0)
 			{
@@ -800,16 +757,16 @@ public:
 
 				message = message.insert(index, values[i]);
 
-				tempMessage = tempMessage.erase(index, identifiers[i].length());
+				temp_message = temp_message.erase(index, identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				i -= 1;
+				i--;
 
 				continue;
 			}
 
-			index = tempMessage.find(" " + identifiers[i]);
+			index = temp_message.find(" " + identifiers[i]);
 
 			if (index == message.length() - identifiers[i].length() - 1)
 			{
@@ -817,11 +774,11 @@ public:
 
 				message = message.insert(index + 1, values[i]);
 
-				tempMessage = tempMessage.erase(index + 1, identifiers[i].length());
+				temp_message = temp_message.erase(index + 1, identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index + 1, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				i -= 1;
+				i--;
 
 				continue;
 			}
@@ -830,7 +787,7 @@ public:
 		return message;
 	}
 
-	// Replaces all of the given aliases in the given message with their corresponding values. Replaces once, in order of each alias.
+	// Replaces all of the given aliases in the given message with their corresponding values in order of each alias.
 	std::string ReplaceAliases(std::string message, int count, std::string identifiers[])
 	{
 		for (int i = 0; i < count; i++)
@@ -838,10 +795,12 @@ public:
 			identifiers[i] = RemoveWhitespace(identifiers[i]);
 		}
 
-		std::string tempMessage = Replace(message, '.', ' ');
+		std::string temp_message = message;
 
-		tempMessage = Replace(tempMessage, '?', ' ');
-		tempMessage = Replace(tempMessage, '!', ' ');
+		for (int i = 0; i < whitespaceCharacters.size(); i++)
+		{
+			temp_message = Replace(temp_message, whitespaceCharacters[i], ' ');
+		}
 
 		for (int j = 0; j < count; j++)
 		{
@@ -854,7 +813,14 @@ public:
 				continue;
 			}
 
-			int index = tempMessage.find(" " + this->identifiers[i] + " ");
+			std::string gap = "";
+
+			for (int j = 0; j < values[i].length(); j++)
+			{
+				gap += " ";
+			}
+
+			int index = temp_message.find(" " + this->identifiers[i] + " ");
 
 			if (index != -1)
 			{
@@ -862,16 +828,16 @@ public:
 
 				message = message.insert(index + 1, values[i]);
 
-				tempMessage = tempMessage.erase(index + 1, this->identifiers[i].length());
+				temp_message = temp_message.erase(index + 1, this->identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index + 1, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				j -= 1;
+				j--;
 
 				continue;
 			}
 
-			index = tempMessage.find(this->identifiers[i] + " ");
+			index = temp_message.find(this->identifiers[i] + " ");
 
 			if (index == 0)
 			{
@@ -879,16 +845,16 @@ public:
 
 				message = message.insert(index, values[i]);
 
-				tempMessage = tempMessage.erase(index, this->identifiers[i].length());
+				temp_message = temp_message.erase(index, this->identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				j -= 1;
+				j--;
 
 				continue;
 			}
 
-			index = tempMessage.find(" " + this->identifiers[i]);
+			index = temp_message.find(" " + this->identifiers[i]);
 
 			if (index == message.length() - this->identifiers[i].length() - 1)
 			{
@@ -896,11 +862,11 @@ public:
 
 				message = message.insert(index + 1, values[i]);
 
-				tempMessage = tempMessage.erase(index + 1, this->identifiers[i].length());
+				temp_message = temp_message.erase(index + 1, this->identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index + 1, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				j -= 1;
+				j--;
 
 				continue;
 			}
@@ -909,7 +875,7 @@ public:
 		return message;
 	}
 
-	// Replaces all of the given aliases in the given message with their corresponding values. Replaces once, in order of each alias.
+	// Replaces all of the given aliases in the given message with their corresponding values in order of each alias.
 	std::string ReplaceAliases(std::string message, int count, std::string strings...)
 	{
 		std::string* identifiers = new std::string[count];
@@ -921,15 +887,18 @@ public:
 		for (int i = 0; i < count; i++)
 		{
 			identifiers[i] = va_arg(list, std::string);
+
 			identifiers[i] = RemoveWhitespace(identifiers[i]);
 		}
 
 		va_end(list);
 
-		std::string tempMessage = Replace(message, '.', ' ');
+		std::string temp_message = message;
 
-		tempMessage = Replace(tempMessage, '?', ' ');
-		tempMessage = Replace(tempMessage, '!', ' ');
+		for (int i = 0; i < whitespaceCharacters.size(); i++)
+		{
+			temp_message = Replace(temp_message, whitespaceCharacters[i], ' ');
+		}
 
 		for (int j = 0; j < count; j++)
 		{
@@ -942,7 +911,14 @@ public:
 				continue;
 			}
 
-			int index = tempMessage.find(" " + this->identifiers[i] + " ");
+			std::string gap = "";
+
+			for (int j = 0; j < values[i].length(); j++)
+			{
+				gap += " ";
+			}
+
+			int index = temp_message.find(" " + this->identifiers[i] + " ");
 
 			if (index != -1)
 			{
@@ -950,16 +926,16 @@ public:
 
 				message = message.insert(index + 1, values[i]);
 
-				tempMessage = tempMessage.erase(index + 1, this->identifiers[i].length());
+				temp_message = temp_message.erase(index + 1, this->identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index + 1, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				j -= 1;
+				j--;
 
 				continue;
 			}
 
-			index = tempMessage.find(this->identifiers[i] + " ");
+			index = temp_message.find(this->identifiers[i] + " ");
 
 			if (index == 0)
 			{
@@ -967,16 +943,16 @@ public:
 
 				message = message.insert(index, values[i]);
 
-				tempMessage = tempMessage.erase(index, this->identifiers[i].length());
+				temp_message = temp_message.erase(index, this->identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				j -= 1;
+				j--;
 
 				continue;
 			}
 
-			index = tempMessage.find(" " + this->identifiers[i]);
+			index = temp_message.find(" " + this->identifiers[i]);
 
 			if (index == message.length() - this->identifiers[i].length() - 1)
 			{
@@ -984,80 +960,14 @@ public:
 
 				message = message.insert(index + 1, values[i]);
 
-				tempMessage = tempMessage.erase(index + 1, this->identifiers[i].length());
+				temp_message = temp_message.erase(index + 1, this->identifiers[i].length());
 
-				tempMessage = tempMessage.insert(index + 1, values[i]);
+				temp_message = temp_message.insert(index + 1, gap);
 
-				j -= 1;
+				j--;
 
 				continue;
 			}
-		}
-
-		delete[] identifiers;
-
-		return message;
-	}
-
-	// Replaces all aliases in the given message with their corresponding values. Repeats until all aliases are filled in.
-	std::string ReplaceAliasesRecursively(std::string message)
-	{
-		message = ReplaceAliases(message);
-
-		std::string new_message = ReplaceAliases(message);
-
-		while (message != new_message)
-		{
-			message = new_message;
-
-			new_message = ReplaceAliases(message);
-		}
-
-		return message;
-	}
-
-	// Replaces all of the given aliases in the given message with their corresponding values. Repeats until all aliases are filled in.
-	std::string ReplaceAliasesRecursively(std::string message, int count, std::string identifiers[])
-	{
-		message = ReplaceAliases(message, count, identifiers);
-
-		std::string new_message = ReplaceAliases(message, count, identifiers);
-
-		while (message != new_message)
-		{
-			message = new_message;
-
-			new_message = ReplaceAliases(message, count, identifiers);
-		}
-
-		return message;
-	}
-
-	// Replaces all of the given aliases in the given message with their corresponding values. Repeats until all aliases are filled in.
-	std::string ReplaceAliasesRecursively(std::string message, int count, std::string strings...)
-	{
-		std::string* identifiers = new std::string[count];
-
-		va_list list;
-
-		va_start(list, 2);
-
-		for (int i = 0; i < count; i++)
-		{
-			identifiers[i] = va_arg(list, std::string);
-		}
-
-		va_end(list);
-
-		message = ReplaceAliases(message, count, identifiers);
-
-		std::string new_message = ReplaceAliases(message, count, identifiers);
-
-		while (message != new_message)
-		{
-			message = new_message;
-
-			new_message = ReplaceAliases(message, count, identifiers);
 		}
 
 		delete[] identifiers;
@@ -1174,4 +1084,4 @@ public:
 };
 
 // Static variable initialization
-StringAliases StringAliases::globalAliases = StringAliases();
+StringAlias StringAlias::globalAliases = StringAlias();

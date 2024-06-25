@@ -41,27 +41,27 @@ public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// The instance of this class
     /// </summary>
-    [HideInInspector] public static HandTrackerVR instance;
+    public static HandTrackerVR instance;
 
     /// <summary>
     /// The player's left hand
     /// </summary>
-    [HideInInspector] public static HandVR leftHand = null;
+    public static HandVR leftHand = null;
 
     /// <summary>
     /// The player's right hand
     /// </summary>
-    [HideInInspector] public static HandVR rightHand = null;
+    public static HandVR rightHand = null;
 
     /// <summary>
     /// The current gestures the left hand is making
     /// </summary>
-    [HideInInspector] public static Dictionary<HandVR.Gesture, bool> leftGestures = new Dictionary<HandVR.Gesture, bool>();
+    public static Dictionary<HandVR.Gesture, bool> leftGestures = new Dictionary<HandVR.Gesture, bool>();
 
     /// <summary>
     /// The current gestures the right hand is making
     /// </summary>
-    [HideInInspector] public static Dictionary<HandVR.Gesture, bool> rightGestures = new Dictionary<HandVR.Gesture, bool>();
+    public static Dictionary<HandVR.Gesture, bool> rightGestures = new Dictionary<HandVR.Gesture, bool>();
 
     [Header("Tracks a player's hands in VR through the hand's joints.")]
 
@@ -568,11 +568,11 @@ public class HandVR
 
             case Gesture.Pinch:
 
-                return DistanceSquared(TranslateRelative(indexTip.transform, new Vector3(0, -0.005f, 0.017f)), TranslateRelative(thumbTip.transform, new Vector3(0, -0.0045f, 0.008f))) < 0.0005f;
+                return DistanceSquared(TranslateRelative(indexTip.transform, new Vector3(0, -0.005f, 0.017f)), TranslateRelative(thumbTip.transform, new Vector3(0, -0.0045f, 0.008f))) < 0.00075f;
 
             case Gesture.PinchMiddle:
 
-                return DistanceSquared(TranslateRelative(middleTip.transform, new Vector3(0, -0.005f, 0.017f)), TranslateRelative(thumbTip.transform, new Vector3(0, -0.0045f, 0.008f))) < 0.0005f;
+                return DistanceSquared(TranslateRelative(middleTip.transform, new Vector3(0, -0.005f, 0.017f)), TranslateRelative(thumbTip.transform, new Vector3(0, -0.0045f, 0.008f))) < 0.00075f;
 
             case Gesture.ThumbsUp:
 

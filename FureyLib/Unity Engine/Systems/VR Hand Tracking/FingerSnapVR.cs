@@ -52,10 +52,7 @@ public class FingerSnapVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// IHandInteractableVR Interface - Called when VR hands are successfully set.
     /// </summary>
-    public void OnSetHands()
-    {
-        IHandInteractableVR.implementations.Add(this);
-    }
+    public void OnSetHands() { }
 
     /// <summary>
     /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
@@ -70,6 +67,8 @@ public class FingerSnapVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     private void Awake()
     {
+        IHandInteractableVR.implementations.Add(this);
+
         if (IHandInteractableVR.handsSet)
         {
             OnSetHands();

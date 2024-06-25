@@ -28,8 +28,6 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     public void OnSetHands()
     {
-        IHandInteractableVR.implementations.Add(this);
-
         // New hand tracking code here
     }
 
@@ -48,6 +46,8 @@ public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     private void Awake()
     {
+        IHandInteractableVR.implementations.Add(this);
+
         if (IHandInteractableVR.handsSet)
         {
             OnSetHands();

@@ -85,8 +85,6 @@ public class SlingshotVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     public void OnSetHands()
     {
-        IHandInteractableVR.implementations.Add(this);
-
         leftHandPivot = new GameObject("Left Slingshot Pivot");
 
         leftHandPivot.transform.parent = HandTrackerVR.leftHand.wrist.transform;
@@ -109,6 +107,8 @@ public class SlingshotVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     private void Awake()
     {
+        IHandInteractableVR.implementations.Add(this);
+
         if (IHandInteractableVR.handsSet)
         {
             OnSetHands();

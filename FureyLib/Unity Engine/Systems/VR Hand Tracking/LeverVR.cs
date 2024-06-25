@@ -108,20 +108,7 @@ public class LeverVR : MonoBehaviour, IHandInteractableVR
     public enum Direction2D { Forward, Backward, Left, Right };
 
     /// <summary>
-    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
-    /// </summary>
-    public void OnSetHands() { }
-
-    /// <summary>
-    /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
-    /// </summary>
-    private void OnDestroy()
-    {
-        IHandInteractableVR.implementations.Remove(this);
-    }
-
-    /// <summary>
-    /// Sets the knob's local position and start direction
+    /// IHandInteractableVR Interface - Adds this object's implementation to the interface.
     /// </summary>
     private void Awake()
     {
@@ -137,6 +124,19 @@ public class LeverVR : MonoBehaviour, IHandInteractableVR
         knobLocalPosition = knob.transform.localPosition;
 
         startDirection = pivot.transform.localRotation;
+    }
+
+    /// <summary>
+    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
+    /// </summary>
+    public void OnSetHands() { }
+
+    /// <summary>
+    /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
+    /// </summary>
+    private void OnDestroy()
+    {
+        IHandInteractableVR.implementations.Remove(this);
     }
 
     /// <summary>

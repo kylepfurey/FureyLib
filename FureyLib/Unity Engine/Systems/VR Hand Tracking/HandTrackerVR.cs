@@ -83,6 +83,26 @@ public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
     [Header("Events to call when hands are set:")]
     public UnityEvent onHandsSet = null;
 
+    /// <summary>
+    /// Update() is called once per frame
+    /// </summary>
+    private void Update()
+    {
+        // Update the gestures both hands are making
+        if (leftHand != null && rightHand != null)
+        {
+            for (int i = 0; i < System.Enum.GetNames(typeof(HandVR.Gesture)).Length; i++)
+            {
+                leftGestures[(HandVR.Gesture)i] = leftHand.GetGesture((HandVR.Gesture)i);
+
+                rightGestures[(HandVR.Gesture)i] = rightHand.GetGesture((HandVR.Gesture)i);
+            }
+        }
+    }
+
+    /// <summary>
+    /// IHandInteractableVR Interface - Adds this object's implementation to the interface.
+    /// </summary>
     private void Awake()
     {
         leftHand = null;
@@ -100,20 +120,6 @@ public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
         if (setHandsOnStart)
         {
             OnSetHands();
-        }
-    }
-
-    private void Update()
-    {
-        // Update the gestures both hands are making
-        if (leftHand != null && rightHand != null)
-        {
-            for (int i = 0; i < System.Enum.GetNames(typeof(HandVR.Gesture)).Length; i++)
-            {
-                leftGestures[(HandVR.Gesture)i] = leftHand.GetGesture((HandVR.Gesture)i);
-
-                rightGestures[(HandVR.Gesture)i] = rightHand.GetGesture((HandVR.Gesture)i);
-            }
         }
     }
 
@@ -147,6 +153,11 @@ public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
             }
         }
     }
+
+    /// <summary>
+    /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
+    /// </summary>
+    private void OnDestroy() { }
 
     /// <summary>
     /// Whether the given hand is making the given gesture

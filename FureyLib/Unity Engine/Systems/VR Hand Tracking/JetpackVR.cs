@@ -100,28 +100,7 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
     private Color controlObjectEmissiveColor = Color.black;
 
     /// <summary>
-    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
-    /// </summary>
-    public void OnSetHands() { }
-
-    /// <summary>
-    /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
-    /// </summary>
-    private void OnDestroy()
-    {
-        IHandInteractableVR.implementations.Remove(this);
-
-        baseMaterial.color = baseColor;
-
-        baseMaterial.SetColor("_EmissionColor", baseEmissiveColor);
-
-        controlObjectMaterial.color = controlObjectColor;
-
-        controlObjectMaterial.SetColor("_EmissionColor", controlObjectEmissiveColor);
-    }
-
-    /// <summary>
-    /// Sets components and their settings
+    /// IHandInteractableVR Interface - Adds this object's implementation to the interface.
     /// </summary>
     private void Awake()
     {
@@ -170,6 +149,27 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
 
             controlObjectEmissiveColor = controlObjectMaterial.GetColor("_EmissionColor");
         }
+    }
+
+    /// <summary>
+    /// IHandInteractableVR Interface - Called when VR hands are successfully set.
+    /// </summary>
+    public void OnSetHands() { }
+
+    /// <summary>
+    /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
+    /// </summary>
+    private void OnDestroy()
+    {
+        IHandInteractableVR.implementations.Remove(this);
+
+        baseMaterial.color = baseColor;
+
+        baseMaterial.SetColor("_EmissionColor", baseEmissiveColor);
+
+        controlObjectMaterial.color = controlObjectColor;
+
+        controlObjectMaterial.SetColor("_EmissionColor", controlObjectEmissiveColor);
     }
 
     /// <summary>

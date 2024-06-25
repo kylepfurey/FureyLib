@@ -81,6 +81,19 @@ public class SlingshotVR : MonoBehaviour, IHandInteractableVR
     public enum SlingshotState { Unloaded, LoadedRight, LoadedLeft };
 
     /// <summary>
+    /// IHandInteractableVR Interface - Adds this object's implementation to the interface.
+    /// </summary>
+    private void Awake()
+    {
+        IHandInteractableVR.implementations.Add(this);
+
+        if (IHandInteractableVR.handsSet)
+        {
+            OnSetHands();
+        }
+    }
+
+    /// <summary>
     /// IHandInteractableVR Interface - Called when VR hands are successfully set.
     /// </summary>
     public void OnSetHands()
@@ -100,19 +113,6 @@ public class SlingshotVR : MonoBehaviour, IHandInteractableVR
     private void OnDestroy()
     {
         IHandInteractableVR.implementations.Remove(this);
-    }
-
-    /// <summary>
-    /// Sets the player's hands
-    /// </summary>
-    private void Awake()
-    {
-        IHandInteractableVR.implementations.Add(this);
-
-        if (IHandInteractableVR.handsSet)
-        {
-            OnSetHands();
-        }
     }
 
     /// <summary>

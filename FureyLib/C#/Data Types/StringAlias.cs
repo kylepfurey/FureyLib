@@ -464,12 +464,17 @@ public class StringAlias : IEnumerable
             return "";
         }
 
-        while (value[0] == ' ' || whitespaceCharacters.Contains(value[0]))
+        for (int i = 0; i < whitespaceCharacters.Count; i++)
+        {
+            value = value.Replace(whitespaceCharacters[i], ' ');
+        }
+
+        while (value[0] == ' ')
         {
             value = value.Remove(0, 1);
         }
 
-        while (value[value.Length - 1] == ' ' || whitespaceCharacters.Contains(value[value.Length - 1]))
+        while (value[value.Length - 1] == ' ')
         {
             value = value.Remove(value.Length - 1, 1);
         }

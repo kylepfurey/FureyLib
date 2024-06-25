@@ -80,12 +80,17 @@ public:
 			return "";
 		}
 
-		while (value[0] == ' ' || std::find(whitespace_characters.begin(), whitespace_characters.end(), value[0]) != whitespace_characters.end())
+		for (int i = 0; i < whitespaceCharacters.size(); i++)
+		{
+			value = replace(value, whitespace_characters[i], ' ');
+		}
+
+		while (value[0] == ' ')
 		{
 			value = value.replace(0, 1, "");
 		}
 
-		while (value[value.length() - 1] == ' ' || std::find(whitespace_characters.begin(), whitespace_characters.end(), value[value.length() - 1]) != whitespace_characters.end())
+		while (value[value.length() - 1] == ' ')
 		{
 			value = value.replace(value.length() - 1, 1, "");
 		}
@@ -617,12 +622,17 @@ public:
 			return "";
 		}
 
-		while (value[0] == ' ' || std::find(whitespaceCharacters.begin(), whitespaceCharacters.end(), value[0]) != whitespaceCharacters.end())
+		for (int i = 0; i < whitespaceCharacters.size(); i++)
+		{
+			value = Replace(value, whitespaceCharacters[i], ' ');
+		}
+
+		while (value[0] == ' ')
 		{
 			value = value.replace(0, 1, "");
 		}
 
-		while (value[value.length() - 1] == ' ' || std::find(whitespaceCharacters.begin(), whitespaceCharacters.end(), value[value.length() - 1]) != whitespaceCharacters.end())
+		while (value[value.length() - 1] == ' ')
 		{
 			value = value.replace(value.length() - 1, 1, "");
 		}

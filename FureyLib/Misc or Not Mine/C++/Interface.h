@@ -10,10 +10,10 @@
 #include <vector>
 #include <map>
 
-// Inherit from this interface to implement it
-
 // Include this heading to use the interface
 #include "Interface.h"
+
+// Inherit from this interface to implement it
 
 // Template interface script.
 class IInterface

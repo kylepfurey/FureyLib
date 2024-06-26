@@ -5,9 +5,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-// Include this heading to use the class
-using static StringAlias;
-
 /// <summary>
 /// Provides simple storage for string replacements.
 /// </summary>

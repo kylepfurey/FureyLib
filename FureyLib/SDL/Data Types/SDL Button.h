@@ -2,6 +2,8 @@
 // SDL Button Script
 // by Kyle Furey
 
+// REQUIREMENTS: SDL Interface.h
+
 #pragma once
 #include <string>
 #include <vector>

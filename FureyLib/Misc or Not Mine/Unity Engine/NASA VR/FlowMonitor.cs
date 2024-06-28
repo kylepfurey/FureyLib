@@ -1,3 +1,7 @@
+
+// Flow Data Text Visualization Script
+// by Kyle Furey for NASA VR Project
+
 using System.Threading.Tasks;
 using UnityEngine;
 using TMPro;

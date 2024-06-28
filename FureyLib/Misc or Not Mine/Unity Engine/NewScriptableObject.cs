@@ -88,5 +88,13 @@ public class NewScriptableObject : ScriptableObject
 
     }
 
+    /// <summary>
+    /// OnValidate() is called when one of this component's values are changed in the editor
+    /// </summary>
+    private void OnValidate()
+    {
+
+    }
+
     // New functions here
 }

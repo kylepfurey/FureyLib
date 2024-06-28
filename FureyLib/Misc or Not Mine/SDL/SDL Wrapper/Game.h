@@ -1,5 +1,5 @@
 
-// SDL Game Wrapper Class
+// SDL Game Wrapper Class Script
 // by Allen Cantin
 
 #pragma once

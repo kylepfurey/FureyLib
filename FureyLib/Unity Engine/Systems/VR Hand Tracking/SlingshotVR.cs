@@ -467,7 +467,7 @@ public class SlingshotVR : MonoBehaviour, IHandInteractableVR
 
         slungObjects.Enqueue(slungRigidbody.gameObject);
 
-        while (slungObjects.Count > maxNumberOfSlungObjects)
+        while (capSlungObjects && slungObjects.Count > maxNumberOfSlungObjects)
         {
             Destroy(slungObjects.Dequeue());
         }

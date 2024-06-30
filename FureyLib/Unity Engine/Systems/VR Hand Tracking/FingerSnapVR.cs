@@ -17,9 +17,9 @@ public class FingerSnapVR : MonoBehaviour, IHandInteractableVR
     [Header("\nEVENTS")]
 
     [Header("Events for when the player snaps their fingers:")]
-    [SerializeField] private UnityEvent snapEvents = null;
-    [SerializeField] private UnityEvent leftSnapEvents = null;
-    [SerializeField] private UnityEvent rightSnapEvents = null;
+    public UnityEvent snapEvents = null;
+    public UnityEvent leftSnapEvents = null;
+    public UnityEvent rightSnapEvents = null;
 
     [Header("The optional sound to play when the player snaps:")]
     [SerializeField] private AudioClip snapSound = null;

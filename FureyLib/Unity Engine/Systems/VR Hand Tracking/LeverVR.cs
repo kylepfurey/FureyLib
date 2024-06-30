@@ -46,10 +46,10 @@ public class LeverVR : MonoBehaviour, IHandInteractableVR
     [SerializeField] private float leverDownPercentage = 0.9f;
 
     [Header("Events for when the lever is fully moved in a direction:")]
-    [SerializeField] private UnityEvent forwardEvents = null;
-    [SerializeField] private UnityEvent backwardEvents = null;
-    [SerializeField] private UnityEvent leftEvents = null;
-    [SerializeField] private UnityEvent rightEvents = null;
+    public UnityEvent forwardEvents = null;
+    public UnityEvent backwardEvents = null;
+    public UnityEvent leftEvents = null;
+    public UnityEvent rightEvents = null;
 
     /// <summary>
     /// The parent object of the lever's knob (to keep it attached to the lever)

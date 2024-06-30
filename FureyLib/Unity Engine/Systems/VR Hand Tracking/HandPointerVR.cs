@@ -48,7 +48,7 @@ public class HandPointerVR : MonoBehaviour, IHandInteractableVR
     [SerializeField] private string teleportTag = "Anchor";
 
     [Header("Events triggered by teleporting (fading the screen should be one):")]
-    [SerializeField] private UnityEvent OnTeleport = null;
+    public UnityEvent OnTeleport = null;
 
     [Header("\nTELEPORTATION UI")]
 

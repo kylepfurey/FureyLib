@@ -64,19 +64,19 @@ public class ButtonVR : MonoBehaviour, IHandInteractableVR
     [Header("\nEVENTS")]
 
     [Header("Events for when the button is clicked down:")]
-    [SerializeField] private UnityEvent onClick = null;
+    public UnityEvent onClick = null;
 
     [Header("Events for when the button is pressed down:")]
-    [SerializeField] private UnityEvent onHold = null;
+    public UnityEvent onHold = null;
 
     [Header("Events for when the button is no longer held down:")]
-    [SerializeField] private UnityEvent onRelease = null;
+    public UnityEvent onRelease = null;
 
     [Header("Events for when the button is clicked down:")]
-    [SerializeField] private UnityEvent duringClick = null;
+    public UnityEvent duringClick = null;
 
     [Header("Events for when the button is clicked back up:")]
-    [SerializeField] private UnityEvent onUnclick = null;
+    public UnityEvent onUnclick = null;
 
     /// <summary>
     /// The current state of the button

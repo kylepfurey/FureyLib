@@ -257,7 +257,6 @@ public class FlowParticle : MonoBehaviour
         var gyroperiod = (2 * PI) / ((Abs(q) * Mag(BDipole(r0 * RE))) / rigidbody.mass);
         var dt = 0.01f * gyroperiod;
 
-        Vector3 rdat;
         Vector3 vdat;
 
         // Set initial conditions

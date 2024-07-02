@@ -2,6 +2,8 @@
 // Flow Particle Object Script
 // by Kyle Furey for NASA VR Project
 
+// REQUIREMENTS: Flow Files, ParticleVisibility.cs, IMEF Functions.cs
+
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.Mathf;
@@ -19,15 +21,15 @@ public class FlowParticle : MonoBehaviour
     [SerializeField] private float velocitySpeed = 1;
     [SerializeField] private float velocityLerp = 0.25f;
 
-    [Header("Particle Settings")]
+    [Header("\nParticle Settings")]
     public float q = 1;
     public float gs = 1;
     public float kp = 1;
     public bool flowLikeOceanCurrent = false;
 
-    [Header("Optimization")]
+    [Header("\nOptimization")]
     [SerializeField] private float maxDistance = 50;
-    [SerializeField] private float maxParticles = 5;
+    [SerializeField] private float maxParticles = 12;
 
     /// <summary>
     /// The flow data file
@@ -37,7 +39,7 @@ public class FlowParticle : MonoBehaviour
     /// <summary>
     /// The flow particle's rigidbody
     /// </summary>
-    private Rigidbody rigidbody = null;
+    [HideInInspector] public Rigidbody rigidbody = null;
 
     /// <summary>
     /// Reference to the flow data cube
@@ -59,13 +61,13 @@ public class FlowParticle : MonoBehaviour
     /// </summary>
     private bool gravitySetting = false;
 
-
-    // STATIC VARIABLES
-
     /// <summary>
     /// The unmodified velocity of the boris function
     /// </summary>
-    public static Vector3 borisVelocity = zero;
+    private Vector3 borisVelocity = zero;
+
+
+    // STATIC VARIABLES
 
     /// <summary>
     /// Position of particle in the flow data
@@ -205,7 +207,9 @@ public class FlowParticle : MonoBehaviour
             }
             else
             {
-                rigidbody.velocity = Lerp(rigidbody.velocity, TranslateRelative(flowDataScaleParent.transform, BorisStep(GetRelativeToBounds(transform.position), borisVelocity) * velocitySpeed * 100) - flowDataScaleParent.transform.position, velocityLerp);
+                Vector3 next = BorisStep(GetRelativeToBounds(transform.position), borisVelocity) * velocitySpeed * 100;
+
+                rigidbody.velocity = Lerp(rigidbody.velocity, TranslateRelative(flowDataScaleParent.transform, SphToCrt(next.x, next.y, next.z)) - flowDataScaleParent.transform.position, velocityLerp);
             }
 
             // Update the static variables
@@ -213,7 +217,7 @@ public class FlowParticle : MonoBehaviour
             velocity = flowFile.Sample(position);
             density = GetDensity(position);
             direction = velocity.normalized;
-            magnetic = IMEF.BDipole(position).normalized;
+            magnetic = BDipole(position).normalized;
         }
     }
 
@@ -227,11 +231,22 @@ public class FlowParticle : MonoBehaviour
     }
 
     /// <summary>
+    /// Checks if the particle is currently in bounds
+    /// </summary>
+    /// <returns></returns>
+    public bool InBounds()
+    {
+        Vector3 position = GetRelativeToBounds(transform.position);
+
+        return position.x >= 0 && position.x <= ParticleVisibility.particleScale && position.y >= 0 && position.y <= ParticleVisibility.particleScale && position.z >= 0 && position.z <= ParticleVisibility.particleScale;
+    }
+
+    /// <summary>
     /// Converts a world position to a local position (0 - 100) of the particle bounds
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    private Vector3 GetRelativeToBounds(Vector3 position)
+    public Vector3 GetRelativeToBounds(Vector3 position)
     {
         position = position - flowDataScaleParent.transform.position;
 
@@ -242,7 +257,34 @@ public class FlowParticle : MonoBehaviour
         position.y /= flowDataScaleParent.transform.localScale.y;
         position.z /= flowDataScaleParent.transform.localScale.z;
 
-        return position * ParticleVisibility.particleScale;
+        position *= ParticleVisibility.particleScale;
+
+        position.x = Round(position.x);
+        position.y = Round(position.y);
+        position.z = Round(position.z);
+
+        return position;
+    }
+
+    /// <summary>
+    /// Converts a local position (0 - 100) of the particle bounds to a world position
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public Vector3 GetBoundsToWorld(Vector3 position)
+    {
+        position /= ParticleVisibility.particleScale;
+
+        position.z *= flowDataScaleParent.transform.localScale.z;
+        position.y *= flowDataScaleParent.transform.localScale.y;
+        position.x *= flowDataScaleParent.transform.localScale.x;
+
+        position.z -= flowData.particleOrigin.z * flowDataScaleParent.transform.localScale.z;
+        position.x -= flowData.particleOrigin.x * flowDataScaleParent.transform.localScale.x;
+
+        position += flowDataScaleParent.transform.position;
+
+        return position;
     }
 
     /// <summary>
@@ -311,15 +353,15 @@ public class FlowParticle : MonoBehaviour
     /// <summary>
     /// Calculates the magnetic density
     /// </summary>
-    /// <param name="coords"></param>
+    /// <param name="position"></param>
     /// <returns></returns>
-    private Vector3 GetDensity(Vector3 coords)
+    public Vector3 GetDensity(Vector3 position)
     {
         Vector3 J;
 
-        float x = coords.x;
-        float y = coords.y;
-        float z = coords.z;
+        float x = position.x;
+        float y = position.y;
+        float z = position.z;
 
         /*
         DENSITY EQUATION

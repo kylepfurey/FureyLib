@@ -366,7 +366,7 @@ public class LeverVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
-    /// Updates the lever and returns the lever's current percentage in the given direction
+    /// Updates the lever and returns the lever's current percentage in the given direction. Note: The percentage is clamped from 0 - 1 to ensure it does not roll over.
     /// </summary>
     /// <param name="direction"></param>
     /// <returns>The percentage the lever is at of the given direction</returns>
@@ -386,22 +386,24 @@ public class LeverVR : MonoBehaviour, IHandInteractableVR
 
             case Direction2D.Backward:
 
-                percent = Percentage(RotationOnAxis(pivot.transform.localRotation, Axis.X), startDirection.eulerAngles.x - backwardForwardClamp.x, startDirection.eulerAngles.x);
+                percent = 1 - Percentage(RotationOnAxis(pivot.transform.localRotation, Axis.X), startDirection.eulerAngles.x - backwardForwardClamp.x, startDirection.eulerAngles.x);
 
                 break;
 
             case Direction2D.Right:
 
-                percent = Percentage(RotationOnAxis(pivot.transform.localRotation, Axis.Z), startDirection.eulerAngles.z, startDirection.eulerAngles.z + backwardForwardClamp.y);
+                percent = 1 - Percentage(RotationOnAxis(pivot.transform.localRotation, Axis.Z), startDirection.eulerAngles.z - backwardForwardClamp.x, startDirection.eulerAngles.z);
 
                 break;
 
             case Direction2D.Left:
 
-                percent = Percentage(RotationOnAxis(pivot.transform.localRotation, Axis.Z), startDirection.eulerAngles.z - backwardForwardClamp.x, startDirection.eulerAngles.z);
+                percent = Percentage(RotationOnAxis(pivot.transform.localRotation, Axis.Z), startDirection.eulerAngles.z, startDirection.eulerAngles.z + backwardForwardClamp.y);
 
                 break;
         }
+
+        percent = Mathf.Clamp(percent, 0, 1);
 
         return percent;
     }

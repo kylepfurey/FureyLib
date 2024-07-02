@@ -1,4 +1,4 @@
-
+﻿
 // Interactable VR Raygun Object Script
 // by Kyle Furey
 
@@ -123,6 +123,7 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     [SerializeField] private bool infiniteAmmo = false;
     [SerializeField] private int currentAmmo = 12;
     [SerializeField] private int maxAmmo = 12;
+    [SerializeField] private bool autoEject = true;
 
     [Header("Sound effects:")]
     [SerializeField] private AudioClip fireSound = null;
@@ -311,6 +312,11 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
                 }
             }
 
+            if (currentAmmo <= 0 && autoEject)
+            {
+                EjectMagazine();
+            }
+
             if (triggerPercent >= firePercent)
             {
                 if (!triggerDownOnGrab)
@@ -328,6 +334,15 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
             }
 
             CheckReload();
+
+            if (ammoDisplay != null)
+            {
+                ammoDisplay.text = infiniteAmmo ? "" : currentAmmo.ToString();
+
+                ammoDisplay.color = Color.white;
+
+                ammoDisplay.outlineColor = beamColor;
+            }
         }
         else
         {
@@ -401,7 +416,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// Fires in a burst sequence
     /// </summary>
-    /// <param name="numberOfBursts"></param>
     /// <returns></returns>
     private async Task Burst(int numberOfBursts)
     {
@@ -491,7 +505,7 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
 
                 ray.transform.localScale = new Vector3(beamWidth, beamWidth, hit.distance);
 
-                Component[] components = hit.collider.gameObject.GetComponents<Component>();
+                MonoBehaviour[] components = hit.collider.gameObject.GetComponents<MonoBehaviour>();
 
                 for (int i = 0; i < components.Length; i++)
                 {
@@ -515,16 +529,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
             if (!infiniteAmmo)
             {
                 currentAmmo--;
-
-                if (ammoDisplay != null)
-                {
-                    ammoDisplay.text = currentAmmo.ToString();
-                }
-
-                if (currentAmmo <= 0)
-                {
-                    EjectMagazine();
-                }
             }
 
             if (fireSound != null)
@@ -550,8 +554,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// Destroys the given object after the given number of seconds
     /// </summary>
-    /// <param name="gameObject"></param>
-    /// <param name="seconds"></param>
     /// <returns></returns>
     private static async Task DestroyAfterSeconds(GameObject gameObject, float seconds)
     {
@@ -596,23 +598,21 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     /// </summary>
     public void Reload(HandGrabbableVR magazine = null)
     {
-        triggerDownOnGrab = true;
-
-        currentAmmo = maxAmmo;
-
-        if (ammoDisplay != null)
+        if (currentMagazine == null)
         {
-            ammoDisplay.text = currentAmmo.ToString();
+            triggerDownOnGrab = true;
+
+            currentAmmo = maxAmmo;
+
+            InsertMagazine(magazine);
+
+            if (reloadSound != null)
+            {
+                AudioSource.PlayClipAtPoint(reloadSound, ammoLocation.transform.position);
+            }
+
+            onReload.Invoke();
         }
-
-        InsertMagazine(magazine);
-
-        if (reloadSound != null)
-        {
-            AudioSource.PlayClipAtPoint(reloadSound, ammoLocation.transform.position);
-        }
-
-        onReload.Invoke();
     }
 
     /// <summary>
@@ -653,6 +653,8 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     {
         if (currentMagazine != null)
         {
+            currentAmmo = 0;
+
             if (emptyMagazinePrefab != null)
             {
                 GameObject magazine = Instantiate(emptyMagazinePrefab);
@@ -691,7 +693,7 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
 
         if (ammoDisplay != null)
         {
-            ammoDisplay.text = currentAmmo.ToString();
+            ammoDisplay.text = infiniteAmmo ? "" : currentAmmo.ToString();
 
             ammoDisplay.color = Color.white;
 
@@ -818,6 +820,42 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
+    /// Gets the beam's width
+    /// </summary>
+    /// <returns></returns>
+    public float GetBeamWidth()
+    {
+        return beamWidth;
+    }
+
+    /// <summary>
+    /// Gets the beam's linger time
+    /// </summary>
+    /// <returns></returns>
+    public float GetBeamLingerTime()
+    {
+        return beamLingerTime;
+    }
+
+    /// <summary>
+    /// Gets the raygun's range
+    /// </summary>
+    /// <returns></returns>
+    public float GetRange()
+    {
+        return beamRange;
+    }
+
+    /// <summary>
+    /// Gets whether the magazine will auto eject when it is empty
+    /// </summary>
+    /// <returns></returns>
+    public bool WillAutoEject()
+    {
+        return autoEject;
+    }
+
+    /// <summary>
     /// Gets the laser sight object
     /// </summary>
     /// <returns></returns>
@@ -856,6 +894,15 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     public float GetLaserSightIntensity()
     {
         return laserSightIntensity;
+    }
+
+    /// <summary>
+    /// Gets the laser sight's width
+    /// </summary>
+    /// <returns></returns>
+    public float GetLaserSightWidth()
+    {
+        return laserSightWidth;
     }
 
     /// <summary>
@@ -1075,6 +1122,24 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
+    /// Gets the magazine object
+    /// </summary>
+    /// <returns></returns>
+    public HandGrabbableVR GetMagazine()
+    {
+        return currentMagazine;
+    }
+
+    /// <summary>
+    /// Gets the empty magazine prefab object
+    /// </summary>
+    /// <returns></returns>
+    public GameObject GetEmptyMagazinePrefab()
+    {
+        return emptyMagazinePrefab;
+    }
+
+    /// <summary>
     /// Gets the firing sound
     /// </summary>
     /// <returns></returns>
@@ -1093,12 +1158,21 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
-    /// Gets the magazine object
+    /// Gets the firing empty sound
     /// </summary>
     /// <returns></returns>
-    public HandGrabbableVR GetMagazine()
+    public AudioClip GetEmptySound()
     {
-        return currentMagazine;
+        return emptySound;
+    }
+
+    /// <summary>
+    /// Gets the magazine eject sound
+    /// </summary>
+    /// <returns></returns>
+    public AudioClip GetEjectSound()
+    {
+        return ejectSound;
     }
 
     /// <summary>
@@ -1138,7 +1212,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// Sets the beam color
     /// </summary>
-    /// <param name="newColor"></param>
     /// <returns></returns>
     public Color SetBeamColor(Color newColor)
     {
@@ -1152,7 +1225,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// Sets the beam's emissive intensity
     /// </summary>
-    /// <param name="newIntensity"></param>
     /// <returns></returns>
     public float SetBeamIntensity(float newIntensity)
     {
@@ -1164,9 +1236,63 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
+    /// Sets the beam's width
+    /// </summary>
+    /// <returns></returns>
+    public float SetBeamWidth(float newWidth)
+    {
+        beamWidth = newWidth;
+
+        return newWidth;
+    }
+
+    /// <summary>
+    /// Sets the beam's linger time
+    /// </summary>
+    /// <returns></returns>
+    public float SetBeamLingerTime(float newTime)
+    {
+        beamLingerTime = newTime;
+
+        return newTime;
+    }
+
+    /// <summary>
+    /// Sets the raygun's range
+    /// </summary>
+    /// <returns></returns>
+    public float SetRange(float newRange)
+    {
+        beamRange = newRange;
+
+        return newRange;
+    }
+
+    /// <summary>
+    /// Sets whether the magazine will auto eject when it is empty
+    /// </summary>
+    /// <returns></returns>
+    public bool SetAutoEject(bool autoEject)
+    {
+        this.autoEject = autoEject;
+
+        return autoEject;
+    }
+
+    /// <summary>
+    /// Toggles whether the magazine will auto eject when it is empty
+    /// </summary>
+    /// <returns></returns>
+    public bool ToggleAutoEject()
+    {
+        autoEject = !autoEject;
+
+        return autoEject;
+    }
+
+    /// <summary>
     /// Sets whether the laser sight is on
     /// </summary>
-    /// <param name="on"></param>
     /// <returns></returns>
     public bool SetLaserSightOn(bool on)
     {
@@ -1193,7 +1319,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// Sets the laser sight's color
     /// </summary>
-    /// <param name="newColor"></param>
     /// <returns></returns>
     public Color SetLaserSightColor(Color newColor)
     {
@@ -1207,7 +1332,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// Sets the laser sight's emissive intensity
     /// </summary>
-    /// <param name="newIntensity"></param>
     /// <returns></returns>
     public float SetLaserSightIntensity(float newIntensity)
     {
@@ -1219,9 +1343,19 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
+    /// Sets the laser sight's width
+    /// </summary>
+    /// <returns></returns>
+    public float SetLaserSightWidth(float newWidth)
+    {
+        laserSightWidth = newWidth;
+
+        return newWidth;
+    }
+
+    /// <summary>
     /// Resets the laser sight
     /// </summary>
-    /// <param name="newLocalPosition"></param>
     public void ResetLaserSight(Vector3 newLocalPosition)
     {
         if (laserSightSet)
@@ -1237,7 +1371,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// Set whether the flashlight is on
     /// </summary>
-    /// <param name="on"></param>
     /// <returns></returns>
     public bool SetFlashlightOn(bool on)
     {
@@ -1264,7 +1397,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// Sets the flashlight's color
     /// </summary>
-    /// <param name="newColor"></param>
     /// <returns></returns>
     public Color SetFlashlightColor(Color newColor)
     {
@@ -1278,7 +1410,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// Sets the flashlight's intensity
     /// </summary>
-    /// <param name="newIntensity"></param>
     /// <returns></returns>
     public float SetFlashlightIntensity(float newIntensity)
     {
@@ -1292,7 +1423,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// Sets the flashlight's angle
     /// </summary>
-    /// <param name="newAngle"></param>
     /// <returns></returns>
     public float SetFlashlightAngle(float newAngle)
     {
@@ -1306,7 +1436,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// Sets the flashlight's range
     /// </summary>
-    /// <param name="newRange"></param>
     /// <returns></returns>
     public float SetFlashlightRange(float newRange)
     {
@@ -1532,6 +1661,22 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
+    /// Sets the magazine object
+    /// </summary>
+    /// <returns></returns>
+    public HandGrabbableVR SetMagazine(HandGrabbableVR newMagazine, bool destroy = true)
+    {
+        if (currentMagazine != null && destroy)
+        {
+            Destroy(currentMagazine.gameObject);
+        }
+
+        currentMagazine = newMagazine;
+
+        return newMagazine;
+    }
+
+    /// <summary>
     /// Sets the empty magazing prefab
     /// </summary>
     /// <returns></returns>
@@ -1584,6 +1729,19 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
         ejectSound = newSound;
 
         return newSound;
+    }
+
+    /// <summary>
+    /// Sets the ammo display text
+    /// </summary>
+    /// <returns></returns>
+    public TextMeshPro SetAmmoDisplay(TextMeshPro newDisplay)
+    {
+        ammoDisplay = newDisplay;
+
+        UpdateRaygun();
+
+        return newDisplay;
     }
 
 

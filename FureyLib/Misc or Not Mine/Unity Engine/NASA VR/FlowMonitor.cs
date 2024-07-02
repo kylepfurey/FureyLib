@@ -2,6 +2,8 @@
 // Flow Data Text Visualization Script
 // by Kyle Furey for NASA VR Project
 
+// REQUIREMENTS: Flow Particle.cs
+
 using System.Threading.Tasks;
 using UnityEngine;
 using TMPro;

@@ -100,6 +100,8 @@ public class HeightMapGenerator : MonoBehaviour
         {
             GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
 
+            plane.GetComponent<Collider>().enabled = false;
+
             plane.name = "Generated Plane " + (i + 1);
 
             plane.transform.parent = transform;

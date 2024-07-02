@@ -46,6 +46,7 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
 
     [Header("The offset for grabbed objects:")]
     [SerializeField] private Vector3 grabPositionOffset = new Vector3(0, -0.07f, 0.07f);
+    [SerializeField] private bool rotationOffset = false;
     [SerializeField] private Vector3 leftRotationOffset = new Vector3(0, 0, 0);
     [SerializeField] private Vector3 rightRotationOffset = new Vector3(0, 0, 0);
 
@@ -150,6 +151,32 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     private void OnDestroy()
     {
         IHandInteractableVR.implementations.Remove(this);
+
+        if (heldLeft == gameObject)
+        {
+            heldLeftObject = null;
+        }
+
+        if (heldRight == gameObject)
+        {
+            heldRightObject = null;
+        }
+    }
+
+    /// <summary>
+    /// Drops the object on disable
+    /// </summary>
+    private void OnDisable()
+    {
+        if (heldLeft == gameObject)
+        {
+            heldLeftObject = null;
+        }
+
+        if (heldRight == gameObject)
+        {
+            heldRightObject = null;
+        }
     }
 
     /// <summary>
@@ -249,9 +276,12 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
                 // Hold the item in the player's hand
                 transform.position = TranslateRelative(selectref(isRight, ref HandTrackerVR.rightHand.wrist, ref HandTrackerVR.leftHand.wrist).transform, new Vector3(isRight ? grabPositionOffset.x : -grabPositionOffset.x, grabPositionOffset.y, grabPositionOffset.z));
 
-                transform.eulerAngles = selectref(isRight, ref HandTrackerVR.rightHand.wrist, ref HandTrackerVR.leftHand.wrist).transform.eulerAngles;
+                if (rotationOffset)
+                {
+                    transform.eulerAngles = selectref(isRight, ref HandTrackerVR.rightHand.wrist, ref HandTrackerVR.leftHand.wrist).transform.eulerAngles;
 
-                transform.Rotate(isRight ? rightRotationOffset : leftRotationOffset);
+                    transform.Rotate(isRight ? rightRotationOffset : leftRotationOffset);
+                }
 
                 // Check if the rigidbody exists
                 if (rigidbody != null)

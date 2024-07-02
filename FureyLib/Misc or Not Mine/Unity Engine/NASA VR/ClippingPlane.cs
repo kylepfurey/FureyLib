@@ -2,8 +2,11 @@
 // Flow Data Clipping Plane Script
 // by Kyle Furey for NASA VR Project
 
+// REQUIREMENTS: Flow Files, ParticleVisibility.cs, Contour Lines Shader.shader, IMEF Functions.cs
+
 using UnityEngine;
 using UnityEngine.Rendering;
+using static IMEF;
 
 /// <summary>
 /// Clips and displays a plane of flow data.
@@ -201,19 +204,13 @@ public class ClippingPlane : MonoBehaviour
             {
                 Vector3 J = new Vector3();
 
-                Vector3 vec;
-
                 float average;
 
                 switch (calculation)
                 {
                     case MapType.Velocity:
 
-                        vec = slice[x, y];
-
-                        J = vec.normalized;
-
-                        // J *= (vec.magnitude / maxMagnitude);
+                        J = slice[x, y].normalized;
 
                         break;
 
@@ -264,25 +261,13 @@ public class ClippingPlane : MonoBehaviour
                               /
                               ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y)));
 
-                        vec = J;
-
                         J = J.normalized;
-
-                        // J *= (vec.magnitude / maxMagnitude);
-
-                        average = (J.x + J.y + J.z) / 3;
-
-                        J = new Vector3(average * J.x, average * J.y, average * J.z);
 
                         break;
 
                     case MapType.MagneticField:
 
-                        vec = IMEF.BDipole(GetSample(x, y, (int)depth));
-
-                        J = vec.normalized;
-
-                        // J *= (vec.magnitude / maxMagnitude);
+                        J = BDipole(GetSample(x, y, (int)depth)).normalized;
 
                         break;
                 }
@@ -292,6 +277,21 @@ public class ClippingPlane : MonoBehaviour
                     average = (J.x + J.y + J.z) / 3;
 
                     J = new Vector3(average, average, average);
+                }
+
+                if (J.x <= 0)
+                {
+                    J.x = Mathf.Abs(J.x);
+                }
+
+                if (J.y <= 0)
+                {
+                    J.y = Mathf.Abs(J.y);
+                }
+
+                if (J.z <= 0)
+                {
+                    J.z = Mathf.Abs(J.z);
                 }
 
                 map.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
@@ -335,19 +335,13 @@ public class ClippingPlane : MonoBehaviour
             {
                 Vector3 J = new Vector3();
 
-                Vector3 vec;
-
                 float average;
 
                 switch (calculation)
                 {
                     case MapType.Velocity:
 
-                        vec = slice[x, y];
-
-                        J = vec.normalized;
-
-                        // J *= (vec.magnitude / maxMagnitude);
+                        J = slice[x, y].normalized;
 
                         break;
 
@@ -398,25 +392,13 @@ public class ClippingPlane : MonoBehaviour
                               /
                               ((OrientPoint(x + 1, y + 1, (int)(depth + 1)).y - OrientPoint(x - 1, y - 1, (int)(depth - 1)).y)));
 
-                        vec = J;
-
                         J = J.normalized;
-
-                        // J *= (vec.magnitude / maxMagnitude);
-
-                        average = (J.x + J.y + J.z) / 3;
-
-                        J = new Vector3(average * J.x, average * J.y, average * J.z);
 
                         break;
 
                     case MapType.MagneticField:
 
-                        vec = IMEF.BDipole(GetSample(x, y, (int)depth));
-
-                        J = vec.normalized;
-
-                        // J *= (vec.magnitude / maxMagnitude);
+                        J = BDipole(GetSample(x, y, (int)depth)).normalized;
 
                         break;
                 }
@@ -426,6 +408,21 @@ public class ClippingPlane : MonoBehaviour
                     average = (J.x + J.y + J.z) / 3;
 
                     J = new Vector3(average, average, average);
+                }
+
+                if (J.x <= 0)
+                {
+                    J.x = Mathf.Abs(J.x);
+                }
+
+                if (J.y <= 0)
+                {
+                    J.y = Mathf.Abs(J.y);
+                }
+
+                if (J.z <= 0)
+                {
+                    J.z = Mathf.Abs(J.z);
                 }
 
                 map.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
@@ -1040,20 +1037,9 @@ public class ClippingPlane : MonoBehaviour
     /// Increments depth by the given speed and lever's percentage
     /// </summary>
     /// <param name="speed"></param>
-    public void MoveDepthForward(float speed = 20)
+    public void MoveDepth(float speed = 30)
     {
-        SetDepth(depth + speed * Time.deltaTime * controlLever.GetLeverAxis(LeverVR.Direction2D.Backward));
-
-        RenderSlice(false);
-    }
-
-    /// <summary>
-    /// Decrements depth by the given speed and lever's percentage
-    /// </summary>
-    /// <param name="speed"></param>
-    public void MoveDepthBackward(float speed = 20)
-    {
-        SetDepth(depth - speed * Time.deltaTime * controlLever.GetLeverAxis(LeverVR.Direction2D.Backward));
+        SetDepth(depth + speed * Time.deltaTime * controlLever.GetLeverAxis(speed <= 0 ? LeverVR.Direction2D.Forward : LeverVR.Direction2D.Backward));
 
         RenderSlice(false);
     }

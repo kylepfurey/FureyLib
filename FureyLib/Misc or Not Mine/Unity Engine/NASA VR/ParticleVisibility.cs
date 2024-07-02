@@ -2,6 +2,8 @@
 // Flow Data Particles Script
 // by Kyle Furey for NASA VR Project
 
+// REQUIREMENTS: Flow Files, GridGenerator.cs
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,27 +26,7 @@ public class ParticleVisibility : MonoBehaviour
     /// <summary>
     /// The index of the current flow file
     /// </summary>
-    private int index
-    {
-        get
-        {
-            return flowFiles.IndexOf(flowFile);
-        }
-
-        set
-        {
-            if (index >= 0 && index < flowFiles.Count && flowFiles[value] != null)
-            {
-                index = value;
-
-                flowFile = flowFiles[index];
-            }
-            else
-            {
-                index = index;
-            }
-        }
-    }
+    private int index = 0;
 
     [Header("Whether the bounds and origin for the particle system are static and do not change:")]
     public bool boundsAreStatic = true;
@@ -113,6 +95,10 @@ public class ParticleVisibility : MonoBehaviour
             {
                 Debug.LogError("ERROR: No flow files have been assigned!");
             }
+        }
+        else
+        {
+            index = flowFiles.IndexOf(flowFile);
         }
 
         // Clamp the bounds
@@ -348,7 +334,9 @@ public class ParticleVisibility : MonoBehaviour
     public void ShowPlanes(bool show)
     {
         xPlane.gameObject.active = show;
+
         yPlane.gameObject.active = show;
+
         zPlane.gameObject.active = show;
     }
 
@@ -374,6 +362,7 @@ public class ParticleVisibility : MonoBehaviour
     public void SetParticleBounds(Vector3 bounds, Vector3 origin)
     {
         particleBounds = bounds;
+
         particleOrigin = origin;
     }
 
@@ -383,6 +372,8 @@ public class ParticleVisibility : MonoBehaviour
     public void SetFlowFile(int index)
     {
         this.index = index;
+
+        flowFile = flowFiles[index];
     }
 
     /// <summary>
@@ -391,5 +382,7 @@ public class ParticleVisibility : MonoBehaviour
     public void CycleFlowFiles(int cycles = 1)
     {
         index = (index + cycles) % flowFiles.Count;
+
+        flowFile = flowFiles[index];
     }
 }

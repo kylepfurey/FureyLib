@@ -259,10 +259,17 @@ public class HandVR
     /// <summary>
     /// Gesture type enum (add more if needed)
     /// </summary>
-    public enum Gesture { Open, Fist, Point, Pinch, PinchMiddle, ThumbsUp, FingerGun, FlipOff };
+    public enum Gesture { Open, Fist, Point, Pinch, PinchMiddle, ThumbsUp, FingerGun, FlipOff, Grip };
 
-    // Sets this hand to a found hand object based on the given name. Make sure the name exactly matches the parent of the intended hand.
-    // Note: The hierarchy of joints may also need to be changed depending on your hand prefab.
+    /// <summary>
+    /// Sets this hand to a found hand object based on the given name. Make sure the name exactly matches the parent of the intended hand.
+    /// Note: The hierarchy of joints may also need to be changed depending on your hand prefab.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="isRight"></param>
+    /// <param name="addCollision"></param>
+    /// <param name="collisionIsTrigger"></param>
+    /// <returns></returns>
     public bool SetHand(string name, bool isRight, bool addCollision = true, bool collisionIsTrigger = false)
     {
         GameObject handParent = GameObject.Find(name);
@@ -490,8 +497,12 @@ public class HandVR
         pinkyTip.layer = 2;
     }
 
-    // Returns the percentage of a finger's value based on their maximums and minimums. 1 = finger pointing outward, 0 = finger pointing inward.
-    // Note: You may need to adjust the minimum and maximum constants Depending on your hand prefab.
+    /// <summary>
+    /// Returns the percentage of a finger's value based on their maximums and minimums. 1 = finger pointing outward, 0 = finger pointing inward.
+    /// Note: You may need to adjust the minimum and maximum constants depending on your hand prefab.
+    /// </summary>
+    /// <param name="finger"></param>
+    /// <returns></returns>
     public float GetFinger(Finger finger)
     {
         switch (finger)
@@ -547,8 +558,12 @@ public class HandVR
         }
     }
 
-    // Returns if the hand matches the selected gesture. Add more gestures if needed.
-    // Note: You may need to adjust the values that check the gesture for accuracy and leniency.
+    /// <summary>
+    /// Returns if the hand matches the selected gesture. Add more gestures if needed.
+    /// Note: You may need to adjust the values that check the gesture for accuracy and leniency.
+    /// </summary>
+    /// <param name="gesture"></param>
+    /// <returns></returns>
     public bool GetGesture(Gesture gesture)
     {
         float thumb = GetFinger(Finger.Thumb);
@@ -596,6 +611,10 @@ public class HandVR
             case Gesture.FlipOff:
 
                 return (index < 0.4f) && (middle >= 0.7f) && (ring < 0.4f) && (pinky < 0.4f);
+
+            case Gesture.Grip:
+
+                return (middle < 0.4f) && (ring < 0.4f) && (pinky < 0.4f);
         }
     }
 

@@ -2,7 +2,7 @@
 // VR Hand Pointer and Teleportation Script
 // by Kyle Furey
 
-// REQUIREMENTS: HandTrackerVR.cs
+// REQUIREMENTS: HandTrackerVR.cs, HandGrabbableVR.cs
 
 using System.Collections.Generic;
 using UnityEngine;
@@ -96,7 +96,7 @@ public class HandPointerVR : MonoBehaviour, IHandInteractableVR
     }
 
     /// <summary>
-    /// Updates the teleporation check and pointer beam
+    /// Updates the teleportation check and pointer beam
     /// </summary>
     private void Update()
     {
@@ -106,12 +106,12 @@ public class HandPointerVR : MonoBehaviour, IHandInteractableVR
             // Teleportation with right hand
             if (canTeleportRight && HandTrackerVR.GetGesture(HandVR.Gesture.Point, true))
             {
-                CheckTeleport(HandTrackerVR.GetGesture(HandVR.Gesture.Point, true), HandTrackerVR.rightHand.indexTip.transform.position, HandTrackerVR.rightHand.indexTip.transform.rotation, HandTrackerVR.rightHand.indexTip.transform.position);
+                CheckTeleport(HandTrackerVR.GetGesture(HandVR.Gesture.Point, true) && HandGrabbableVR.heldRight == null, HandTrackerVR.rightHand.indexTip.transform.position, HandTrackerVR.rightHand.indexTip.transform.rotation, HandTrackerVR.rightHand.indexTip.transform.position);
             }
             // Teleportation with left hand
             else if (canTeleportLeft)
             {
-                CheckTeleport(HandTrackerVR.GetGesture(HandVR.Gesture.Point, false), HandTrackerVR.leftHand.indexTip.transform.position, HandTrackerVR.leftHand.indexTip.transform.rotation, HandTrackerVR.leftHand.indexTip.transform.position);
+                CheckTeleport(HandTrackerVR.GetGesture(HandVR.Gesture.Point, false) && HandGrabbableVR.heldLeft == null, HandTrackerVR.leftHand.indexTip.transform.position, HandTrackerVR.leftHand.indexTip.transform.rotation, HandTrackerVR.leftHand.indexTip.transform.position);
             }
         }
     }

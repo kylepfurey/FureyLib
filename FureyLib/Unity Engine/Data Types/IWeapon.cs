@@ -7,7 +7,7 @@ using UnityEngine;
 // Inherit from this interface to implement it
 
 /// <summary>
-/// Contracts functions for a weapon object in a game.
+/// Contracts functions for a weapon object.
 /// </summary>
 public interface IWeapon
 {

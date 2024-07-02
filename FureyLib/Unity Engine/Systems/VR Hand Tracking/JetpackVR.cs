@@ -281,9 +281,15 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
         {
             controlObject.transform.localPosition = Vector3.zero;
 
-            if (renderer != null) { renderer.enabled = hasJetpack && IHandInteractableVR.handsSet; }
+            if (renderer != null)
+            {
+                renderer.enabled = hasJetpack && IHandInteractableVR.handsSet && (HandGrabbableVR.heldLeft == null || HandGrabbableVR.heldLeft == controlObject) && (HandGrabbableVR.heldRight == null || HandGrabbableVR.heldRight == controlObject);
+            }
 
-            if (controlObjectRenderer != null) { controlObjectRenderer.enabled = hasJetpack && IHandInteractableVR.handsSet; }
+            if (controlObjectRenderer != null)
+            {
+                controlObjectRenderer.enabled = hasJetpack && IHandInteractableVR.handsSet && (HandGrabbableVR.heldLeft == null || HandGrabbableVR.heldLeft == controlObject) && (HandGrabbableVR.heldRight == null || HandGrabbableVR.heldRight == controlObject);
+            }
         }
     }
 
@@ -312,9 +318,15 @@ public class JetpackVR : MonoBehaviour, IHandInteractableVR
             controlObjectMaterial.SetColor("_EmissionColor", new Color(Mathf.Max(controlObjectEmissiveColor.r - distance, 0), Mathf.Max(controlObjectEmissiveColor.g - distance, 0), Mathf.Max(controlObjectEmissiveColor.b - distance, 0), Mathf.Max(controlObjectEmissiveColor.a - distance, 0)));
         }
 
-        if (renderer != null) { renderer.UpdateGIMaterials(); }
+        if (renderer != null)
+        {
+            renderer.UpdateGIMaterials();
+        }
 
-        if (controlObjectRenderer != null) { controlObjectRenderer.UpdateGIMaterials(); }
+        if (controlObjectRenderer != null)
+        {
+            controlObjectRenderer.UpdateGIMaterials();
+        }
     }
 
     /// <summary>

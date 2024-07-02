@@ -25,6 +25,22 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     private static GameObject heldLeftObject = null;
     private static GameObject heldRightObject = null;
 
+    /// <summary>
+    /// The current object held in the left hand
+    /// </summary>
+    public static GameObject heldLeft
+    {
+        get { return heldLeftObject; }
+    }
+
+    /// <summary>
+    /// The current object held in the right hand
+    /// </summary>
+    public static GameObject heldRight
+    {
+        get { return heldRightObject; }
+    }
+
     [Header("The maximum distance to this object where it can be grabbed:")]
     [SerializeField] private float grabDistance = 0.25f;
 
@@ -224,7 +240,7 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
         else if (selectref(isRight, ref heldRightObject, ref heldLeftObject) == gameObject)
         {
             // Check if the player is no longer grabbing the object, if they can no longer grab, or if the object is out of reach
-            if (!selectref(isRight, ref grabbingRight, ref grabbingLeft) || !selectref(isRight, ref grabbableRight, ref grabbableLeft) || DistanceSquared(transform.position, selectref(isRight, ref HandTrackerVR.rightHand.palm, ref HandTrackerVR.leftHand.palm).transform.position) > grabDistance * grabDistance)
+            if (!selectref(isRight, ref grabbingRight, ref grabbingLeft) || !selectref(isRight, ref grabbableRight, ref grabbableLeft))
             {
                 Drop(isRight);
             }

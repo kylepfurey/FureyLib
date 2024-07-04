@@ -318,11 +318,13 @@ public:
 
 		va_list list;
 
-		va_start(list, 4);
+		va_start(list, number_of_connections);
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
-			this->connections.push_back(va_arg(list, connection<DataType>));
+			this->connections.push_back(connections);
+			
+			connections = va_arg(list, connection<DataType>);
 		}
 
 		this->weight = weight;
@@ -340,11 +342,13 @@ public:
 
 		va_list list;
 
-		va_start(list, 4);
+		va_start(list, number_of_connections);
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
-			this->connections.push_back(va_arg(list, connection<DataType>));
+			this->connections.push_back(connections);
+			
+			connections = va_arg(list, connection<DataType>);
 		}
 
 		this->weight = weight;
@@ -449,11 +453,13 @@ public:
 
 		va_list list;
 
-		va_start(list, 1);
+		va_start(list, number_of_nodes);
 
 		for (int i = 0; i < number_of_nodes; i++)
 		{
-			this->nodes.push_back(va_arg(list, node<DataType>*));
+			this->nodes.push_back(nodes);
+			
+			nodes = va_arg(list, node<DataType>*);
 		}
 
 		va_end(list);
@@ -853,11 +859,13 @@ public:
 
 		va_list list;
 
-		va_start(list, 4);
+		va_start(list, number_of_connections);
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
-			this->connections.push_back(va_arg(list, Connection<DataType>));
+			this->connections.push_back(connections);
+			
+			connections = va_arg(list, Connection<DataType>);
 		}
 
 		this->weight = weight;
@@ -875,11 +883,13 @@ public:
 
 		va_list list;
 
-		va_start(list, 4);
+		va_start(list, number_of_connections);
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
-			this->connections.push_back(va_arg(list, Connection<DataType>));
+			this->connections.push_back(connections);
+			
+			connections = va_arg(list, Connection<DataType>);
 		}
 
 		this->weight = weight;
@@ -984,11 +994,13 @@ public:
 
 		va_list list;
 
-		va_start(list, 1);
+		va_start(list, number_of_nodes);
 
 		for (int i = 0; i < number_of_nodes; i++)
 		{
-			this->nodes.push_back(va_arg(list, Node<DataType>*));
+			this->nodes.push_back(nodes);
+			
+			nodes = va_arg(list, Node<DataType>*);
 		}
 
 		va_end(list);

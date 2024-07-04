@@ -195,11 +195,13 @@ public:
 
 		va_list list;
 
-		va_start(list, 1);
+		va_start(list, number_of_elements);
 
 		for (int i = 0; i < number_of_elements; i++)
 		{
-			q.push_back(va_arg(list, DataType));
+			q.push_back(data);
+			
+			data = va_arg(list, DataType);
 		}
 
 		va_end(list);
@@ -719,11 +721,13 @@ public:
 
 		va_list list;
 
-		va_start(list, 1);
+		va_start(list, number_of_elements);
 
 		for (int i = 0; i < number_of_elements; i++)
 		{
-			queue.push_back(va_arg(list, DataType));
+			queue.push_back(data);
+			
+			data = va_arg(list, DataType);
 		}
 
 		va_end(list);

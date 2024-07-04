@@ -31,11 +31,13 @@ template <class DataType> static void print(int number_of_elements, DataType mes
 {
 	va_list list;
 
-	va_start(list, 1);
+	va_start(list, number_of_elements);
 
 	for (int i = 0; i < number_of_elements; i++)
 	{
-		std::cout << va_arg(list, DataType) << " ";
+		std::cout << messages << " ";
+		
+		messages = va_arg(list, DataType);
 	}
 
 	va_end(list);

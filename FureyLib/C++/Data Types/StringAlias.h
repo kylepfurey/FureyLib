@@ -350,13 +350,15 @@ public:
 
 		va_list list;
 
-		va_start(list, 2);
+		va_start(list, count);
 
 		for (int i = 0; i < count; i++)
 		{
-			identifiers[i] = va_arg(list, std::string);
-
+			identifiers[i] = strings;
+			
 			identifiers[i] = remove_whitespace(identifiers[i]);
+			
+			strings = va_arg(list, std::string);
 		}
 
 		va_end(list);
@@ -892,13 +894,15 @@ public:
 
 		va_list list;
 
-		va_start(list, 2);
+		va_start(list, count);
 
 		for (int i = 0; i < count; i++)
 		{
-			identifiers[i] = va_arg(list, std::string);
-
+			identifiers[i] = strings;
+			
 			identifiers[i] = RemoveWhitespace(identifiers[i]);
+			
+			strings = va_arg(list, std::string);
 		}
 
 		va_end(list);

@@ -28,7 +28,7 @@ template <class DataType> static DataType select(int n, DataType nData...)
 
 	for (int i = 0; i < n - 1; i++)
 	{
-		va_arg(list, int);
+		va_arg(list, DataType);
 	}
 
 	DataType data = va_arg(list, DataType);
@@ -58,7 +58,7 @@ template <class DataType> static DataType& selectref(int n, DataType& nData...)
 
 	for (int i = 0; i < n - 1; i++)
 	{
-		va_arg(list, int);
+		va_arg(list, DataType);
 	}
 
 	DataType data = va_arg(list, DataType);

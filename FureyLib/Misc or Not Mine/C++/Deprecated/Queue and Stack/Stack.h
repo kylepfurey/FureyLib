@@ -195,11 +195,13 @@ public:
 
 		va_list list;
 
-		va_start(list, 1);
+		va_start(list, number_of_elements);
 
 		for (int i = 0; i < number_of_elements; i++)
 		{
-			s.insert(s.begin(), va_arg(list, DataType));
+			s.insert(s.begin(), data);
+			
+			data = va_arg(list, DataType);
 		}
 
 		va_end(list);
@@ -719,11 +721,13 @@ public:
 
 		va_list list;
 
-		va_start(list, 1);
+		va_start(list, number_of_elements);
 
 		for (int i = 0; i < number_of_elements; i++)
 		{
-			stack.insert(stack.begin(), va_arg(list, DataType));
+			stack.insert(stack.begin(), data);
+			
+			data = va_arg(list, DataType);
 		}
 
 		va_end(list);

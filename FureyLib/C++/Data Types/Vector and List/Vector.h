@@ -1132,7 +1132,7 @@ public:
 
 		va_list list;
 
-		va_start(list, 1);
+		va_start(list, array_length);
 
 		for (int i = 0; i < array_length; i++)
 		{
@@ -2274,7 +2274,7 @@ public:
 
 		va_list list;
 
-		va_start(list, 1);
+		va_start(list, array_length);
 
 		for (int i = 0; i < array_length; i++)
 		{

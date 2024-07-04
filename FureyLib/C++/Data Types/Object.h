@@ -882,3 +882,7 @@ public:
 
 // Gets and stores a value from the following collection to the previous variable.
 #define in :
+
+// •  Repeats the following block of code for the given number of times.
+// •  You can get the current iteration with the "iteration" variable.
+#define do(n) for (int iteration = 0; iteration < n; iteration++)

@@ -15,7 +15,7 @@
 #include "Function.h"
 
 // Example function
-static void function()
+static void Function()
 {
 	std::cout << "Function called!" << std::endl;
 }

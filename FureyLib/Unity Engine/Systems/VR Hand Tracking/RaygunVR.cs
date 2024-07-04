@@ -538,9 +538,11 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
 
             onFire.Invoke();
         }
-        else
+        else if (firstShot || automatic)
         {
             hit = new RaycastHit();
+
+            firstShot = false;
 
             if (emptySound != null)
             {

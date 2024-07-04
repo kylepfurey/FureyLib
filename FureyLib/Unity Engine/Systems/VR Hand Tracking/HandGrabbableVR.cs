@@ -21,6 +21,63 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     public bool grabbableLeft = true;
     public bool grabbableRight = true;
 
+    [Header("The maximum distance to this object where it can be grabbed:")]
+    [SerializeField] private float grabDistance = 0.25f;
+
+    [Header("The offset for grabbed objects:")]
+    [SerializeField] private Vector3 grabPositionOffset = new Vector3(0, -0.07f, 0.07f);
+    [SerializeField] private bool rotationOffset = false;
+    [SerializeField] private Vector3 leftRotationOffset = new Vector3(0, 0, 0);
+    [SerializeField] private Vector3 rightRotationOffset = new Vector3(0, 0, 0);
+
+    [Header("The maximum time the player can be grabbing to grab this item:")]
+    [SerializeField] private float grabBuffer = 0.5f;
+
+    [Header("The gestures allowed to be used to grab this item:")]
+    [SerializeField] private List<HandVR.Gesture> allowedGestures = new List<HandVR.Gesture>() { HandVR.Gesture.Fist };
+
+    [Header("Whether to apply rigidbody physics while the object is held:")]
+    [SerializeField] private bool grabPhysics = true;
+
+    [Header("Whether to assign a rigidbody when this object is let go of:")]
+    [SerializeField] private bool assignRigidbody = true;
+
+    [Header("Whether to keep the old gravity setting when this object is let go of:")]
+    [SerializeField] private bool keepGravitySetting = true;
+
+    [Header("The new gravity setting for this object if it is not keeping its old gravity setting:")]
+    [SerializeField] private bool newGravity = true;
+
+    [Header("\nTHROWING")]
+
+    [Header("Whether this object can be thrown by the player:")]
+    public bool throwable = true;
+
+    [Header("The scale applied to thrown object's velocity:")]
+    [SerializeField] private float thrownScale = 10;
+    [SerializeField] private VelocityScaleType velocityScalingType = VelocityScaleType.Direction;
+
+    [Header("The buffer time before updating the object's previous position:")]
+    [SerializeField] private float previousPositionDelay = 0.5f;
+
+    [Header("The offset applied to this thrown object's direction:")]
+    [SerializeField] private Vector3 thrownOffset = new Vector3(0, 0, 20);
+
+    [Header("The delay before reenabling collision for the player's hands (to prevent the hands bumping the object):")]
+    [SerializeField] private float collisionDelay = 0.5f;
+
+    [Header("\nEVENTS")]
+
+    [Header("Events for when this object is grabbed, dropped, or thrown:")]
+    public UnityEvent onGrab = null;
+    public UnityEvent onDrop = null;
+    public UnityEvent onThrow = null;
+
+    /// <summary>
+    /// Velocity scaling enum
+    /// </summary>
+    public enum VelocityScaleType { Direction, Distance, DistanceSquared };
+
     // Whether the player's hands are currently occupied
     private static GameObject heldLeftObject = null;
     private static GameObject heldRightObject = null;
@@ -41,75 +98,21 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
         get { return heldRightObject; }
     }
 
-    [Header("The maximum distance to this object where it can be grabbed:")]
-    [SerializeField] private float grabDistance = 0.25f;
-
-    [Header("The offset for grabbed objects:")]
-    [SerializeField] private Vector3 grabPositionOffset = new Vector3(0, -0.07f, 0.07f);
-    [SerializeField] private bool rotationOffset = false;
-    [SerializeField] private Vector3 leftRotationOffset = new Vector3(0, 0, 0);
-    [SerializeField] private Vector3 rightRotationOffset = new Vector3(0, 0, 0);
-
-    [Header("The maximum time the player can be grabbing to grab this item:")]
-    [SerializeField] private float grabBuffer = 0.5f;
-
     // The time the player has been grabbing with each hand
     private bool grabbingLeft = false;
     private float leftGrabTime = 0;
     private bool grabbingRight = false;
     private float rightGrabTime = 0;
 
-    [Header("The gestures allowed to be used to grab this item:")]
-    [SerializeField] private List<HandVR.Gesture> allowedGestures = new List<HandVR.Gesture>() { HandVR.Gesture.Fist };
-
     /// <summary>
     /// The rigidbody of the grabbed object
     /// </summary>
     private Rigidbody rigidbody = null;
 
-    [Header("Whether to assign a rigidbody when this object is let go of:")]
-    [SerializeField] private bool assignRigidbody = true;
-
-    [Header("Whether to keep the old gravity setting when this object is let go of:")]
-    [SerializeField] private bool keepGravitySetting = true;
-
-    [Header("The new gravity setting for this object if it is not keeping its old gravity setting:")]
-    [SerializeField] private bool newGravity = true;
-
     /// <summary>
     /// The setting for gravity of this object
     /// </summary>
     private bool gravitySetting = true;
-
-    [Header("\nTHROWING")]
-
-    [Header("Whether this object can be thrown by the player:")]
-    [SerializeField] private bool throwable = true;
-
-    [Header("The scale applied to thrown object's velocity:")]
-    [SerializeField] private float thrownScale = 10;
-    [SerializeField] private VelocityScaleType velocityScalingType = VelocityScaleType.Direction;
-
-    /// <summary>
-    /// Velocity scaling enum
-    /// </summary>
-    public enum VelocityScaleType { Direction, Distance, DistanceSquared };
-
-    [Header("The buffer time before updating the object's previous position:")]
-    [SerializeField] private float previousPositionDelay = 0.5f;
-
-    [Header("The offset applied to this thrown object's direction:")]
-    [SerializeField] private Vector3 thrownOffset = new Vector3(0, 0, 20);
-
-    [Header("The delay before reenabling collision for the player's hands (to prevent the hands bumping the object):")]
-    [SerializeField] private float collisionDelay = 0.5f;
-
-    [Header("\nEVENTS")]
-
-    [Header("Events for when this object is grabbed, dropped, or thrown:")]
-    public UnityEvent onGrab = null;
-    public UnityEvent onDrop = null;
-    public UnityEvent onThrow = null;
 
     /// <summary>
     /// The time since last updating the previous position
@@ -274,7 +277,14 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
             else
             {
                 // Hold the item in the player's hand
-                transform.position = TranslateRelative(selectref(isRight, ref HandTrackerVR.rightHand.wrist, ref HandTrackerVR.leftHand.wrist).transform, new Vector3(isRight ? grabPositionOffset.x : -grabPositionOffset.x, grabPositionOffset.y, grabPositionOffset.z));
+                if (rigidbody != null && grabPhysics)
+                {
+                    rigidbody.MovePosition(TranslateRelative(selectref(isRight, ref HandTrackerVR.rightHand.wrist, ref HandTrackerVR.leftHand.wrist).transform, new Vector3(isRight ? grabPositionOffset.x : -grabPositionOffset.x, grabPositionOffset.y, grabPositionOffset.z)));
+                }
+                else
+                {
+                    transform.position = TranslateRelative(selectref(isRight, ref HandTrackerVR.rightHand.wrist, ref HandTrackerVR.leftHand.wrist).transform, new Vector3(isRight ? grabPositionOffset.x : -grabPositionOffset.x, grabPositionOffset.y, grabPositionOffset.z));
+                }
 
                 if (rotationOffset)
                 {

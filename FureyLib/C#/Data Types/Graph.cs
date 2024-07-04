@@ -41,9 +41,9 @@ public class Node<DataType>
     /// </summary>
     /// <param name="weight"></param>
     /// <param name="active"></param>
-    public Node(float weight = 1, bool active = true)
+    public Node(DataType data = default(DataType), float weight = 1, bool active = true)
     {
-        data = default(DataType);
+        this.data = data;
         connections = new List<Connection<DataType>>();
         this.weight = weight;
         this.active = active;
@@ -54,14 +54,13 @@ public class Node<DataType>
     /// </summary>
     /// <param name="active"></param>
     /// <param name="weight"></param>
-    public Node(bool active, float weight = 1)
+    public Node(DataType data, bool active, float weight = 1)
     {
-        data = default(DataType);
+        this.data = data;
         connections = new List<Connection<DataType>>();
         this.weight = weight;
         this.active = active;
     }
-
 
     /// <summary>
     /// Node constructor
@@ -253,7 +252,7 @@ public class Node<DataType>
 /// Stores the connection of two nodes and the weight of the connection.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class Connection<DataType>
+public struct Connection<DataType>
 {
     // CONNECTION DATA
 
@@ -555,7 +554,7 @@ public class Connection<DataType>
 /// A graph that manages all the nodes and connections inside it.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class Graph<DataType> : IEnumerable
+public struct Graph<DataType> : IEnumerable
 {
     // GRAPH DATA
 
@@ -608,14 +607,7 @@ public class Graph<DataType> : IEnumerable
     /// <returns></returns>
     public List<Connection<DataType>> NodeConnections(Node<DataType> node)
     {
-        List<Connection<DataType>> connections = new List<Connection<DataType>>();
-
-        for (int i = 0; i < node.connections.Count; i++)
-        {
-            connections.Add(node.connections[i]);
-        }
-
-        return connections;
+        return node.connections;
     }
 
     /// <summary>
@@ -691,10 +683,7 @@ public class Graph<DataType> : IEnumerable
 
         for (int i = 0; i < nodes.Count; i++)
         {
-            for (int j = 0; j < nodes[i].connections.Count; j++)
-            {
-                totalConnections++;
-            }
+            totalConnections += nodes[i].connections.Count;
         }
 
         return totalConnections;

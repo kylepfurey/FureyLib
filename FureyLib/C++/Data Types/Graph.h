@@ -12,10 +12,10 @@
 #include "Graph.h"
 
 // Forward declaration of node
-template <class DataType> class node;
+template <typename DataType> class node;
 
 // Stores the connection of two nodes and the weight of the connection.
-template<class DataType> class connection
+template<typename DataType> struct connection
 {
 public:
 
@@ -220,7 +220,7 @@ public:
 };
 
 // An individual node with its own connections and weight.
-template<class DataType> class node
+template<typename DataType> class node
 {
 public:
 
@@ -242,18 +242,18 @@ public:
 	// NODE CONSTRUCTORS
 
 	// Default constructor
-	node(float weight = 1, bool active = true)
+	node(DataType data = DataType(), float weight = 1, bool active = true)
 	{
-		data = DataType();
+		this->data = data;
 		connections = std::vector<connection<DataType>>();
 		this->weight = weight;
 		this->active = active;
 	}
 
 	// Default constructor
-	node(bool active, float weight = 1)
+	node(DataType data, bool active, float weight = 1)
 	{
-		data = DataType();
+		this->data = data;
 		connections = std::vector<connection<DataType>>();
 		this->weight = weight;
 		this->active = active;
@@ -278,11 +278,11 @@ public:
 	}
 
 	// Node constructor
-	node(DataType data, connection<DataType> connections[], int number_of_connections, float weight, bool active)
+	node(DataType data, int number_of_connections, connection<DataType> connections[], float weight, bool active)
 	{
 		this->data = data;
 
-		this->connections = std::vector<connection<DataType>>(number_of_connections);
+		this->connections = std::vector<connection<DataType>>();
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
@@ -294,38 +294,16 @@ public:
 	}
 
 	// Node constructor
-	node(DataType data, connection<DataType> connections[], int number_of_connections, bool active, float weight)
+	node(DataType data, int number_of_connections, connection<DataType> connections[], bool active, float weight)
 	{
 		this->data = data;
 
-		this->connections = std::vector<connection<DataType>>(number_of_connections);
+		this->connections = std::vector<connection<DataType>>();
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
 			this->connections.push_back(connections[i]);
 		}
-
-		this->weight = weight;
-		this->active = active;
-	}
-
-	// Node constructor
-	node(DataType data, float weight, bool active, int number_of_connections)
-	{
-		this->data = data;
-
-		this->connections = std::vector<connection<DataType>>(number_of_connections);
-
-		this->weight = weight;
-		this->active = active;
-	}
-
-	// Node constructor
-	node(DataType data, bool active, float weight, int number_of_connections)
-	{
-		this->data = data;
-
-		this->connections = std::vector<connection<DataType>>(number_of_connections);
 
 		this->weight = weight;
 		this->active = active;
@@ -336,7 +314,7 @@ public:
 	{
 		this->data = data;
 
-		this->connections = std::vector<connection<DataType>>(number_of_connections);
+		this->connections = std::vector<connection<DataType>>();
 
 		va_list list;
 
@@ -358,7 +336,7 @@ public:
 	{
 		this->data = data;
 
-		this->connections = std::vector<connection<DataType>>(number_of_connections);
+		this->connections = std::vector<connection<DataType>>();
 
 		va_list list;
 
@@ -429,7 +407,7 @@ public:
 };
 
 // A graph that manages all the nodes and connections inside it.
-template<class DataType> class graph
+template<typename DataType> struct graph
 {
 public:
 
@@ -454,9 +432,9 @@ public:
 	}
 
 	// Node constructor
-	graph(node<DataType>* nodes[], int number_of_nodes)
+	graph(int number_of_nodes, node<DataType> nodes[])
 	{
-		this->nodes = std::vector<node<DataType>*>(number_of_nodes);
+		this->nodes = std::vector<node<DataType>*>();
 
 		for (int i = 0; i < number_of_nodes; i++)
 		{
@@ -467,7 +445,7 @@ public:
 	// Node constructor
 	graph(int number_of_nodes, node<DataType>* nodes...)
 	{
-		this->nodes = std::vector<node<DataType>*>(number_of_nodes);
+		this->nodes = std::vector<node<DataType>*>();
 
 		va_list list;
 
@@ -484,7 +462,7 @@ public:
 	// Node constructor
 	graph(const std::initializer_list<node<DataType>*> nodes)
 	{
-		this->nodes = std::vector<node<DataType>*>(nodes.size());
+		this->nodes = std::vector<node<DataType>*>();
 
 		for (int i = 0; i < nodes.size(); i++)
 		{
@@ -498,14 +476,7 @@ public:
 	// Get all of the given node's connections
 	std::vector<connection<DataType>> node_connections(node<DataType>* node)
 	{
-		std::vector<connection<DataType>> connections = std::vector<connection<DataType>>();
-
-		for (int i = 0; i < node->connections.size(); i++)
-		{
-			connections.push_back(node->connections[i]);
-		}
-
-		return connections;
+		return node->connections;
 	}
 
 	// Get all of the connections that are connected to the given node
@@ -568,10 +539,7 @@ public:
 
 		for (int i = 0; i < nodes.size(); i++)
 		{
-			for (int j = 0; j < nodes[i]->connections.size(); j++)
-			{
-				total_connections++;
-			}
+			total_connections += nodes[i]->connections.size();
 		}
 
 		return total_connections;
@@ -579,10 +547,10 @@ public:
 };
 
 // Forward declaration of node
-template <class DataType> class Node;
+template <typename DataType> class Node;
 
 // Stores the connection of two nodes and the weight of the connection.
-template<class DataType> class Connection
+template<typename DataType> struct Connection
 {
 public:
 
@@ -787,7 +755,7 @@ public:
 };
 
 // An individual node with its own connections and weight.
-template<class DataType> class Node
+template<typename DataType> class Node
 {
 public:
 
@@ -809,17 +777,18 @@ public:
 	// NODE CONSTRUCTORS
 
 	// Default constructor
-	Node(float weight = 1, bool active = true)
+	Node(DataType data = DataType(), float weight = 1, bool active = true)
 	{
-		data = DataType();
+		this->data = data;
 		connections = std::vector<Connection<DataType>>();
 		this->weight = weight;
 		this->active = active;
 	}
 
-	Node(bool active, float weight = 1)
+	// Default constructor
+	Node(DataType data, bool active, float weight = 1)
 	{
-		data = DataType();
+		this->data = data;
 		connections = std::vector<Connection<DataType>>();
 		this->weight = weight;
 		this->active = active;
@@ -844,11 +813,11 @@ public:
 	}
 
 	// Node constructor
-	Node(DataType data, Connection<DataType> connections[], int number_of_connections, float weight, bool active)
+	Node(DataType data, int number_of_connections, Connection<DataType> connections[], float weight, bool active)
 	{
 		this->data = data;
 
-		this->connections = std::vector<Connection<DataType>>(number_of_connections);
+		this->connections = std::vector<Connection<DataType>>();
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
@@ -860,38 +829,16 @@ public:
 	}
 
 	// Node constructor
-	Node(DataType data, Connection<DataType> connections[], int number_of_connections, bool active, float weight)
+	Node(DataType data, int number_of_connections, Connection<DataType> connections[], bool active, float weight)
 	{
 		this->data = data;
 
-		this->connections = std::vector<Connection<DataType>>(number_of_connections);
+		this->connections = std::vector<Connection<DataType>>();
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
 			this->connections.push_back(connections[i]);
 		}
-
-		this->weight = weight;
-		this->active = active;
-	}
-
-	// Node constructor
-	Node(DataType data, float weight, bool active, int number_of_connections)
-	{
-		this->data = data;
-
-		this->connections = std::vector<Connection<DataType>>(number_of_connections);
-
-		this->weight = weight;
-		this->active = active;
-	}
-
-	// Node constructor
-	Node(DataType data, bool active, float weight, int number_of_connections)
-	{
-		this->data = data;
-
-		this->connections = std::vector<Connection<DataType>>(number_of_connections);
 
 		this->weight = weight;
 		this->active = active;
@@ -902,7 +849,7 @@ public:
 	{
 		this->data = data;
 
-		this->connections = std::vector<Connection<DataType>>(number_of_connections);
+		this->connections = std::vector<Connection<DataType>>();
 
 		va_list list;
 
@@ -924,7 +871,7 @@ public:
 	{
 		this->data = data;
 
-		this->connections = std::vector<Connection<DataType>>(number_of_connections);
+		this->connections = std::vector<Connection<DataType>>();
 
 		va_list list;
 
@@ -995,7 +942,7 @@ public:
 };
 
 // A graph that manages all the nodes and connections inside it.
-template<class DataType> class Graph
+template<typename DataType> struct Graph
 {
 public:
 
@@ -1020,9 +967,9 @@ public:
 	}
 
 	// Node constructor
-	Graph(Node<DataType>* nodes[], int number_of_nodes)
+	Graph(int number_of_nodes, Node<DataType> nodes[])
 	{
-		this->nodes = std::vector<Node<DataType>*>(number_of_nodes);
+		this->nodes = std::vector<Node<DataType>*>();
 
 		for (int i = 0; i < number_of_nodes; i++)
 		{
@@ -1033,7 +980,7 @@ public:
 	// Node constructor
 	Graph(int number_of_nodes, Node<DataType>* nodes...)
 	{
-		this->nodes = std::vector<Node<DataType>*>(number_of_nodes);
+		this->nodes = std::vector<Node<DataType>*>();
 
 		va_list list;
 
@@ -1050,7 +997,7 @@ public:
 	// Node constructor
 	Graph(const std::initializer_list<Node<DataType>*> nodes)
 	{
-		this->nodes = std::vector<Node<DataType>*>(nodes.size());
+		this->nodes = std::vector<Node<DataType>*>();
 
 		for (int i = 0; i < nodes.size(); i++)
 		{
@@ -1064,14 +1011,7 @@ public:
 	// Get all of the given node's connections
 	std::vector<Connection<DataType>> NodeConnections(Node<DataType>* node)
 	{
-		std::vector<Connection<DataType>> connections = std::vector<Connection<DataType>>();
-
-		for (int i = 0; i < node->connections.size(); i++)
-		{
-			connections.push_back(node->connections[i]);
-		}
-
-		return connections;
+		return node->connections;
 	}
 
 	// Get all of the connections that are connected to the given node
@@ -1134,10 +1074,7 @@ public:
 
 		for (int i = 0; i < nodes.size(); i++)
 		{
-			for (int j = 0; j < nodes[i]->connections.size(); j++)
-			{
-				total_connections++;
-			}
+			total_connections += nodes[i]->connections.size();
 		}
 
 		return total_connections;

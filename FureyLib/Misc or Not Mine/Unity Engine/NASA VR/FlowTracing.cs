@@ -41,7 +41,7 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
     /// <summary>
     /// Ray color mode enum
     /// </summary>
-    public enum BeamColorMode { Color, Direction, Sample, Velocity, Coordinate, Density, Magnetic };
+    public enum BeamColorMode { Color, Direction, Velocity, Density, Magnetic, Coordinate };
 
     /// <summary>
     /// All of the traced lines in order of each game object
@@ -155,55 +155,9 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
 
                 break;
 
-            case BeamColorMode.Sample:
-
-                vector = flowData.flowFile.Sample(GetRelativeToBounds(particle.transform.position)).normalized;
-
-                if (vector.x <= 0)
-                {
-                    vector.x = Abs(vector.x);
-                }
-
-                if (vector.y <= 0)
-                {
-                    vector.y = Abs(vector.y);
-                }
-
-                if (vector.z <= 0)
-                {
-                    vector.z = Abs(vector.z);
-                }
-
-                color = new Color(vector.x, vector.y, vector.z, color.a);
-
-                break;
-
             case BeamColorMode.Velocity:
 
-                vector = particle.rigidbody.velocity.normalized;
-
-                if (vector.x <= 0)
-                {
-                    vector.x = Abs(vector.x);
-                }
-
-                if (vector.y <= 0)
-                {
-                    vector.y = Abs(vector.y);
-                }
-
-                if (vector.z <= 0)
-                {
-                    vector.z = Abs(vector.z);
-                }
-
-                color = new Color(vector.x, vector.y, vector.z, color.a);
-
-                break;
-
-            case BeamColorMode.Coordinate:
-
-                vector = GetRelativeToBounds(particle.transform.position).normalized;
+                vector = flowData.flowFile.Sample(GetRelativeToBounds(particle.transform.position)).normalized;
 
                 if (vector.x <= 0)
                 {
@@ -250,6 +204,29 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
             case BeamColorMode.Magnetic:
 
                 vector = BDipole(GetRelativeToBounds(particle.transform.position)).normalized;
+
+                if (vector.x <= 0)
+                {
+                    vector.x = Abs(vector.x);
+                }
+
+                if (vector.y <= 0)
+                {
+                    vector.y = Abs(vector.y);
+                }
+
+                if (vector.z <= 0)
+                {
+                    vector.z = Abs(vector.z);
+                }
+
+                color = new Color(vector.x, vector.y, vector.z, color.a);
+
+                break;
+
+            case BeamColorMode.Coordinate:
+
+                vector = GetRelativeToBounds(particle.transform.position).normalized;
 
                 if (vector.x <= 0)
                 {

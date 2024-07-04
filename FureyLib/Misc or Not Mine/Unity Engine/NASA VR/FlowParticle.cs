@@ -32,11 +32,6 @@ public class FlowParticle : MonoBehaviour
     [SerializeField] private float maxParticles = 12;
 
     /// <summary>
-    /// The flow data file
-    /// </summary>
-    [HideInInspector] public FlowFile flowFile = null;
-
-    /// <summary>
     /// The flow particle's rigidbody
     /// </summary>
     [HideInInspector] public Rigidbody rigidbody = null;
@@ -61,18 +56,13 @@ public class FlowParticle : MonoBehaviour
     /// </summary>
     private bool gravitySetting = false;
 
-    /// <summary>
-    /// The unmodified velocity of the boris function
-    /// </summary>
-    private Vector3 borisVelocity = zero;
-
 
     // STATIC VARIABLES
 
     /// <summary>
-    /// Position of particle in the flow data
+    /// Direction of particle in the flow data
     /// </summary>
-    public static Vector3 position = zero;
+    public static Vector3 direction = zero;
 
     /// <summary>
     /// Velocity of particle in the flow data
@@ -85,14 +75,14 @@ public class FlowParticle : MonoBehaviour
     public static Vector3 density = zero;
 
     /// <summary>
-    /// Direction of particle in the flow data
-    /// </summary>
-    public static Vector3 direction = zero;
-
-    /// <summary>
     /// Magnetic field of particle in the flow data
     /// </summary>
     public static Vector3 magnetic = zero;
+
+    /// <summary>
+    /// Position of particle in the flow data
+    /// </summary>
+    public static Vector3 coordinate = zero;
 
 
     // FUNCTIONS
@@ -136,6 +126,35 @@ public class FlowParticle : MonoBehaviour
     }
 
     /// <summary>
+    /// Moving the particle along the data field
+    /// </summary>
+    private void FixedUpdate()
+    {
+        // Check if the particle is in bounds and move it along the path of the flow data
+        if (flowData != null)
+        {
+            // Update the particle velocity
+            if (flowLikeOceanCurrent)
+            {
+                rigidbody.velocity = Lerp(rigidbody.velocity, TranslateRelative(flowDataScaleParent.transform, flowData.flowFile.Sample(GetRelativeToBounds(transform.position)) * velocitySpeed / 4) - flowDataScaleParent.transform.position, velocityLerp);
+            }
+            else
+            {
+                Vector3 next = BorisStep(GetRelativeToBounds(transform.position), flowData.flowFile.Sample(GetRelativeToBounds(transform.position))) * velocitySpeed * 100;
+
+                rigidbody.velocity = Lerp(rigidbody.velocity, TranslateRelative(flowDataScaleParent.transform, SphToCrt(next.x, next.y, next.z)) - flowDataScaleParent.transform.position, velocityLerp);
+            }
+
+            // Update the static variables
+            coordinate = GetRelativeToBounds(transform.position);
+            direction = transform.forward;
+            velocity = flowData.flowFile.Sample(coordinate);
+            density = GetDensity(coordinate);
+            magnetic = BDipole(coordinate).normalized;
+        }
+    }
+
+    /// <summary>
     /// Entering the flow data cube
     /// </summary>
     /// <param name="other"></param>
@@ -152,9 +171,6 @@ public class FlowParticle : MonoBehaviour
                 // Set the flow data
                 flowData = dataCube;
 
-                // Set the flow file
-                flowFile = other.GetComponentInChildren<FlowFile>();
-
                 // Set the flow data's parent
                 flowDataScaleParent = flowData.transform.parent.transform.parent.gameObject;
 
@@ -162,9 +178,6 @@ public class FlowParticle : MonoBehaviour
                 gravitySetting = rigidbody.useGravity;
 
                 rigidbody.useGravity = false;
-
-                // Reset boris velocity
-                borisVelocity = zero;
             }
         }
     }
@@ -181,43 +194,11 @@ public class FlowParticle : MonoBehaviour
             // Remove the flow data
             flowData = null;
 
-            // Remove the flow file
-            flowFile = null;
-
             // Remove the flow data's parent
             flowDataScaleParent = null;
 
             // Reset the gravity setting
             rigidbody.useGravity = gravitySetting;
-        }
-    }
-
-    /// <summary>
-    /// Moving the particle along the data field
-    /// </summary>
-    private void FixedUpdate()
-    {
-        // Check if the particle is in bounds and move it along the path of the flow data
-        if (flowData != null)
-        {
-            // Update the particle velocity
-            if (flowLikeOceanCurrent)
-            {
-                rigidbody.velocity = Lerp(rigidbody.velocity, TranslateRelative(flowDataScaleParent.transform, flowFile.Sample(GetRelativeToBounds(transform.position)) * velocitySpeed / 4) - flowDataScaleParent.transform.position, velocityLerp);
-            }
-            else
-            {
-                Vector3 next = BorisStep(GetRelativeToBounds(transform.position), borisVelocity) * velocitySpeed * 100;
-
-                rigidbody.velocity = Lerp(rigidbody.velocity, TranslateRelative(flowDataScaleParent.transform, SphToCrt(next.x, next.y, next.z)) - flowDataScaleParent.transform.position, velocityLerp);
-            }
-
-            // Update the static variables
-            position = GetRelativeToBounds(transform.position);
-            velocity = flowFile.Sample(position);
-            density = GetDensity(position);
-            direction = velocity.normalized;
-            magnetic = BDipole(position).normalized;
         }
     }
 
@@ -340,8 +321,6 @@ public class FlowParticle : MonoBehaviour
         // Append to data arrays
         vdat = vnew;             // Velcoity [m/s]
 
-        borisVelocity = vdat;
-
         return vdat;
     }
 
@@ -382,29 +361,29 @@ public class FlowParticle : MonoBehaviour
         */
 
         J.x = (float)
-              (1e-6 / mu0 * (flowFile.Sample(new Vector3(x + 1, y + 1, z + 1)).z - flowFile.Sample(new Vector3(x - 1, y - 1, z - 1)).z)
+              (1e-6 / mu0 * (flowData.flowFile.Sample(new Vector3(x + 1, y + 1, z + 1)).z - flowData.flowFile.Sample(new Vector3(x - 1, y - 1, z - 1)).z)
               /
               ((new Vector3(x + 1, y + 1, z + 1).y - new Vector3(x - 1, y - 1, z - 1).y))
               -
-              (flowFile.Sample(new Vector3(x + 1, y + 1, z + 1)).y - flowFile.Sample(new Vector3(x - 1, y - 1, z - 1)).y)
+              (flowData.flowFile.Sample(new Vector3(x + 1, y + 1, z + 1)).y - flowData.flowFile.Sample(new Vector3(x - 1, y - 1, z - 1)).y)
               /
               ((new Vector3(x + 1, y + 1, z + 1).z - new Vector3(x - 1, y - 1, z - 1).z)));
 
         J.y = (float)
-              (1e-6 / mu0 * (flowFile.Sample(new Vector3(x + 1, y + 1, z + 1)).x - flowFile.Sample(new Vector3(x - 1, y - 1, z - 1)).x)
+              (1e-6 / mu0 * (flowData.flowFile.Sample(new Vector3(x + 1, y + 1, z + 1)).x - flowData.flowFile.Sample(new Vector3(x - 1, y - 1, z - 1)).x)
               /
               ((new Vector3(x + 1, y + 1, z + 1).z - new Vector3(x - 1, y - 1, z - 1).z))
               -
-              (flowFile.Sample(new Vector3(x + 1, y + 1, z + 1)).z - flowFile.Sample(new Vector3(x - 1, y - 1, z - 1)).z)
+              (flowData.flowFile.Sample(new Vector3(x + 1, y + 1, z + 1)).z - flowData.flowFile.Sample(new Vector3(x - 1, y - 1, z - 1)).z)
               /
               ((new Vector3(x + 1, y + 1, z + 1).x - new Vector3(x - 1, y - 1, z - 1).x)));
 
         J.z = (float)
-              (1e-6 / mu0 * (flowFile.Sample(new Vector3(x + 1, y + 1, z + 1)).y - flowFile.Sample(new Vector3(x - 1, y - 1, z - 1)).y)
+              (1e-6 / mu0 * (flowData.flowFile.Sample(new Vector3(x + 1, y + 1, z + 1)).y - flowData.flowFile.Sample(new Vector3(x - 1, y - 1, z - 1)).y)
               /
               ((new Vector3(x + 1, y + 1, z + 1).x - new Vector3(x - 1, y - 1, z - 1).x))
               -
-              (flowFile.Sample(new Vector3(x + 1, y + 1, z + 1)).x - flowFile.Sample(new Vector3(x - 1, y - 1, z - 1)).x)
+              (flowData.flowFile.Sample(new Vector3(x + 1, y + 1, z + 1)).x - flowData.flowFile.Sample(new Vector3(x - 1, y - 1, z - 1)).x)
               /
               ((new Vector3(x + 1, y + 1, z + 1).y - new Vector3(x - 1, y - 1, z - 1).y)));
 

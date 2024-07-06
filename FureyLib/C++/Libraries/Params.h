@@ -17,9 +17,9 @@
 // •  The vector's identifier is "argv" and the number of arguments is "argc".
 #define expand_params(type, parameter)\
 \
-va_list va_list;\
+va_list _va_list;\
 \
-va_start(va_list, argc);\
+va_start(_va_list, argc);\
 \
 std::vector<type> argv = std::vector<type>();\
 \
@@ -27,9 +27,9 @@ for (int i = 0; i < argc; i++)\
 {\
     argv.push_back(parameter);\
 \
-    parameter = va_arg(va_list, type);\
+    parameter = va_arg(_va_list, type);\
 }\
 \
 parameter = type();\
 \
-va_end(va_list);
+va_end(_va_list);

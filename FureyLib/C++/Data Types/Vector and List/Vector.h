@@ -523,12 +523,6 @@ public:
 		return new_data;
 	}
 
-	// Remove and return the first element of the vector
-	DataType dequeue()
-	{
-		return pop();
-	}
-
 	// Remove and return the last element of the vector
 	DataType pop_back()
 	{
@@ -541,6 +535,12 @@ public:
 		vector_size--;
 
 		return vector_data[vector_size];
+	}
+
+	// Remove and return the last element of the vector
+	DataType dequeue()
+	{
+		return pop_back();
 	}
 
 	// Adds a new element in the vector at a given index and shift following elements forward
@@ -767,7 +767,7 @@ public:
 		return find_last(found_data);
 	}
 
-	// Returns the total number of instances of the given data in the vector, returns -1 if nothing matched
+	// Returns the total number of instances of the given data in the vector
 	int total(DataType found_data)
 	{
 		// Store the current count
@@ -1665,12 +1665,6 @@ public:
 		return new_data;
 	}
 
-	// Remove and return the first element of the vector
-	DataType Dequeue()
-	{
-		return Pop();
-	}
-
 	// Remove and return the last element of the vector
 	DataType PopBack()
 	{
@@ -1683,6 +1677,12 @@ public:
 		vectorSize--;
 
 		return vectorData[vectorSize];
+	}
+
+	// Remove and return the last element of the vector
+	DataType Dequeue()
+	{
+		return PopBack();
 	}
 
 	// Adds a new element in the vector at a given index and shift following elements forward
@@ -1909,7 +1909,7 @@ public:
 		return FindLast(found_data);
 	}
 
-	// Returns the total number of instances of the given data in the vector, returns -1 if nothing matched
+	// Returns the total number of instances of the given data in the vector
 	int Total(DataType found_data)
 	{
 		// Store the current count

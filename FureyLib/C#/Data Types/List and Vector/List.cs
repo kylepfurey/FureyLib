@@ -4,6 +4,7 @@
 
 // REFERENCES: https://cplusplus.com/reference/vector/vector/, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1?view=net-8.0
 
+using System;
 using System.Collections;
 
 // Data type used for sorting
@@ -494,7 +495,7 @@ public class List<DataType> : IEnumerable
     /// </summary>
     /// <param name="newData"></param>
     /// <returns></returns>
-    List<DataType> Push(DataType newData)
+    public List<DataType> Push(DataType newData)
     {
         // Expand the list if needed
         if (listCount + 1 > listCapacity)
@@ -596,15 +597,6 @@ public class List<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// Remove and return the first element of the list
-    /// </summary>
-    /// <returns></returns>
-    public DataType Dequeue()
-    {
-        return Pop();
-    }
-
-    /// <summary>
     /// Remove and return the last element of the list
     /// </summary>
     /// <returns></returns>
@@ -619,6 +611,15 @@ public class List<DataType> : IEnumerable
         listCount--;
 
         return listData[listCount];
+    }
+
+    /// <summary>
+    /// Remove and return the last element of the list
+    /// </summary>
+    /// <returns></returns>
+    public DataType Dequeue()
+    {
+        return PopBack();
     }
 
     /// <summary>
@@ -896,7 +897,7 @@ public class List<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// Returns the total number of instances of the given data in the list, returns -1 if nothing matched
+    /// Returns the total number of instances of the given data in the list
     /// </summary>
     /// <param name="foundData"></param>
     /// <returns></returns>
@@ -1157,7 +1158,7 @@ public class List<DataType> : IEnumerable
     /// </summary>
     /// <param name="sortOrder"></param>
     /// <returns></returns>
-    public List<DataType> Sort(SortType[] sortOrder)
+    public List<DataType> Sort(params SortType[] sortOrder)
     {
         // Check length
         if (listCount <= 1)
@@ -1188,7 +1189,7 @@ public class List<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// Safely bubble sorts the elements of the list relative to the given sort order
+    /// Bubble sorts the elements of the list relative to the given sort order
     /// </summary>
     /// <param name="sortOrder"></param>
     /// <returns></returns>

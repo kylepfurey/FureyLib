@@ -4,6 +4,7 @@
 
 // REFERENCES: https://cplusplus.com/reference/vector/vector/, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1?view=net-8.0
 
+using System;
 using System.Collections;
 
 // Data type used for sorting
@@ -494,7 +495,7 @@ public class Vector<DataType> : IEnumerable
     /// </summary>
     /// <param name="newData"></param>
     /// <returns></returns>
-    Vector<DataType> Push(DataType newData)
+    public Vector<DataType> Push(DataType newData)
     {
         // Expand the vector if needed
         if (vectorCount + 1 > vectorCapacity)
@@ -596,15 +597,6 @@ public class Vector<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// Remove and return the first element of the vector
-    /// </summary>
-    /// <returns></returns>
-    public DataType Dequeue()
-    {
-        return Pop();
-    }
-
-    /// <summary>
     /// Remove and return the last element of the vector
     /// </summary>
     /// <returns></returns>
@@ -619,6 +611,15 @@ public class Vector<DataType> : IEnumerable
         vectorCount--;
 
         return vectorData[vectorCount];
+    }
+
+    /// <summary>
+    /// Remove and return the last element of the vector
+    /// </summary>
+    /// <returns></returns>
+    public DataType Dequeue()
+    {
+        return PopBack();
     }
 
     /// <summary>
@@ -896,7 +897,7 @@ public class Vector<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// Returns the total number of instances of the given data in the vector, returns -1 if nothing matched
+    /// Returns the total number of instances of the given data in the vector
     /// </summary>
     /// <param name="foundData"></param>
     /// <returns></returns>
@@ -1157,7 +1158,7 @@ public class Vector<DataType> : IEnumerable
     /// </summary>
     /// <param name="sortOrder"></param>
     /// <returns></returns>
-    public Vector<DataType> Sort(SortType[] sortOrder)
+    public Vector<DataType> Sort(params SortType[] sortOrder)
     {
         // Check length
         if (vectorCount <= 1)
@@ -1188,7 +1189,7 @@ public class Vector<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// Safely bubble sorts the elements of the vector relative to the given sort order
+    /// Bubble sorts the elements of the vector relative to the given sort order
     /// </summary>
     /// <param name="sortOrder"></param>
     /// <returns></returns>

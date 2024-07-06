@@ -523,12 +523,6 @@ public:
 		return new_data;
 	}
 
-	// Remove and return the first element of the list
-	DataType dequeue()
-	{
-		return pop();
-	}
-
 	// Remove and return the last element of the list
 	DataType pop_back()
 	{
@@ -541,6 +535,12 @@ public:
 		list_size--;
 
 		return list_data[list_size];
+	}
+
+	// Remove and return the last element of the list
+	DataType dequeue()
+	{
+		return pop_back();
 	}
 
 	// Adds a new element in the list at a given index and shift following elements forward
@@ -767,7 +767,7 @@ public:
 		return find_last(found_data);
 	}
 
-	// Returns the total number of instances of the given data in the list, returns -1 if nothing matched
+	// Returns the total number of instances of the given data in the list
 	int total(DataType found_data)
 	{
 		// Store the current count
@@ -1665,12 +1665,6 @@ public:
 		return new_data;
 	}
 
-	// Remove and return the first element of the list
-	DataType Dequeue()
-	{
-		return Pop();
-	}
-
 	// Remove and return the last element of the list
 	DataType PopBack()
 	{
@@ -1683,6 +1677,12 @@ public:
 		listSize--;
 
 		return listData[listSize];
+	}
+
+	// Remove and return the last element of the list
+	DataType Dequeue()
+	{
+		return PopBack();
 	}
 
 	// Adds a new element in the list at a given index and shift following elements forward
@@ -1909,7 +1909,7 @@ public:
 		return FindLast(found_data);
 	}
 
-	// Returns the total number of instances of the given data in the list, returns -1 if nothing matched
+	// Returns the total number of instances of the given data in the list
 	int Total(DataType found_data)
 	{
 		// Store the current count

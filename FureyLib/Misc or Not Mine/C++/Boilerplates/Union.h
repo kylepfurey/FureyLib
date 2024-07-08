@@ -8,6 +8,7 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <list>
 #include <map>
 
 // Only one of the union's variables may be stored at a time

@@ -9,7 +9,7 @@
 #include <cstdarg>
 #include <initializer_list>
 
-// Include *this heading to use the class
+// Include this heading to use the class
 #include "Vector.h"
 
 // Data type used for sorting
@@ -35,6 +35,23 @@ private:
 	int vector_expansions = 0;
 
 public:
+
+	// TO ARRAY
+
+	// Returns an array of the current vector (MUST BE DEALLOCATED)
+	DataType* to_new_array()
+	{
+		// Copy the vector into an array
+		DataType* new_array = new DataType[vector_size];
+
+		for (int i = 0; i < vector_size; i++)
+		{
+			new_array[i] = vector_data[i];
+		}
+
+		return new_array;
+	}
+
 
 	// CONSTRUCTORS AND DESTRUCTOR
 
@@ -294,47 +311,9 @@ public:
 	}
 
 
-	// TO ARRAY
-
-	// Returns a copied array of the current vector (MUST BE DEALLOCATED)
-	DataType* to_new_array()
-	{
-		// Copy the vector into an array
-		DataType* new_array = new DataType[vector_size];
-
-		for (int i = 0; i < vector_size; i++)
-		{
-			new_array[i] = vector_data[i];
-		}
-
-		return new_array;
-	}
-
-
-	// ITERATORS
-
-	// Get a pointer to the beginning of the vector's array
-	DataType* begin()
-	{
-		return vector_data;
-	}
-
-	// Get a pointer to the end of the vector's array
-	DataType* end()
-	{
-		return vector_data + (vector_size - 1);
-	}
-
-	// Returns the pointer to the element at the given index
-	DataType* data(int index)
-	{
-		return vector_data + index;
-	}
-
-
 	// VECTOR EQUALITY
 
-	// Check if another vector is equal to this vector
+	// Check if another vector is equal to the vector
 	bool equals(vector<DataType> compared_vector)
 	{
 		// Check if the sizes are equal
@@ -357,16 +336,37 @@ public:
 		return true;
 	}
 
-	// Check if another vector is equal to this vector
+	// Check if another vector is equal to the vector
 	bool operator ==(vector<DataType> compared_vector)
 	{
 		return equals(compared_vector);
 	}
 
-	// Check if another vector is not equal to this vector
+	// Check if another vector is not equal to the vector
 	bool operator !=(vector<DataType> compared_vector)
 	{
 		return !equals(compared_vector);
+	}
+
+
+	// ITERATORS
+
+	// Get a pointer to the beginning of the vector's array
+	DataType* begin()
+	{
+		return vector_data;
+	}
+
+	// Get a pointer to the end of the vector's array
+	DataType* end()
+	{
+		return vector_data + (vector_size - 1);
+	}
+
+	// Returns the pointer to the element at the given index
+	DataType* data(int index)
+	{
+		return vector_data + index;
 	}
 
 
@@ -396,14 +396,16 @@ public:
 		return vector_size == 0;
 	}
 
-	// Resizes the vector's size and removes out of bounds data or expands if necessary
-	vector<DataType>& resize(int new_size)
+	// Resizes the vector's size and removes out of bounds data or expands if necessary, returns the difference
+	int resize(int new_size)
 	{
 		// Check if the new size is identical
 		if (vector_size == new_size)
 		{
-			return *this;
+			return 0;
 		}
+
+		int difference = new_size - vector_capacity;
 
 		// Duplicate the current vector
 		DataType* temp = new DataType[vector_size];
@@ -436,16 +438,16 @@ public:
 
 		temp = nullptr;
 
-		return *this;
+		return difference;
 	}
 
-	// Expands the vector's capacity enough to hold the given amount (does not reduce the capacity)
-	vector<DataType>& reserve(int new_capacity)
+	// Expands the vector's capacity enough to hold the given amount and return whether it was successful (does not reduce the capacity)
+	bool reserve(int new_capacity)
 	{
 		// Check if the new capacity is less
 		if (new_capacity <= vector_capacity)
 		{
-			return *this;
+			return false;
 		}
 
 		// Advance the number of expansions
@@ -476,18 +478,22 @@ public:
 
 		temp = nullptr;
 
-		return *this;
+		return true;
 	}
 
-	// Expands the vector's capacity by the given amount
-	vector<DataType>& expand(int number_of_spaces)
+	// Expands the vector's capacity by the given amount and return the new capacity
+	int expand(int number_of_spaces)
 	{
-		return reserve(vector_capacity + number_of_spaces);
+		reserve(vector_capacity + number_of_spaces);
+
+		return vector_capacity;
 	}
 
-	// Shrinks the capacity to the size
-	vector<DataType>& shrink_to_fit()
+	// Shrinks the capacity to the size and return the difference
+	int shrink_to_fit()
 	{
+		int difference = vector_capacity - vector_size;
+
 		// Duplicate the current vector
 		DataType* temp = new DataType[vector_size];
 
@@ -516,7 +522,7 @@ public:
 
 		temp = nullptr;
 
-		return *this;
+		return difference;
 	}
 
 
@@ -534,7 +540,7 @@ public:
 		return vector_data[0];
 	}
 
-	// Returns the first element in the vector
+	// Returns the last element in the vector
 	DataType back()
 	{
 		return vector_data[vector_size - 1];
@@ -694,7 +700,7 @@ public:
 	}
 
 	// Adds a range of new elements at the front of the vector
-	vector<DataType>& push_range_at_front(int array_length, DataType array[])
+	vector<DataType>& push_range(int array_length, DataType array[])
 	{
 		reserve(vector_size + array_length);
 
@@ -707,7 +713,7 @@ public:
 	}
 
 	// Adds a range of new elements at the front of the vector
-	vector<DataType>& push_range_at_front(int argc, DataType new_data ...)
+	vector<DataType>& push_range(int argc, DataType new_data ...)
 	{
 		va_list _va_list;
 
@@ -741,12 +747,6 @@ public:
 	// Adds a new element in the vector at a given index and shift following elements forward
 	vector<DataType>& insert(int index, DataType new_data)
 	{
-		// Check for out of bounds
-		if (index < 0 || index >= vector_size)
-		{
-			return *this;
-		}
-
 		// Expand the vector if needed
 		if (vector_size + 1 > vector_capacity)
 		{
@@ -772,16 +772,12 @@ public:
 	// REMOVING ELEMENTS
 
 	// Removes a element in the vector at a given index and shift following elements back
-	vector<DataType> erase(int index)
+	DataType erase_at(int index)
 	{
-		// Check for out of bounds
-		if (index < 0 || index >= vector_size)
-		{
-			return *this;
-		}
-
 		// Decrease the vector size
 		vector_size--;
+
+		DataType data = vector_data[index];
 
 		// Shift elements past the new index backward
 		for (int i = index + 1; i <= vector_size; i++)
@@ -789,16 +785,35 @@ public:
 			vector_data[i - 1] = vector_data[i];
 		}
 
-		return *this;
+		return data;
+	}
+
+	// Removes the first of a given element in the vector
+	int erase(DataType removed_data)
+	{
+		int index = find(removed_data);
+
+		erase_at(index);
+
+		return index;
+	}
+
+	// Removes the last of a given element in the vector
+	int erase_last(DataType removed_data)
+	{
+		int index = find_last(removed_data);
+
+		erase_at(index);
+
+		return index;
 	}
 
 	// Remove and return the first element of the vector
 	DataType erase_first()
 	{
-		// Decrease the vector size if possible
 		if (vector_size == 0)
 		{
-			return vector_data[0];
+			return DataType();
 		}
 
 		vector_size--;
@@ -815,19 +830,12 @@ public:
 		return new_data;
 	}
 
-	// Removes the first of a given element in the vector
-	vector<DataType>& erase_first(DataType removed_data)
-	{
-		return erase(find(removed_data));
-	}
-
 	// Remove and return the last element of the vector
 	DataType erase_last()
 	{
-		// Decrease the vector size if possible
 		if (vector_size == 0)
 		{
-			return vector_data[0];
+			return DataType();
 		}
 
 		vector_size--;
@@ -835,62 +843,68 @@ public:
 		return vector_data[vector_size];
 	}
 
-	// Removes the last of a given element in the vector
-	vector<DataType>& erase_last(DataType removed_data)
+	// Removes all of the given element in the vector and returns the total elements removed
+	int erase_all(DataType removed_data)
 	{
-		return erase(find_last(removed_data));
-	}
+		int total = 0;
 
-	// Removes all of the given element in the vector
-	vector<DataType>& erase_all(DataType removed_data)
-	{
-		// Get the total number of elements
-		int amount = total(removed_data);
-
-		// Remove those elements
-		for (int i = 0; i < amount; i++)
+		for (int i = 0; i < vector_size - 1; i++)
 		{
-			erase_first(removed_data);
+			if (vector_data[i] == removed_data)
+			{
+				vector_data[i] = vector_data[i + 1];
+
+				total++;
+
+				i--;
+			}
 		}
 
-		return *this;
+		if (vector_data[vector_size - 1] == removed_data)
+		{
+			total++;
+		}
+
+		vector_size -= total;
+
+		return total;
 	}
 
-	// Clears the vector's data
-	vector<DataType>& clear()
+	// Clears the vector's data with a new capacity
+	int clear(int new_capacity = 1)
 	{
+		int total = vector_size;
+
 		// Reset vector variables
-		vector_data = new DataType[1];
+		delete[] vector_data;
+
+		vector_data = new DataType[new_capacity];
 
 		vector_size = 0;
 
-		vector_capacity = 1;
+		vector_capacity = new_capacity;
 
 		vector_expansions = 0;
 
-		return *this;
+		return total;
 	}
 
 
 	// ELEMENT OPERATIONS
 
 	// Replaces the data at the given index with the given data
-	vector<DataType>& set(int index, DataType new_data)
+	DataType set(int index, DataType new_data)
 	{
-		// Check for out of bounds
-		if (index < 0 || index >= vector_size)
-		{
-			return *this;
-		}
-
 		// Replace the data at the index
+		DataType data = vector_data[index];
+
 		vector_data[index] = new_data;
 
-		return *this;
+		return data;
 	}
 
 	// Replaces the first of the found data with the given data
-	vector<DataType>& replace(DataType replaced_data, DataType new_data)
+	int replace(DataType replaced_data, DataType new_data)
 	{
 		// Find the index of the found data
 		int index = find(replaced_data);
@@ -898,17 +912,17 @@ public:
 		// Check if the data was not found
 		if (index == -1)
 		{
-			return *this;
+			return index;
 		}
 
 		// Replace the data at the index
 		vector_data[index] = new_data;
 
-		return *this;
+		return index;
 	}
 
 	// Replaces the last of the found data with the given data
-	vector<DataType>& replace_last(DataType replaced_data, DataType new_data)
+	int replace_last(DataType replaced_data, DataType new_data)
 	{
 		// Find the index of the found data
 		int index = find_last(replaced_data);
@@ -916,39 +930,36 @@ public:
 		// Check if the data was not found
 		if (index == -1)
 		{
-			return *this;
+			return index;
 		}
 
 		// Replace the data at the index
 		vector_data[index] = new_data;
 
-		return *this;
+		return index;
 	}
 
-	// Replaces all of the found data with the given data
-	vector<DataType>& replace_all(DataType replaced_data, DataType new_data)
+	// Replaces all of the found data with the given data and returns the total number of replacements
+	int replace_all(DataType replaced_data, DataType new_data)
 	{
-		// Get the total number of elements
-		int amount = total(replaced_data);
+		int total = 0;
 
-		// Replace those elements
-		for (int i = 0; i < amount; i++)
+		for (int i = 0; i < vector_size; i++)
 		{
-			replace(replaced_data, new_data);
+			if (vector_data[i] == replaced_data)
+			{
+				vector_data[i] = new_data;
+
+				total++;
+			}
 		}
 
-		return *this;
+		return total;
 	}
 
 	// Swaps two elements at two given indicies
 	vector<DataType>& swap(int index1, int index2)
 	{
-		// Check for out of bounds
-		if (index1 < 0 || index1 >= vector_size || index2 < 0 || index2 >= vector_size)
-		{
-			return *this;
-		}
-
 		// Check if the indicies are the same
 		if (index1 == index2)
 		{
@@ -976,7 +987,7 @@ public:
 
 	// VECTOR OPERATIONS
 
-	// Assigns this vector's elements and capacity to the elements and capacity of another vector
+	// Assigns the vector's elements and capacity to the elements and capacity of another vector
 	vector<DataType>& assign(vector<DataType>& new_data)
 	{
 		// Store the vector's size values
@@ -1008,12 +1019,12 @@ public:
 		return new_vector;
 	}
 
-	// Returns a slice of this vector from the start index for the number of elements
+	// Returns a slice of the vector from the start index for the number of elements
 	vector<DataType> slice(int start, int count)
 	{
 		vector<DataType> slice = vector<DataType>(count);
 
-		for (int i = start; i < count || i >= vector_size; i++)
+		for (int i = start; i < start + count || i >= vector_size; i++)
 		{
 			slice.push(vector_data[i]);
 		}
@@ -1117,28 +1128,28 @@ public:
 	}
 
 	// Bubble sorts the elements of the vector relative to the given sort order
-	vector<DataType>& sort(float sort_order ...)
+	vector<DataType>& sort(SORT_TYPE sort_order ...)
 	{
-		va_list _va_list;
-
-		va_start(_va_list, vector_size);
-
-		float* argv = new float[vector_size];
-
-		for (int i = 0; i < vector_size; i++)
-		{
-			argv[i] = sort_order;
-
-			sort_order = va_arg(_va_list, float);
-		}
-
-		va_end(_va_list);
-
 		// Check length
 		if (vector_size <= 1)
 		{
 			return *this;
 		}
+
+		va_list _va_list;
+
+		va_start(_va_list, vector_size);
+
+		SORT_TYPE* argv = new SORT_TYPE[vector_size];
+
+		for (int i = 0; i < vector_size; i++)
+		{
+			argv[i] = sort_order;
+
+			sort_order = va_arg(_va_list, SORT_TYPE);
+		}
+
+		va_end(_va_list);
 
 		// Place the vector elements in the sorted order
 		for (int i = 0; i < vector_size - 1; i++)
@@ -1184,6 +1195,11 @@ public:
 	// Converts the elements of the vector into a string
 	std::string to_string()
 	{
+		if (vector_size == 0)
+		{
+			return "{ }";
+		}
+
 		std::string log = "{ ";
 
 		for (int i = 0; i < vector_size; i++)
@@ -1219,6 +1235,23 @@ private:
 	int vectorExpansions = 0;
 
 public:
+
+	// TO ARRAY
+
+	// Returns an array of the current vector (MUST BE DEALLOCATED)
+	DataType* ToNewArray()
+	{
+		// Copy the vector into an array
+		DataType* new_array = new DataType[vectorSize];
+
+		for (int i = 0; i < vectorSize; i++)
+		{
+			new_array[i] = vectorData[i];
+		}
+
+		return new_array;
+	}
+
 
 	// CONSTRUCTORS AND DESTRUCTOR
 
@@ -1478,47 +1511,9 @@ public:
 	}
 
 
-	// TO ARRAY
-
-	// Returns a copied array of the current vector (MUST BE DEALLOCATED)
-	DataType* ToNewArray()
-	{
-		// Copy the vector into an array
-		DataType* new_array = new DataType[vectorSize];
-
-		for (int i = 0; i < vectorSize; i++)
-		{
-			new_array[i] = vectorData[i];
-		}
-
-		return new_array;
-	}
-
-
-	// ITERATORS
-
-	// Get a pointer to the beginning of the vector's array
-	DataType* Begin()
-	{
-		return vectorData;
-	}
-
-	// Get a pointer to the end of the vector's array
-	DataType* End()
-	{
-		return vectorData + (vectorSize - 1);
-	}
-
-	// Returns the pointer to the element at the given index
-	DataType* Data(int index)
-	{
-		return vectorData + index;
-	}
-
-
 	// VECTOR EQUALITY
 
-	// Check if another vector is equal to this vector
+	// Check if another vector is equal to the vector
 	bool Equals(Vector<DataType> compared_vector)
 	{
 		// Check if the sizes are equal
@@ -1541,16 +1536,37 @@ public:
 		return true;
 	}
 
-	// Check if another vector is equal to this vector
+	// Check if another vector is equal to the vector
 	bool operator ==(Vector<DataType> compared_vector)
 	{
 		return Equals(compared_vector);
 	}
 
-	// Check if another vector is not equal to this vector
+	// Check if another vector is not equal to the vector
 	bool operator !=(Vector<DataType> compared_vector)
 	{
 		return !Equals(compared_vector);
+	}
+
+
+	// ITERATORS
+
+	// Get a pointer to the beginning of the vector's array
+	DataType* Begin()
+	{
+		return vectorData;
+	}
+
+	// Get a pointer to the end of the vector's array
+	DataType* End()
+	{
+		return vectorData + (vectorSize - 1);
+	}
+
+	// Returns the pointer to the element at the given index
+	DataType* Data(int index)
+	{
+		return vectorData + index;
 	}
 
 
@@ -1580,14 +1596,16 @@ public:
 		return vectorSize == 0;
 	}
 
-	// Resizes the vector's size and removes out of bounds data or expands if necessary
-	Vector<DataType>& Resize(int new_size)
+	// Resizes the vector's size and removes out of bounds data or expands if necessary, returns the difference
+	int Resize(int new_size)
 	{
 		// Check if the new size is identical
 		if (vectorSize == new_size)
 		{
-			return *this;
+			return 0;
 		}
+
+		int difference = new_size - vectorCapacity;
 
 		// Duplicate the current vector
 		DataType* temp = new DataType[vectorSize];
@@ -1620,16 +1638,16 @@ public:
 
 		temp = nullptr;
 
-		return *this;
+		return difference;
 	}
 
-	// Expands the vector's capacity enough to hold the given amount (does not reduce the capacity)
-	Vector<DataType>& Reserve(int new_capacity)
+	// Expands the vector's's capacity enough to hold the given amount and return whether it was successful (does not reduce the capacity)
+	bool Reserve(int new_capacity)
 	{
 		// Check if the new capacity is less
 		if (new_capacity <= vectorCapacity)
 		{
-			return *this;
+			return false;
 		}
 
 		// Advance the number of expansions
@@ -1660,18 +1678,22 @@ public:
 
 		temp = nullptr;
 
-		return *this;
+		return true;
 	}
 
-	// Expands the vector's capacity by the given amount
-	Vector<DataType>& Expand(int number_of_spaces)
+	// Expands the vector's capacity by the given amount and return the new capacity
+	int Expand(int number_of_spaces)
 	{
-		return Reserve(vectorCapacity + number_of_spaces);
+		Reserve(vectorCapacity + number_of_spaces);
+
+		return vectorCapacity;
 	}
 
-	// Shrinks the capacity to the size
-	Vector<DataType>& ShrinkToFit()
+	// Shrinks the capacity to the size and return the difference
+	int ShrinkToFit()
 	{
+		int difference = vectorCapacity - vectorSize;
+
 		// Duplicate the current vector
 		DataType* temp = new DataType[vectorSize];
 
@@ -1700,7 +1722,7 @@ public:
 
 		temp = nullptr;
 
-		return *this;
+		return difference;
 	}
 
 
@@ -1718,7 +1740,7 @@ public:
 		return vectorData[0];
 	}
 
-	// Returns the first element in the vector
+	// Returns the last element in the vector
 	DataType Back()
 	{
 		return vectorData[vectorSize - 1];
@@ -1878,7 +1900,7 @@ public:
 	}
 
 	// Adds a range of new elements at the front of the vector
-	Vector<DataType>& PushRangeAtFront(int array_length, DataType array[])
+	Vector<DataType>& PushRange(int array_length, DataType array[])
 	{
 		Reserve(vectorSize + array_length);
 
@@ -1891,7 +1913,7 @@ public:
 	}
 
 	// Adds a range of new elements at the front of the vector
-	Vector<DataType>& PushRangeAtFront(int argc, DataType new_data ...)
+	Vector<DataType>& PushRange(int argc, DataType new_data ...)
 	{
 		va_list _va_list;
 
@@ -1925,12 +1947,6 @@ public:
 	// Adds a new element in the vector at a given index and shift following elements forward
 	Vector<DataType>& Insert(int index, DataType new_data)
 	{
-		// Check for out of bounds
-		if (index < 0 || index >= vectorSize)
-		{
-			return *this;
-		}
-
 		// Expand the vector if needed
 		if (vectorSize + 1 > vectorCapacity)
 		{
@@ -1956,16 +1972,12 @@ public:
 	// REMOVING ELEMENTS
 
 	// Removes a element in the vector at a given index and shift following elements back
-	Vector<DataType> Erase(int index)
+	DataType EraseAt(int index)
 	{
-		// Check for out of bounds
-		if (index < 0 || index >= vectorSize)
-		{
-			return *this;
-		}
-
 		// Decrease the vector size
 		vectorSize--;
+
+		DataType data = vectorData[index];
 
 		// Shift elements past the new index backward
 		for (int i = index + 1; i <= vectorSize; i++)
@@ -1973,16 +1985,35 @@ public:
 			vectorData[i - 1] = vectorData[i];
 		}
 
-		return *this;
+		return data;
+	}
+
+	// Removes the first of a given element in the vector
+	int Erase(DataType removed_data)
+	{
+		int index = Find(removed_data);
+
+		EraseAt(index);
+
+		return index;
+	}
+
+	// Removes the last of a given element in the vector
+	int EraseLast(DataType removed_data)
+	{
+		int index = FindLast(removed_data);
+
+		EraseAt(index);
+
+		return index;
 	}
 
 	// Remove and return the first element of the vector
 	DataType EraseFirst()
 	{
-		// Decrease the vector size if possible
 		if (vectorSize == 0)
 		{
-			return vectorData[0];
+			return DataType();
 		}
 
 		vectorSize--;
@@ -1999,19 +2030,12 @@ public:
 		return new_data;
 	}
 
-	// Removes the first of a given element in the vector
-	Vector<DataType>& EraseFirst(DataType removed_data)
-	{
-		return Erase(Find(removed_data));
-	}
-
 	// Remove and return the last element of the vector
 	DataType EraseLast()
 	{
-		// Decrease the vector size if possible
 		if (vectorSize == 0)
 		{
-			return vectorData[0];
+			return DataType();
 		}
 
 		vectorSize--;
@@ -2019,62 +2043,68 @@ public:
 		return vectorData[vectorSize];
 	}
 
-	// Removes the last of a given element in the vector
-	Vector<DataType>& EraseLast(DataType removed_data)
+	// Removes all of the given element in the vector and returns the total elements removed
+	int EraseAll(DataType removed_data)
 	{
-		return Erase(FindLast(removed_data));
-	}
+		int total = 0;
 
-	// Removes all of the given element in the vector
-	Vector<DataType>& EraseAll(DataType removed_data)
-	{
-		// Get the total number of elements
-		int amount = Total(removed_data);
-
-		// Remove those elements
-		for (int i = 0; i < amount; i++)
+		for (int i = 0; i < vectorSize - 1; i++)
 		{
-			erase_first(removed_data);
+			if (vectorData[i] == removed_data)
+			{
+				vectorData[i] = vectorData[i + 1];
+
+				total++;
+
+				i--;
+			}
 		}
 
-		return *this;
+		if (vectorData[vectorSize - 1] == removed_data)
+		{
+			total++;
+		}
+
+		vectorSize -= total;
+
+		return total;
 	}
 
-	// Clears the vector's data
-	Vector<DataType>& Clear()
+	// Clears the vector's data with a new capacity
+	int Clear(int new_capacity = 1)
 	{
+		int total = vectorSize;
+
 		// Reset vector variables
-		vectorData = new DataType[1];
+		delete[] vectorData;
+
+		vectorData = new DataType[new_capacity];
 
 		vectorSize = 0;
 
-		vectorCapacity = 1;
+		vectorCapacity = new_capacity;
 
 		vectorExpansions = 0;
 
-		return *this;
+		return total;
 	}
 
 
 	// ELEMENT OPERATIONS
 
 	// Replaces the data at the given index with the given data
-	Vector<DataType>& Set(int index, DataType new_data)
+	DataType Set(int index, DataType new_data)
 	{
-		// Check for out of bounds
-		if (index < 0 || index >= vectorSize)
-		{
-			return *this;
-		}
-
 		// Replace the data at the index
+		DataType data = vectorData[index];
+
 		vectorData[index] = new_data;
 
-		return *this;
+		return data;
 	}
 
 	// Replaces the first of the found data with the given data
-	Vector<DataType>& Replace(DataType replaced_data, DataType new_data)
+	int Replace(DataType replaced_data, DataType new_data)
 	{
 		// Find the index of the found data
 		int index = Find(replaced_data);
@@ -2082,17 +2112,17 @@ public:
 		// Check if the data was not found
 		if (index == -1)
 		{
-			return *this;
+			return index;
 		}
 
 		// Replace the data at the index
 		vectorData[index] = new_data;
 
-		return *this;
+		return index;
 	}
 
 	// Replaces the last of the found data with the given data
-	Vector<DataType>& ReplaceLast(DataType replaced_data, DataType new_data)
+	int ReplaceLast(DataType replaced_data, DataType new_data)
 	{
 		// Find the index of the found data
 		int index = FindLast(replaced_data);
@@ -2100,39 +2130,36 @@ public:
 		// Check if the data was not found
 		if (index == -1)
 		{
-			return *this;
+			return index;
 		}
 
 		// Replace the data at the index
 		vectorData[index] = new_data;
 
-		return *this;
+		return index;
 	}
 
-	// Replaces all of the found data with the given data
-	Vector<DataType>& ReplaceAll(DataType replaced_data, DataType new_data)
+	// Replaces all of the found data with the given data and returns the total number of replacements
+	int ReplaceAll(DataType replaced_data, DataType new_data)
 	{
-		// Get the total number of elements
-		int amount = Total(replaced_data);
+		int total = 0;
 
-		// Replace those elements
-		for (int i = 0; i < amount; i++)
+		for (int i = 0; i < vectorSize; i++)
 		{
-			Replace(replaced_data, new_data);
+			if (vectorData[i] == replaced_data)
+			{
+				vectorData[i] = new_data;
+
+				total++;
+			}
 		}
 
-		return *this;
+		return total;
 	}
 
 	// Swaps two elements at two given indicies
 	Vector<DataType>& Swap(int index1, int index2)
 	{
-		// Check for out of bounds
-		if (index1 < 0 || index1 >= vectorSize || index2 < 0 || index2 >= vectorSize)
-		{
-			return *this;
-		}
-
 		// Check if the indicies are the same
 		if (index1 == index2)
 		{
@@ -2160,7 +2187,7 @@ public:
 
 	// VECTOR OPERATIONS
 
-	// Assigns this vector's elements and capacity to the elements and capacity of another vector
+	// Assigns the vector's elements and capacity to the elements and capacity of another vector
 	Vector<DataType>& Assign(Vector<DataType>& new_data)
 	{
 		// Store the vector's size values
@@ -2192,12 +2219,12 @@ public:
 		return new_vector;
 	}
 
-	// Returns a slice of this vector from the start index for the number of elements
+	// Returns a slice of the vector from the start index for the number of elements
 	Vector<DataType> Slice(int start, int count)
 	{
 		Vector<DataType> slice = Vector<DataType>(count);
 
-		for (int i = start; i < count || i >= vectorSize; i++)
+		for (int i = start; i < start + count || i >= vectorSize; i++)
 		{
 			slice.Push(vectorData[i]);
 		}
@@ -2301,28 +2328,28 @@ public:
 	}
 
 	// Bubble sorts the elements of the vector relative to the given sort order
-	Vector<DataType>& Sort(float sort_order ...)
+	Vector<DataType>& Sort(SORT_TYPE sort_order ...)
 	{
-		va_list _va_list;
-
-		va_start(_va_list, vectorSize);
-
-		float* argv = new float[vectorSize];
-
-		for (int i = 0; i < vectorSize; i++)
-		{
-			argv[i] = sort_order;
-
-			sort_order = va_arg(_va_list, float);
-		}
-
-		va_end(_va_list);
-
 		// Check length
 		if (vectorSize <= 1)
 		{
 			return *this;
 		}
+
+		va_list _va_list;
+
+		va_start(_va_list, vectorSize);
+
+		SORT_TYPE* argv = new SORT_TYPE[vectorSize];
+
+		for (int i = 0; i < vectorSize; i++)
+		{
+			argv[i] = sort_order;
+
+			sort_order = va_arg(_va_list, SORT_TYPE);
+		}
+
+		va_end(_va_list);
 
 		// Place the vector elements in the sorted order
 		for (int i = 0; i < vectorSize - 1; i++)
@@ -2368,6 +2395,11 @@ public:
 	// Converts the elements of the vector into a string
 	std::string ToString()
 	{
+		if (vectorSize == 0)
+		{
+			return "{ }";
+		}
+
 		std::string log = "{ ";
 
 		for (int i = 0; i < vectorSize; i++)

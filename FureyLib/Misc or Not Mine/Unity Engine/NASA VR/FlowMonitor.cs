@@ -71,7 +71,7 @@ public class FlowMonitor : MonoBehaviour
 
         if (coordinateText != null)
         {
-            coordinateText.text = "Position: { " +
+            coordinateText.text = "Coordinates: { " +
             (int)FlowParticle.coordinate.x + ", " +
             (int)FlowParticle.coordinate.y + ", " +
             (int)FlowParticle.coordinate.z + " }";

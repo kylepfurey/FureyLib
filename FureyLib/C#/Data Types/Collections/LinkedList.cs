@@ -183,6 +183,21 @@ public class LinkedList<DataType> : IEnumerable
     }
 
     /// <summary>
+    /// Data constructor
+    /// </summary>
+    /// <param name="data"></param>
+    public LinkedList(DataType data)
+    {
+        head = new LinkedListNode<DataType>(data);
+
+        head.previous = head;
+
+        head.next = head;
+
+        nodeCount = 1;
+    }
+
+    /// <summary>
     /// Array constructor
     /// </summary>
     /// <param name="array"></param>
@@ -274,6 +289,109 @@ public class LinkedList<DataType> : IEnumerable
         }
     }
 
+    /// <summary>
+    /// Node constructor
+    /// </summary>
+    /// <param name="node"></param>
+    public LinkedList(LinkedListNode<DataType> node)
+    {
+        head = node;
+
+        head.previous = head;
+
+        head.next = head;
+
+        nodeCount = 1;
+    }
+
+    /// <summary>
+    /// Array constructor
+    /// </summary>
+    /// <param name="array"></param>
+    public LinkedList(params LinkedListNode<DataType>[] array)
+    {
+        if (array.Length == 0)
+        {
+            head = null;
+
+            nodeCount = 0;
+
+            return;
+        }
+
+        head = array[0];
+
+        nodeCount = array.Length;
+
+        if (nodeCount == 1)
+        {
+            head.previous = head;
+
+            head.next = head;
+        }
+        else
+        {
+            LinkedListNode<DataType> node = head;
+
+            for (int i = 1; i < array.Length; i++)
+            {
+                node.next = array[i];
+
+                array[i].previous = node;
+
+                node = array[i];
+            }
+
+            node.next = head;
+
+            head.previous = node;
+        }
+    }
+
+    /// <summary>
+    /// List constructor
+    /// </summary>
+    /// <param name="list"></param>
+    public LinkedList(List<LinkedListNode<DataType>> list)
+    {
+        if (list.Count == 0)
+        {
+            head = null;
+
+            nodeCount = 0;
+
+            return;
+        }
+
+        head = list[0];
+
+        nodeCount = list.Count;
+
+        if (nodeCount == 1)
+        {
+            head.previous = head;
+
+            head.next = head;
+        }
+        else
+        {
+            LinkedListNode<DataType> node = head;
+
+            for (int i = 1; i < list.Count; i++)
+            {
+                node.next = list[i];
+
+                list[i].previous = node;
+
+                node = list[i];
+            }
+
+            node.next = head;
+
+            head.previous = node;
+        }
+    }
+
 
     // LINKED LIST EQUALITY
 
@@ -350,6 +468,15 @@ public class LinkedList<DataType> : IEnumerable
     public int Size()
     {
         return nodeCount;
+    }
+
+    /// <summary>
+    /// Return whether the linked list is empty
+    /// </summary>
+    /// <returns></returns>
+    public bool Empty()
+    {
+        return nodeCount == 0;
     }
 
 
@@ -1092,11 +1219,6 @@ public class LinkedList<DataType> : IEnumerable
 
         Remove(node);
 
-        if (node == head)
-        {
-            head = head.next;
-        }
-
         return node;
     }
 
@@ -1109,12 +1231,12 @@ public class LinkedList<DataType> : IEnumerable
     {
         LinkedListNode<DataType> node = FindLast(data);
 
-        Remove(node);
-
-        if (node == head)
+        if (node == null)
         {
-            head = head.next;
+            return null;
         }
+
+        Remove(node);
 
         return node;
     }
@@ -1125,6 +1247,11 @@ public class LinkedList<DataType> : IEnumerable
     /// <returns></returns>
     public LinkedListNode<DataType> RemoveFirst()
     {
+        if (head == null)
+        {
+            return null;
+        }
+
         LinkedListNode<DataType> node = head;
 
         nodeCount--;
@@ -1153,6 +1280,11 @@ public class LinkedList<DataType> : IEnumerable
     /// <returns></returns>
     public LinkedListNode<DataType> RemoveLast()
     {
+        if (head == null)
+        {
+            return null;
+        }
+
         LinkedListNode<DataType> node = head.previous;
 
         nodeCount--;
@@ -1182,12 +1314,12 @@ public class LinkedList<DataType> : IEnumerable
     {
         LinkedListNode<DataType> node = Get(index);
 
-        Remove(node);
-
-        if (node == head)
+        if (node == null)
         {
-            head = head.next;
+            return null;
         }
+
+        Remove(node);
 
         return node;
     }

@@ -41,6 +41,11 @@ public:
 	// Returns an array of the current vector (MUST BE DEALLOCATED)
 	DataType* to_new_array()
 	{
+		if (vector_size == 0)
+		{
+			return nullptr;
+		}
+
 		// Copy the vector into an array
 		DataType* new_array = new DataType[vector_size];
 
@@ -188,7 +193,7 @@ public:
 
 		vector_expansions = 0;
 
-		delete argv;
+		delete[] argv;
 
 		argv = nullptr;
 	}
@@ -1186,6 +1191,8 @@ public:
 
 		delete[] array;
 
+		array = nullptr;
+
 		return *this;
 	}
 
@@ -1241,6 +1248,11 @@ public:
 	// Returns an array of the current vector (MUST BE DEALLOCATED)
 	DataType* ToNewArray()
 	{
+		if (vectorSize == 0)
+		{
+			return nullptr;
+		}
+
 		// Copy the vector into an array
 		DataType* new_array = new DataType[vectorSize];
 
@@ -1388,7 +1400,7 @@ public:
 
 		vectorExpansions = 0;
 
-		delete argv;
+		delete[] argv;
 
 		argv = nullptr;
 	}
@@ -2385,6 +2397,8 @@ public:
 		sort(array);
 
 		delete[] array;
+
+		array = nullptr;
 
 		return *this;
 	}

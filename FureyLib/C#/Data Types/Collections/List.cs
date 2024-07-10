@@ -373,7 +373,7 @@ public class List<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// Return whether the list is empty
+    /// Returns whether the list is empty
     /// </summary>
     /// <returns></returns>
     public bool Empty()

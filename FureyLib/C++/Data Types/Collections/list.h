@@ -824,13 +824,13 @@ public:
 
 	// CAPACITY
 
-	// Return whether the linked list is empty
+	// Returns whether the linked list is empty
 	bool empty()
 	{
 		return node_size == 0;
 	}
 
-	// Return the current number of nodes of the linked list
+	// Returns the current number of nodes of the linked list
 	int size()
 	{
 		return node_size;

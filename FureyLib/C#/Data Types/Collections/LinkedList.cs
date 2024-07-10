@@ -535,7 +535,7 @@ public class LinkedList<DataType> : IEnumerable
     // CAPACITY
 
     /// <summary>
-    /// Return whether the linked list is empty
+    /// Returns whether the linked list is empty
     /// </summary>
     /// <returns></returns>
     public bool Empty()
@@ -544,7 +544,7 @@ public class LinkedList<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// Return the current number of nodes of the linked list
+    /// Returns the current number of nodes of the linked list
     /// </summary>
     /// <returns></returns>
     public int Size()

@@ -434,7 +434,7 @@ public:
 		return difference;
 	}
 
-	// Return whether the vector is empty
+	// Returns whether the vector is empty
 	bool empty()
 	{
 		return vector_size == 0;

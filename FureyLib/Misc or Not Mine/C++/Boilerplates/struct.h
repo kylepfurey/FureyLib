@@ -6,9 +6,7 @@
 #include <memory>
 #include <iostream>
 #include <string>
-#include <array>
 #include <vector>
-#include <list>
 #include <map>
 
 // Include this heading to use the structure

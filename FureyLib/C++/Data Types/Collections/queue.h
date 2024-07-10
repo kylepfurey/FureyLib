@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <tuple>
 #include <algorithm>
 #include <cstdarg>
 #include <initializer_list>

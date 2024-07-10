@@ -2,6 +2,8 @@
 // Tuple Data Structures Script
 // by Kyle Furey
 
+// REFERENCES: https://en.cppreference.com/w/cpp/utility/tuple, https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples
+
 /// <summary>
 /// Container for two readonly elements of different types.
 /// </summary>

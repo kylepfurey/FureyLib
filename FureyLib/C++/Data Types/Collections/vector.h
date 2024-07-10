@@ -40,10 +40,8 @@ private:
 	// Expands the capacity based on how many times it has been expanded
 	vector<data_type>& reallocate()
 	{
-		// Advance the number of expansions
 		vector_expansions++;
 
-		// Duplicate the vector
 		data_type* temp = new data_type[vector_size];
 
 		for (int i = 0; i < vector_size; i++)
@@ -51,14 +49,12 @@ private:
 			temp[i] = vector_data[i];
 		}
 
-		// Allocate new space for the vector
 		vector_capacity *= 2;
 
 		delete[] vector_data;
 
 		vector_data = new data_type[vector_capacity];
 
-		// Place the data back into the vector
 		for (int i = 0; i < vector_size; i++)
 		{
 			vector_data[i] = temp[i];
@@ -83,7 +79,6 @@ public:
 			return nullptr;
 		}
 
-		// Copy the vector into an array
 		data_type* new_array = new data_type[vector_size];
 
 		for (int i = 0; i < vector_size; i++)
@@ -321,23 +316,19 @@ public:
 	// Check if another vector is equal to the vector
 	bool equals(vector<data_type>& compared_vector)
 	{
-		// Check if the sizes are equal
 		if (vector_size != compared_vector.vector_size)
 		{
 			return false;
 		}
 
-		// Loop through each element to check if they are not equal
 		for (int i = 0; i < vector_size; i++)
 		{
-			// Are they not equal
 			if (vector_data[i] != compared_vector[i])
 			{
 				return false;
 			}
 		}
 
-		// The vectors are equal
 		return true;
 	}
 
@@ -392,7 +383,6 @@ public:
 	// Resizes the vector's size and removes out of bounds data or expands if necessary, returns the difference
 	int resize(int new_size)
 	{
-		// Check if the new size is identical
 		if (vector_size == new_size)
 		{
 			return 0;
@@ -400,7 +390,6 @@ public:
 
 		int difference = new_size - vector_capacity;
 
-		// Duplicate the current vector
 		data_type* temp = new data_type[vector_size];
 
 		for (int i = 0; i < vector_size; i++)
@@ -408,20 +397,17 @@ public:
 			temp[i] = vector_data[i];
 		}
 
-		// Expand the vector if needed
 		if (new_size > vector_capacity)
 		{
 			reallocate();
 		}
 
-		// Allocate new space for the vector
 		delete[] vector_data;
 
 		vector_data = new data_type[vector_capacity];
 
 		vector_size = new_size;
 
-		// Place the data back into the vector
 		for (int i = 0; i < vector_size; i++)
 		{
 			vector_data[i] = temp[i];
@@ -443,16 +429,13 @@ public:
 	// Expands the vector's capacity enough to hold the given amount and return whether it was successful (does not reduce the capacity)
 	bool reserve(int new_capacity)
 	{
-		// Check if the new capacity is less
 		if (new_capacity <= vector_capacity)
 		{
 			return false;
 		}
 
-		// Advance the number of expansions
 		vector_expansions++;
 
-		// Duplicate the current vector
 		data_type* temp = new data_type[vector_size];
 
 		for (int i = 0; i < vector_size; i++)
@@ -460,14 +443,12 @@ public:
 			temp[i] = vector_data[i];
 		}
 
-		// Allocate new space for the vector
 		vector_capacity = new_capacity;
 
 		delete[] vector_data;
 
 		vector_data = new data_type[vector_capacity];
 
-		// Place the data back into the vector
 		for (int i = 0; i < vector_size; i++)
 		{
 			vector_data[i] = temp[i];
@@ -493,7 +474,6 @@ public:
 	{
 		int difference = vector_capacity - vector_size;
 
-		// Duplicate the current vector
 		data_type* temp = new data_type[vector_size];
 
 		for (int i = 0; i < vector_size; i++)
@@ -501,20 +481,17 @@ public:
 			temp[i] = vector_data[i];
 		}
 
-		// Allocate new space for the vector
 		vector_capacity = vector_size;
 
 		delete[] vector_data;
 
 		vector_data = new data_type[vector_capacity];
 
-		// Place the data back into the vector
 		for (int i = 0; i < vector_size; i++)
 		{
 			vector_data[i] = temp[i];
 		}
 
-		// Reset the number of resizes
 		vector_expansions = 0;
 
 		delete[] temp;
@@ -551,10 +528,10 @@ public:
 		return vector_data[vector_size - 1];
 	}
 
-	// Returns the pointer to the element at the given index
-	data_type* data(int index)
+	// Returns a reference to the element at the given index
+	data_type& data(int index)
 	{
-		return vector_data + index;
+		return *(vector_data + index);
 	}
 
 
@@ -563,7 +540,6 @@ public:
 	// Returns the first index of the given data in the vector, returns -1 if nothing matched
 	int find(data_type found_data)
 	{
-		// Loop through the vector for the matching element
 		for (int i = 0; i < vector_size; i++)
 		{
 			if (vector_data[i] == found_data)
@@ -578,7 +554,6 @@ public:
 	// Returns the last index of the given data in the vector, returns -1 if nothing matched
 	int find_last(data_type found_data)
 	{
-		// Loop through the vector for the matching element
 		for (int i = vector_size - 1; i >= 0; i--)
 		{
 			if (vector_data[i] == found_data)
@@ -599,10 +574,8 @@ public:
 	// Returns the total number of instances of the given data in the vector
 	int total(data_type found_data)
 	{
-		// Store the current count
 		int count = 0;
 
-		// Loop through the vector for matching elements
 		for (int i = 0; i < vector_size; i++)
 		{
 			if (vector_data[i] == found_data)
@@ -620,19 +593,16 @@ public:
 	// Assigns the vector's elements and capacity to the elements and capacity of another vector
 	vector<data_type>& assign(vector<data_type>& new_data)
 	{
-		// Store the vector's size values
 		vector_size = new_data.size();
 
 		vector_capacity = vector_size;
 
 		vector_expansions = 0;
 
-		// Allocate the space from the new vector
 		delete[] vector_data;
 
 		vector_data = new data_type[vector_capacity];
 
-		// Place the data back into the vector
 		for (int i = 0; i < vector_size; i++)
 		{
 			vector_data[i] = new_data[i];
@@ -644,16 +614,13 @@ public:
 	// Adds a new element at the end of the vector
 	vector<data_type>& push_back(data_type new_data)
 	{
-		// Expand the vector if needed
 		if (vector_size + 1 > vector_capacity)
 		{
 			reallocate();
 		}
 
-		// Increase the vector size
 		vector_size++;
 
-		// Sets the last element to the new data
 		vector_data[vector_size - 1] = new_data;
 
 		return *this;
@@ -675,22 +642,18 @@ public:
 	// Adds a new element at the front of the vector
 	vector<data_type>& push(data_type new_data)
 	{
-		// Expand the vector if needed
 		if (vector_size + 1 > vector_capacity)
 		{
 			reallocate();
 		}
 
-		// Increase the vector size
 		vector_size++;
 
-		// Shift vector elements forward
 		for (int i = vector_size - 1; i >= 1; i--)
 		{
 			vector_data[i] = vector_data[i - 1];
 		}
 
-		// Set the first element to the new data
 		vector_data[0] = new_data;
 
 		return *this;
@@ -706,10 +669,8 @@ public:
 
 		vector_size--;
 
-		// Store the removed data
 		data_type new_data = vector_data[0];
 
-		// Shift vector elements backward
 		for (int i = 1; i <= vector_size; i++)
 		{
 			vector_data[i - 1] = vector_data[i];
@@ -721,22 +682,18 @@ public:
 	// Adds a new element in the vector at a given index and shift following elements forward
 	vector<data_type>& insert(int index, data_type new_data)
 	{
-		// Expand the vector if needed
 		if (vector_size + 1 > vector_capacity)
 		{
 			reallocate();
 		}
 
-		// Increase the vector size
 		vector_size++;
 
-		// Shift elements at and past the new index forward
 		for (int i = vector_size - 1; i >= index; i--)
 		{
 			vector_data[i] = vector_data[i - 1];
 		}
 
-		// Replace the starting index with the new data
 		vector_data[index] = new_data;
 
 		return *this;
@@ -745,12 +702,10 @@ public:
 	// Removes a element in the vector at a given index and shift following elements back
 	data_type erase(int index)
 	{
-		// Decrease the vector size
 		vector_size--;
 
 		data_type data = vector_data[index];
 
-		// Shift elements past the new index backward
 		for (int i = index + 1; i <= vector_size; i++)
 		{
 			vector_data[i - 1] = vector_data[i];
@@ -782,19 +737,15 @@ public:
 	// Swaps two elements at two given indicies
 	vector<data_type>& swap(int index1, int index2)
 	{
-		// Check if the indicies are the same
 		if (index1 == index2)
 		{
 			return *this;
 		}
 
-		// Store swapped data
 		data_type temp = vector_data[index2];
 
-		// Replace the swapped data
 		vector_data[index2] = vector_data[index1];
 
-		// Return the swapped data
 		vector_data[index1] = temp;
 
 		return *this;
@@ -805,7 +756,6 @@ public:
 	{
 		int total = vector_size;
 
-		// Reset vector variables
 		delete[] vector_data;
 
 		vector_data = new data_type[new_capacity];
@@ -822,22 +772,18 @@ public:
 	// Creates a new element in the vector at a given index and shift following elements forward
 	template<typename ... argument_types> vector<data_type>& emplace(int index, argument_types ... arguments)
 	{
-		// Expand the vector if needed
 		if (vector_size + 1 > vector_capacity)
 		{
 			reallocate();
 		}
 
-		// Increase the vector size
 		vector_size++;
 
-		// Shift elements at and past the new index forward
 		for (int i = vector_size - 1; i >= index; i--)
 		{
 			vector_data[i] = vector_data[i - 1];
 		}
 
-		// Replace the starting index with the new data
 		vector_data[index] = data_type(arguments...);
 
 		return *this;
@@ -846,16 +792,13 @@ public:
 	// Creates a new element at the end of the vector
 	template<typename ... argument_types> vector<data_type>& emplace_back(argument_types ... arguments)
 	{
-		// Expand the vector if needed
 		if (vector_size + 1 > vector_capacity)
 		{
 			reallocate();
 		}
 
-		// Increase the vector size
 		vector_size++;
 
-		// Sets the last element to the new data
 		vector_data[vector_size - 1] = data_type(arguments...);
 
 		return *this;
@@ -864,22 +807,18 @@ public:
 	// Creates a new element at the front of the vector
 	template<typename ... argument_types> vector<data_type>& emplace_front(argument_types ... arguments)
 	{
-		// Expand the vector if needed
 		if (vector_size + 1 > vector_capacity)
 		{
 			reallocate();
 		}
 
-		// Increase the vector size
 		vector_size++;
 
-		// Shift vector elements forward
 		for (int i = vector_size - 1; i >= 1; i--)
 		{
 			vector_data[i] = vector_data[i - 1];
 		}
 
-		// Set the first element to the new data
 		vector_data[0] = data_type(arguments...);
 
 		return *this;
@@ -891,7 +830,6 @@ public:
 	// Replaces the data at the given index with the given data
 	data_type set(int index, data_type new_data)
 	{
-		// Replace the data at the index
 		data_type data = vector_data[index];
 
 		vector_data[index] = new_data;
@@ -902,16 +840,13 @@ public:
 	// Replaces the first of the found data with the given data
 	int replace(data_type replaced_data, data_type new_data)
 	{
-		// Find the index of the found data
 		int index = find(replaced_data);
 
-		// Check if the data was not found
 		if (index == -1)
 		{
 			return index;
 		}
 
-		// Replace the data at the index
 		vector_data[index] = new_data;
 
 		return index;
@@ -920,16 +855,13 @@ public:
 	// Replaces the last of the found data with the given data
 	int replace_last(data_type replaced_data, data_type new_data)
 	{
-		// Find the index of the found data
 		int index = find_last(replaced_data);
 
-		// Check if the data was not found
 		if (index == -1)
 		{
 			return index;
 		}
 
-		// Replace the data at the index
 		vector_data[index] = new_data;
 
 		return index;
@@ -986,26 +918,23 @@ public:
 	// Bubble sorts the elements of the vector relative to the given sort order
 	vector<data_type>& sort(SORT_TYPE array[])
 	{
-		// Check length
 		if (vector_size <= 1)
 		{
 			return *this;
 		}
 
-		// Place the vector elements in the sorted order
 		for (int i = 0; i < vector_size - 1; i++)
 		{
 			for (int j = 0; j < vector_size - i - 1; j++)
 			{
 				if (array[j] > array[j + 1])
 				{
-					// Swap the two vector elements
 					swap(j, j + 1);
 
-					// Swap the two sorting elements
 					SORT_TYPE tempData = array[j];
 
 					array[j] = array[j + 1];
+
 					array[j + 1] = tempData;
 				}
 			}
@@ -1017,7 +946,6 @@ public:
 	// Bubble sorts the elements of the vector relative to the given sort order
 	vector<data_type>& sort(SORT_TYPE sort_order ...)
 	{
-		// Check length
 		if (vector_size <= 1)
 		{
 			return *this;
@@ -1038,20 +966,18 @@ public:
 
 		va_end(_va_list);
 
-		// Place the vector elements in the sorted order
 		for (int i = 0; i < vector_size - 1; i++)
 		{
 			for (int j = 0; j < vector_size - i - 1; j++)
 			{
 				if (argv[j] > argv[j + 1])
 				{
-					// Swap the two vector elements
 					swap(j, j + 1);
 
-					// Swap the two sorting elements
 					SORT_TYPE tempData = argv[j];
 
 					argv[j] = argv[j + 1];
+
 					argv[j + 1] = tempData;
 				}
 			}
@@ -1081,13 +1007,11 @@ public:
 	// Reverse the vector elements
 	vector<data_type>& reverse()
 	{
-		// Check length
 		if (vector_size <= 1)
 		{
 			return *this;
 		}
 
-		// Loop through each element and swap it with the element across the end
 		for (int i = 0; i < vector_size / 2; i++)
 		{
 			swap(i, vector_size - i - 1);
@@ -1148,19 +1072,16 @@ public:
 	// Shifts the vector elements right
 	vector<data_type>& shift_right(int number_of_shifts)
 	{
-		// Check length
 		if (vector_size <= 1)
 		{
 			return *this;
 		}
 
-		// Check if shifting the vector is unnecessary
 		if (number_of_shifts % vector_size == 0)
 		{
 			return *this;
 		}
 
-		// Duplicate the vector
 		data_type* temp = new data_type[vector_size];
 
 		for (int i = 0; i < vector_size; i++)
@@ -1172,7 +1093,6 @@ public:
 
 		vector_data = new data_type[vector_capacity];
 
-		// Place the vector elements at their shifted location using modulo
 		for (int i = 0; i < vector_size; i++)
 		{
 			vector_data[i] = temp[((i - number_of_shifts) % vector_size + vector_size) % vector_size];

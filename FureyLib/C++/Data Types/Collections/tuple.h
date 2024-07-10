@@ -2,6 +2,8 @@
 // Tuple Data Structures Script
 // by Kyle Furey
 
+// REFERENCES: https://en.cppreference.com/w/cpp/utility/tuple, https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples
+
 #pragma once
 
 // Include this heading to use the structure

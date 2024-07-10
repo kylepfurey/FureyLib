@@ -1047,7 +1047,7 @@ public class PriorityStack<DataType> : IEnumerable
     /// <returns></returns>
     public IEnumerator GetEnumerator()
     {
-        return ToArray().GetEnumerator();
+        return queue.GetEnumerator();
     }
 
     /// <summary>

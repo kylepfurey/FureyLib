@@ -88,10 +88,8 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     private List<DataType> Reallocate()
     {
-        // Advance the number of expansions
         listExpansions++;
 
-        // Duplicate the list
         DataType[] temp = new DataType[listCount];
 
         for (int i = 0; i < listCount; i++)
@@ -99,12 +97,10 @@ public class List<DataType> : IEnumerable
             temp[i] = listData[i];
         }
 
-        // Allocate new space for the list
         listCapacity *= 2;
 
         listData = new DataType[listCapacity];
 
-        // Place the data back into the list
         for (int i = 0; i < listCount; i++)
         {
             listData[i] = temp[i];
@@ -122,7 +118,6 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public DataType[] ToArray()
     {
-        // Copy the list into an array
         DataType[] newArray = new DataType[listCount];
 
         for (int i = 0; i < listCount; i++)
@@ -257,23 +252,19 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public bool Equals(List<DataType> comparedList)
     {
-        // Check if the sizes are equal
         if (listCount != comparedList.listCount)
         {
             return false;
         }
 
-        // Loop through each element to check if they are not equal
         for (int i = 0; i < listCount; i++)
         {
-            // Are they not equal
             if (!listData[i].Equals(comparedList[i]))
             {
                 return false;
             }
         }
 
-        // The lists are equal
         return true;
     }
 
@@ -336,7 +327,6 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public int Resize(int newSize)
     {
-        // Check if the new size is identical
         if (listCount == newSize)
         {
             return 0;
@@ -344,7 +334,6 @@ public class List<DataType> : IEnumerable
 
         int difference = newSize - listCapacity;
 
-        // Duplicate the current list
         DataType[] temp = new DataType[listCount];
 
         for (int i = 0; i < listCount; i++)
@@ -352,18 +341,15 @@ public class List<DataType> : IEnumerable
             temp[i] = listData[i];
         }
 
-        // Expand the list if needed
         if (newSize > listCapacity)
         {
             Reallocate();
         }
 
-        // Allocate new space for the list
         listData = new DataType[listCapacity];
 
         listCount = newSize;
 
-        // Place the data back into the list
         for (int i = 0; i < listCount; i++)
         {
             listData[i] = temp[i];
@@ -388,16 +374,13 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public bool EnsureCapacity(int newCapacity)
     {
-        // Check if the new capacity is less
         if (newCapacity <= listCapacity)
         {
             return false;
         }
 
-        // Advance the number of expansions
         listExpansions++;
 
-        // Duplicate the current list
         DataType[] temp = new DataType[listCount];
 
         for (int i = 0; i < listCount; i++)
@@ -405,12 +388,10 @@ public class List<DataType> : IEnumerable
             temp[i] = listData[i];
         }
 
-        // Allocate new space for the list
         listCapacity = newCapacity;
 
         listData = new DataType[listCapacity];
 
-        // Place the data back into the list
         for (int i = 0; i < listCount; i++)
         {
             listData[i] = temp[i];
@@ -439,7 +420,6 @@ public class List<DataType> : IEnumerable
     {
         int difference = listCapacity - listCount;
 
-        // Duplicate the current list
         DataType[] temp = new DataType[listCount];
 
         for (int i = 0; i < listCount; i++)
@@ -447,18 +427,15 @@ public class List<DataType> : IEnumerable
             temp[i] = listData[i];
         }
 
-        // Allocate new space for the list
         listCapacity = listCount;
 
         listData = new DataType[listCapacity];
 
-        // Place the data back into the list
         for (int i = 0; i < listCount; i++)
         {
             listData[i] = temp[i];
         }
 
-        // Reset the number of resizes
         listExpansions = 0;
 
         return difference;
@@ -526,7 +503,6 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public int IndexOf(DataType foundData)
     {
-        // Loop through the list for the matching element
         for (int i = 0; i < listCount; i++)
         {
             if (listData[i].Equals(foundData))
@@ -545,7 +521,6 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public int LastIndexOf(DataType foundData)
     {
-        // Loop through the list for the matching element
         for (int i = listCount - 1; i >= 0; i--)
         {
             if (listData[i].Equals(foundData))
@@ -574,10 +549,8 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public int Total(DataType foundData)
     {
-        // Store the current count
         int count = 0;
 
-        // Loop through the list for matching elements
         for (int i = 0; i < listCount; i++)
         {
             if (listData[i].Equals(foundData))
@@ -599,17 +572,14 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public List<DataType> Assign(List<DataType> newData)
     {
-        // Store the list's size values
         listCount = newData.Size();
 
         listCapacity = listCount;
 
         listExpansions = 0;
 
-        // Allocate the space from the new list
         listData = new DataType[listCapacity];
 
-        // Place the data back into the list
         for (int i = 0; i < listCount; i++)
         {
             listData[i] = newData[i];
@@ -625,16 +595,13 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public List<DataType> Add(DataType newData)
     {
-        // Expand the list if needed
         if (listCount + 1 > listCapacity)
         {
             Reallocate();
         }
 
-        // Increase the list size
         listCount++;
 
-        // Sets the last element to the new data
         listData[listCount - 1] = newData;
 
         return this;
@@ -663,22 +630,18 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public List<DataType> AddFirst(DataType newData)
     {
-        // Expand the list if needed
         if (listCount + 1 > listCapacity)
         {
             Reallocate();
         }
 
-        // Increase the list size
         listCount++;
 
-        // Shift list elements forward
         for (int i = listCount - 1; i >= 1; i--)
         {
             listData[i] = listData[i - 1];
         }
 
-        // Set the first element to the new data
         listData[0] = newData;
 
         return this;
@@ -697,10 +660,8 @@ public class List<DataType> : IEnumerable
 
         listCount--;
 
-        // Store the removed data
         DataType newData = listData[0];
 
-        // Shift list elements backward
         for (int i = 1; i <= listCount; i++)
         {
             listData[i - 1] = listData[i];
@@ -717,22 +678,18 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public List<DataType> Insert(int index, DataType newData)
     {
-        // Expand the list if needed
         if (listCount + 1 > listCapacity)
         {
             Reallocate();
         }
 
-        // Increase the list size
         listCount++;
 
-        // Shift elements at and past the new index forward
         for (int i = listCount - 1; i >= index; i--)
         {
             listData[i] = listData[i - 1];
         }
 
-        // Replace the starting index with the new data
         listData[index] = newData;
 
         return this;
@@ -745,12 +702,10 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public DataType RemoveAt(int index)
     {
-        // Decrease the list size
         listCount--;
 
         DataType data = listData[index];
 
-        // Shift elements past the new index backward
         for (int i = index + 1; i <= listCount; i++)
         {
             listData[i - 1] = listData[i];
@@ -795,19 +750,15 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public List<DataType> Swap(int index1, int index2)
     {
-        // Check if the indicies are the same
         if (index1 == index2)
         {
             return this;
         }
 
-        // Store swapped data
         DataType temp = listData[index2];
 
-        // Replace the swapped data
         listData[index2] = listData[index1];
 
-        // Return the swapped data
         listData[index1] = temp;
 
         return this;
@@ -822,7 +773,6 @@ public class List<DataType> : IEnumerable
     {
         int total = listCount;
 
-        // Reset list variables
         listData = new DataType[newCapacity];
 
         listCount = 0;
@@ -842,22 +792,18 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public List<DataType> Emplace(int index, ref DataType newData)
     {
-        // Expand the list if needed
         if (listCount + 1 > listCapacity)
         {
             Reallocate();
         }
 
-        // Increase the list size
         listCount++;
 
-        // Shift elements at and past the new index forward
         for (int i = listCount - 1; i >= index; i--)
         {
             listData[i] = listData[i - 1];
         }
 
-        // Replace the starting index with the new data
         listData[index] = newData;
 
         return this;
@@ -870,16 +816,13 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public List<DataType> EmplaceBack(ref DataType newData)
     {
-        // Expand the list if needed
         if (listCount + 1 > listCapacity)
         {
             Reallocate();
         }
 
-        // Increase the list size
         listCount++;
 
-        // Sets the last element to the new data
         listData[listCount - 1] = newData;
 
         return this;
@@ -892,22 +835,18 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public List<DataType> EmplaceFront(ref DataType newData)
     {
-        // Expand the list if needed
         if (listCount + 1 > listCapacity)
         {
             Reallocate();
         }
 
-        // Increase the list size
         listCount++;
 
-        // Shift list elements forward
         for (int i = listCount - 1; i >= 1; i--)
         {
             listData[i] = listData[i - 1];
         }
 
-        // Set the first element to the new data
         listData[0] = newData;
 
         return this;
@@ -924,7 +863,6 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public DataType Set(int index, DataType newData)
     {
-        // Replace the data at the index
         DataType data = listData[index];
 
         listData[index] = newData;
@@ -940,16 +878,13 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public int Replace(DataType replacedData, DataType newData)
     {
-        // Find the index of the found data
         int index = IndexOf(replacedData);
 
-        // Check if the data was not found
         if (index == -1)
         {
             return index;
         }
 
-        // Replace the data at the index
         listData[index] = newData;
 
         return index;
@@ -963,16 +898,13 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public int ReplaceLast(DataType replacedData, DataType newData)
     {
-        // Find the index of the found data
         int index = LastIndexOf(replacedData);
 
-        // Check if the data was not found
         if (index == -1)
         {
             return index;
         }
 
-        // Replace the data at the index
         listData[index] = newData;
 
         return index;
@@ -1042,26 +974,23 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public List<DataType> Sort(params SortType[] sortOrder)
     {
-        // Check length
         if (listCount <= 1)
         {
             return this;
         }
 
-        // Place the list elements in the sorted order
         for (int i = 0; i < listCount - 1; i++)
         {
             for (int j = 0; j < listCount - i - 1; j++)
             {
                 if (sortOrder[j] > sortOrder[j + 1])
                 {
-                    // Swap the two list elements
                     Swap(j, j + 1);
 
-                    // Swap the two sorting elements
                     SortType tempData = sortOrder[j];
 
                     sortOrder[j] = sortOrder[j + 1];
+
                     sortOrder[j + 1] = tempData;
                 }
             }
@@ -1086,13 +1015,11 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public List<DataType> Reverse()
     {
-        // Check length
         if (listCount <= 1)
         {
             return this;
         }
 
-        // Loop through each element and swap it with the element across the end
         for (int i = 0; i < listCount / 2; i++)
         {
             Swap(i, listCount - i - 1);
@@ -1169,19 +1096,16 @@ public class List<DataType> : IEnumerable
     /// <returns></returns>
     public List<DataType> ShiftRight(int numberOfShifts)
     {
-        // Check length
         if (listCount <= 1)
         {
             return this;
         }
 
-        // Check if shifting the list is unnecessary
         if (numberOfShifts % listCount == 0)
         {
             return this;
         }
 
-        // Duplicate the list
         DataType[] temp = new DataType[listCount];
 
         for (int i = 0; i < listCount; i++)
@@ -1191,7 +1115,6 @@ public class List<DataType> : IEnumerable
 
         listData = new DataType[listCapacity];
 
-        // Place the list elements at their shifted location using modulo
         for (int i = 0; i < listCount; i++)
         {
             listData[i] = temp[((i - numberOfShifts) % listCount + listCount) % listCount];

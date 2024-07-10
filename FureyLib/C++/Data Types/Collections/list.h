@@ -97,13 +97,10 @@ public:
 			return nullptr;
 		}
 
-		// Copy the linked list into an array
 		data_type* new_array = new data_type[node_size];
 
-		// Set the current nodes
 		list_node<data_type>* node = head;
 
-		// Loop through each node and add it to the array
 		for (int i = 0; i < node_size; i++)
 		{
 			new_array[i] = node->data;
@@ -122,13 +119,10 @@ public:
 			return std::vector<data_type>();
 		}
 
-		// Copy the linked list into an list
 		std::vector<data_type> new_list = std::vector<data_type>();
 
-		// Set the current nodes
 		list_node<data_type>* node = head;
 
-		// Loop through each node and add it to the array
 		for (int i = 0; i < node_size; i++)
 		{
 			new_list.push_back(node->data);
@@ -740,7 +734,6 @@ public:
 		// Loop through each node to check if they are not equal
 		for (int i = 0; i < node_size; i++)
 		{
-			// Are they not equal
 			if (node->data != compared_node->data)
 			{
 				return false;
@@ -751,7 +744,6 @@ public:
 			compared_node = compared_node->next;
 		}
 
-		// The lists are equal
 		return true;
 	}
 
@@ -839,6 +831,12 @@ public:
 
 	// ELEMENT ACCESS
 
+	// Returns the node at the given index
+	list_node<data_type>* operator[](int index)
+	{
+		return at(index);
+	}
+
 	// Returns the node's data in the linked list
 	data_type front()
 	{
@@ -855,12 +853,6 @@ public:
 	data_type& data(int index)
 	{
 		return at(index)->data;
-	}
-
-	// Returns the node at the given index
-	list_node<data_type>* operator[](int index)
-	{
-		return at(index);
 	}
 
 
@@ -1653,7 +1645,6 @@ public:
 	// Swaps two nodes' values at two given indicies
 	list<data_type>& swap(int index1, int index2)
 	{
-		// Check if the indicies are the same
 		if (index1 == index2)
 		{
 			return *this;
@@ -1682,7 +1673,6 @@ public:
 	// Replaces the node's data at the given index with the given data, returns the replaced data
 	list_node<data_type>* set(int index, data_type new_data)
 	{
-		// Replace the data at the index
 		list_node<data_type>* node = at(index);
 
 		node->data = new_data;
@@ -1693,7 +1683,6 @@ public:
 	// Replaces the node's data at the given index with the given data, returns the replaced data
 	list_node<data_type>* set(int index, list_node<data_type>* new_node)
 	{
-		// Replace the data at the index
 		list_node<data_type>* node = at(index);
 
 		replace(node, new_node);
@@ -1704,10 +1693,8 @@ public:
 	// Replaces the first of the found data with the given data and return the index
 	int replace(data_type replaced_data, data_type new_data)
 	{
-		// Find the index of the found data
 		int index = index_of(replaced_data);
 
-		// Check if the data was not found
 		if (index == -1)
 		{
 			return index;
@@ -1715,7 +1702,6 @@ public:
 
 		list_node<data_type>* node = at(index);
 
-		// Replace the data at the index
 		node->data = new_data;
 
 		return index;
@@ -1745,18 +1731,15 @@ public:
 	// Replaces the last of the found data with the given data and return the index
 	int replace_last(data_type replaced_data, data_type new_data)
 	{
-		// Find the index of the found data
 		int index = last_index_of(replaced_data);
 
 		list_node<data_type>* node = at(index);
 
-		// Check if the data was not found
 		if (index == -1)
 		{
 			return index;
 		}
 
-		// Replace the data at the index
 		node->data = new_data;
 
 		return index;
@@ -1893,26 +1876,23 @@ public:
 	// Bubble sorts the nodes of the linked list relative to the given sort order
 	list<data_type>& sort(SORT_TYPE* sort_order)
 	{
-		// Check length
 		if (node_size <= 1)
 		{
 			return *this;
 		}
 
-		// Place the list elements in the sorted order
 		for (int i = 0; i < node_size - 1; i++)
 		{
 			for (int j = 0; j < node_size - i - 1; j++)
 			{
 				if (sort_order[j] > sort_order[j + 1])
 				{
-					// Swap the two list elements
 					swap(j, j + 1);
 
-					// Swap the two sorting elements
 					SORT_TYPE temp_data = sort_order[j];
 
 					sort_order[j] = sort_order[j + 1];
+
 					sort_order[j + 1] = temp_data;
 				}
 			}
@@ -1924,7 +1904,6 @@ public:
 	// Bubble sorts the nodes of the linked list relative to the given sort order
 	list<data_type>& sort(SORT_TYPE array ...)
 	{
-		// Check length
 		if (node_size <= 1)
 		{
 			return *this;
@@ -1945,20 +1924,18 @@ public:
 
 		va_end(_va_list);
 
-		// Place the list elements in the sorted order
 		for (int i = 0; i < node_size - 1; i++)
 		{
 			for (int j = 0; j < node_size - i - 1; j++)
 			{
 				if (argv[j] > argv[j + 1])
 				{
-					// Swap the two list elements
 					swap(j, j + 1);
 
-					// Swap the two sorting elements
 					SORT_TYPE temp_data = argv[j];
 
 					argv[j] = argv[j + 1];
+
 					argv[j + 1] = temp_data;
 				}
 			}
@@ -1993,13 +1970,11 @@ public:
 	// Reverse the nodes
 	list<data_type>& reverse()
 	{
-		// Check length
 		if (node_size <= 1)
 		{
 			return *this;
 		}
 
-		// Loop through each element and swap it with the element across the end
 		for (int i = 0; i < node_size / 2; i++)
 		{
 			swap(i, node_size - i - 1);

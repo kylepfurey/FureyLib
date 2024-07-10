@@ -79,13 +79,10 @@ public class LinkedList<DataType> : IEnumerable
             return new DataType[0];
         }
 
-        // Copy the linked list into an array
         DataType[] newArray = new DataType[nodeCount];
 
-        // Set the current nodes
         LinkedListNode<DataType> node = head;
 
-        // Loop through each node and add it to the array
         for (int i = 0; i < nodeCount; i++)
         {
             newArray[i] = node.data;
@@ -107,13 +104,10 @@ public class LinkedList<DataType> : IEnumerable
             return null;
         }
 
-        // Copy the linked list into an list
         List<DataType> newList = new List<DataType>(nodeCount);
 
-        // Set the current nodes
         LinkedListNode<DataType> node = head;
 
-        // Loop through each node and add it to the array
         for (int i = 0; i < nodeCount; i++)
         {
             newList.Add(node.data);
@@ -416,21 +410,17 @@ public class LinkedList<DataType> : IEnumerable
             return false;
         }
 
-        // Check if the sizes are equal
         if (nodeCount != comparedList.nodeCount)
         {
             return false;
         }
 
-        // Set the current nodes
         LinkedListNode<DataType> node = head;
 
         LinkedListNode<DataType> comparedNode = comparedList.head;
 
-        // Loop through each node to check if they are not equal
         for (int i = 0; i < nodeCount; i++)
         {
-            // Are they not equal
             if (!node.data.Equals(comparedNode.data))
             {
                 return false;
@@ -441,7 +431,6 @@ public class LinkedList<DataType> : IEnumerable
             comparedNode = comparedNode.next;
         }
 
-        // The lists are equal
         return true;
     }
 
@@ -556,6 +545,17 @@ public class LinkedList<DataType> : IEnumerable
     // ELEMENT ACCESS
 
     /// <summary>
+    /// Gets or sets the node at the given index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public LinkedListNode<DataType> this[int index]
+    {
+        get => Get(index);
+        set => Set(index, value);
+    }
+
+    /// <summary>
     /// Returns the node's data in the linked list
     /// </summary>
     /// <returns></returns>
@@ -581,17 +581,6 @@ public class LinkedList<DataType> : IEnumerable
     public ref DataType Data(int index)
     {
         return ref Get(index).data;
-    }
-
-    /// <summary>
-    /// Gets or sets the node at the given index
-    /// </summary>
-    /// <param name="index"></param>
-    /// <returns></returns>
-    public LinkedListNode<DataType> this[int index]
-    {
-        get => Get(index);
-        set => Set(index, value);
     }
 
 
@@ -1464,7 +1453,6 @@ public class LinkedList<DataType> : IEnumerable
     /// <returns></returns>
     public LinkedList<DataType> Swap(int index1, int index2)
     {
-        // Check if the indicies are the same
         if (index1 == index2)
         {
             return this;
@@ -1499,7 +1487,6 @@ public class LinkedList<DataType> : IEnumerable
     /// <returns></returns>
     public LinkedListNode<DataType> Set(int index, DataType newData)
     {
-        // Replace the data at the index
         LinkedListNode<DataType> node = Get(index);
 
         node.data = newData;
@@ -1515,7 +1502,6 @@ public class LinkedList<DataType> : IEnumerable
     /// <returns></returns>
     public LinkedListNode<DataType> Set(int index, LinkedListNode<DataType> newNode)
     {
-        // Replace the data at the index
         LinkedListNode<DataType> node = Get(index);
 
         Replace(node, newNode);
@@ -1531,10 +1517,8 @@ public class LinkedList<DataType> : IEnumerable
     /// <returns></returns>
     public int Replace(DataType replacedData, DataType newData)
     {
-        // Find the index of the found data
         int index = IndexOf(replacedData);
 
-        // Check if the data was not found
         if (index == -1)
         {
             return index;
@@ -1542,7 +1526,6 @@ public class LinkedList<DataType> : IEnumerable
 
         LinkedListNode<DataType> node = Get(index);
 
-        // Replace the data at the index
         node.data = newData;
 
         return index;
@@ -1582,18 +1565,15 @@ public class LinkedList<DataType> : IEnumerable
     /// <returns></returns>
     public int ReplaceLast(DataType replacedData, DataType newData)
     {
-        // Find the index of the found data
         int index = LastIndexOf(replacedData);
 
         LinkedListNode<DataType> node = Get(index);
 
-        // Check if the data was not found
         if (index == -1)
         {
             return index;
         }
 
-        // Replace the data at the index
         node.data = newData;
 
         return index;
@@ -1760,26 +1740,23 @@ public class LinkedList<DataType> : IEnumerable
     /// <returns></returns>
     public LinkedList<DataType> Sort(params SortType[] sortOrder)
     {
-        // Check length
         if (nodeCount <= 1)
         {
             return this;
         }
 
-        // Place the list elements in the sorted order
         for (int i = 0; i < nodeCount - 1; i++)
         {
             for (int j = 0; j < nodeCount - i - 1; j++)
             {
                 if (sortOrder[j] > sortOrder[j + 1])
                 {
-                    // Swap the two list elements
                     Swap(j, j + 1);
 
-                    // Swap the two sorting elements
                     SortType tempData = sortOrder[j];
 
                     sortOrder[j] = sortOrder[j + 1];
+
                     sortOrder[j + 1] = tempData;
                 }
             }
@@ -1804,13 +1781,11 @@ public class LinkedList<DataType> : IEnumerable
     /// <returns></returns>
     public LinkedList<DataType> Reverse()
     {
-        // Check length
         if (nodeCount <= 1)
         {
             return this;
         }
 
-        // Loop through each element and swap it with the element across the end
         for (int i = 0; i < nodeCount / 2; i++)
         {
             Swap(i, nodeCount - i - 1);

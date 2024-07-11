@@ -5,6 +5,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// Define the weighted node type
+using WeightType = System.Single;
+
 /// <summary>
 /// An individual node with its own data, connections, and weight.
 /// </summary>
@@ -21,12 +24,12 @@ public class Node<DataType>
     /// <summary>
     /// The other nodes this node is connected to and the weight of that connection
     /// </summary>
-    public List<Connection<DataType>> connections = new List<Connection<DataType>>();
+    public HashSet<Connection<DataType>> connections = new HashSet<Connection<DataType>>();
 
     /// <summary>
     /// The weight of this node
     /// </summary>
-    public float weight = 1;
+    public WeightType weight = 1;
 
     /// <summary>
     /// Whether this node is active
@@ -41,11 +44,14 @@ public class Node<DataType>
     /// </summary>
     /// <param name="weight"></param>
     /// <param name="active"></param>
-    public Node(DataType data = default(DataType), float weight = 1, bool active = true)
+    public Node(DataType data = default(DataType), WeightType weight = 1, bool active = true)
     {
         this.data = data;
-        connections = new List<Connection<DataType>>();
+
+        connections = new HashSet<Connection<DataType>>();
+
         this.weight = weight;
+
         this.active = active;
     }
 
@@ -54,11 +60,14 @@ public class Node<DataType>
     /// </summary>
     /// <param name="active"></param>
     /// <param name="weight"></param>
-    public Node(DataType data, bool active, float weight = 1)
+    public Node(DataType data, bool active, WeightType weight = 1)
     {
         this.data = data;
-        connections = new List<Connection<DataType>>();
+
+        connections = new HashSet<Connection<DataType>>();
+
         this.weight = weight;
+
         this.active = active;
     }
 
@@ -69,11 +78,14 @@ public class Node<DataType>
     /// <param name="connections"></param>
     /// <param name="weight"></param>
     /// <param name="active"></param>
-    public Node(DataType data, List<Connection<DataType>> connections, float weight, bool active)
+    public Node(DataType data, HashSet<Connection<DataType>> connections, WeightType weight, bool active)
     {
         this.data = data;
+
         this.connections = connections;
+
         this.weight = weight;
+
         this.active = active;
     }
 
@@ -84,11 +96,14 @@ public class Node<DataType>
     /// <param name="connections"></param>
     /// <param name="active"></param>
     /// <param name="weight"></param>
-    public Node(DataType data, List<Connection<DataType>> connections, bool active, float weight)
+    public Node(DataType data, HashSet<Connection<DataType>> connections, bool active, WeightType weight)
     {
         this.data = data;
+
         this.connections = connections;
+
         this.weight = weight;
+
         this.active = active;
     }
 
@@ -99,18 +114,19 @@ public class Node<DataType>
     /// <param name="connections"></param>
     /// <param name="weight"></param>
     /// <param name="active"></param>
-    public Node(DataType data, Connection<DataType>[] connections, float weight, bool active)
+    public Node(DataType data, Connection<DataType>[] connections, WeightType weight, bool active)
     {
         this.data = data;
 
-        this.connections = new List<Connection<DataType>>(connections.Length);
+        this.connections = new HashSet<Connection<DataType>>(connections.Length);
 
-        for (int i = 0; i < connections.Length; i++)
+        foreach (Connection<DataType> connection in connections)
         {
-            this.connections.Add(connections[i]);
+            this.connections.Add(connection);
         }
 
         this.weight = weight;
+
         this.active = active;
     }
 
@@ -121,18 +137,19 @@ public class Node<DataType>
     /// <param name="connections"></param>
     /// <param name="active"></param>
     /// <param name="weight"></param>
-    public Node(DataType data, Connection<DataType>[] connections, bool active, float weight)
+    public Node(DataType data, Connection<DataType>[] connections, bool active, WeightType weight)
     {
         this.data = data;
 
-        this.connections = new List<Connection<DataType>>(connections.Length);
+        this.connections = new HashSet<Connection<DataType>>(connections.Length);
 
-        for (int i = 0; i < connections.Length; i++)
+        foreach (Connection<DataType> connection in connections)
         {
-            this.connections.Add(connections[i]);
+            this.connections.Add(connection);
         }
 
         this.weight = weight;
+
         this.active = active;
     }
 
@@ -143,18 +160,19 @@ public class Node<DataType>
     /// <param name="weight"></param>
     /// <param name="active"></param>
     /// <param name="connections"></param>
-    public Node(DataType data, float weight, bool active, params Connection<DataType>[] connections)
+    public Node(DataType data, WeightType weight, bool active, params Connection<DataType>[] connections)
     {
         this.data = data;
 
-        this.connections = new List<Connection<DataType>>(connections.Length);
+        this.connections = new HashSet<Connection<DataType>>(connections.Length);
 
-        for (int i = 0; i < connections.Length; i++)
+        foreach (Connection<DataType> connection in connections)
         {
-            this.connections.Add(connections[i]);
+            this.connections.Add(connection);
         }
 
         this.weight = weight;
+
         this.active = active;
     }
 
@@ -165,18 +183,19 @@ public class Node<DataType>
     /// <param name="active"></param>
     /// <param name="weight"></param>
     /// <param name="connections"></param>
-    public Node(DataType data, bool active, float weight, params Connection<DataType>[] connections)
+    public Node(DataType data, bool active, WeightType weight, params Connection<DataType>[] connections)
     {
         this.data = data;
 
-        this.connections = new List<Connection<DataType>>(connections.Length);
+        this.connections = new HashSet<Connection<DataType>>(connections.Length);
 
-        for (int i = 0; i < connections.Length; i++)
+        foreach (Connection<DataType> connection in connections)
         {
-            this.connections.Add(connections[i]);
+            this.connections.Add(connection);
         }
 
         this.weight = weight;
+
         this.active = active;
     }
 
@@ -190,7 +209,7 @@ public class Node<DataType>
     /// <param name="weight"></param>
     /// <param name="active"></param>
     /// <returns></returns>
-    public List<Connection<DataType>> AddConnection(Node<DataType> connectedNode, float weight = 1, bool active = true)
+    public HashSet<Connection<DataType>> AddConnection(Node<DataType> connectedNode, WeightType weight = 1, bool active = true)
     {
         Connection<DataType> newConnection = new Connection<DataType>(this, connectedNode, weight, active);
 
@@ -206,7 +225,7 @@ public class Node<DataType>
     /// <param name="active"></param>
     /// <param name="weight"></param>
     /// <returns></returns>
-    public List<Connection<DataType>> AddConnection(Node<DataType> connectedNode, bool active, float weight = 1)
+    public HashSet<Connection<DataType>> AddConnection(Node<DataType> connectedNode, bool active, WeightType weight = 1)
     {
         Connection<DataType> newConnection = new Connection<DataType>(this, connectedNode, active, weight);
 
@@ -222,7 +241,7 @@ public class Node<DataType>
     /// <param name="weight"></param>
     /// <param name="active"></param>
     /// <returns></returns>
-    public List<Connection<DataType>> RemoveConnection(Node<DataType> connectedNode, float weight = 1, bool active = true)
+    public HashSet<Connection<DataType>> RemoveConnection(Node<DataType> connectedNode, WeightType weight = 1, bool active = true)
     {
         Connection<DataType> newConnection = new Connection<DataType>(this, connectedNode, weight, active);
 
@@ -238,13 +257,49 @@ public class Node<DataType>
     /// <param name="active"></param>
     /// <param name="weight"></param>
     /// <returns></returns>
-    public List<Connection<DataType>> RemoveConnection(Node<DataType> connectedNode, bool active, float weight = 1)
+    public HashSet<Connection<DataType>> RemoveConnection(Node<DataType> connectedNode, bool active, WeightType weight = 1)
     {
         Connection<DataType> newConnection = new Connection<DataType>(this, connectedNode, active, weight);
 
         connections.Remove(newConnection);
 
         return connections;
+    }
+
+    /// <summary>
+    /// Checks whether this node is connected to the given node
+    /// </summary>
+    /// <param name="connectedNode"></param>
+    /// <returns></returns>
+    public bool ConnectedTo(Node<DataType> connectedNode)
+    {
+        foreach (Connection<DataType> connection in connections)
+        {
+            if (connection.to == connectedNode)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks whether the given node is connected to this node
+    /// </summary>
+    /// <param name="connectingNode"></param>
+    /// <returns></returns>
+    public bool ConnectedToMe(Node<DataType> connectingNode)
+    {
+        foreach (Connection<DataType> connection in connectingNode.connections)
+        {
+            if (connection.to == this)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
@@ -269,7 +324,7 @@ public struct Connection<DataType>
     /// <summary>
     /// The weight of this connection
     /// </summary>
-    public float weight = 1;
+    public WeightType weight = 1;
 
     /// <summary>
     /// Whether this connection is active
@@ -285,8 +340,11 @@ public struct Connection<DataType>
     public Connection()
     {
         from = null;
+
         to = null;
+
         weight = 1;
+
         active = true;
     }
 
@@ -297,11 +355,14 @@ public struct Connection<DataType>
     /// <param name="to"></param>
     /// <param name="weight"></param>
     /// <param name="active"></param>
-    public Connection(Node<DataType> from, Node<DataType> to, float weight = 1, bool active = true)
+    public Connection(Node<DataType> from, Node<DataType> to, WeightType weight = 1, bool active = true)
     {
         this.from = from;
+
         this.to = to;
+
         this.weight = weight;
+
         this.active = active;
     }
 
@@ -312,11 +373,14 @@ public struct Connection<DataType>
     /// <param name="to"></param>
     /// <param name="active"></param>
     /// <param name="weight"></param>
-    public Connection(Node<DataType> from, Node<DataType> to, bool active, float weight = 1)
+    public Connection(Node<DataType> from, Node<DataType> to, bool active, WeightType weight = 1)
     {
         this.from = from;
+
         this.to = to;
+
         this.weight = weight;
+
         this.active = active;
     }
 
@@ -341,9 +405,10 @@ public struct Connection<DataType>
     /// <param name="from"></param>
     /// <param name="weight"></param>
     /// <returns></returns>
-    public Connection<DataType> ReconnectFrom(Node<DataType> from, float weight)
+    public Connection<DataType> ReconnectFrom(Node<DataType> from, WeightType weight)
     {
         this.from = from;
+
         this.weight = weight;
 
         return this;
@@ -358,6 +423,7 @@ public struct Connection<DataType>
     public Connection<DataType> ReconnectFrom(Node<DataType> from, bool active)
     {
         this.from = from;
+
         this.active = active;
 
         return this;
@@ -370,10 +436,12 @@ public struct Connection<DataType>
     /// <param name="weight"></param>
     /// <param name="active"></param>
     /// <returns></returns>
-    public Connection<DataType> ReconnectFrom(Node<DataType> from, float weight, bool active)
+    public Connection<DataType> ReconnectFrom(Node<DataType> from, WeightType weight, bool active)
     {
         this.from = from;
+
         this.weight = weight;
+
         this.active = active;
 
         return this;
@@ -386,10 +454,12 @@ public struct Connection<DataType>
     /// <param name="active"></param>
     /// <param name="weight"></param>
     /// <returns></returns>
-    public Connection<DataType> ReconnectFrom(Node<DataType> from, bool active, float weight)
+    public Connection<DataType> ReconnectFrom(Node<DataType> from, bool active, WeightType weight)
     {
         this.from = from;
+
         this.weight = weight;
+
         this.active = active;
 
         return this;
@@ -413,9 +483,10 @@ public struct Connection<DataType>
     /// <param name="to"></param>
     /// <param name="weight"></param>
     /// <returns></returns>
-    public Connection<DataType> ReconnectTo(Node<DataType> to, float weight)
+    public Connection<DataType> ReconnectTo(Node<DataType> to, WeightType weight)
     {
         this.to = to;
+
         this.weight = weight;
 
         return this;
@@ -430,6 +501,7 @@ public struct Connection<DataType>
     public Connection<DataType> ReconnectTo(Node<DataType> to, bool active)
     {
         this.to = to;
+
         this.active = active;
 
         return this;
@@ -442,10 +514,12 @@ public struct Connection<DataType>
     /// <param name="weight"></param>
     /// <param name="active"></param>
     /// <returns></returns>
-    public Connection<DataType> ReconnectTo(Node<DataType> to, float weight, bool active)
+    public Connection<DataType> ReconnectTo(Node<DataType> to, WeightType weight, bool active)
     {
         this.to = to;
+
         this.weight = weight;
+
         this.active = active;
 
         return this;
@@ -458,10 +532,12 @@ public struct Connection<DataType>
     /// <param name="active"></param>
     /// <param name="weight"></param>
     /// <returns></returns>
-    public Connection<DataType> ReconnectTo(Node<DataType> to, bool active, float weight)
+    public Connection<DataType> ReconnectTo(Node<DataType> to, bool active, WeightType weight)
     {
         this.to = to;
+
         this.weight = weight;
+
         this.active = active;
 
         return this;
@@ -476,6 +552,7 @@ public struct Connection<DataType>
     public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to)
     {
         this.from = from;
+
         this.to = to;
 
         return this;
@@ -488,10 +565,12 @@ public struct Connection<DataType>
     /// <param name="to"></param>
     /// <param name="weight"></param>
     /// <returns></returns>
-    public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to, float weight)
+    public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to, WeightType weight)
     {
         this.from = from;
+
         this.to = to;
+
         this.weight = weight;
 
         return this;
@@ -507,7 +586,9 @@ public struct Connection<DataType>
     public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to, bool active)
     {
         this.from = from;
+
         this.to = to;
+
         this.active = active;
 
         return this;
@@ -521,11 +602,14 @@ public struct Connection<DataType>
     /// <param name="weight"></param>
     /// <param name="active"></param>
     /// <returns></returns>
-    public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to, float weight, bool active)
+    public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to, WeightType weight, bool active)
     {
         this.from = from;
+
         this.to = to;
+
         this.weight = weight;
+
         this.active = active;
 
         return this;
@@ -539,11 +623,14 @@ public struct Connection<DataType>
     /// <param name="active"></param>
     /// <param name="weight"></param>
     /// <returns></returns>
-    public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to, bool active, float weight)
+    public Connection<DataType> Reconnect(Node<DataType> from, Node<DataType> to, bool active, WeightType weight)
     {
         this.from = from;
+
         this.to = to;
+
         this.weight = weight;
+
         this.active = active;
 
         return this;
@@ -561,7 +648,7 @@ public struct Graph<DataType> : IEnumerable
     /// <summary>
     /// The list of nodes included in this graph
     /// </summary>
-    public List<Node<DataType>> nodes;
+    public HashSet<Node<DataType>> nodes;
 
 
     // GRAPH CONSTRUCTORS
@@ -571,14 +658,14 @@ public struct Graph<DataType> : IEnumerable
     /// </summary>
     public Graph()
     {
-        nodes = new List<Node<DataType>>();
+        nodes = new HashSet<Node<DataType>>();
     }
 
     /// <summary>
     /// Node constructor
     /// </summary>
     /// <param name="nodes"></param>
-    public Graph(List<Node<DataType>> nodes)
+    public Graph(HashSet<Node<DataType>> nodes)
     {
         this.nodes = nodes;
     }
@@ -589,11 +676,11 @@ public struct Graph<DataType> : IEnumerable
     /// <param name="nodes"></param>
     public Graph(params Node<DataType>[] nodes)
     {
-        this.nodes = new List<Node<DataType>>(nodes.Length);
+        this.nodes = new HashSet<Node<DataType>>(nodes.Length);
 
-        for (int i = 0; i < nodes.Length; i++)
+        foreach (Node<DataType> newNode in nodes)
         {
-            this.nodes.Add(nodes[i]);
+            this.nodes.Add(newNode);
         }
     }
 
@@ -605,9 +692,9 @@ public struct Graph<DataType> : IEnumerable
     /// </summary>
     /// <param name="node"></param>
     /// <returns></returns>
-    public List<Connection<DataType>> NodeConnections(Node<DataType> node)
+    public HashSet<Connection<DataType>> NodeConnections(Node<DataType> node)
     {
-        return node.connections;
+        return new HashSet<Connection<DataType>>(node.connections);
     }
 
     /// <summary>
@@ -615,22 +702,22 @@ public struct Graph<DataType> : IEnumerable
     /// </summary>
     /// <param name="node"></param>
     /// <returns></returns>
-    public List<Connection<DataType>> ConnectedNodes(Node<DataType> node)
+    public HashSet<Connection<DataType>> ConnectedNodes(Node<DataType> node)
     {
-        List<Connection<DataType>> connections = new List<Connection<DataType>>();
+        HashSet<Connection<DataType>> connections = new HashSet<Connection<DataType>>();
 
-        for (int i = 0; i < nodes.Count; i++)
+        foreach (Node<DataType> newNode in nodes)
         {
-            if (nodes[i].Equals(node))
+            if (newNode.Equals(node))
             {
                 continue;
             }
 
-            for (int j = 0; j < nodes[i].connections.Count; j++)
+            foreach (Connection<DataType> connection in newNode.connections)
             {
-                if (nodes[i].connections[j].to.Equals(node))
+                if (connection.to.Equals(node))
                 {
-                    connections.Add(nodes[i].connections[j]);
+                    connections.Add(connection);
                 }
             }
         }
@@ -642,15 +729,15 @@ public struct Graph<DataType> : IEnumerable
     /// Get all of the connections of each node in a list
     /// </summary>
     /// <returns></returns>
-    public List<Connection<DataType>> AllConnections()
+    public HashSet<Connection<DataType>> AllConnections()
     {
-        List<Connection<DataType>> allConnections = new List<Connection<DataType>>();
+        HashSet<Connection<DataType>> allConnections = new HashSet<Connection<DataType>>();
 
-        for (int i = 0; i < nodes.Count; i++)
+        foreach (Node<DataType> newNode in nodes)
         {
-            for (int j = 0; j < nodes[i].connections.Count; j++)
+            foreach (Connection<DataType> connection in newNode.connections)
             {
-                allConnections.Add(nodes[i].connections[j]);
+                allConnections.Add(connection);
             }
         }
 
@@ -661,13 +748,13 @@ public struct Graph<DataType> : IEnumerable
     /// Get all of the connections of each node in a dictionary
     /// </summary>
     /// <returns></returns>
-    public Dictionary<Node<DataType>, List<Connection<DataType>>> AllConnectionsDictionary()
+    public Dictionary<Node<DataType>, HashSet<Connection<DataType>>> AllConnectionsDictionary()
     {
-        Dictionary<Node<DataType>, List<Connection<DataType>>> allConnections = new Dictionary<Node<DataType>, List<Connection<DataType>>>();
+        Dictionary<Node<DataType>, HashSet<Connection<DataType>>> allConnections = new Dictionary<Node<DataType>, HashSet<Connection<DataType>>>();
 
-        for (int i = 0; i < nodes.Count; i++)
+        foreach (Node<DataType> newNode in nodes)
         {
-            allConnections[nodes[i]] = nodes[i].connections;
+            allConnections[newNode] = newNode.connections;
         }
 
         return allConnections;
@@ -681,9 +768,9 @@ public struct Graph<DataType> : IEnumerable
     {
         int totalConnections = 0;
 
-        for (int i = 0; i < nodes.Count; i++)
+        foreach (Node<DataType> newNode in nodes)
         {
-            totalConnections += nodes[i].connections.Count;
+            totalConnections += newNode.connections.Count;
         }
 
         return totalConnections;

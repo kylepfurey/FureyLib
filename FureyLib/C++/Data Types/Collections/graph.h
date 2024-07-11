@@ -3,13 +3,16 @@
 // by Kyle Furey
 
 #pragma once
-#include <vector>
 #include <map>
+#include <set>
 #include <cstdarg>
 #include <initializer_list>
 
 // Include this heading to use the classes
 #include "graph.h"
+
+// Define the weighted node type
+#define WEIGHT_TYPE float
 
 // Forward declaration of node
 template <typename data_type> class node;
@@ -28,7 +31,7 @@ public:
 	node<data_type>* to = nullptr;
 
 	// The weight of this connection
-	float weight = 1;
+	WEIGHT_TYPE weight = 1;
 
 	// Whether this connection is active
 	bool active = true;
@@ -40,26 +43,35 @@ public:
 	connection()
 	{
 		from = nullptr;
+
 		to = nullptr;
+
 		weight = 1;
+
 		active = true;
 	}
 
 	// Connection constructor
-	connection(node<data_type>* from, node<data_type>* to, float weight = 1, bool active = true)
+	connection(node<data_type>* from, node<data_type>* to, WEIGHT_TYPE weight = 1, bool active = true)
 	{
 		this->from = from;
+
 		this->to = to;
+
 		this->weight = weight;
+
 		this->active = active;
 	}
 
 	// Connection constructor
-	connection(node<data_type>* from, node<data_type>* to, bool active, float weight = 1)
+	connection(node<data_type>* from, node<data_type>* to, bool active, WEIGHT_TYPE weight = 1)
 	{
 		this->from = from;
+
 		this->to = to;
+
 		this->weight = weight;
+
 		this->active = active;
 	}
 
@@ -75,9 +87,10 @@ public:
 	}
 
 	// Reconnect a connection's from
-	connection<data_type>& reconnect_from(node<data_type>* from, float weight)
+	connection<data_type>& reconnect_from(node<data_type>* from, WEIGHT_TYPE weight)
 	{
 		this->from = from;
+
 		this->weight = weight;
 
 		return *this;
@@ -87,26 +100,31 @@ public:
 	connection<data_type>& reconnect_from(node<data_type>* from, bool active)
 	{
 		this->from = from;
+
 		this->active = active;
 
 		return *this;
 	}
 
 	// Reconnect a connection's from
-	connection<data_type>& reconnect_from(node<data_type>* from, float weight, bool active)
+	connection<data_type>& reconnect_from(node<data_type>* from, WEIGHT_TYPE weight, bool active)
 	{
 		this->from = from;
+
 		this->weight = weight;
+
 		this->active = active;
 
 		return *this;
 	}
 
 	// Reconnect a connection's from
-	connection<data_type>& reconnect_from(node<data_type>* from, bool active, float weight)
+	connection<data_type>& reconnect_from(node<data_type>* from, bool active, WEIGHT_TYPE weight)
 	{
 		this->from = from;
+
 		this->weight = weight;
+
 		this->active = active;
 
 		return *this;
@@ -121,9 +139,10 @@ public:
 	}
 
 	// Reconnect a connection's to
-	connection<data_type>& reconnect_to(node<data_type>* to, float weight)
+	connection<data_type>& reconnect_to(node<data_type>* to, WEIGHT_TYPE weight)
 	{
 		this->to = to;
+
 		this->weight = weight;
 
 		return *this;
@@ -133,26 +152,31 @@ public:
 	connection<data_type>& reconnect_to(node<data_type>* to, bool active)
 	{
 		this->to = to;
+
 		this->active = active;
 
 		return *this;
 	}
 
 	// Reconnect a connection's to
-	connection<data_type>& reconnect_to(node<data_type>* to, float weight, bool active)
+	connection<data_type>& reconnect_to(node<data_type>* to, WEIGHT_TYPE weight, bool active)
 	{
 		this->to = to;
+
 		this->weight = weight;
+
 		this->active = active;
 
 		return *this;
 	}
 
 	// Reconnect a connection's to
-	connection<data_type>& reconnect_to(node<data_type>* to, bool active, float weight)
+	connection<data_type>& reconnect_to(node<data_type>* to, bool active, WEIGHT_TYPE weight)
 	{
 		this->to = to;
+
 		this->weight = weight;
+
 		this->active = active;
 
 		return *this;
@@ -162,16 +186,19 @@ public:
 	connection<data_type>& reconnect(node<data_type>* from, node<data_type>* to)
 	{
 		this->from = from;
+
 		this->to = to;
 
 		return *this;
 	}
 
 	// Reconnect a connection's from and to
-	connection<data_type>& reconnect(node<data_type>* from, node<data_type>* to, float weight)
+	connection<data_type>& reconnect(node<data_type>* from, node<data_type>* to, WEIGHT_TYPE weight)
 	{
 		this->from = from;
+
 		this->to = to;
+
 		this->weight = weight;
 
 		return *this;
@@ -181,29 +208,37 @@ public:
 	connection<data_type>& reconnect(node<data_type>* from, node<data_type>* to, bool active)
 	{
 		this->from = from;
+
 		this->to = to;
+
 		this->active = active;
 
 		return *this;
 	}
 
 	// Reconnect a connection's from and to
-	connection<data_type>& reconnect(node<data_type>* from, node<data_type>* to, float weight, bool active)
+	connection<data_type>& reconnect(node<data_type>* from, node<data_type>* to, WEIGHT_TYPE weight, bool active)
 	{
 		this->from = from;
+
 		this->to = to;
+
 		this->weight = weight;
+
 		this->active = active;
 
 		return *this;
 	}
 
 	// Reconnect a connection's from and to
-	connection<data_type>& reconnect(node<data_type>* from, node<data_type>* to, bool active, float weight)
+	connection<data_type>& reconnect(node<data_type>* from, node<data_type>* to, bool active, WEIGHT_TYPE weight)
 	{
 		this->from = from;
+
 		this->to = to;
+
 		this->weight = weight;
+
 		this->active = active;
 
 		return *this;
@@ -213,7 +248,7 @@ public:
 	// CONNECTION OPERATORS
 
 	// Equals operator
-	bool operator==(const connection<data_type> compared)
+	bool operator==(const connection<data_type>& compared) const noexcept
 	{
 		return *this == compared;
 	}
@@ -230,10 +265,10 @@ public:
 	data_type data = data_type();
 
 	// The other nodes this node is connected to and the weight of that connection
-	std::vector<connection<data_type>> connections = std::vector<connection<data_type>>();
+	std::set<connection<data_type>> connections = std::set<connection<data_type>>();
 
 	// The weight of this node
-	float weight = 1;
+	WEIGHT_TYPE weight = 1;
 
 	// Whether this node is active
 	bool active = true;
@@ -242,79 +277,93 @@ public:
 	// NODE CONSTRUCTORS
 
 	// Default constructor
-	node(data_type data = data_type(), float weight = 1, bool active = true)
+	node(data_type data = data_type(), WEIGHT_TYPE weight = 1, bool active = true)
 	{
 		this->data = data;
-		connections = std::vector<connection<data_type>>();
+
+		connections = std::set<connection<data_type>>();
+
 		this->weight = weight;
+
 		this->active = active;
 	}
 
 	// Default constructor
-	node(data_type data, bool active, float weight = 1)
+	node(data_type data, bool active, WEIGHT_TYPE weight = 1)
 	{
 		this->data = data;
-		connections = std::vector<connection<data_type>>();
+
+		connections = std::set<connection<data_type>>();
+
 		this->weight = weight;
+
 		this->active = active;
 	}
 
 	// Node constructor
-	node(data_type data, std::vector<connection<data_type>> connections, float weight, bool active)
+	node(data_type data, std::set<connection<data_type>> connections, WEIGHT_TYPE weight, bool active)
 	{
 		this->data = data;
+
 		this->connections = connections;
+
 		this->weight = weight;
+
 		this->active = active;
 	}
 
 	// Node constructor
-	node(data_type data, std::vector<connection<data_type>> connections, bool active, float weight)
+	node(data_type data, std::set<connection<data_type>> connections, bool active, WEIGHT_TYPE weight)
 	{
 		this->data = data;
+
 		this->connections = connections;
+
 		this->weight = weight;
+
 		this->active = active;
 	}
 
 	// Node constructor
-	node(data_type data, int number_of_connections, connection<data_type> connections[], float weight, bool active)
+	node(data_type data, int number_of_connections, connection<data_type> connections[], WEIGHT_TYPE weight, bool active)
 	{
 		this->data = data;
 
-		this->connections = std::vector<connection<data_type>>();
+		this->connections = std::set<connection<data_type>>();
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
-			this->connections.push_back(connections[i]);
+			this->connections.insert(connections[i]);
 		}
 
 		this->weight = weight;
+
 		this->active = active;
 	}
 
 	// Node constructor
-	node(data_type data, int number_of_connections, connection<data_type> connections[], bool active, float weight)
+	node(data_type data, int number_of_connections, connection<data_type> connections[], bool active, WEIGHT_TYPE weight)
 	{
 		this->data = data;
 
-		this->connections = std::vector<connection<data_type>>();
+		this->connections = std::set<connection<data_type>>();
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
-			this->connections.push_back(connections[i]);
+			this->connections.insert(connections[i]);
 		}
 
 		this->weight = weight;
+
 		this->active = active;
 	}
 
 	// Node constructor
-	node(data_type data, float weight, bool active, int number_of_connections, connection<data_type> connections...)
+	node(data_type data, WEIGHT_TYPE weight, bool active, int number_of_connections, connection<data_type> connections...)
 	{
 		this->data = data;
 
-		this->connections = std::vector<connection<data_type>>();
+		this->connections = std::set<connection<data_type>>();
 
 		va_list list;
 
@@ -322,23 +371,24 @@ public:
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
-			this->connections.push_back(connections);
+			this->connections.insert(connections);
 
 			connections = va_arg(list, connection<data_type>);
 		}
 
 		this->weight = weight;
+
 		this->active = active;
 
 		va_end(list);
 	}
 
 	// Node constructor
-	node(data_type data, bool active, float weight, int number_of_connections, connection<data_type> connections...)
+	node(data_type data, bool active, WEIGHT_TYPE weight, int number_of_connections, connection<data_type> connections...)
 	{
 		this->data = data;
 
-		this->connections = std::vector<connection<data_type>>();
+		this->connections = std::set<connection<data_type>>();
 
 		va_list list;
 
@@ -346,12 +396,13 @@ public:
 
 		for (int i = 0; i < number_of_connections; i++)
 		{
-			this->connections.push_back(connections);
+			this->connections.insert(connections);
 
 			connections = va_arg(list, connection<data_type>);
 		}
 
 		this->weight = weight;
+
 		this->active = active;
 
 		va_end(list);
@@ -361,27 +412,27 @@ public:
 	// NODE FUNCTIONS
 
 	// Make and add a new connection to the list of connections
-	std::vector<connection<data_type>>& add_connection(node<data_type>* connected_node, float weight = 1, bool active = true)
+	std::set<connection<data_type>>& add_connection(node<data_type>* connected_node, WEIGHT_TYPE weight = 1, bool active = true)
 	{
 		connection<data_type> new_connection = connection<data_type>(this, connected_node, weight, active);
 
-		connections.push_back(new_connection);
+		connections.insert(new_connection);
 
 		return connections;
 	}
 
 	// Make and add a new connection to the list of connections
-	std::vector<connection<data_type>>& add_connection(node<data_type>* connected_node, bool active, float weight = 1)
+	std::set<connection<data_type>>& add_connection(node<data_type>* connected_node, bool active, WEIGHT_TYPE weight = 1)
 	{
 		connection<data_type> new_connection = connection<data_type>(this, connected_node, active, weight);
 
-		connections.push_back(new_connection);
+		connections.insert(new_connection);
 
 		return connections;
 	}
 
 	// Make and remove a matching connection from the list of connections
-	std::vector<connection<data_type>>& remove_connection(node<data_type>* connected_node, float weight = 1, bool active = true)
+	std::set<connection<data_type>>& remove_connection(node<data_type>* connected_node, WEIGHT_TYPE weight = 1, bool active = true)
 	{
 		connection<data_type> new_connection = connection<data_type>(this, connected_node, weight, active);
 
@@ -391,20 +442,48 @@ public:
 	}
 
 	// Make and remove a matching connection from the list of connections
-	std::vector<connection<data_type>>& remove_connection(node<data_type>* connected_node, bool active, float weight = 1)
+	std::set<connection<data_type>>& remove_connection(node<data_type>* connected_node, bool active, WEIGHT_TYPE weight = 1)
 	{
 		connection<data_type> new_connection = connection<data_type>(this, connected_node, active, weight);
 
 		connections.erase(std::find(connections.begin(), connections.end(), new_connection));
 
 		return connections;
+	}
+
+	// Checks whether this node is connected to the given node
+	bool connected_to(node<data_type>* connected_node)
+	{
+		for (connection<data_type> connection : connections)
+		{
+			if (connection.to == *connected_node)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	// Checks whether the given node is connected to this node
+	bool connected_to_me(node<data_type>* connecting_node)
+	{
+		for (connection<data_type> connection : connecting_node->connections)
+		{
+			if (connection.to == *this)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 
 	// NODE OPERATORS
 
 	// Less than operator
-	bool operator<(const node<data_type> compared) const noexcept
+	bool operator<(const node<data_type>& compared) const noexcept
 	{
 		return *this < compared;
 	}
@@ -418,7 +497,7 @@ public:
 	// GRAPH DATA
 
 	// The list of nodes included in this graph
-	std::vector<node<data_type>*> nodes = std::vector<node<data_type>*>();
+	std::set<node<data_type>*> nodes = std::set<node<data_type>*>();
 
 
 	// GRAPH CONSTRUCTORS
@@ -426,11 +505,11 @@ public:
 	// Default constructor
 	graph()
 	{
-		nodes = std::vector<node<data_type>*>();
+		nodes = std::set<node<data_type>*>();
 	}
 
 	// Node constructor
-	graph(std::vector<node<data_type>*> nodes)
+	graph(std::set<node<data_type>*> nodes)
 	{
 		this->nodes = nodes;
 	}
@@ -438,18 +517,18 @@ public:
 	// Node constructor
 	graph(int number_of_nodes, node<data_type> nodes[])
 	{
-		this->nodes = std::vector<node<data_type>*>();
+		this->nodes = std::set<node<data_type>*>();
 
 		for (int i = 0; i < number_of_nodes; i++)
 		{
-			this->nodes.push_back(nodes[i]);
+			this->nodes.insert(nodes[i]);
 		}
 	}
 
 	// Node constructor
 	graph(int number_of_nodes, node<data_type>* nodes...)
 	{
-		this->nodes = std::vector<node<data_type>*>();
+		this->nodes = std::set<node<data_type>*>();
 
 		va_list list;
 
@@ -457,7 +536,7 @@ public:
 
 		for (int i = 0; i < number_of_nodes; i++)
 		{
-			this->nodes.push_back(nodes);
+			this->nodes.insert(nodes);
 
 			nodes = va_arg(list, node<data_type>*);
 		}
@@ -468,11 +547,11 @@ public:
 	// Node constructor
 	graph(const std::initializer_list<node<data_type>*> nodes)
 	{
-		this->nodes = std::vector<node<data_type>*>();
+		this->nodes = std::set<node<data_type>*>();
 
 		for (int i = 0; i < nodes.size(); i++)
 		{
-			this->nodes.push_back(*(nodes.begin() + i));
+			this->nodes.insert(*(nodes.begin() + i));
 		}
 	}
 
@@ -480,28 +559,28 @@ public:
 	// GRAPH FUNCTIONS
 
 	// Get all of the given node's connections
-	std::vector<connection<data_type>> node_connections(node<data_type>* node)
+	std::set<connection<data_type>> node_connections(node<data_type>* node)
 	{
-		return node->connections;
+		return std::set<connection<data_type>>(node->connections);
 	}
 
 	// Get all of the connections that are connected to the given node
-	std::vector<connection<data_type>> connected_nodes(node<data_type>* node)
+	std::set<connection<data_type>> connected_nodes(node<data_type>* connected_node)
 	{
-		std::vector<connection<data_type>> connections = std::vector<connection<data_type>>();
+		std::set<connection<data_type>> connections = std::set<connection<data_type>>();
 
-		for (int i = 0; i < nodes.size(); i++)
+		for (node<data_type>* new_node : nodes)
 		{
-			if (nodes[i] == node)
+			if (new_node == connected_node)
 			{
 				continue;
 			}
 
-			for (int j = 0; j < nodes[i]->connections.size(); j++)
+			for (connection<data_type> connection : new_node->connections)
 			{
-				if (nodes[i]->connections[j]->to == node)
+				if (connection.to == connected_node)
 				{
-					connections.push_back(nodes[i]->connections[j]);
+					connections.insert(connection);
 				}
 			}
 		}
@@ -510,15 +589,15 @@ public:
 	}
 
 	// Get all of the connections of each node in a list
-	std::vector<connection<data_type>> all_connections()
+	std::set<connection<data_type>> all_connections()
 	{
-		std::vector<connection<data_type>> all_connections = std::vector<connection<data_type>>();
+		std::set<connection<data_type>> all_connections = std::set<connection<data_type>>();
 
-		for (int i = 0; i < nodes.size(); i++)
+		for (node<data_type>* new_node : nodes)
 		{
-			for (int j = 0; j < nodes[i]->connections.size(); j++)
+			for (connection<data_type> connection : new_node->connections)
 			{
-				all_connections.push_back(nodes[i]->connections[j]);
+				all_connections.insert(connection);
 			}
 		}
 
@@ -526,13 +605,13 @@ public:
 	}
 
 	// Get all of the connections of each node in a dictionary
-	std::map<node<data_type>, std::vector<connection<data_type>>> all_connections_map()
+	std::map<node<data_type>, std::set<connection<data_type>>> all_connections_map()
 	{
-		std::map<node<data_type>, std::vector<connection<data_type>>> all_connections = std::map<node<data_type>, std::vector<connection<data_type>>>();
+		std::map<node<data_type>, std::set<connection<data_type>>> all_connections = std::map<node<data_type>, std::set<connection<data_type>>>();
 
-		for (int i = 0; i < nodes.size(); i++)
+		for (node<data_type>* new_node : nodes)
 		{
-			all_connections[*nodes[i]] = nodes[i]->connections;
+			all_connections[*new_node] = new_node->connections;
 		}
 
 		return all_connections;
@@ -543,9 +622,9 @@ public:
 	{
 		int total_connections = 0;
 
-		for (int i = 0; i < nodes.size(); i++)
+		for (node<data_type>* new_node : nodes)
 		{
-			total_connections += nodes[i]->connections.size();
+			total_connections += new_node->connections.size();
 		}
 
 		return total_connections;

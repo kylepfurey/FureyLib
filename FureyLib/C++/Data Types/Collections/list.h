@@ -813,6 +813,12 @@ public:
 		return node;
 	}
 
+	// Returns the node at the given index
+	list_node<data_type>* operator[](int index)
+	{
+		return at(index);
+	}
+
 
 	// CAPACITY
 
@@ -831,12 +837,6 @@ public:
 
 	// ELEMENT ACCESS
 
-	// Returns the node at the given index
-	list_node<data_type>* operator[](int index)
-	{
-		return at(index);
-	}
-
 	// Returns the node's data in the linked list
 	data_type front()
 	{
@@ -847,12 +847,6 @@ public:
 	data_type back()
 	{
 		return head->previous->data;
-	}
-
-	// Returns the node's data at the given index
-	data_type& data(int index)
-	{
-		return at(index)->data;
 	}
 
 
@@ -902,98 +896,6 @@ public:
 		}
 
 		return nullptr;
-	}
-
-	// Returns the index of the given node, or -1 if nothing matched
-	int index_of(data_type data)
-	{
-		if (node_size == 0)
-		{
-			return -1;
-		}
-
-		list_node<data_type>* node = head;
-
-		for (int i = 0; i < node_size; i++)
-		{
-			if (node->data == data)
-			{
-				return i;
-			}
-
-			node = node->next;
-		}
-
-		return -1;
-	}
-
-	// Returns the index of the given node, or -1 if nothing matched
-	int index_of(list_node<data_type>* data)
-	{
-		if (node_size == 0)
-		{
-			return -1;
-		}
-
-		list_node<data_type>* node = head;
-
-		for (int i = 0; i < node_size; i++)
-		{
-			if (node == data)
-			{
-				return i;
-			}
-
-			node = node->next;
-		}
-
-		return -1;
-	}
-
-	// Returns the index of the given node starting from the back, or -1 if nothing matched
-	int last_index_of(data_type data)
-	{
-		if (node_size == 0)
-		{
-			return -1;
-		}
-
-		list_node<data_type>* node = head->previous;
-
-		for (int i = node_size - 1; i >= 0; i++)
-		{
-			if (node->data == data)
-			{
-				return i;
-			}
-
-			node = node->previous;
-		}
-
-		return -1;
-	}
-
-	// Returns the index of the given node starting from the back, or -1 if nothing matched
-	int last_index_of(list_node<data_type>* data)
-	{
-		if (node_size == 0)
-		{
-			return -1;
-		}
-
-		list_node<data_type>* node = head->previous;
-
-		for (int i = node_size - 1; i >= 0; i++)
-		{
-			if (node == data)
-			{
-				return i;
-			}
-
-			node = node->previous;
-		}
-
-		return -1;
 	}
 
 	// Returns whether the linked list contains at least one of the elements
@@ -1361,53 +1263,8 @@ public:
 		return data;
 	}
 
-	// Creates a new node in the linked list at a given index
-	template<typename ... argument_types> list<data_type>& emplace(int index, argument_types ... arguments)
-	{
-		list_node<data_type>* node = at(index);
-
-		list_node<data_type>* new_node = new list_node<data_type>(this, data_type(arguments...));
-
-		if (node_size == 0)
-		{
-			head = new_node;
-
-			head->next = head;
-
-			head->previous = head;
-
-			node_size++;
-
-			return *this;
-		}
-
-		new_node->previous = node->previous;
-
-		new_node->next = node;
-
-		node->previous->next = new_node;
-
-		node->previous = new_node;
-
-		node_size++;
-
-		return *this;
-	}
-
-	// Adds a new node in the linked list at a given index
-	list<data_type>& insert(int index, data_type new_data)
-	{
-		return push_before(at(index), new_data);
-	}
-
-	// Adds a new node in the linked list at a given index
-	list<data_type>& insert(int index, list_node<data_type>* new_node)
-	{
-		return push_before(at(index), new_node);
-	}
-
 	// Inserts a new node of the given data before the given node
-	list<data_type>& push_before(list_node<data_type>* node, data_type data)
+	list<data_type>& insert(list_node<data_type>* node, data_type data)
 	{
 		list_node<data_type>* new_node = new list_node<data_type>(this, data);
 
@@ -1443,7 +1300,7 @@ public:
 	}
 
 	// Inserts a new node of the given data before the given node
-	list<data_type>& push_before(list_node<data_type>* node, list_node<data_type>* new_node)
+	list<data_type>& insert(list_node<data_type>* node, list_node<data_type>* new_node)
 	{
 		if (node_size == 0)
 		{
@@ -1481,7 +1338,7 @@ public:
 	}
 
 	// Inserts a new node of the given data after the given node
-	list<data_type>& push_after(list_node<data_type>* node, list_node<data_type>* new_node)
+	list<data_type>& insert_after(list_node<data_type>* node, list_node<data_type>* new_node)
 	{
 		if (node_size == 0)
 		{
@@ -1514,7 +1371,7 @@ public:
 	}
 
 	// Inserts a new node of the given data after the given node
-	list<data_type>& push_after(list_node<data_type>* node, data_type data)
+	list<data_type>& insert_after(list_node<data_type>* node, data_type data)
 	{
 		list_node<data_type>* new_node = new list_node<data_type>(this, data);
 
@@ -1608,23 +1465,6 @@ public:
 		return *this;
 	}
 
-	// Remove and return a node at the given index
-	data_type erase_at(int index)
-	{
-		list_node<data_type>* node = at(index);
-
-		if (node == nullptr)
-		{
-			return data_type();
-		}
-
-		data_type data = node->data;
-
-		erase(node);
-
-		return data;
-	}
-
 	// Swaps two nodes' values
 	list<data_type>& swap(list_node<data_type>* node1, list_node<data_type>* node2)
 	{
@@ -1640,17 +1480,6 @@ public:
 		node2->data = data;
 
 		return *this;
-	}
-
-	// Swaps two nodes' values at two given indicies
-	list<data_type>& swap(int index1, int index2)
-	{
-		if (index1 == index2)
-		{
-			return *this;
-		}
-
-		return swap(at(index1), at(index2));
 	}
 
 	// Clears the linked list's data
@@ -1670,41 +1499,17 @@ public:
 
 	// ELEMENT OPERATIONS
 
-	// Replaces the node's data at the given index with the given data, returns the replaced data
-	list_node<data_type>* set(int index, data_type new_data)
+	// Replaces the first of the found data with the given data and return the node
+	list_node<data_type>* replace(data_type replaced_data, data_type new_data)
 	{
-		list_node<data_type>* node = at(index);
+		list_node<data_type>* node = find(replaced_data);
 
-		node->data = new_data;
-
-		return node;
-	}
-
-	// Replaces the node's data at the given index with the given data, returns the replaced data
-	list_node<data_type>* set(int index, list_node<data_type>* new_node)
-	{
-		list_node<data_type>* node = at(index);
-
-		replace(node, new_node);
-
-		return node;
-	}
-
-	// Replaces the first of the found data with the given data and return the index
-	int replace(data_type replaced_data, data_type new_data)
-	{
-		int index = index_of(replaced_data);
-
-		if (index == -1)
+		if (node != nullptr)
 		{
-			return index;
+			node->data = new_data;
 		}
 
-		list_node<data_type>* node = at(index);
-
-		node->data = new_data;
-
-		return index;
+		return node;
 	}
 
 	// Replaces the node with the given node
@@ -1728,21 +1533,17 @@ public:
 		return *this;
 	}
 
-	// Replaces the last of the found data with the given data and return the index
-	int replace_last(data_type replaced_data, data_type new_data)
+	// Replaces the last of the found data with the given data and return the node
+	list_node<data_type>* replace_last(data_type replaced_data, data_type new_data)
 	{
-		int index = last_index_of(replaced_data);
+		list_node<data_type>* node = find_last(replaced_data);
 
-		list_node<data_type>* node = at(index);
-
-		if (index == -1)
+		if (node != nullptr)
 		{
-			return index;
+			node->data = new_data;
 		}
 
-		node->data = new_data;
-
-		return index;
+		return node;
 	}
 
 	// Replaces all of the found data with the given data and returns the total number of replacements
@@ -1776,32 +1577,15 @@ public:
 	// OPERATIONS
 
 	// Transfers another linked list's nodes to this linked list
-	list<data_type>& splice(int index, list<data_type>& new_data)
-	{
-		list_node<data_type>* node = at(index);
-
-		for (int i = 0; i < new_data.node_size; i++)
-		{
-			push_before(node, new_data.head);
-
-			new_data.pop_front();
-
-			node = node->next;
-		}
-
-		return *this;
-	}
-
-	// Transfers another linked list's nodes to this linked list
-	list<data_type>& splice(list_node<data_type>* node, list<data_type>& new_data)
+	list<data_type>& splice(list_node<data_type>* start_node, list<data_type>& new_data)
 	{
 		for (int i = 0; i < new_data.node_size; i++)
 		{
-			push_before(node, new_data.head);
+			insert(start_node, new_data.head);
 
 			new_data.pop_front();
 
-			node = node->next;
+			start_node = start_node->next;
 		}
 
 		return *this;
@@ -1885,9 +1669,11 @@ public:
 		{
 			for (int j = 0; j < node_size - i - 1; j++)
 			{
+				list_node<data_type>* node = head;
+
 				if (sort_order[j] > sort_order[j + 1])
 				{
-					swap(j, j + 1);
+					swap(node, node->next);
 
 					SORT_TYPE temp_data = sort_order[j];
 
@@ -1895,6 +1681,8 @@ public:
 
 					sort_order[j + 1] = temp_data;
 				}
+
+				node = node->next;
 			}
 		}
 
@@ -1975,9 +1763,17 @@ public:
 			return *this;
 		}
 
+		list_node<data_type> node = head;
+
+		list_node<data_type> end_node = head->previous;
+
 		for (int i = 0; i < node_size / 2; i++)
 		{
-			swap(i, node_size - i - 1);
+			swap(node, end_node);
+
+			node = node->next;
+
+			end_node = end_node->previous;
 		}
 
 		return *this;

@@ -572,7 +572,7 @@ public:
 	}
 
 	// Returns the total number of instances of the given data in the vector
-	int total(data_type found_data)
+	int count(data_type found_data)
 	{
 		int count = 0;
 

@@ -911,7 +911,7 @@ public:
 	}
 
 	// Returns the total number of instances of the given data in the linked list
-	int total(data_type found_data)
+	int count(data_type found_data)
 	{
 		if (node_size == 0)
 		{
@@ -936,9 +936,9 @@ public:
 	}
 
 	// Returns the total number of instances of the given data in the linked list
-	int total(list_node<data_type>* node)
+	int count(list_node<data_type>* node)
 	{
-		return total(node->data);
+		return count(node->data);
 	}
 
 
@@ -1629,7 +1629,7 @@ public:
 
 		do
 		{
-			int total = total(node->data) - 1;
+			int total = count(node->data) - 1;
 
 			count += total;
 

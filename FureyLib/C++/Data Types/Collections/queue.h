@@ -63,12 +63,6 @@ public:
 		return vector;
 	}
 
-	// Returns a linked list of the current queue
-	std::list<data_type> to_list()
-	{
-		return std::list<data_type>(my_queue);
-	}
-
 
 	// CONSTRUCTORS
 

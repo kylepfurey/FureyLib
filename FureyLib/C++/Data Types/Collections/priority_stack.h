@@ -65,27 +65,10 @@ private:
 
 public:
 
-	// TO ARRAY AND LIST
+	// TO ARRAY AND VECTOR
 
 	// Returns an array of the current stack (MUST BE DEALLOCATED)
-	priority_stack_node<data_type, priority_type>* to_new_array()
-	{
-		priority_stack_node<data_type, priority_type>* array = new priority_stack_node<data_type, priority_type>[my_stack.size()];
-
-		int i = 0;
-
-		for (priority_stack_node<data_type, priority_type> node : my_stack)
-		{
-			array[i] = node;
-
-			i++;
-		}
-
-		return array;
-	}
-
-	// Returns an array of the current stack (MUST BE DEALLOCATED)
-	data_type* data_to_new_array()
+	data_type* to_new_array()
 	{
 		data_type* array = new data_type[my_stack.size()];
 
@@ -118,25 +101,8 @@ public:
 		return array;
 	}
 
-	// Returns a vector of the current stack
-	std::vector<priority_stack_node<data_type, priority_type>> to_vector()
-	{
-		std::vector<priority_stack_node<data_type, priority_type>> vector = std::vector<priority_stack_node<data_type, priority_type>>();
-
-		int i = 0;
-
-		for (priority_stack_node<data_type, priority_type> node : my_stack)
-		{
-			vector.push_back(node);
-
-			i++;
-		}
-
-		return vector;
-	}
-
 	// Returns a vector of the current stack's data
-	std::vector<data_type> data_to_vector()
+	std::vector<data_type> to_vector()
 	{
 		std::vector<data_type> vector = std::vector<data_type>();
 
@@ -167,38 +133,6 @@ public:
 		}
 
 		return vector;
-	}
-
-	// Returns a linked list of the current stack
-	std::list<priority_stack_node<data_type, priority_type>> to_list()
-	{
-		return std::list<priority_stack_node<data_type, priority_type>>(my_stack);
-	}
-
-	// Returns a linked list of the current stack's data
-	std::list<data_type> data_to_list()
-	{
-		std::list<data_type> list = std::list<data_type>();
-
-		for (priority_stack_node<data_type, priority_type> node : my_stack)
-		{
-			list.push_back(node.data);
-		}
-
-		return list;
-	}
-
-	// Returns a linked list of the current stack's priority
-	std::list<priority_type> priority_to_list()
-	{
-		std::list<priority_type> list = std::list<priority_type>();
-
-		for (priority_stack_node<data_type, priority_type> node : my_stack)
-		{
-			list.push_back(node.priority);
-		}
-
-		return list;
 	}
 
 
@@ -670,13 +604,15 @@ public:
 			return "{ }";
 		}
 
-		priority_stack_node<data_type, priority_type>* data = to_new_array();
+		data_type* data = to_new_array();
+
+		priority_type* data = priority_to_new_array();
 
 		std::string log = "{ ";
 
 		for (int i = 0; i < my_stack.size(); i++)
 		{
-			log += (data[i].data + " : " + data[i].priority + ", ");
+			log += (data[i] + " : " + priority[i] + ", ");
 		}
 
 		log = log.erase(log.length() - 2, 1);
@@ -686,6 +622,10 @@ public:
 		delete[] data;
 
 		data = nullptr;
+
+		delete[] priority;
+
+		priority = nullptr;
 
 		return log;
 	}
@@ -698,13 +638,15 @@ public:
 			return "{ }";
 		}
 
-		priority_stack_node<data_type, priority_type>* data = to_new_array();
+		data_type* data = to_new_array();
+
+		priority_type* data = priority_to_new_array();
 
 		std::string log = "{ ";
 
 		for (int i = 0; i < my_stack.size(); i++)
 		{
-			log += (data[i].data + " : " + priority_to_string_function(data[i].priority) + ", ");
+			log += (data[i] + " : " + priority_to_string_function(priority[i]) + ", ");
 		}
 
 		log = log.erase(log.length() - 2, 1);
@@ -715,24 +657,30 @@ public:
 
 		data = nullptr;
 
+		delete[] priority;
+
+		priority = nullptr;
+
 		return log;
 	}
 
 	// Converts the elements of the stack into a string
-	std::string to_string(std::string(*data_to_string_function) (data_type), std::string(*priority_to_string_function) (data_type))
+	std::string to_string(std::string(*to_string_function) (data_type), std::string(*priority_to_string_function) (data_type))
 	{
 		if (my_stack.size() == 0)
 		{
 			return "{ }";
 		}
 
-		priority_stack_node<data_type, priority_type>* data = to_new_array();
+		data_type* data = to_new_array();
+
+		priority_type* data = priority_to_new_array();
 
 		std::string log = "{ ";
 
 		for (int i = 0; i < my_stack.size(); i++)
 		{
-			log += (data_to_string_function(data[i].data) + " : " + priority_to_string_function(data[i].priority) + ", ");
+			log += (to_string_function(data[i]) + " : " + priority_to_string_function(priority[i]) + ", ");
 		}
 
 		log = log.erase(log.length() - 2, 1);
@@ -742,6 +690,10 @@ public:
 		delete[] data;
 
 		data = nullptr;
+
+		delete[] priority;
+
+		priority = nullptr;
 
 		return log;
 	}

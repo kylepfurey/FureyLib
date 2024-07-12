@@ -17,7 +17,7 @@ using PriorityType = System.Single;
 /// •  Elements with higher priority are popped first.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class PriorityStack<DataType> : IEnumerable
+public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
 {
     // VARIABLES
 
@@ -47,27 +47,7 @@ public class PriorityStack<DataType> : IEnumerable
     /// Returns an array of the current stack
     /// </summary>
     /// <returns></returns>
-    public PriorityStackNode<DataType>[] ToArray()
-    {
-        PriorityStackNode<DataType>[] array = new PriorityStackNode<DataType>[stack.Count];
-
-        int i = 0;
-
-        foreach (PriorityStackNode<DataType> node in stack)
-        {
-            array[i] = node;
-
-            i++;
-        }
-
-        return array;
-    }
-
-    /// <summary>
-    /// Returns an array of the current stack
-    /// </summary>
-    /// <returns></returns>
-    public DataType[] DataToArray()
+    public DataType[] ToArray()
     {
         DataType[] array = new DataType[stack.Count];
 
@@ -104,30 +84,10 @@ public class PriorityStack<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// Returns a list of the current stack
-    /// </summary>
-    /// <returns></returns>
-    public List<PriorityStackNode<DataType>> ToList()
-    {
-        List<PriorityStackNode<DataType>> list = new List<PriorityStackNode<DataType>>(stack.Count);
-
-        int i = 0;
-
-        foreach (PriorityStackNode<DataType> node in stack)
-        {
-            list.Add(node);
-
-            i++;
-        }
-
-        return list;
-    }
-
-    /// <summary>
     /// Returns a list of the current stack's data
     /// </summary>
     /// <returns></returns>
-    public List<DataType> DataToList()
+    public List<DataType> ToList()
     {
         List<DataType> list = new List<DataType>(stack.Count);
 
@@ -158,47 +118,6 @@ public class PriorityStack<DataType> : IEnumerable
             list.Add(node.priority);
 
             i++;
-        }
-
-        return list;
-    }
-
-    /// <summary>
-    /// Returns a linked list of the current stack
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<PriorityStackNode<DataType>> ToLinkedList()
-    {
-        return new LinkedList<PriorityStackNode<DataType>>(stack);
-    }
-
-    /// <summary>
-    /// Returns a linked list of the current stack's data
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<DataType> DataToLinkedList()
-    {
-        LinkedList<DataType> list = new LinkedList<DataType>();
-
-        foreach (PriorityStackNode<DataType> node in stack)
-        {
-            list.AddLast(node.data);
-        }
-
-        return list;
-    }
-
-    /// <summary>
-    /// Returns a linked list of the current stack's priority
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<PriorityType> PriorityToLinkedList()
-    {
-        LinkedList<PriorityType> list = new LinkedList<PriorityType>();
-
-        foreach (PriorityStackNode<DataType> node in stack)
-        {
-            list.AddLast(node.priority);
         }
 
         return list;
@@ -264,24 +183,10 @@ public class PriorityStack<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// Node list constructor
+    /// Enumerable constructor
     /// </summary>
     /// <param name="nodes"></param>
-    public PriorityStack(List<PriorityStackNode<DataType>> nodes)
-    {
-        stack = new LinkedList<PriorityStackNode<DataType>>();
-
-        for (int i = 0; i < nodes.Count; i++)
-        {
-            Push(nodes[i]);
-        }
-    }
-
-    /// <summary>
-    /// Node linked list constructor
-    /// </summary>
-    /// <param name="nodes"></param>
-    public PriorityStack(LinkedList<PriorityStackNode<DataType>> nodes)
+    public PriorityStack(IEnumerable<PriorityStackNode<DataType>> nodes)
     {
         stack = new LinkedList<PriorityStackNode<DataType>>();
 
@@ -702,13 +607,15 @@ public class PriorityStack<DataType> : IEnumerable
             return "{ }";
         }
 
-        PriorityStackNode<DataType>[] data = ToArray();
+        DataType[] data = ToArray();
+
+        PriorityType[] priority = PriorityToArray();
 
         string log = "{ ";
 
         for (int i = 0; i < data.Length; i++)
         {
-            log += (data[i].data + " : " + data[i].priority + ", ");
+            log += (data[i] + " : " + priority[i] + ", ");
         }
 
         log = log.Remove(log.Length - 2, 1);
@@ -727,7 +634,16 @@ public class PriorityStack<DataType> : IEnumerable
     /// <returns></returns>
     public IEnumerator GetEnumerator()
     {
-        return DataToArray().GetEnumerator();
+        return ToArray().GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<DataType> IEnumerable<DataType>.GetEnumerator()
+    {
+        return (IEnumerator<DataType>)ToArray().GetEnumerator();
     }
 
     /// <summary>
@@ -826,7 +742,7 @@ public class PriorityStackNode<DataType>
 /// •  Elements with higher priority are popped first.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class PriorityStack<DataType, PriorityType> : IEnumerable where PriorityType : IComparable
+public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<DataType> where PriorityType : IComparable
 {
     // VARIABLES
 
@@ -856,27 +772,7 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable where PriorityT
     /// Returns an array of the current stack
     /// </summary>
     /// <returns></returns>
-    public PriorityStackNode<DataType, PriorityType>[] ToArray()
-    {
-        PriorityStackNode<DataType, PriorityType>[] array = new PriorityStackNode<DataType, PriorityType>[stack.Count];
-
-        int i = 0;
-
-        foreach (PriorityStackNode<DataType, PriorityType> node in stack)
-        {
-            array[i] = node;
-
-            i++;
-        }
-
-        return array;
-    }
-
-    /// <summary>
-    /// Returns an array of the current stack
-    /// </summary>
-    /// <returns></returns>
-    public DataType[] DataToArray()
+    public DataType[] ToArray()
     {
         DataType[] array = new DataType[stack.Count];
 
@@ -913,30 +809,10 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable where PriorityT
     }
 
     /// <summary>
-    /// Returns a list of the current stack
-    /// </summary>
-    /// <returns></returns>
-    public List<PriorityStackNode<DataType, PriorityType>> ToList()
-    {
-        List<PriorityStackNode<DataType, PriorityType>> array = new List<PriorityStackNode<DataType, PriorityType>>(stack.Count);
-
-        int i = 0;
-
-        foreach (PriorityStackNode<DataType, PriorityType> node in stack)
-        {
-            array[i] = node;
-
-            i++;
-        }
-
-        return array;
-    }
-
-    /// <summary>
     /// Returns a list of the current stack's data
     /// </summary>
     /// <returns></returns>
-    public List<DataType> DataToList()
+    public List<DataType> ToList()
     {
         List<DataType> array = new List<DataType>(stack.Count);
 
@@ -970,47 +846,6 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable where PriorityT
         }
 
         return array;
-    }
-
-    /// <summary>
-    /// Returns a linked list of the current stack
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<PriorityStackNode<DataType, PriorityType>> ToLinkedList()
-    {
-        return new LinkedList<PriorityStackNode<DataType, PriorityType>>(stack);
-    }
-
-    /// <summary>
-    /// Returns a linked list of the current stack's data
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<DataType> DataToLinkedList()
-    {
-        LinkedList<DataType> list = new LinkedList<DataType>();
-
-        foreach (PriorityStackNode<DataType, PriorityType> node in stack)
-        {
-            list.AddLast(node.data);
-        }
-
-        return list;
-    }
-
-    /// <summary>
-    /// Returns a linked list of the current stack's priority
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<PriorityType> PriorityToLinkedList()
-    {
-        LinkedList<PriorityType> list = new LinkedList<PriorityType>();
-
-        foreach (PriorityStackNode<DataType, PriorityType> node in stack)
-        {
-            list.AddLast(node.priority);
-        }
-
-        return list;
     }
 
 
@@ -1074,24 +909,10 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable where PriorityT
     }
 
     /// <summary>
-    /// Node list constructor
+    /// Enumerable constructor
     /// </summary>
     /// <param name="nodes"></param>
-    public PriorityStack(List<PriorityStackNode<DataType, PriorityType>> nodes)
-    {
-        stack = new LinkedList<PriorityStackNode<DataType, PriorityType>>();
-
-        for (int i = 0; i < nodes.Count; i++)
-        {
-            Push(nodes[i]);
-        }
-    }
-
-    /// <summary>
-    /// Node linked list constructor
-    /// </summary>
-    /// <param name="nodes"></param>
-    public PriorityStack(LinkedList<PriorityStackNode<DataType, PriorityType>> nodes)
+    public PriorityStack(IEnumerable<PriorityStackNode<DataType, PriorityType>> nodes)
     {
         stack = new LinkedList<PriorityStackNode<DataType, PriorityType>>();
 
@@ -1512,13 +1333,15 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable where PriorityT
             return "{ }";
         }
 
-        PriorityStackNode<DataType, PriorityType>[] data = ToArray();
+        DataType[] data = ToArray();
+
+        PriorityType[] priority = PriorityToArray();
 
         string log = "{ ";
 
         for (int i = 0; i < data.Length; i++)
         {
-            log += (data[i].data + " : " + data[i].priority + ", ");
+            log += (data[i] + " : " + priority[i] + ", ");
         }
 
         log = log.Remove(log.Length - 2, 1);
@@ -1537,7 +1360,16 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable where PriorityT
     /// <returns></returns>
     public IEnumerator GetEnumerator()
     {
-        return DataToArray().GetEnumerator();
+        return ToArray().GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<DataType> IEnumerable<DataType>.GetEnumerator()
+    {
+        return (IEnumerator<DataType>)ToArray().GetEnumerator();
     }
 
     /// <summary>

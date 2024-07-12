@@ -15,26 +15,8 @@ using Function = System.Delegate;
 /// Wrapper class for a collection of functions.
 /// All stored functions must have no parameters.
 /// </summary>
-public class Event : IEnumerable
+public class Event : IEnumerable, IEnumerable<Action>
 {
-    // STATIC DELEGATE DATA
-
-    /// <summary>
-    /// Global list of all delegates
-    /// </summary>
-    private static List<Event> allDelegates = new List<Event>();
-
-    /// <summary>
-    /// Global delegate cancellation token
-    /// </summary>
-    private static bool cancelAll = false;
-
-    /// <summary>
-    /// Index of current invoked delegate
-    /// </summary>
-    private static int invokeIndex = 0;
-
-
     // DELEGATE DATA
 
     /// <summary>
@@ -52,25 +34,13 @@ public class Event : IEnumerable
     /// </summary>
     private bool cancel = false;
 
-    /// <summary>
-    /// Index of current delegate
-    /// </summary>
-    private int index = 0;
 
-
-    // DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
+    // DELEGATE CONSTRUCTORS
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    public Event()
-    {
-        functions = new List<Action>();
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
-    }
+    public Event() { }
 
     /// <summary>
     /// Array constructor
@@ -78,29 +48,22 @@ public class Event : IEnumerable
     /// <param name="functions"></param>
     public Event(params Action[] functions)
     {
-        this.functions = new List<Action>(functions.Length);
-
         for (int i = 0; i < functions.Length; i++)
         {
             this.functions.Add(functions[i]);
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
     }
 
     /// <summary>
-    /// List constructor
+    /// Enumerable constructor
     /// </summary>
     /// <param name="functions"></param>
-    public Event(List<Action> functions)
+    public Event(IEnumerable<Action> functions)
     {
-        this.functions = functions;
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
+        foreach (Action function in functions)
+        {
+            this.functions.Add(function);
+        }
     }
 
     /// <summary>
@@ -113,23 +76,6 @@ public class Event : IEnumerable
         {
             functions.Add(newDelegate.functions[i]);
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
-    }
-
-    /// <summary>
-    /// Deconstructor
-    /// </summary>
-    ~Event()
-    {
-        for (int i = index + 1; i < allDelegates.Count; i++)
-        {
-            allDelegates[i].index--;
-        }
-
-        allDelegates.Remove(this);
     }
 
 
@@ -143,17 +89,13 @@ public class Event : IEnumerable
     {
         cancel = false;
 
-        cancelAll = false;
-
-        invokeIndex = index;
-
         isInvoking = true;
 
         for (int i = 0; i < functions.Count; i++)
         {
             functions[i].Invoke();
 
-            if (cancel || cancelAll)
+            if (cancel)
             {
                 isInvoking = false;
 
@@ -167,32 +109,6 @@ public class Event : IEnumerable
     }
 
     /// <summary>
-    /// Invokes every delegate
-    /// </summary>
-    /// <returns></returns>
-    public static bool InvokeAll()
-    {
-        for (int i = 0; i < allDelegates.Count; i++)
-        {
-            if (!allDelegates[i].Invoke())
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// Reinvokes the current delegate
-    /// </summary>
-    /// <returns></returns>
-    public static bool InvokeCurrent()
-    {
-        return allDelegates[invokeIndex].Invoke();
-    }
-
-    /// <summary>
     /// Cancel an invoke
     /// </summary>
     public void Cancel()
@@ -201,26 +117,10 @@ public class Event : IEnumerable
     }
 
     /// <summary>
-    /// Cancel all invokes
-    /// </summary>
-    public static void CancelAll()
-    {
-        cancelAll = true;
-    }
-
-    /// <summary>
-    /// Cancel the current invoke
-    /// </summary>
-    public static void CancelCurrent()
-    {
-        allDelegates[invokeIndex].cancel = true;
-    }
-
-    /// <summary>
     /// Returns whether the delegate is currently being invoked
     /// </summary>
     /// <returns></returns>
-    public bool IsInvoking()
+    public bool Invoking()
     {
         return isInvoking;
     }
@@ -283,11 +183,11 @@ public class Event : IEnumerable
     /// </summary>
     /// <param name="functions"></param>
     /// <returns></returns>
-    public Event Add(List<Action> functions)
+    public Event Add(IEnumerable<Action> functions)
     {
-        for (int i = 0; i < functions.Count; i++)
+        foreach (Action function in functions)
         {
-            this.functions.Add(functions[i]);
+            this.functions.Add(function);
         }
 
         return this;
@@ -439,13 +339,22 @@ public class Event : IEnumerable
     }
 
 
-    // ENUMERATOR FUNCTION
+    // ENUMERATOR FUNCTIONS
 
     /// <summary>
     /// Enumerator implementation
     /// </summary>
     /// <returns></returns>
     public IEnumerator GetEnumerator()
+    {
+        return functions.GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<Action> IEnumerable<Action>.GetEnumerator()
     {
         return functions.GetEnumerator();
     }
@@ -456,26 +365,8 @@ public class Event : IEnumerable
 /// All stored functions must share the same return type.
 /// All stored functions must have no parameters.
 /// </summary>
-public class Event<ReturnType> : IEnumerable
+public class Event<ReturnType> : IEnumerable, IEnumerable<Func<ReturnType>>
 {
-    // STATIC DELEGATE DATA
-
-    /// <summary>
-    /// Global list of all delegates
-    /// </summary>
-    private static List<Event<ReturnType>> allDelegates = new List<Event<ReturnType>>();
-
-    /// <summary>
-    /// Global delegate cancellation token
-    /// </summary>
-    private static bool cancelAll = false;
-
-    /// <summary>
-    /// Index of current invoked delegate
-    /// </summary>
-    private static int invokeIndex = 0;
-
-
     // DELEGATE DATA
 
     /// <summary>
@@ -493,25 +384,13 @@ public class Event<ReturnType> : IEnumerable
     /// </summary>
     private bool cancel = false;
 
-    /// <summary>
-    /// Index of current delegate
-    /// </summary>
-    private int index = 0;
 
-
-    // DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
+    // DELEGATE CONSTRUCTORS
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    public Event()
-    {
-        functions = new List<Func<ReturnType>>();
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
-    }
+    public Event() { }
 
     /// <summary>
     /// Array constructor
@@ -519,8 +398,6 @@ public class Event<ReturnType> : IEnumerable
     /// <param name="functions"></param>
     public Event(params Func<ReturnType>[] functions)
     {
-        this.functions = new List<Func<ReturnType>>(functions.Length);
-
         for (int i = 0; i < functions.Length; i++)
         {
             if (typeof(ReturnType) != functions[i].Method.ReturnType)
@@ -530,31 +407,23 @@ public class Event<ReturnType> : IEnumerable
 
             this.functions.Add(functions[i]);
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
     }
 
     /// <summary>
-    /// List constructor
+    /// Enumerable constructor
     /// </summary>
     /// <param name="functions"></param>
-    public Event(List<Func<ReturnType>> functions)
+    public Event(IEnumerable<Func<ReturnType>> functions)
     {
-        this.functions = functions;
-
-        for (int i = 0; i < functions.Count; i++)
+        foreach (Func<ReturnType> function in functions)
         {
-            if (typeof(ReturnType) != functions[i].Method.ReturnType)
+            if (typeof(ReturnType) != function.Method.ReturnType)
             {
                 Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's return type does not match the delegate's return type!");
             }
+
+            this.functions.Add(function);
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
     }
 
     /// <summary>
@@ -572,23 +441,6 @@ public class Event<ReturnType> : IEnumerable
 
             functions.Add(newDelegate.functions[i]);
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
-    }
-
-    /// <summary>
-    /// Deconstructor
-    /// </summary>
-    ~Event()
-    {
-        for (int i = index + 1; i < allDelegates.Count; i++)
-        {
-            allDelegates[i].index--;
-        }
-
-        allDelegates.Remove(this);
     }
 
 
@@ -601,10 +453,6 @@ public class Event<ReturnType> : IEnumerable
     public Dictionary<Func<ReturnType>, ReturnType> Invoke()
     {
         cancel = false;
-
-        cancelAll = false;
-
-        invokeIndex = index;
 
         isInvoking = true;
 
@@ -621,7 +469,7 @@ public class Event<ReturnType> : IEnumerable
                 Debug.Assert(false, "DELEGATE ERROR: Could not invoke the given delegate! Invoked parameters did not match the delegate type!");
             }
 
-            if (cancel || cancelAll)
+            if (cancel)
             {
                 for (int j = i + 1; j < functions.Count; j++)
                 {
@@ -638,36 +486,6 @@ public class Event<ReturnType> : IEnumerable
     }
 
     /// <summary>
-    /// Invokes every delegate
-    /// </summary>
-    /// <returns></returns>
-    public static Dictionary<Event<ReturnType>, Dictionary<Func<ReturnType>, ReturnType>> InvokeAll()
-    {
-        Dictionary<Event<ReturnType>, Dictionary<Func<ReturnType>, ReturnType>> returns = new Dictionary<Event<ReturnType>, Dictionary<Func<ReturnType>, ReturnType>>(allDelegates.Count);
-
-        for (int i = 0; i < allDelegates.Count; i++)
-        {
-            returns[allDelegates[i]] = allDelegates[i].Invoke();
-
-            if (allDelegates[i].cancel || cancelAll)
-            {
-                break;
-            }
-        }
-
-        return returns;
-    }
-
-    /// <summary>
-    /// Reinvokes the current delegate
-    /// </summary>
-    /// <returns></returns>
-    public static Dictionary<Func<ReturnType>, ReturnType> InvokeCurrent()
-    {
-        return allDelegates[invokeIndex].Invoke();
-    }
-
-    /// <summary>
     /// Cancel an invoke
     /// </summary>
     public void Cancel()
@@ -676,26 +494,10 @@ public class Event<ReturnType> : IEnumerable
     }
 
     /// <summary>
-    /// Cancel all invokes
-    /// </summary>
-    public static void CancelAll()
-    {
-        cancelAll = true;
-    }
-
-    /// <summary>
-    /// Cancel the current invoke
-    /// </summary>
-    public static void CancelCurrent()
-    {
-        allDelegates[invokeIndex].cancel = true;
-    }
-
-    /// <summary>
     /// Returns whether the delegate is currently being invoked
     /// </summary>
     /// <returns></returns>
-    public bool IsInvoking()
+    public bool Invoking()
     {
         return isInvoking;
     }
@@ -773,16 +575,16 @@ public class Event<ReturnType> : IEnumerable
     /// </summary>
     /// <param name="functions"></param>
     /// <returns></returns>
-    public Event<ReturnType> Add(List<Func<ReturnType>> functions)
+    public Event<ReturnType> Add(IEnumerable<Func<ReturnType>> functions)
     {
-        for (int i = 0; i < functions.Count; i++)
+        foreach (Func<ReturnType> function in functions)
         {
-            if (typeof(ReturnType) != functions[i].Method.ReturnType)
+            if (typeof(ReturnType) != function.Method.ReturnType)
             {
                 Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's return type does not match the delegate's return type!");
             }
 
-            this.functions.Add(functions[i]);
+            this.functions.Add(function);
         }
 
         return this;
@@ -939,7 +741,7 @@ public class Event<ReturnType> : IEnumerable
     }
 
 
-    // ENUMERATOR FUNCTION
+    // ENUMERATOR FUNCTIONS
 
     /// <summary>
     /// Enumerator implementation
@@ -949,32 +751,23 @@ public class Event<ReturnType> : IEnumerable
     {
         return functions.GetEnumerator();
     }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<Func<ReturnType>> IEnumerable<Func<ReturnType>>.GetEnumerator()
+    {
+        return functions.GetEnumerator();
+    }
 }
 
 /// <summary>
 /// Wrapper class for a collection of functions.
 /// Only stores functions that have no parameters regardless of return type.
 /// </summary>
-public class DynamicEvent : IEnumerable
+public class DynamicEvent : IEnumerable, IEnumerable<Function>
 {
-    // STATIC DELEGATE DATA
-
-    /// <summary>
-    /// Global list of all delegates
-    /// </summary>
-    private static List<DynamicEvent> allDelegates = new List<DynamicEvent>();
-
-    /// <summary>
-    /// Global delegate cancellation token
-    /// </summary>
-    private static bool cancelAll = false;
-
-    /// <summary>
-    /// Index of current invoked delegate
-    /// </summary>
-    private static int invokeIndex = 0;
-
-
     // DELEGATE DATA
 
     /// <summary>
@@ -992,25 +785,13 @@ public class DynamicEvent : IEnumerable
     /// </summary>
     private bool cancel = false;
 
-    /// <summary>
-    /// Index of current delegate
-    /// </summary>
-    private int index = 0;
 
-
-    // DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
+    // DELEGATE CONSTRUCTORS
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    public DynamicEvent()
-    {
-        functions = new List<Function>();
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
-    }
+    public DynamicEvent() { }
 
     /// <summary>
     /// Array constructor
@@ -1018,8 +799,6 @@ public class DynamicEvent : IEnumerable
     /// <param name="functions"></param>
     public DynamicEvent(params Function[] functions)
     {
-        this.functions = new List<Function>(functions.Length);
-
         for (int i = 0; i < functions.Length; i++)
         {
             if (functions[i].Method.GetParameters().Length == 0)
@@ -1027,31 +806,21 @@ public class DynamicEvent : IEnumerable
                 this.functions.Add(functions[i]);
             }
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
     }
 
     /// <summary>
-    /// List constructor
+    /// Enumerable constructor
     /// </summary>
     /// <param name="functions"></param>
-    public DynamicEvent(List<Function> functions)
+    public DynamicEvent(IEnumerable<Function> functions)
     {
-        this.functions = new List<Function>(functions.Count);
-
-        for (int i = 0; i < functions.Count; i++)
+        foreach (Function function in functions)
         {
-            if (functions[i].Method.GetParameters().Length == 0)
+            if (function.Method.GetParameters().Length == 0)
             {
-                this.functions.Add(functions[i]);
+                this.functions.Add(function);
             }
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
     }
 
     /// <summary>
@@ -1067,23 +836,6 @@ public class DynamicEvent : IEnumerable
                 functions.Add(newDelegate.functions[i]);
             }
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
-    }
-
-    /// <summary>
-    /// Deconstructor
-    /// </summary>
-    ~DynamicEvent()
-    {
-        for (int i = index + 1; i < allDelegates.Count; i++)
-        {
-            allDelegates[i].index--;
-        }
-
-        allDelegates.Remove(this);
     }
 
 
@@ -1097,10 +849,6 @@ public class DynamicEvent : IEnumerable
     {
         cancel = false;
 
-        cancelAll = false;
-
-        invokeIndex = index;
-
         isInvoking = true;
 
         Dictionary<Function, object> returns = new Dictionary<Function, object>(functions.Count);
@@ -1109,7 +857,7 @@ public class DynamicEvent : IEnumerable
         {
             returns[functions[i]] = functions[i].DynamicInvoke();
 
-            if (cancel || cancelAll)
+            if (cancel)
             {
                 break;
             }
@@ -1121,36 +869,6 @@ public class DynamicEvent : IEnumerable
     }
 
     /// <summary>
-    /// Invokes every delegate
-    /// </summary>
-    /// <returns></returns>
-    public static Dictionary<DynamicEvent, Dictionary<Function, object>> InvokeAll()
-    {
-        Dictionary<DynamicEvent, Dictionary<Function, object>> returns = new Dictionary<DynamicEvent, Dictionary<Function, object>>(allDelegates.Count);
-
-        for (int i = 0; i < allDelegates.Count; i++)
-        {
-            returns[allDelegates[i]] = allDelegates[i].Invoke();
-
-            if (allDelegates[i].cancel || cancelAll)
-            {
-                break;
-            }
-        }
-
-        return returns;
-    }
-
-    /// <summary>
-    /// Reinvokes the current delegate
-    /// </summary>
-    /// <returns></returns>
-    public static Dictionary<Function, object> InvokeCurrent()
-    {
-        return allDelegates[invokeIndex].Invoke();
-    }
-
-    /// <summary>
     /// Cancel an invoke
     /// </summary>
     public void Cancel()
@@ -1159,26 +877,10 @@ public class DynamicEvent : IEnumerable
     }
 
     /// <summary>
-    /// Cancel all invokes
-    /// </summary>
-    public static void CancelAll()
-    {
-        cancelAll = true;
-    }
-
-    /// <summary>
-    /// Cancel the current invoke
-    /// </summary>
-    public static void CancelCurrent()
-    {
-        allDelegates[invokeIndex].cancel = true;
-    }
-
-    /// <summary>
     /// Returns whether the delegate is currently being invoked
     /// </summary>
     /// <returns></returns>
-    public bool IsInvoking()
+    public bool Invoking()
     {
         return isInvoking;
     }
@@ -1250,13 +952,13 @@ public class DynamicEvent : IEnumerable
     /// </summary>
     /// <param name="functions"></param>
     /// <returns></returns>
-    public DynamicEvent Add(List<Function> functions)
+    public DynamicEvent Add(IEnumerable<Function> functions)
     {
-        for (int i = 0; i < functions.Count; i++)
+        foreach (Function function in functions)
         {
-            if (functions[i].Method.GetParameters().Length == 0)
+            if (function.Method.GetParameters().Length == 0)
             {
-                this.functions.Add(functions[i]);
+                this.functions.Add(function);
             }
         }
 
@@ -1439,7 +1141,7 @@ public class DynamicEvent : IEnumerable
     }
 
 
-    // ENUMERATOR FUNCTION
+    // ENUMERATOR FUNCTIONS
 
     /// <summary>
     /// Enumerator implementation
@@ -1449,32 +1151,23 @@ public class DynamicEvent : IEnumerable
     {
         return functions.GetEnumerator();
     }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<Function> IEnumerable<Function>.GetEnumerator()
+    {
+        return functions.GetEnumerator();
+    }
 }
 
 /// <summary>
 /// Wrapper class for a collection of functions.
 /// All stored functions must share the same parameters.
 /// </summary>
-public class Delegate : IEnumerable
+public class Delegate : IEnumerable, IEnumerable<Function>
 {
-    // STATIC DELEGATE DATA
-
-    /// <summary>
-    /// Global list of all delegates
-    /// </summary>
-    private static List<Delegate> allDelegates = new List<Delegate>();
-
-    /// <summary>
-    /// Global delegate cancellation token
-    /// </summary>
-    private static bool cancelAll = false;
-
-    /// <summary>
-    /// Index of current invoked delegate
-    /// </summary>
-    private static int invokeIndex = 0;
-
-
     // DELEGATE DATA
 
     /// <summary>
@@ -1493,29 +1186,17 @@ public class Delegate : IEnumerable
     private bool cancel = false;
 
     /// <summary>
-    /// Index of current delegate
-    /// </summary>
-    private int index = 0;
-
-    /// <summary>
     /// Delegate parameters
     /// </summary>
     private Type[] parameterTypes = null;
 
 
-    // DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
+    // DELEGATE CONSTRUCTORS
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    public Delegate()
-    {
-        functions = new List<Function>();
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
-    }
+    public Delegate() { }
 
     /// <summary>
     /// Array constructor
@@ -1523,8 +1204,6 @@ public class Delegate : IEnumerable
     /// <param name="functions"></param>
     public Delegate(params Function[] functions)
     {
-        this.functions = new List<Function>(functions.Length);
-
         for (int i = 0; i < functions.Length; i++)
         {
             if (parameterTypes != null && !CompareParameters(parameterTypes, functions[i].Method.GetParameters()))
@@ -1538,35 +1217,27 @@ public class Delegate : IEnumerable
 
             this.functions.Add(functions[i]);
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
     }
 
     /// <summary>
-    /// List constructor
+    /// Enumerable constructor
     /// </summary>
     /// <param name="functions"></param>
-    public Delegate(List<Function> functions)
+    public Delegate(IEnumerable<Function> functions)
     {
-        for (int i = 0; i < functions.Count; i++)
+        foreach (Function function in functions)
         {
-            if (parameterTypes != null && !CompareParameters(parameterTypes, functions[i].Method.GetParameters()))
+            if (parameterTypes != null && !CompareParameters(parameterTypes, function.Method.GetParameters()))
             {
                 Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's parameters do not match the delegate's parameters!");
             }
             else if (parameterTypes == null)
             {
-                parameterTypes = GetParameterTypes(functions[i].Method.GetParameters());
+                parameterTypes = GetParameterTypes(function.Method.GetParameters());
             }
+
+            this.functions.Add(function);
         }
-
-        this.functions = functions;
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
     }
 
     /// <summary>
@@ -1588,23 +1259,6 @@ public class Delegate : IEnumerable
 
             functions.Add(newDelegate.functions[i]);
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
-    }
-
-    /// <summary>
-    /// Deconstructor
-    /// </summary>
-    ~Delegate()
-    {
-        for (int i = index + 1; i < allDelegates.Count; i++)
-        {
-            allDelegates[i].index--;
-        }
-
-        allDelegates.Remove(this);
     }
 
 
@@ -1619,10 +1273,6 @@ public class Delegate : IEnumerable
     {
         cancel = false;
 
-        cancelAll = false;
-
-        invokeIndex = index;
-
         isInvoking = true;
 
         for (int i = 0; i < functions.Count; i++)
@@ -1636,7 +1286,7 @@ public class Delegate : IEnumerable
                 Debug.Assert(false, "DELEGATE ERROR: Could not invoke the given delegate! Invoked parameters did not match the delegate type!");
             }
 
-            if (cancel || cancelAll)
+            if (cancel)
             {
                 isInvoking = false;
 
@@ -1650,34 +1300,6 @@ public class Delegate : IEnumerable
     }
 
     /// <summary>
-    /// Invokes every delegate
-    /// </summary>
-    /// <param name="parameters"></param>
-    /// <returns></returns>
-    public static bool InvokeAll(params object[] parameters)
-    {
-        for (int i = 0; i < allDelegates.Count; i++)
-        {
-            if (!allDelegates[i].Invoke(parameters))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// Reinvokes the current delegate
-    /// </summary>
-    /// <param name="parameters"></param>
-    /// <returns></returns>
-    public static bool InvokeCurrent(params object[] parameters)
-    {
-        return allDelegates[invokeIndex].Invoke(parameters);
-    }
-
-    /// <summary>
     /// Cancel an invoke
     /// </summary>
     public void Cancel()
@@ -1686,26 +1308,10 @@ public class Delegate : IEnumerable
     }
 
     /// <summary>
-    /// Cancel all invokes
-    /// </summary>
-    public static void CancelAll()
-    {
-        cancelAll = true;
-    }
-
-    /// <summary>
-    /// Cancel the current invoke
-    /// </summary>
-    public static void CancelCurrent()
-    {
-        allDelegates[invokeIndex].cancel = true;
-    }
-
-    /// <summary>
     /// Returns whether the delegate is currently being invoked
     /// </summary>
     /// <returns></returns>
-    public bool IsInvoking()
+    public bool Invoking()
     {
         return isInvoking;
     }
@@ -1795,20 +1401,20 @@ public class Delegate : IEnumerable
     /// </summary>
     /// <param name="functions"></param>
     /// <returns></returns>
-    public Delegate Add(List<Function> functions)
+    public Delegate Add(IEnumerable<Function> functions)
     {
-        for (int i = 0; i < functions.Count; i++)
+        foreach (Function function in functions)
         {
-            if (parameterTypes != null && !CompareParameters(parameterTypes, functions[i].Method.GetParameters()))
+            if (parameterTypes != null && !CompareParameters(parameterTypes, function.Method.GetParameters()))
             {
                 Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's parameters do not match the delegate's parameters!");
             }
             else if (parameterTypes == null)
             {
-                parameterTypes = GetParameterTypes(functions[i].Method.GetParameters());
+                parameterTypes = GetParameterTypes(function.Method.GetParameters());
             }
 
-            this.functions.Add(functions[i]);
+            this.functions.Add(function);
         }
 
         return this;
@@ -1962,7 +1568,7 @@ public class Delegate : IEnumerable
     /// </summary>
     /// <param name="newParameters"></param>
     /// <returns></returns>
-    public bool SetParameters(Type[] newParameters)
+    public bool SetParameters(params Type[] newParameters)
     {
         if (parameterTypes == null || functions.Count == 0)
         {
@@ -1979,7 +1585,7 @@ public class Delegate : IEnumerable
     /// </summary>
     /// <param name="newParameters"></param>
     /// <returns></returns>
-    public bool SetParameters(ParameterInfo[] newParameters)
+    public bool SetParameters(params ParameterInfo[] newParameters)
     {
         if (parameterTypes == null || functions.Count == 0)
         {
@@ -2001,7 +1607,7 @@ public class Delegate : IEnumerable
     /// </summary>
     /// <param name="newParameters"></param>
     /// <returns></returns>
-    public Delegate Reset(Type[] newParameters = null)
+    public Delegate Reset(params Type[] newParameters)
     {
         functions.Clear();
 
@@ -2015,7 +1621,7 @@ public class Delegate : IEnumerable
     /// </summary>
     /// <param name="newParameters"></param>
     /// <returns></returns>
-    public Delegate Reset(ParameterInfo[] newParameters)
+    public Delegate Reset(params ParameterInfo[] newParameters)
     {
         functions.Clear();
 
@@ -2058,7 +1664,7 @@ public class Delegate : IEnumerable
     /// </summary>
     /// <param name="parameters"></param>
     /// <returns></returns>
-    public static Type[] GetParameterTypes(ParameterInfo[] parameters)
+    public static Type[] GetParameterTypes(params ParameterInfo[] parameters)
     {
         Type[] types = new Type[parameters.Length];
 
@@ -2096,13 +1702,22 @@ public class Delegate : IEnumerable
     }
 
 
-    // ENUMERATOR FUNCTION
+    // ENUMERATOR FUNCTIONS
 
     /// <summary>
     /// Enumerator implementation
     /// </summary>
     /// <returns></returns>
     public IEnumerator GetEnumerator()
+    {
+        return functions.GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<Function> IEnumerable<Function>.GetEnumerator()
     {
         return functions.GetEnumerator();
     }
@@ -2113,26 +1728,8 @@ public class Delegate : IEnumerable
 /// All stored functions must share the same return type.
 /// All stored functions must share the same parameters.
 /// </summary>
-public class Delegate<ReturnType> : IEnumerable
+public class Delegate<ReturnType> : IEnumerable, IEnumerable<Function>
 {
-    // STATIC DELEGATE DATA
-
-    /// <summary>
-    /// Global list of all delegates
-    /// </summary>
-    private static List<Delegate<ReturnType>> allDelegates = new List<Delegate<ReturnType>>();
-
-    /// <summary>
-    /// Global delegate cancellation token
-    /// </summary>
-    private static bool cancelAll = false;
-
-    /// <summary>
-    /// Index of current invoked delegate
-    /// </summary>
-    private static int invokeIndex = 0;
-
-
     // DELEGATE DATA
 
     /// <summary>
@@ -2151,29 +1748,17 @@ public class Delegate<ReturnType> : IEnumerable
     private bool cancel = false;
 
     /// <summary>
-    /// Index of current delegate
-    /// </summary>
-    private int index = 0;
-
-    /// <summary>
     /// Delegate parameters
     /// </summary>
     private Type[] parameterTypes = null;
 
 
-    // DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
+    // DELEGATE CONSTRUCTORS
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    public Delegate()
-    {
-        functions = new List<Function>();
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
-    }
+    public Delegate() { }
 
     /// <summary>
     /// Array constructor
@@ -2181,8 +1766,6 @@ public class Delegate<ReturnType> : IEnumerable
     /// <param name="functions"></param>
     public Delegate(params Function[] functions)
     {
-        this.functions = new List<Function>(functions.Length);
-
         for (int i = 0; i < functions.Length; i++)
         {
             if (typeof(ReturnType) != functions[i].Method.ReturnType)
@@ -2200,39 +1783,31 @@ public class Delegate<ReturnType> : IEnumerable
 
             this.functions.Add(functions[i]);
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
     }
 
     /// <summary>
-    /// List constructor
+    /// Enumerable constructor
     /// </summary>
     /// <param name="functions"></param>
-    public Delegate(List<Function> functions)
+    public Delegate(IEnumerable<Function> functions)
     {
-        this.functions = functions;
-
-        for (int i = 0; i < functions.Count; i++)
+        foreach (Function function in functions)
         {
-            if (typeof(ReturnType) != functions[i].Method.ReturnType)
+            if (typeof(ReturnType) != function.Method.ReturnType)
             {
                 Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's return type does not match the delegate's return type!");
             }
-            else if (parameterTypes != null && !CompareParameters(parameterTypes, functions[i].Method.GetParameters()))
+            else if (parameterTypes != null && !CompareParameters(parameterTypes, function.Method.GetParameters()))
             {
                 Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's parameters do not match the delegate's parameters!");
             }
             else if (parameterTypes == null)
             {
-                parameterTypes = GetParameterTypes(functions[i].Method.GetParameters());
+                parameterTypes = GetParameterTypes(function.Method.GetParameters());
             }
+
+            this.functions.Add(function);
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
     }
 
     /// <summary>
@@ -2258,23 +1833,6 @@ public class Delegate<ReturnType> : IEnumerable
 
             functions.Add(newDelegate.functions[i]);
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
-    }
-
-    /// <summary>
-    /// Deconstructor
-    /// </summary>
-    ~Delegate()
-    {
-        for (int i = index + 1; i < allDelegates.Count; i++)
-        {
-            allDelegates[i].index--;
-        }
-
-        allDelegates.Remove(this);
     }
 
 
@@ -2288,10 +1846,6 @@ public class Delegate<ReturnType> : IEnumerable
     public Dictionary<Function, ReturnType> Invoke(params object[] parameters)
     {
         cancel = false;
-
-        cancelAll = false;
-
-        invokeIndex = index;
 
         isInvoking = true;
 
@@ -2308,7 +1862,7 @@ public class Delegate<ReturnType> : IEnumerable
                 Debug.Assert(false, "DELEGATE ERROR: Could not invoke the given delegate! Invoked parameters did not match the delegate type!");
             }
 
-            if (cancel || cancelAll)
+            if (cancel)
             {
                 for (int j = i + 1; j < functions.Count; j++)
                 {
@@ -2325,38 +1879,6 @@ public class Delegate<ReturnType> : IEnumerable
     }
 
     /// <summary>
-    /// Invokes every delegate
-    /// </summary>
-    /// <param name="parameters"></param>
-    /// <returns></returns>
-    public static Dictionary<Delegate<ReturnType>, Dictionary<Function, ReturnType>> InvokeAll(params object[] parameters)
-    {
-        Dictionary<Delegate<ReturnType>, Dictionary<Function, ReturnType>> returns = new Dictionary<Delegate<ReturnType>, Dictionary<Function, ReturnType>>(allDelegates.Count);
-
-        for (int i = 0; i < allDelegates.Count; i++)
-        {
-            returns[allDelegates[i]] = allDelegates[i].Invoke(parameters);
-
-            if (allDelegates[i].cancel || cancelAll)
-            {
-                break;
-            }
-        }
-
-        return returns;
-    }
-
-    /// <summary>
-    /// Reinvokes the current delegate
-    /// </summary>
-    /// <param name="parameters"></param>
-    /// <returns></returns>
-    public static Dictionary<Function, ReturnType> InvokeCurrent(params object[] parameters)
-    {
-        return allDelegates[invokeIndex].Invoke(parameters);
-    }
-
-    /// <summary>
     /// Cancel an invoke
     /// </summary>
     public void Cancel()
@@ -2365,26 +1887,10 @@ public class Delegate<ReturnType> : IEnumerable
     }
 
     /// <summary>
-    /// Cancel all invokes
-    /// </summary>
-    public static void CancelAll()
-    {
-        cancelAll = true;
-    }
-
-    /// <summary>
-    /// Cancel the current invoke
-    /// </summary>
-    public static void CancelCurrent()
-    {
-        allDelegates[invokeIndex].cancel = true;
-    }
-
-    /// <summary>
     /// Returns whether the delegate is currently being invoked
     /// </summary>
     /// <returns></returns>
-    public bool IsInvoking()
+    public bool Invoking()
     {
         return isInvoking;
     }
@@ -2486,24 +1992,24 @@ public class Delegate<ReturnType> : IEnumerable
     /// </summary>
     /// <param name="functions"></param>
     /// <returns></returns>
-    public Delegate<ReturnType> Add(List<Function> functions)
+    public Delegate<ReturnType> Add(IEnumerable<Function> functions)
     {
-        for (int i = 0; i < functions.Count; i++)
+        foreach (Function function in functions)
         {
-            if (typeof(ReturnType) != functions[i].Method.ReturnType)
+            if (typeof(ReturnType) != function.Method.ReturnType)
             {
                 Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's return type does not match the delegate's return type!");
             }
-            else if (parameterTypes != null && !CompareParameters(parameterTypes, functions[i].Method.GetParameters()))
+            else if (parameterTypes != null && !CompareParameters(parameterTypes, function.Method.GetParameters()))
             {
                 Debug.Assert(false, "DELEGATE ERROR: Could not add the function to the delegate! The function's parameters do not match the delegate's parameters!");
             }
             else if (parameterTypes == null)
             {
-                parameterTypes = GetParameterTypes(functions[i].Method.GetParameters());
+                parameterTypes = GetParameterTypes(function.Method.GetParameters());
             }
 
-            this.functions.Add(functions[i]);
+            this.functions.Add(function);
         }
 
         return this;
@@ -2661,7 +2167,7 @@ public class Delegate<ReturnType> : IEnumerable
     /// </summary>
     /// <param name="newParameters"></param>
     /// <returns></returns>
-    public bool SetParameters(Type[] newParameters)
+    public bool SetParameters(params Type[] newParameters)
     {
         if (parameterTypes == null || functions.Count == 0)
         {
@@ -2678,7 +2184,7 @@ public class Delegate<ReturnType> : IEnumerable
     /// </summary>
     /// <param name="newParameters"></param>
     /// <returns></returns>
-    public bool SetParameters(ParameterInfo[] newParameters)
+    public bool SetParameters(params ParameterInfo[] newParameters)
     {
         if (parameterTypes == null || functions.Count == 0)
         {
@@ -2700,7 +2206,7 @@ public class Delegate<ReturnType> : IEnumerable
     /// </summary>
     /// <param name="newParameters"></param>
     /// <returns></returns>
-    public Delegate<ReturnType> Reset(Type[] newParameters = null)
+    public Delegate<ReturnType> Reset(params Type[] newParameters)
     {
         functions.Clear();
 
@@ -2714,7 +2220,7 @@ public class Delegate<ReturnType> : IEnumerable
     /// </summary>
     /// <param name="newParameters"></param>
     /// <returns></returns>
-    public Delegate<ReturnType> Reset(ParameterInfo[] newParameters)
+    public Delegate<ReturnType> Reset(params ParameterInfo[] newParameters)
     {
         functions.Clear();
 
@@ -2757,7 +2263,7 @@ public class Delegate<ReturnType> : IEnumerable
     /// </summary>
     /// <param name="parameters"></param>
     /// <returns></returns>
-    public static Type[] GetParameterTypes(ParameterInfo[] parameters)
+    public static Type[] GetParameterTypes(params ParameterInfo[] parameters)
     {
         Type[] types = new Type[parameters.Length];
 
@@ -2795,13 +2301,22 @@ public class Delegate<ReturnType> : IEnumerable
     }
 
 
-    // ENUMERATOR FUNCTION
+    // ENUMERATOR FUNCTIONS
 
     /// <summary>
     /// Enumerator implementation
     /// </summary>
     /// <returns></returns>
     public IEnumerator GetEnumerator()
+    {
+        return functions.GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<Function> IEnumerable<Function>.GetEnumerator()
     {
         return functions.GetEnumerator();
     }
@@ -2812,26 +2327,8 @@ public class Delegate<ReturnType> : IEnumerable
 /// Any function can be stored in this delegate.
 /// Invoke will only call delegates with matching parameters.
 /// </summary>
-public class DynamicDelegate : IEnumerable
+public class DynamicDelegate : IEnumerable, IEnumerable<Function>
 {
-    // STATIC DELEGATE DATA
-
-    /// <summary>
-    /// Global list of all delegates
-    /// </summary>
-    private static List<DynamicDelegate> allDelegates = new List<DynamicDelegate>();
-
-    /// <summary>
-    /// Global delegate cancellation token
-    /// </summary>
-    private static bool cancelAll = false;
-
-    /// <summary>
-    /// Index of current invoked delegate
-    /// </summary>
-    private static int invokeIndex = 0;
-
-
     // DELEGATE DATA
 
     /// <summary>
@@ -2849,25 +2346,13 @@ public class DynamicDelegate : IEnumerable
     /// </summary>
     private bool cancel = false;
 
-    /// <summary>
-    /// Index of current delegate
-    /// </summary>
-    private int index = 0;
 
-
-    // DELEGATE CONSTRUCTORS AND DECONSTRUCTOR
+    // DELEGATE CONSTRUCTORS
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    public DynamicDelegate()
-    {
-        functions = new List<Function>();
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
-    }
+    public DynamicDelegate() { }
 
     /// <summary>
     /// Array constructor
@@ -2875,29 +2360,22 @@ public class DynamicDelegate : IEnumerable
     /// <param name="functions"></param>
     public DynamicDelegate(params Function[] functions)
     {
-        this.functions = new List<Function>(functions.Length);
-
         for (int i = 0; i < functions.Length; i++)
         {
             this.functions.Add(functions[i]);
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
     }
 
     /// <summary>
-    /// List constructor
+    /// Enumerable constructor
     /// </summary>
     /// <param name="functions"></param>
-    public DynamicDelegate(List<Function> functions)
+    public DynamicDelegate(IEnumerable<Function> functions)
     {
-        this.functions = functions;
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
+        foreach (Function function in functions)
+        {
+            this.functions.Add(function);
+        }
     }
 
     /// <summary>
@@ -2910,23 +2388,6 @@ public class DynamicDelegate : IEnumerable
         {
             functions.Add(newDelegate.functions[i]);
         }
-
-        allDelegates.Add(this);
-
-        index = allDelegates.Count - 1;
-    }
-
-    /// <summary>
-    /// Deconstructor
-    /// </summary>
-    ~DynamicDelegate()
-    {
-        for (int i = index + 1; i < allDelegates.Count; i++)
-        {
-            allDelegates[i].index--;
-        }
-
-        allDelegates.Remove(this);
     }
 
 
@@ -2940,10 +2401,6 @@ public class DynamicDelegate : IEnumerable
     public Dictionary<Function, object> Invoke(params object[] parameters)
     {
         cancel = false;
-
-        cancelAll = false;
-
-        invokeIndex = index;
 
         isInvoking = true;
 
@@ -2960,7 +2417,7 @@ public class DynamicDelegate : IEnumerable
                 returns[functions[i]] = functions[i].Method.ReturnType.IsValueType ? Activator.CreateInstance(functions[i].Method.ReturnType) : null;
             }
 
-            if (cancel || cancelAll)
+            if (cancel)
             {
                 break;
             }
@@ -2972,38 +2429,6 @@ public class DynamicDelegate : IEnumerable
     }
 
     /// <summary>
-    /// Invokes every delegate
-    /// </summary>
-    /// <param name="parameters"></param>
-    /// <returns></returns>
-    public static Dictionary<DynamicDelegate, Dictionary<Function, object>> InvokeAll(params object[] parameters)
-    {
-        Dictionary<DynamicDelegate, Dictionary<Function, object>> returns = new Dictionary<DynamicDelegate, Dictionary<Function, object>>(allDelegates.Count);
-
-        for (int i = 0; i < allDelegates.Count; i++)
-        {
-            returns[allDelegates[i]] = allDelegates[i].Invoke(parameters);
-
-            if (allDelegates[i].cancel || cancelAll)
-            {
-                break;
-            }
-        }
-
-        return returns;
-    }
-
-    /// <summary>
-    /// Reinvokes the current delegate
-    /// </summary>
-    /// <param name="parameters"></param>
-    /// <returns></returns>
-    public static Dictionary<Function, object> InvokeCurrent(params object[] parameters)
-    {
-        return allDelegates[invokeIndex].Invoke(parameters);
-    }
-
-    /// <summary>
     /// Cancel an invoke
     /// </summary>
     public void Cancel()
@@ -3012,26 +2437,10 @@ public class DynamicDelegate : IEnumerable
     }
 
     /// <summary>
-    /// Cancel all invokes
-    /// </summary>
-    public static void CancelAll()
-    {
-        cancelAll = true;
-    }
-
-    /// <summary>
-    /// Cancel the current invoke
-    /// </summary>
-    public static void CancelCurrent()
-    {
-        allDelegates[invokeIndex].cancel = true;
-    }
-
-    /// <summary>
     /// Returns whether the delegate is currently being invoked
     /// </summary>
     /// <returns></returns>
-    public bool IsInvoking()
+    public bool Invoking()
     {
         return isInvoking;
     }
@@ -3094,11 +2503,11 @@ public class DynamicDelegate : IEnumerable
     /// </summary>
     /// <param name="functions"></param>
     /// <returns></returns>
-    public DynamicDelegate Add(List<Function> functions)
+    public DynamicDelegate Add(IEnumerable<Function> functions)
     {
-        for (int i = 0; i < functions.Count; i++)
+        foreach (Function function in functions)
         {
-            this.functions.Add(functions[i]);
+            this.functions.Add(function);
         }
 
         return this;
@@ -3277,13 +2686,22 @@ public class DynamicDelegate : IEnumerable
     }
 
 
-    // ENUMERATOR FUNCTION
+    // ENUMERATOR FUNCTIONS
 
     /// <summary>
     /// Enumerator implementation
     /// </summary>
     /// <returns></returns>
     public IEnumerator GetEnumerator()
+    {
+        return functions.GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<Function> IEnumerable<Function>.GetEnumerator()
     {
         return functions.GetEnumerator();
     }

@@ -12,7 +12,7 @@ using System.Collections.Generic;
 /// Wrapper class of a linked list allowing first in last out access of its elements.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class Stack<DataType> : IEnumerable
+public class Stack<DataType> : IEnumerable, IEnumerable<DataType>
 {
     // VARIABLES
 
@@ -78,15 +78,6 @@ public class Stack<DataType> : IEnumerable
         return list;
     }
 
-    /// <summary>
-    /// Returns a linked list of the current stack
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<DataType> ToLinkedList()
-    {
-        return new LinkedList<DataType>(stack);
-    }
-
 
     // CONSTRUCTORS
 
@@ -133,30 +124,16 @@ public class Stack<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// List constructor
+    /// Enumerable constructor
     /// </summary>
     /// <param name="list"></param>
-    public Stack(List<DataType> list)
+    public Stack(IEnumerable<DataType> list)
     {
         stack = new LinkedList<DataType>();
 
-        for (int i = 0; i < list.Count; i++)
+        foreach (DataType data in list)
         {
-            stack.AddFirst(list[i]);
-        }
-    }
-
-    /// <summary>
-    /// Linked list constructor
-    /// </summary>
-    /// <param name="linkedList"></param>
-    public Stack(LinkedList<DataType> linkedList)
-    {
-        stack = new LinkedList<DataType>();
-
-        foreach (DataType node in linkedList)
-        {
-            stack.AddFirst(node);
+            stack.AddFirst(data);
         }
     }
 
@@ -440,6 +417,15 @@ public class Stack<DataType> : IEnumerable
     public IEnumerator GetEnumerator()
     {
         return ToArray().GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<DataType> IEnumerable<DataType>.GetEnumerator()
+    {
+        return (IEnumerator<DataType>)ToArray().GetEnumerator();
     }
 
     /// <summary>

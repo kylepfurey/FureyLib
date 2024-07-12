@@ -78,11 +78,11 @@ public class Node<DataType>
     /// <param name="connections"></param>
     /// <param name="weight"></param>
     /// <param name="active"></param>
-    public Node(DataType data, HashSet<Connection<DataType>> connections, WeightType weight, bool active)
+    public Node(DataType data, IEnumerable<Connection<DataType>> connections, WeightType weight, bool active)
     {
         this.data = data;
 
-        this.connections = connections;
+        this.connections = connections.ToHashSet();
 
         this.weight = weight;
 
@@ -96,57 +96,11 @@ public class Node<DataType>
     /// <param name="connections"></param>
     /// <param name="active"></param>
     /// <param name="weight"></param>
-    public Node(DataType data, HashSet<Connection<DataType>> connections, bool active, WeightType weight)
+    public Node(DataType data, IEnumerable<Connection<DataType>> connections, bool active, WeightType weight)
     {
         this.data = data;
 
-        this.connections = connections;
-
-        this.weight = weight;
-
-        this.active = active;
-    }
-
-    /// <summary>
-    /// Node constructor
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="connections"></param>
-    /// <param name="weight"></param>
-    /// <param name="active"></param>
-    public Node(DataType data, Connection<DataType>[] connections, WeightType weight, bool active)
-    {
-        this.data = data;
-
-        this.connections = new HashSet<Connection<DataType>>(connections.Length);
-
-        foreach (Connection<DataType> connection in connections)
-        {
-            this.connections.Add(connection);
-        }
-
-        this.weight = weight;
-
-        this.active = active;
-    }
-
-    /// <summary>
-    /// Node constructor
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="connections"></param>
-    /// <param name="active"></param>
-    /// <param name="weight"></param>
-    public Node(DataType data, Connection<DataType>[] connections, bool active, WeightType weight)
-    {
-        this.data = data;
-
-        this.connections = new HashSet<Connection<DataType>>(connections.Length);
-
-        foreach (Connection<DataType> connection in connections)
-        {
-            this.connections.Add(connection);
-        }
+        this.connections = connections.ToHashSet();
 
         this.weight = weight;
 
@@ -641,7 +595,7 @@ public struct Connection<DataType>
 /// A graph that manages all the nodes and connections inside it.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public struct Graph<DataType> : IEnumerable
+public struct Graph<DataType> : IEnumerable, IEnumerable<Node<DataType>>
 {
     // GRAPH DATA
 
@@ -786,5 +740,14 @@ public struct Graph<DataType> : IEnumerable
     public IEnumerator GetEnumerator()
     {
         return nodes.GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<Node<DataType>> IEnumerable<Node<DataType>>.GetEnumerator()
+    {
+        return (IEnumerator<Node<DataType>>)nodes.GetEnumerator();
     }
 }

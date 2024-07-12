@@ -13,7 +13,7 @@
 // Include this heading to use the class
 #include "list.h"
 
-// Data type used for sorting
+// The default data type used for sorting
 #define SORT_TYPE float
 
 // Forward declaration of list
@@ -29,9 +29,6 @@ public:
 
 	// VARIABLES
 
-	// This node's linked list
-	list<data_type>* my_list = nullptr;
-
 	// This node's data
 	data_type data = data_type();
 
@@ -45,13 +42,11 @@ public:
 	// CONSTRUCTOR
 
 	// Default constructor
-	list_node(list<data_type>* list = nullptr, data_type data = data_type(), list_node<data_type>* previous = nullptr, list_node<data_type>* next = nullptr)
+	list_node(data_type data = data_type(), list_node<data_type>* previous = nullptr, list_node<data_type>* next = nullptr)
 	{
-		this->my_list = list;
+		this->data = data;
 
 		this->previous = previous;
-
-		this->data = data;
 
 		this->next = next;
 	}
@@ -156,7 +151,7 @@ public:
 			return;
 		}
 
-		head = new list_node<data_type>(this, copied_list.head->data);
+		head = new list_node<data_type>(copied_list.head->data);
 
 		node_size = copied_list.node_size;
 
@@ -174,7 +169,7 @@ public:
 
 			for (int i = 1; i < node_size; i++)
 			{
-				list_node<data_type>* new_node = new list_node<data_type>(this, array[i]);
+				list_node<data_type>* new_node = new list_node<data_type>(array[i]);
 
 				node->next = new_node;
 
@@ -217,7 +212,7 @@ public:
 	// Data constructor
 	list(data_type data)
 	{
-		head = new list_node<data_type>(this, data);
+		head = new list_node<data_type>(data);
 
 		head->previous = head;
 
@@ -238,7 +233,7 @@ public:
 			return;
 		}
 
-		head = new list_node<data_type>(this, array[0]);
+		head = new list_node<data_type>(array[0]);
 
 		node_size = array_size;
 
@@ -254,7 +249,7 @@ public:
 
 			for (int i = 1; i < array_size; i++)
 			{
-				list_node<data_type>* new_node = new list_node<data_type>(this, array[i]);
+				list_node<data_type>* new_node = new list_node<data_type>(array[i]);
 
 				node->next = new_node;
 
@@ -296,7 +291,7 @@ public:
 
 		va_end(_va_list);
 
-		head = new list_node<data_type>(this, argv[0]);
+		head = new list_node<data_type>(argv[0]);
 
 		node_size = argc;
 
@@ -312,7 +307,7 @@ public:
 
 			for (int i = 1; i < argc; i++)
 			{
-				list_node<data_type>* new_node = new list_node<data_type>(this, argv[i]);
+				list_node<data_type>* new_node = new list_node<data_type>(argv[i]);
 
 				node->next = new_node;
 
@@ -343,7 +338,7 @@ public:
 			return;
 		}
 
-		head = new list_node<data_type>(this, vector[0]);
+		head = new list_node<data_type>(vector[0]);
 
 		node_size = vector.size();
 
@@ -359,7 +354,7 @@ public:
 
 			for (int i = 1; i < vector.size(); i++)
 			{
-				list_node<data_type>* new_node = new list_node<data_type>(this, vector[i]);
+				list_node<data_type>* new_node = new list_node<data_type>(vector[i]);
 
 				node->next = new_node;
 
@@ -386,7 +381,7 @@ public:
 			return;
 		}
 
-		head = new list_node<data_type>(this, *list.begin());
+		head = new list_node<data_type>(*list.begin());
 
 		node_size = list.size();
 
@@ -402,7 +397,7 @@ public:
 
 			for (int i = 1; i < list.size(); i++)
 			{
-				list_node<data_type>* new_node = new list_node<data_type>(this, *(list.begin() + i));
+				list_node<data_type>* new_node = new list_node<data_type>(*(list.begin() + i));
 
 				node->next = new_node;
 
@@ -442,8 +437,6 @@ public:
 
 			return;
 		}
-
-		array[0]->list = this;
 
 		head = array[0];
 
@@ -501,8 +494,6 @@ public:
 
 		va_end(_va_list);
 
-		argv[0]->list = this;
-
 		head = argv[0];
 
 		node_size = argc;
@@ -548,8 +539,6 @@ public:
 			return;
 		}
 
-		vector[0]->list = this;
-
 		head = vector[0];
 
 		node_size = vector.size();
@@ -590,8 +579,6 @@ public:
 
 			return;
 		}
-
-		(*list.begin())->list = this;
 
 		head = *list.begin();
 
@@ -645,7 +632,7 @@ public:
 			return *this;
 		}
 
-		head = new list_node<data_type>(this, copied_list.head->data);
+		head = new list_node<data_type>(copied_list.head->data);
 
 		node_size = copied_list.node_size;
 
@@ -663,7 +650,7 @@ public:
 
 			for (int i = 1; i < node_size; i++)
 			{
-				list_node<data_type>* new_node = new list_node<data_type>(this, array[i]);
+				list_node<data_type>* new_node = new list_node<data_type>(array[i]);
 
 				node->next = new_node;
 
@@ -779,46 +766,6 @@ public:
 		return head->previous;
 	}
 
-	// Returns the node at the given index
-	list_node<data_type>* at(int index)
-	{
-		if (index < 0)
-		{
-			index = node_size + index;
-		}
-
-		index %= node_size;
-
-		list_node<data_type>* node = head;
-
-		int count = node_size / 2 - 1;
-
-		if (index <= count)
-		{
-			for (int i = 0; i < index; i++)
-			{
-				node = node->next;
-			}
-		}
-		else
-		{
-			count = node_size - index;
-
-			for (int i = 0; i < count; i++)
-			{
-				node = node->previous;
-			}
-		}
-
-		return node;
-	}
-
-	// Returns the node at the given index
-	list_node<data_type>* operator[](int index)
-	{
-		return at(index);
-	}
-
 
 	// CAPACITY
 
@@ -907,7 +854,21 @@ public:
 	// Returns whether the linked list contains the given node
 	bool contains(list_node<data_type>* node)
 	{
-		return node->my_list == this;
+		list_node<data_type>* current = head;
+
+		for (int i = 0; i < node_size; i++)
+		{
+			if (current == node)
+			{
+				return true;
+			}
+			else
+			{
+				current = current->next;
+			}
+		}
+
+		return false;
 	}
 
 	// Returns the total number of instances of the given data in the linked list
@@ -958,7 +919,7 @@ public:
 			return *this;
 		}
 
-		head = new list_node<data_type>(this, new_data.head->data);
+		head = new list_node<data_type>(new_data.head->data);
 
 		node_size = new_data.node_size;
 
@@ -976,7 +937,7 @@ public:
 
 			for (int i = 1; i < node_size; i++)
 			{
-				list_node<data_type>* new_node = new list_node<data_type>(this, array[i]);
+				list_node<data_type>* new_node = new list_node<data_type>(array[i]);
 
 				node->next = new_node;
 
@@ -997,10 +958,10 @@ public:
 		return *this;
 	}
 
-	// Inserts a new node of the given data at the front of the linked list
-	template<typename ... argument_types> list<data_type>& emplace_front(argument_types ... arguments)
+	// Creates and inserts a new node of the given arguments at the front of the linked list
+	template<typename ... argument_types> list_node<data_type>* emplace_front(argument_types ... arguments)
 	{
-		list_node<data_type>* new_node = new list_node<data_type>(this, data_type(arguments...));
+		list_node<data_type>* new_node = new list_node<data_type>(data_type(arguments...));
 
 		if (node_size == 0)
 		{
@@ -1012,7 +973,7 @@ public:
 
 			node_size++;
 
-			return *this;
+			return new_node;
 		}
 
 		new_node->previous = head->previous;
@@ -1027,13 +988,13 @@ public:
 
 		node_size++;
 
-		return *this;
+		return new_node;
 	}
 
 	// Inserts a new node of the given data at the front of the linked list
-	list<data_type>& push_front(data_type data)
+	list_node<data_type>* push_front(data_type data)
 	{
-		list_node<data_type>* new_node = new list_node<data_type>(this, data);
+		list_node<data_type>* new_node = new list_node<data_type>(data);
 
 		if (node_size == 0)
 		{
@@ -1045,7 +1006,7 @@ public:
 
 			node_size++;
 
-			return *this;
+			return new_node;
 		}
 
 		new_node->previous = head->previous;
@@ -1060,7 +1021,7 @@ public:
 
 		node_size++;
 
-		return *this;
+		return new_node;
 	}
 
 	// Inserts a new node of the given data at the front of the linked list
@@ -1134,10 +1095,10 @@ public:
 		return data;
 	}
 
-	// Inserts a new node of the given data at the end of the linked list
-	template<typename ... argument_types> list<data_type>& emplace_back(argument_types ... arguments)
+	// Creates and inserts a new node of the given arguments at the end of the linked list
+	template<typename ... argument_types> list_node<data_type>* emplace_back(argument_types ... arguments)
 	{
-		list_node<data_type>* new_node = new list_node<data_type>(this, data_type(arguments...));
+		list_node<data_type>* new_node = new list_node<data_type>(data_type(arguments...));
 
 		if (node_size == 0)
 		{
@@ -1149,7 +1110,7 @@ public:
 
 			node_size++;
 
-			return *this;
+			return new_node;
 		}
 
 		new_node->previous = head->previous;
@@ -1162,13 +1123,13 @@ public:
 
 		node_size++;
 
-		return *this;
+		return new_node;
 	}
 
 	// Inserts a new node of the given data at the end of the linked list
-	list<data_type>& push_back(data_type data)
+	list_node<data_type>* push_back(data_type data)
 	{
-		list_node<data_type>* new_node = new list_node<data_type>(this, data);
+		list_node<data_type>* new_node = new list_node<data_type>(data);
 
 		if (node_size == 0)
 		{
@@ -1180,7 +1141,7 @@ public:
 
 			node_size++;
 
-			return *this;
+			return new_node;
 		}
 
 		new_node->previous = head->previous;
@@ -1193,7 +1154,7 @@ public:
 
 		node_size++;
 
-		return *this;
+		return new_node;
 	}
 
 	// Inserts a new node of the given data at the end of the linked list
@@ -1266,7 +1227,7 @@ public:
 	// Inserts a new node of the given data before the given node
 	list<data_type>& insert(list_node<data_type>* node, data_type data)
 	{
-		list_node<data_type>* new_node = new list_node<data_type>(this, data);
+		list_node<data_type>* new_node = new list_node<data_type>(data);
 
 		if (node_size == 0)
 		{
@@ -1373,7 +1334,7 @@ public:
 	// Inserts a new node of the given data after the given node
 	list<data_type>& insert_after(list_node<data_type>* node, data_type data)
 	{
-		list_node<data_type>* new_node = new list_node<data_type>(this, data);
+		list_node<data_type>* new_node = new list_node<data_type>(data);
 
 		if (node_size == 0)
 		{
@@ -1402,7 +1363,7 @@ public:
 	}
 
 	// Remove and return the first node of the given data
-	list<data_type>& erase(data_type data)
+	list_node<data_type>* erase(data_type data)
 	{
 		list_node<data_type>* node = find(data);
 
@@ -1413,12 +1374,17 @@ public:
 
 		erase(node);
 
-		return *this;
+		return node;
 	}
 
 	// Removes a node from its connected nodes and deallocates it
 	list<data_type>& erase(list_node<data_type>* node)
 	{
+		if (!contains(node))
+		{
+			return *this;
+		}
+
 		node_size--;
 
 		if (node_size <= 0)
@@ -1450,8 +1416,8 @@ public:
 		return *this;
 	}
 
-	// Remove the last node of the given data
-	list<data_type>& erase_last(data_type data)
+	// Remove and return the last node of the given data
+	list_node<data_type>* erase_last(data_type data)
 	{
 		list_node<data_type>* node = find_last(data);
 
@@ -1462,7 +1428,7 @@ public:
 
 		erase(node);
 
-		return *this;
+		return node;
 	}
 
 	// Swaps two nodes' values
@@ -1499,7 +1465,7 @@ public:
 
 	// ELEMENT OPERATIONS
 
-	// Replaces the first of the found data with the given data and return the node
+	// Replaces the first of the found data with the given data
 	list_node<data_type>* replace(data_type replaced_data, data_type new_data)
 	{
 		list_node<data_type>* node = find(replaced_data);
@@ -1533,7 +1499,7 @@ public:
 		return *this;
 	}
 
-	// Replaces the last of the found data with the given data and return the node
+	// Replaces the last of the found data with the given data
 	list_node<data_type>* replace_last(data_type replaced_data, data_type new_data)
 	{
 		list_node<data_type>* node = find_last(replaced_data);
@@ -1623,7 +1589,7 @@ public:
 	// Removes duplicate values from this linked list and return the total number of removals
 	int unique()
 	{
-		int count = 0;
+		int current_count = 0;
 
 		list_node<data_type>* node = head;
 
@@ -1631,7 +1597,7 @@ public:
 		{
 			int total = count(node->data) - 1;
 
-			count += total;
+			current_count += total;
 
 			for (int i = 0; i < total; i++)
 			{
@@ -1641,7 +1607,7 @@ public:
 			node = node->next;
 		} while (node != head);
 
-		return count;
+		return current_count;
 	}
 
 	// Merges the given linked list into this linked list
@@ -1658,7 +1624,7 @@ public:
 	}
 
 	// Bubble sorts the nodes of the linked list relative to the given sort order
-	list<data_type>& sort(SORT_TYPE* sort_order)
+	template<typename sort_type = SORT_TYPE> list<data_type>& sort(sort_type* sort_order)
 	{
 		if (node_size <= 1)
 		{
@@ -1675,7 +1641,7 @@ public:
 				{
 					swap(node, node->next);
 
-					SORT_TYPE temp_data = sort_order[j];
+					sort_type temp_data = sort_order[j];
 
 					sort_order[j] = sort_order[j + 1];
 
@@ -1690,7 +1656,7 @@ public:
 	}
 
 	// Bubble sorts the nodes of the linked list relative to the given sort order
-	list<data_type>& sort(SORT_TYPE array ...)
+	template<typename sort_type = SORT_TYPE> list<data_type>& sort(sort_type array ...)
 	{
 		if (node_size <= 1)
 		{
@@ -1701,13 +1667,13 @@ public:
 
 		va_start(_va_list, node_size);
 
-		SORT_TYPE* argv = new SORT_TYPE[node_size];
+		sort_type* argv = new sort_type[node_size];
 
 		for (int i = 0; i < node_size; i++)
 		{
 			argv[i] = array;
 
-			array = va_arg(_va_list, SORT_TYPE);
+			array = va_arg(_va_list, sort_type);
 		}
 
 		va_end(_va_list);
@@ -1720,7 +1686,7 @@ public:
 				{
 					swap(j, j + 1);
 
-					SORT_TYPE temp_data = argv[j];
+					sort_type temp_data = argv[j];
 
 					argv[j] = argv[j + 1];
 
@@ -1737,9 +1703,9 @@ public:
 	}
 
 	// Bubble sorts the nodes of the linked list relative to the given sort order
-	list<data_type>& sort(std::vector<SORT_TYPE> sort_order)
+	template<typename sort_type = SORT_TYPE> list<data_type>& sort(std::vector<sort_type>& sort_order)
 	{
-		SORT_TYPE* order = new SORT_TYPE[node_size];
+		sort_type* order = new sort_type[node_size];
 
 		for (int i = 0; i < node_size; i++)
 		{
@@ -1751,6 +1717,20 @@ public:
 		delete[] order;
 
 		order = nullptr;
+
+		return *this;
+	}
+
+	// Bubble sorts the elements of the vector relative to the given sort order
+	template<typename sort_type = SORT_TYPE> list<data_type>& sort(list<sort_type>& sort_order)
+	{
+		data_type* array = sort_order.to_new_array();
+
+		sort(array);
+
+		delete[] array;
+
+		array = nullptr;
 
 		return *this;
 	}
@@ -1784,7 +1764,7 @@ public:
 	{
 		list_node<data_type> data = head;
 
-		int count = node_size;
+		int current_count = node_size;
 
 		head = swapped_data.head;
 
@@ -1792,7 +1772,7 @@ public:
 
 		swapped_data.head = data;
 
-		swapped_data.node_size = count;
+		swapped_data.node_size = current_count;
 
 		list_node<data_type>* current = swapped_data->head;
 

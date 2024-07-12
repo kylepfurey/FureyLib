@@ -7,14 +7,11 @@
 using System;
 using System.Collections;
 
-// Data type used for sorting
-using SortType = System.Single;
-
 /// <summary>
 /// Class used to store and dynamically reallocate an array for expanding storage.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class List<DataType> : IEnumerable
+public class List<DataType> : IEnumerable, IEnumerable<DataType>
 {
     // VARIABLES
 
@@ -236,6 +233,30 @@ public class List<DataType> : IEnumerable
         }
 
         listCount = array.Length;
+
+        listCapacity = listCount;
+
+        listExpansions = 0;
+    }
+
+    /// <summary>
+    /// Enumerable constructor
+    /// </summary>
+    /// <param name="list"></param>
+    public List(IEnumerable<DataType> list)
+    {
+        listCount = list.Count();
+
+        listData = new DataType[listCount];
+
+        int i = 0;
+
+        foreach (DataType item in list)
+        {
+            listData[i] = item;
+
+            i++;
+        }
 
         listCapacity = listCount;
 
@@ -723,7 +744,10 @@ public class List<DataType> : IEnumerable
     {
         int index = IndexOf(removedData);
 
-        RemoveAt(index);
+        if (index != -1)
+        {
+            RemoveAt(index);
+        }
 
         return index;
     }
@@ -737,7 +761,10 @@ public class List<DataType> : IEnumerable
     {
         int index = LastIndexOf(removedData);
 
-        RemoveAt(index);
+        if (index != -1)
+        {
+            RemoveAt(index);
+        }
 
         return index;
     }
@@ -972,7 +999,7 @@ public class List<DataType> : IEnumerable
     /// </summary>
     /// <param name="sortOrder"></param>
     /// <returns></returns>
-    public List<DataType> Sort(params SortType[] sortOrder)
+    public List<DataType> Sort<SortType>(params SortType[] sortOrder) where SortType : IComparable
     {
         if (listCount <= 1)
         {
@@ -983,7 +1010,7 @@ public class List<DataType> : IEnumerable
         {
             for (int j = 0; j < listCount - i - 1; j++)
             {
-                if (sortOrder[j] > sortOrder[j + 1])
+                if (sortOrder[j].CompareTo(sortOrder[j + 1]) > 0)
                 {
                     Swap(j, j + 1);
 
@@ -1004,7 +1031,7 @@ public class List<DataType> : IEnumerable
     /// </summary>
     /// <param name="sortOrder"></param>
     /// <returns></returns>
-    public List<DataType> Sort(List<SortType> sortOrder)
+    public List<DataType> Sort<SortType>(List<SortType> sortOrder) where SortType : IComparable
     {
         return Sort(sortOrder.ToArray());
     }
@@ -1171,5 +1198,14 @@ public class List<DataType> : IEnumerable
     public IEnumerator GetEnumerator()
     {
         return listData.GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<DataType> IEnumerable<DataType>.GetEnumerator()
+    {
+        return (IEnumerator<DataType>)ToArray().GetEnumerator();
     }
 }

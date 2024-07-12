@@ -8,7 +8,7 @@ using System.Collections.Generic;
 /// <summary>
 /// Provides simple storage for string replacements.
 /// </summary>
-public class StringAlias : IEnumerable
+public class StringAlias : IEnumerable, IEnumerable<string>
 {
     // VARIABLES
 
@@ -480,13 +480,22 @@ public class StringAlias : IEnumerable
     }
 
 
-    // IENUMERATOR
+    // ENUMERATOR FUNCTIONS
 
     /// <summary>
-    /// IEnumerator implementation
+    /// Enumerator implementation
     /// </summary>
     /// <returns></returns>
     public IEnumerator GetEnumerator()
+    {
+        return identifiers.GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<string> IEnumerable<string>.GetEnumerator()
     {
         return identifiers.GetEnumerator();
     }

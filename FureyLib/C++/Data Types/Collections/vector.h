@@ -12,7 +12,7 @@
 // Include this heading to use the class
 #include "vector.h"
 
-// Data type used for sorting
+// The default data type used for sorting
 #define SORT_TYPE float
 
 // Class used to store and dynamically reallocate an array for expanding storage.
@@ -719,7 +719,10 @@ public:
 	{
 		int index = find(removed_data);
 
-		erase(index);
+		if (index != -1)
+		{
+			erase(index);
+		}
 
 		return index;
 	}
@@ -729,7 +732,10 @@ public:
 	{
 		int index = find_last(removed_data);
 
-		erase(index);
+		if (index != -1)
+		{
+			erase(index);
+		}
 
 		return index;
 	}
@@ -916,7 +922,7 @@ public:
 	}
 
 	// Bubble sorts the elements of the vector relative to the given sort order
-	vector<data_type>& sort(SORT_TYPE array[])
+	template<typename sort_type = SORT_TYPE> vector<data_type>& sort(sort_type array[])
 	{
 		if (vector_size <= 1)
 		{
@@ -931,7 +937,7 @@ public:
 				{
 					swap(j, j + 1);
 
-					SORT_TYPE tempData = array[j];
+					sort_type tempData = array[j];
 
 					array[j] = array[j + 1];
 
@@ -944,7 +950,7 @@ public:
 	}
 
 	// Bubble sorts the elements of the vector relative to the given sort order
-	vector<data_type>& sort(SORT_TYPE sort_order ...)
+	template<typename sort_type = SORT_TYPE> vector<data_type>& sort(sort_type sort_order ...)
 	{
 		if (vector_size <= 1)
 		{
@@ -955,13 +961,13 @@ public:
 
 		va_start(_va_list, vector_size);
 
-		SORT_TYPE* argv = new SORT_TYPE[vector_size];
+		sort_type* argv = new sort_type[vector_size];
 
 		for (int i = 0; i < vector_size; i++)
 		{
 			argv[i] = sort_order;
 
-			sort_order = va_arg(_va_list, SORT_TYPE);
+			sort_order = va_arg(_va_list, sort_type);
 		}
 
 		va_end(_va_list);
@@ -974,7 +980,7 @@ public:
 				{
 					swap(j, j + 1);
 
-					SORT_TYPE tempData = argv[j];
+					sort_type tempData = argv[j];
 
 					argv[j] = argv[j + 1];
 
@@ -991,7 +997,7 @@ public:
 	}
 
 	// Bubble sorts the elements of the vector relative to the given sort order
-	vector<data_type>& sort(vector<SORT_TYPE> sort_order)
+	template<typename sort_type = SORT_TYPE> vector<data_type>& sort(vector<sort_type>& sort_order)
 	{
 		data_type* array = sort_order.to_new_array();
 

@@ -63,12 +63,6 @@ public:
 		return vector;
 	}
 
-	// Returns a linked list of the current stack
-	std::list<data_type> to_list()
-	{
-		return std::list<data_type>(my_stack);
-	}
-
 
 	// CONSTRUCTORS
 

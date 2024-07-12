@@ -12,7 +12,7 @@ using System.Collections.Generic;
 /// Wrapper class of a linked list allowing first in first out access of its elements.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class Queue<DataType> : IEnumerable
+public class Queue<DataType> : IEnumerable, IEnumerable<DataType>
 {
     // VARIABLES
 
@@ -78,15 +78,6 @@ public class Queue<DataType> : IEnumerable
         return list;
     }
 
-    /// <summary>
-    /// Returns a linked list of the current queue
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<DataType> ToLinkedList()
-    {
-        return new LinkedList<DataType>(queue);
-    }
-
 
     // CONSTRUCTORS
 
@@ -133,30 +124,16 @@ public class Queue<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// List constructor
+    /// Enumerable constructor
     /// </summary>
     /// <param name="list"></param>
-    public Queue(List<DataType> list)
+    public Queue(IEnumerable<DataType> list)
     {
         queue = new LinkedList<DataType>();
 
-        for (int i = 0; i < list.Count; i++)
+        foreach (DataType data in list)
         {
-            queue.AddLast(list[i]);
-        }
-    }
-
-    /// <summary>
-    /// Linked list constructor
-    /// </summary>
-    /// <param name="linkedList"></param>
-    public Queue(LinkedList<DataType> linkedList)
-    {
-        queue = new LinkedList<DataType>();
-
-        foreach (DataType node in linkedList)
-        {
-            queue.AddLast(node);
+            queue.AddLast(data);
         }
     }
 
@@ -440,6 +417,15 @@ public class Queue<DataType> : IEnumerable
     public IEnumerator GetEnumerator()
     {
         return ToArray().GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<DataType> IEnumerable<DataType>.GetEnumerator()
+    {
+        return (IEnumerator<DataType>)ToArray().GetEnumerator();
     }
 
     /// <summary>

@@ -17,7 +17,7 @@ using PriorityType = System.Single;
 /// •  Elements with higher priority are dequeued first.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class PriorityQueue<DataType> : IEnumerable
+public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
 {
     // VARIABLES
 
@@ -47,27 +47,7 @@ public class PriorityQueue<DataType> : IEnumerable
     /// Returns an array of the current queue
     /// </summary>
     /// <returns></returns>
-    public PriorityQueueNode<DataType>[] ToArray()
-    {
-        PriorityQueueNode<DataType>[] array = new PriorityQueueNode<DataType>[queue.Count];
-
-        int i = 0;
-
-        foreach (PriorityQueueNode<DataType> node in queue)
-        {
-            array[i] = node;
-
-            i++;
-        }
-
-        return array;
-    }
-
-    /// <summary>
-    /// Returns an array of the current queue
-    /// </summary>
-    /// <returns></returns>
-    public DataType[] DataToArray()
+    public DataType[] ToArray()
     {
         DataType[] array = new DataType[queue.Count];
 
@@ -104,30 +84,10 @@ public class PriorityQueue<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// Returns a list of the current queue
-    /// </summary>
-    /// <returns></returns>
-    public List<PriorityQueueNode<DataType>> ToList()
-    {
-        List<PriorityQueueNode<DataType>> list = new List<PriorityQueueNode<DataType>>(queue.Count);
-
-        int i = 0;
-
-        foreach (PriorityQueueNode<DataType> node in queue)
-        {
-            list.Add(node);
-
-            i++;
-        }
-
-        return list;
-    }
-
-    /// <summary>
     /// Returns a list of the current queue's data
     /// </summary>
     /// <returns></returns>
-    public List<DataType> DataToList()
+    public List<DataType> ToList()
     {
         List<DataType> list = new List<DataType>(queue.Count);
 
@@ -158,47 +118,6 @@ public class PriorityQueue<DataType> : IEnumerable
             list.Add(node.priority);
 
             i++;
-        }
-
-        return list;
-    }
-
-    /// <summary>
-    /// Returns a linked list of the current queue
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<PriorityQueueNode<DataType>> ToLinkedList()
-    {
-        return new LinkedList<PriorityQueueNode<DataType>>(queue);
-    }
-
-    /// <summary>
-    /// Returns a linked list of the current queue's data
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<DataType> DataToLinkedList()
-    {
-        LinkedList<DataType> list = new LinkedList<DataType>();
-
-        foreach (PriorityQueueNode<DataType> node in queue)
-        {
-            list.AddLast(node.data);
-        }
-
-        return list;
-    }
-
-    /// <summary>
-    /// Returns a linked list of the current queue's priority
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<PriorityType> PriorityToLinkedList()
-    {
-        LinkedList<PriorityType> list = new LinkedList<PriorityType>();
-
-        foreach (PriorityQueueNode<DataType> node in queue)
-        {
-            list.AddLast(node.priority);
         }
 
         return list;
@@ -264,24 +183,10 @@ public class PriorityQueue<DataType> : IEnumerable
     }
 
     /// <summary>
-    /// Node list constructor
+    /// Enumerable constructor
     /// </summary>
     /// <param name="nodes"></param>
-    public PriorityQueue(List<PriorityQueueNode<DataType>> nodes)
-    {
-        queue = new LinkedList<PriorityQueueNode<DataType>>();
-
-        for (int i = 0; i < nodes.Count; i++)
-        {
-            Enqueue(nodes[i]);
-        }
-    }
-
-    /// <summary>
-    /// Node linked list constructor
-    /// </summary>
-    /// <param name="nodes"></param>
-    public PriorityQueue(LinkedList<PriorityQueueNode<DataType>> nodes)
+    public PriorityQueue(IEnumerable<PriorityQueueNode<DataType>> nodes)
     {
         queue = new LinkedList<PriorityQueueNode<DataType>>();
 
@@ -702,13 +607,15 @@ public class PriorityQueue<DataType> : IEnumerable
             return "{ }";
         }
 
-        PriorityQueueNode<DataType>[] data = ToArray();
+        DataType[] data = ToArray();
+
+        PriorityType[] priority = PriorityToArray();
 
         string log = "{ ";
 
         for (int i = 0; i < data.Length; i++)
         {
-            log += (data[i].data + " : " + data[i].priority + ", ");
+            log += (data[i] + " : " + priority[i] + ", ");
         }
 
         log = log.Remove(log.Length - 2, 1);
@@ -727,7 +634,16 @@ public class PriorityQueue<DataType> : IEnumerable
     /// <returns></returns>
     public IEnumerator GetEnumerator()
     {
-        return DataToArray().GetEnumerator();
+        return ToArray().GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<DataType> IEnumerable<DataType>.GetEnumerator()
+    {
+        return (IEnumerator<DataType>)ToArray().GetEnumerator();
     }
 
     /// <summary>
@@ -826,7 +742,7 @@ public class PriorityQueueNode<DataType>
 /// •  Elements with higher priority are dequeued first.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class PriorityQueue<DataType, PriorityType> : IEnumerable where PriorityType : IComparable
+public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<DataType> where PriorityType : IComparable
 {
     // VARIABLES
 
@@ -856,27 +772,7 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable where PriorityT
     /// Returns an array of the current queue
     /// </summary>
     /// <returns></returns>
-    public PriorityQueueNode<DataType, PriorityType>[] ToArray()
-    {
-        PriorityQueueNode<DataType, PriorityType>[] array = new PriorityQueueNode<DataType, PriorityType>[queue.Count];
-
-        int i = 0;
-
-        foreach (PriorityQueueNode<DataType, PriorityType> node in queue)
-        {
-            array[i] = node;
-
-            i++;
-        }
-
-        return array;
-    }
-
-    /// <summary>
-    /// Returns an array of the current queue
-    /// </summary>
-    /// <returns></returns>
-    public DataType[] DataToArray()
+    public DataType[] ToArray()
     {
         DataType[] array = new DataType[queue.Count];
 
@@ -913,30 +809,10 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable where PriorityT
     }
 
     /// <summary>
-    /// Returns a list of the current queue
-    /// </summary>
-    /// <returns></returns>
-    public List<PriorityQueueNode<DataType, PriorityType>> ToList()
-    {
-        List<PriorityQueueNode<DataType, PriorityType>> array = new List<PriorityQueueNode<DataType, PriorityType>>(queue.Count);
-
-        int i = 0;
-
-        foreach (PriorityQueueNode<DataType, PriorityType> node in queue)
-        {
-            array[i] = node;
-
-            i++;
-        }
-
-        return array;
-    }
-
-    /// <summary>
     /// Returns a list of the current queue's data
     /// </summary>
     /// <returns></returns>
-    public List<DataType> DataToList()
+    public List<DataType> ToList()
     {
         List<DataType> array = new List<DataType>(queue.Count);
 
@@ -970,47 +846,6 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable where PriorityT
         }
 
         return array;
-    }
-
-    /// <summary>
-    /// Returns a linked list of the current queue
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<PriorityQueueNode<DataType, PriorityType>> ToLinkedList()
-    {
-        return new LinkedList<PriorityQueueNode<DataType, PriorityType>>(queue);
-    }
-
-    /// <summary>
-    /// Returns a linked list of the current queue's data
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<DataType> DataToLinkedList()
-    {
-        LinkedList<DataType> list = new LinkedList<DataType>();
-
-        foreach (PriorityQueueNode<DataType, PriorityType> node in queue)
-        {
-            list.AddLast(node.data);
-        }
-
-        return list;
-    }
-
-    /// <summary>
-    /// Returns a linked list of the current queue's priority
-    /// </summary>
-    /// <returns></returns>
-    public LinkedList<PriorityType> PriorityToLinkedList()
-    {
-        LinkedList<PriorityType> list = new LinkedList<PriorityType>();
-
-        foreach (PriorityQueueNode<DataType, PriorityType> node in queue)
-        {
-            list.AddLast(node.priority);
-        }
-
-        return list;
     }
 
 
@@ -1074,24 +909,10 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable where PriorityT
     }
 
     /// <summary>
-    /// Node linked list constructor
+    /// Enumerable constructor
     /// </summary>
     /// <param name="nodes"></param>
-    public PriorityQueue(List<PriorityQueueNode<DataType, PriorityType>> nodes)
-    {
-        queue = new LinkedList<PriorityQueueNode<DataType, PriorityType>>();
-
-        for (int i = 0; i < nodes.Count; i++)
-        {
-            Enqueue(nodes[i]);
-        }
-    }
-
-    /// <summary>
-    /// Node linked list constructor
-    /// </summary>
-    /// <param name="nodes"></param>
-    public PriorityQueue(LinkedList<PriorityQueueNode<DataType, PriorityType>> nodes)
+    public PriorityQueue(IEnumerable<PriorityQueueNode<DataType, PriorityType>> nodes)
     {
         queue = new LinkedList<PriorityQueueNode<DataType, PriorityType>>();
 
@@ -1512,13 +1333,15 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable where PriorityT
             return "{ }";
         }
 
-        PriorityQueueNode<DataType, PriorityType>[] data = ToArray();
+        DataType[] data = ToArray();
+
+        PriorityType[] priority = PriorityToArray();
 
         string log = "{ ";
 
         for (int i = 0; i < data.Length; i++)
         {
-            log += (data[i].data + " : " + data[i].priority + ", ");
+            log += (data[i] + " : " + priority[i] + ", ");
         }
 
         log = log.Remove(log.Length - 2, 1);
@@ -1537,7 +1360,16 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable where PriorityT
     /// <returns></returns>
     public IEnumerator GetEnumerator()
     {
-        return DataToArray().GetEnumerator();
+        return ToArray().GetEnumerator();
+    }
+
+    /// <summary>
+    /// Enumerator implementation
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator<DataType> IEnumerable<DataType>.GetEnumerator()
+    {
+        return (IEnumerator<DataType>)ToArray().GetEnumerator();
     }
 
     /// <summary>

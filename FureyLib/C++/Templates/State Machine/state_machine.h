@@ -15,7 +15,10 @@
 // State machine states enum
 enum state_type
 {
+	// No state selected
 	none = 0,
+
+	// Example state
 	state = 1
 };
 

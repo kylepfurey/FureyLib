@@ -2,7 +2,7 @@
 // Flow Data Beam Tracing Script
 // by Kyle Furey for NASA VR Project
 
-// REQUIREMENTS: ParticleVisibility.cs, IMEF Functions.cs, RaygunVR.cs
+// REQUIREMENTS: ParticleVisibility.cs, FlowParticle.cs, IMEF Functions.cs, RaygunVR.cs
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,6 +25,7 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
 
     [Header("The particle to instantiate at the hit point:")]
     [SerializeField] private GameObject particlePrefab = null;
+    [SerializeField] private int particleLayer = 8;
 
     [Header("Settings for the traced beam:")]
     public float updateTime = 0.01f;
@@ -38,6 +39,9 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
     public Color color = Color.red;
     public float intensity = 5;
 
+    [Header("Whether rayguns can only cause particle tracing:")]
+    public bool onlyRaygunCollisions = false;
+
     /// <summary>
     /// Ray color mode enum
     /// </summary>
@@ -49,13 +53,41 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
     private List<List<GameObject>> tracedLines = new List<List<GameObject>>();
 
 
-    // IRAYGUNSHOOTABLE
+    // PARTICLE COLLISION
+
+    /// <summary>
+    /// Checks for entering collisions with new particles
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnCollisionEnter(Collision collision)
+    {
+        FlowParticle particle = collision.gameObject.GetComponent<FlowParticle>();
+
+        particle.gameObject.layer = 8;
+
+        if (!onlyRaygunCollisions && particle != null)
+        {
+            tracedLines.Add(new List<GameObject>());
+
+            if (tracedLines.Count > maxNumberOfBeams)
+            {
+                for (int i = 0; i < tracedLines[0].Count; i++)
+                {
+                    Destroy(tracedLines[0][i]);
+                }
+
+                tracedLines.RemoveAt(0);
+            }
+
+            TraceParticlePath(particle, tracedLines[tracedLines.Count - 1]);
+        }
+    }
 
     /// <summary>
     /// IRaygunShootable - Traces a beam through the data based on the raygun's hit point.
     /// </summary>
-    /// <param name="hitPoint"></param>
-    public void OnRaygunHit(Vector3 hitPoint)
+    /// <param name="hit"></param>
+    public void OnRaygunHit(RaycastHit hit)
     {
         if (flowData != null)
         {
@@ -63,7 +95,9 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
             {
                 FlowParticle particle = Instantiate(particlePrefab).GetComponent<FlowParticle>();
 
-                hitPoint = GetRelativeToBounds(hitPoint);
+                particle.gameObject.layer = 8;
+
+                Vector3 hitPoint = GetRelativeToBounds(hit.point);
 
                 hitPoint.x = Clamp(hitPoint.x, 0, 100);
                 hitPoint.y = Clamp(hitPoint.y, 0, 100);
@@ -105,7 +139,7 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
 
         if (!Application.isPlaying || !particle.InBounds())
         {
-            return;
+            particle.gameObject.layer = 0;
         }
 
         Vector3 end = particle.transform.position;

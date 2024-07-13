@@ -9,7 +9,14 @@ using UnityEngine;
 /// </summary>
 public enum StateType
 {
+    /// <summary>
+    /// No state selected
+    /// </summary>
     None = 0,
+
+    /// <summary>
+    /// Example state
+    /// </summary>
     State = 1
 };
 

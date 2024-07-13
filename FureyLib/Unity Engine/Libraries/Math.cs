@@ -32,21 +32,6 @@ public static class Math
     }
 
     /// <summary>
-    /// Returns an offset vector based on the relative transform and given offset vector
-    /// </summary>
-    /// <param name="transform"></param>
-    /// <param name="offset"></param>
-    /// <returns></returns>
-    public static Vector3 TranslateRelative(Transform transform, Vector3 offset)
-    {
-        Vector3 directionX = transform.right * offset.x;
-        Vector3 directionY = transform.up * offset.y;
-        Vector3 directionZ = transform.forward * offset.z;
-
-        return transform.position + directionX + directionY + directionZ;
-    }
-
-    /// <summary>
     /// Returns the direction between two vectors
     /// </summary>
     /// <param name="pointA"></param>
@@ -260,6 +245,34 @@ public static class Math
         return euler;
     }
 
+    /// <summary>
+    /// Returns an offset vector based on the relative transform and given offset vector
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="offset"></param>
+    /// <returns></returns>
+    public static Vector3 TranslateRelative(Transform transform, Vector3 offset)
+    {
+        Vector3 directionX = transform.right * offset.x;
+        Vector3 directionY = transform.up * offset.y;
+        Vector3 directionZ = transform.forward * offset.z;
+
+        return transform.position + directionX + directionY + directionZ;
+    }
+
+    /// <summary>
+    /// Returns the given vector scaled by each axis of the scalar
+    /// </summary>
+    /// <param name="vector"></param>
+    /// <param name="scalar"></param>
+    /// <returns></returns>
+    public static Vector3 ScaleVector(Vector3 vector, Vector3 scalar)
+    {
+        vector = new Vector3(vector.x * scalar.x, vector.y * scalar.y, vector.z * scalar.z);
+
+        return vector;
+    }
+
 
     // FLOAT
 
@@ -298,39 +311,5 @@ public static class Math
     public static float SmartLerp(float start, float end, float alpha, float minimumDistance = 0.005f)
     {
         return (Mathf.Abs(end - start) <= minimumDistance) ? (end) : (start + ((end - start) * alpha));
-    }
-
-
-    // PRINT
-
-    /// <summary>
-    /// Prints a message to the console
-    /// </summary>
-    /// <param name="message"></param>
-    public static string print(object message)
-    {
-        message = message.ToString();
-
-        Debug.Log(message);
-
-        return (string)message;
-    }
-
-    /// <summary>
-    /// Prints messages to the console
-    /// </summary>
-    /// <param name="messages"></param>
-    public static string print(params object[] messages)
-    {
-        string message = "";
-
-        for (int i = 0; i < messages.Length; i++)
-        {
-            message += messages[i].ToString() + " ";
-        }
-
-        Debug.Log(message);
-
-        return message;
     }
 }

@@ -511,7 +511,7 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
                 {
                     if (components[i] is IRaygunShootable)
                     {
-                        (components[i] as IRaygunShootable).OnRaygunHit(hit.point);
+                        (components[i] as IRaygunShootable).OnRaygunHit(hit);
                     }
                 }
             }
@@ -1785,5 +1785,6 @@ public interface IRaygunShootable
     /// <summary>
     /// Called when a raygun shoots this object.
     /// </summary>
-    public abstract void OnRaygunHit(Vector3 hitPoint);
+    /// <param name="hit"></param>
+    public abstract void OnRaygunHit(RaycastHit hit);
 }

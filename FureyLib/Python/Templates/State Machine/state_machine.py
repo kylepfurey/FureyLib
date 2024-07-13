@@ -5,13 +5,17 @@
 from enum import Enum
 
 # Include this heading to use the class
-# from state_machine import StateMachine
+from state_machine import StateMachine
 
 
 class StateType(Enum):
     """State machine states enum"""
-    NONE = 0,
+
+    NONE = 0
+    """No state selected"""
+    
     STATE = 1
+    """Example state"""
 
 
 class StateMachine:
@@ -56,19 +60,16 @@ class StateBase:
     def on_state_enter(self):
         """Called when this state is set as the state machine's current state"""
         # Note: Logic applies to all inherited states
-
         pass
 
     def on_state_update(self):
         """Called every frame while this state is the state machine's current state"""
         # Note: Logic applies to all inherited states
-
         pass
 
     def on_state_exit(self):
         """Called when this state machine's current state is no longer this state"""
         # Note: Logic applies to all inherited states
-
         pass
 
     pass

@@ -2,7 +2,7 @@
 // Flow Data Clipping Plane Script
 // by Kyle Furey for NASA VR Project
 
-// REQUIREMENTS: Flow Files, ParticleVisibility.cs, Contour Lines Shader.shader, IMEF Functions.cs
+// REQUIREMENTS: Flow Files, ParticleVisibility.cs, Contour Lines Shader.shader, IMEF Functions.cs, LeverVR.cs
 
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -47,7 +47,10 @@ public class ClippingPlane : MonoBehaviour
     public int planeCount = 500;
 
     [Header("The maximum height to generate planes for when displaying the flow data:")]
-    public float planeHeight = 10;
+    public float planeHeight = 30;
+
+    [Header("The distance to offset generated planes for when displaying the flow data:")]
+    public float planeDistance = -8;
 
     [Header("The direction to render the height map in:")]
     public PlaneDirection direction = PlaneDirection.AxisDirection;
@@ -66,10 +69,7 @@ public class ClippingPlane : MonoBehaviour
     public Color color = Color.white;
 
     [Header("The color assigned to the flow data based on the color mode:")]
-    public float padding = 0.001f;
-
-    [Header("Maximum magnitude value (used for alpha coloring):")]
-    public float maxMagnitude = 1000;
+    public float padding = 0.0005f;
 
     /// <summary>
     /// Automatically generated height map generator
@@ -308,7 +308,7 @@ public class ClippingPlane : MonoBehaviour
 
         material.SetFloat("_Projection_Height", planeHeight);
 
-        material.SetFloat("_Projection_Padding", padding);
+        material.SetFloat("_Projection_Padding", planeHeight * padding);
 
         UpdatePlanes();
     }
@@ -439,7 +439,7 @@ public class ClippingPlane : MonoBehaviour
 
         material.SetFloat("_Projection_Height", planeHeight);
 
-        material.SetFloat("_Projection_Padding", padding);
+        material.SetFloat("_Projection_Padding", planeHeight * padding);
 
         UpdatePlanes(regenerate);
     }
@@ -530,13 +530,13 @@ public class ClippingPlane : MonoBehaviour
 
                             transform.Rotate(0, 0, 180);
 
-                            material.SetFloat("_Projection_Offset", transform.position.y);
+                            material.SetFloat("_Projection_Offset", transform.position.y + planeDistance);
                         }
                         else
                         {
                             material.SetKeyword(new LocalKeyword(material.shader, "_DIRECTION_Y"), true);
 
-                            material.SetFloat("_Projection_Offset", -transform.position.y);
+                            material.SetFloat("_Projection_Offset", -transform.position.y - planeDistance);
                         }
 
                         return;
@@ -551,7 +551,7 @@ public class ClippingPlane : MonoBehaviour
 
                             transform.Rotate(-90, 0, 0);
 
-                            material.SetFloat("_Projection_Offset", transform.position.z);
+                            material.SetFloat("_Projection_Offset", transform.position.z + planeDistance);
                         }
                         else
                         {
@@ -561,7 +561,7 @@ public class ClippingPlane : MonoBehaviour
 
                             transform.Rotate(90, 0, 0);
 
-                            material.SetFloat("_Projection_Offset", -transform.position.z);
+                            material.SetFloat("_Projection_Offset", -transform.position.z - planeDistance);
                         }
 
                         return;
@@ -576,7 +576,7 @@ public class ClippingPlane : MonoBehaviour
 
                             transform.Rotate(0, 0, 90);
 
-                            material.SetFloat("_Projection_Offset", transform.position.x);
+                            material.SetFloat("_Projection_Offset", transform.position.x + planeDistance);
                         }
                         else
                         {
@@ -586,7 +586,7 @@ public class ClippingPlane : MonoBehaviour
 
                             transform.Rotate(0, 0, -90);
 
-                            material.SetFloat("_Projection_Offset", -transform.position.x);
+                            material.SetFloat("_Projection_Offset", -transform.position.x - planeDistance);
                         }
 
                         return;
@@ -604,13 +604,13 @@ public class ClippingPlane : MonoBehaviour
 
                     transform.Rotate(0, 0, 180);
 
-                    material.SetFloat("_Projection_Offset", transform.position.y);
+                    material.SetFloat("_Projection_Offset", transform.position.y + planeDistance);
                 }
                 else
                 {
                     material.SetKeyword(new LocalKeyword(material.shader, "_DIRECTION_Y"), true);
 
-                    material.SetFloat("_Projection_Offset", -transform.position.y);
+                    material.SetFloat("_Projection_Offset", -transform.position.y - planeDistance);
                 }
 
                 return;
@@ -625,7 +625,7 @@ public class ClippingPlane : MonoBehaviour
 
                     transform.Rotate(-90, 0, 0);
 
-                    material.SetFloat("_Projection_Offset", transform.position.z);
+                    material.SetFloat("_Projection_Offset", transform.position.z + planeDistance);
                 }
                 else
                 {
@@ -635,7 +635,7 @@ public class ClippingPlane : MonoBehaviour
 
                     transform.Rotate(90, 0, 0);
 
-                    material.SetFloat("_Projection_Offset", -transform.position.z);
+                    material.SetFloat("_Projection_Offset", -transform.position.z - planeDistance);
                 }
 
                 return;
@@ -650,7 +650,7 @@ public class ClippingPlane : MonoBehaviour
 
                     transform.Rotate(0, 0, 90);
 
-                    material.SetFloat("_Projection_Offset", transform.position.x);
+                    material.SetFloat("_Projection_Offset", transform.position.x + planeDistance);
                 }
                 else
                 {
@@ -660,7 +660,7 @@ public class ClippingPlane : MonoBehaviour
 
                     transform.Rotate(0, 0, -90);
 
-                    material.SetFloat("_Projection_Offset", -transform.position.x);
+                    material.SetFloat("_Projection_Offset", -transform.position.x - planeDistance);
                 }
 
                 return;
@@ -760,6 +760,93 @@ public class ClippingPlane : MonoBehaviour
     public Vector3Int OrientPoint(int pointX, int pointY, int pointZ)
     {
         return OrientPoint(pointX, pointY, pointZ, axis);
+    }
+
+    /// <summary>
+    /// Returns the nearest whole number coordinate relative to the given 2D alpha coordinate and the depth of the clipping plane
+    /// </summary>
+    /// <param name="coordinate"></param>
+    /// <returns></returns>
+    public Vector3Int GetNearestCoordinate(Vector2 coordinate)
+    {
+        Vector3 vector = Vector3.zero;
+
+        switch (axis)
+        {
+            case ParticleVisibility.Axis.X:
+
+                vector.x = coordinate.x;
+                vector.y = depth / ParticleVisibility.particleScale;
+                vector.z = coordinate.y;
+
+                break;
+
+            case ParticleVisibility.Axis.Y:
+
+                vector.x = coordinate.x;
+                vector.y = coordinate.y;
+                vector.z = depth / ParticleVisibility.particleScale;
+
+                break;
+
+            case ParticleVisibility.Axis.Z:
+
+                vector.x = depth / ParticleVisibility.particleScale;
+                vector.y = coordinate.y;
+                vector.z = coordinate.x;
+
+                break;
+        }
+
+        vector.x *= ParticleVisibility.particleScale;
+        vector.y *= ParticleVisibility.particleScale;
+        vector.z *= ParticleVisibility.particleScale;
+
+        return new Vector3Int(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y), Mathf.RoundToInt(vector.z));
+    }
+
+    /// <summary>
+    /// Returns the nearest whole number coordinate relative to the given 2D alpha coordinate and the depth of the clipping plane
+    /// </summary>
+    /// <param name="coordinate"></param>
+    /// <param name="count"></param>
+    /// <returns></returns>
+    public Vector3Int GetNearestCoordinate(Vector2 coordinate, Vector3Int count)
+    {
+        Vector3 vector = Vector3.zero;
+
+        switch (axis)
+        {
+            case ParticleVisibility.Axis.X:
+
+                vector.x = coordinate.x;
+                vector.y = depth / ParticleVisibility.particleScale;
+                vector.z = coordinate.y;
+
+                break;
+
+            case ParticleVisibility.Axis.Y:
+
+                vector.x = coordinate.x;
+                vector.y = coordinate.y;
+                vector.z = depth / ParticleVisibility.particleScale;
+
+                break;
+
+            case ParticleVisibility.Axis.Z:
+
+                vector.x = depth / ParticleVisibility.particleScale;
+                vector.y = coordinate.y;
+                vector.z = coordinate.x;
+
+                break;
+        }
+
+        vector.x *= count.x;
+        vector.y *= count.y;
+        vector.z *= count.z;
+
+        return new Vector3Int(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y), Mathf.RoundToInt(vector.z));
     }
 
 

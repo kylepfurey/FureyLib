@@ -7,12 +7,19 @@
 /// </summary>
 public enum StateType
 {
+    /// <summary>
+    /// No state selected
+    /// </summary>
     None = 0,
+
+    /// <summary>
+    /// Example state
+    /// </summary>
     State = 1
 };
 
 /// <summary>
-/// Base for building an state machine.
+/// Base for building a state machine.
 /// </summary>
 public class StateMachine
 {

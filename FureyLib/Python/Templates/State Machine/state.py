@@ -2,8 +2,7 @@
 # Template State Machine State Script
 # by Kyle Furey
 
-from state_machine import StateType
-from state_machine import StateBase
+from state_machine import StateType, StateBase
 
 
 class State(StateBase):

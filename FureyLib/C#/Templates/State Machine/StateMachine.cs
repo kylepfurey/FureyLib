@@ -31,7 +31,7 @@ public class StateMachine
     /// <summary>
     /// The current state of this state machine
     /// </summary>
-    public States currentStateType = StateType.None;
+    public StateType currentStateType = StateType.None;
 
     /// <summary>
     /// Starting state constructor

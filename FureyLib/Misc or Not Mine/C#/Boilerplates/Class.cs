@@ -16,7 +16,7 @@ public class Class
     // New variables here
 
 
-    // CONSTRUCTORS AND DECONSTRUCTOR
+    // CONSTRUCTORS
 
     /// <summary>
     /// Default constructor

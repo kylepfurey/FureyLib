@@ -16,8 +16,6 @@ public struct Structure
     // New variables here
 
 
-    // CONSTRUCTORS AND DECONSTRUCTOR
-
     /// <summary>
     /// Default constructor
     /// </summary>

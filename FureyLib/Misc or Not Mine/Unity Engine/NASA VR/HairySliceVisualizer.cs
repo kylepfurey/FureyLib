@@ -27,7 +27,7 @@ public class HairySliceVisualizer : MonoBehaviour, IRaygunShootable
     private GameObject currentHair = null;
 
     /// <summary>
-    /// IRaygunShootable - Shows the hairy slice based on the current hit point.
+    /// IRaygunShootable - Shows the hairy slice based on the current hit point. Hit point is calculated based on a plane primitive.
     /// </summary>
     /// <param name="hit"></param>
     public void OnRaygunHit(RaycastHit hit)
@@ -37,7 +37,21 @@ public class HairySliceVisualizer : MonoBehaviour, IRaygunShootable
             currentHair.active = false;
         }
 
-        Vector3Int vector = plane.GetNearestCoordinate(hit.textureCoord, slice.hairCount);
+        GameObject gameObject = new GameObject();
+
+        gameObject.transform.position = hit.point;
+
+        gameObject.transform.parent = hit.transform;
+
+        Vector2 coordinate = new Vector2
+        (
+            plane.axis != ParticleVisibility.Axis.Z ? 1 - (gameObject.transform.localPosition.x + 0.5f) : gameObject.transform.localPosition.x + 0.5f,
+            plane.axis == ParticleVisibility.Axis.X ? 1 - (gameObject.transform.localPosition.z + 0.5f) : (gameObject.transform.localPosition.z + 0.5f
+        ));
+
+        Destroy(gameObject);
+
+        Vector3Int vector = plane.GetNearestCoordinate(coordinate, slice.hairCount);
 
         int index = slice.GetIndex(vector.x, vector.y, vector.z);
 

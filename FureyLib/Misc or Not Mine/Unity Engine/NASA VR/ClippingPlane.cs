@@ -18,7 +18,7 @@ public class ClippingPlane : MonoBehaviour
     [Header("\nCONFIGURATION")]
 
     [Header("Reference to the flow file data and planes of visibility:")]
-    [SerializeField] private ParticleVisibility particleVisibility = null;
+    public ParticleVisibility particleVisibility = null;
 
     [Header("The contour lines material used to represent the slice:")]
     [SerializeField] private Material material = null;
@@ -39,9 +39,6 @@ public class ClippingPlane : MonoBehaviour
 
     [Header("Whether to use the density or magnetic field map as the height map's texture:")]
     public MapType calculation = MapType.Velocity;
-
-    [Header("Whether to make the map black and white:")]
-    public bool blackAndWhite = false;
 
     [Header("The number of planes generated to display the flow data with:")]
     public int planeCount = 500;
@@ -216,24 +213,6 @@ public class ClippingPlane : MonoBehaviour
 
                     case MapType.Density:
 
-                        /*
-                        DENSITY EQUATION
-
-                        The current density, J, can be calculated from the magnetic field, B.
-
-                        •	We know Bi = (Bxi, Byi, Bzi) at point xi = (xi, yi, zi), where i is a grid cell.
-
-                        •	The current density Ji = (Jxi, Jyi, Jzi) at cell i can be calculated as:
-
-                            •	mu0 = 1.25663706 × 10-6
-
-                            •	Jxi = 1e-6 * mu0 * { [Bz(i+1) - Bz(i-1)] / [y(i+1) - y(i-1)] - [By(i+1) - By(i-1)] / [z(i+1) - z(i-1)] }
-
-                            •	Jyi = 1e-6 * mu0 * { [Bx(i+1) - Bx(i-1)] / [z(i+1) - z(i-1)] - [Bz(i+1) - Bz(i-1)] / [x(i+1) - x(i-1)] }
-
-                            •	Jzi = 1e-6 * mu0 * { [By(i+1) - By(i-1)] / [x(i+1) - x(i-1)] - [Bx(i+1) - Bx(i-1)] / [y(i+1) - y(i-1)] }
-                        */
-
                         J.x = (float)
                               (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
                               /
@@ -272,27 +251,11 @@ public class ClippingPlane : MonoBehaviour
                         break;
                 }
 
-                if (blackAndWhite)
-                {
-                    average = (J.x + J.y + J.z) / 3;
+                J.x = Mathf.Abs(J.x);
 
-                    J = new Vector3(average, average, average);
-                }
+                J.y = Mathf.Abs(J.y);
 
-                if (J.x <= 0)
-                {
-                    J.x = Mathf.Abs(J.x);
-                }
-
-                if (J.y <= 0)
-                {
-                    J.y = Mathf.Abs(J.y);
-                }
-
-                if (J.z <= 0)
-                {
-                    J.z = Mathf.Abs(J.z);
-                }
+                J.z = Mathf.Abs(J.z);
 
                 map.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
             }
@@ -347,24 +310,6 @@ public class ClippingPlane : MonoBehaviour
 
                     case MapType.Density:
 
-                        /*
-                        DENSITY EQUATION
-
-                        The current density, J, can be calculated from the magnetic field, B.
-
-                        •	We know Bi = (Bxi, Byi, Bzi) at point xi = (xi, yi, zi), where i is a grid cell.
-
-                        •	The current density Ji = (Jxi, Jyi, Jzi) at cell i can be calculated as:
-
-                            •	mu0 = 1.25663706 × 10-6
-
-                            •	Jxi = 1e-6 * mu0 * { [Bz(i+1) - Bz(i-1)] / [y(i+1) - y(i-1)] - [By(i+1) - By(i-1)] / [z(i+1) - z(i-1)] }
-
-                            •	Jyi = 1e-6 * mu0 * { [Bx(i+1) - Bx(i-1)] / [z(i+1) - z(i-1)] - [Bz(i+1) - Bz(i-1)] / [x(i+1) - x(i-1)] }
-
-                            •	Jzi = 1e-6 * mu0 * { [By(i+1) - By(i-1)] / [x(i+1) - x(i-1)] - [Bx(i+1) - Bx(i-1)] / [y(i+1) - y(i-1)] }
-                        */
-
                         J.x = (float)
                               (1e-6 / mu0 * (GetSample(x + 1, y + 1, (int)(depth + 1)).z - GetSample(x - 1, y - 1, (int)(depth - 1)).z)
                               /
@@ -403,27 +348,11 @@ public class ClippingPlane : MonoBehaviour
                         break;
                 }
 
-                if (blackAndWhite)
-                {
-                    average = (J.x + J.y + J.z) / 3;
+                J.x = Mathf.Abs(J.x);
 
-                    J = new Vector3(average, average, average);
-                }
+                J.y = Mathf.Abs(J.y);
 
-                if (J.x <= 0)
-                {
-                    J.x = Mathf.Abs(J.x);
-                }
-
-                if (J.y <= 0)
-                {
-                    J.y = Mathf.Abs(J.y);
-                }
-
-                if (J.z <= 0)
-                {
-                    J.z = Mathf.Abs(J.z);
-                }
+                J.z = Mathf.Abs(J.z);
 
                 map.SetPixel(x, y, new Color(J.x, J.y, J.z, 1));
             }

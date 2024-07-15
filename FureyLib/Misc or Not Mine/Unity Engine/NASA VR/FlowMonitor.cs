@@ -58,7 +58,10 @@ public class FlowMonitor : MonoBehaviour
 
         if (densityText != null)
         {
-            densityText.text = "Density: { " + FlowParticle.density.magnitude + " }";
+            densityText.text = "Density: { " +
+            FlowParticle.density.x.ToString("F1") + ", " +
+            FlowParticle.density.y.ToString("F1") + ", " +
+            FlowParticle.density.z.ToString("F1") + " }";
         }
 
         if (magneticText != null)
@@ -71,7 +74,7 @@ public class FlowMonitor : MonoBehaviour
 
         if (coordinateText != null)
         {
-            coordinateText.text = "Coordinates: { " +
+            coordinateText.text = "Position: { " +
             (int)FlowParticle.coordinate.x + ", " +
             (int)FlowParticle.coordinate.y + ", " +
             (int)FlowParticle.coordinate.z + " }";

@@ -48,6 +48,9 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     [Header("The new gravity setting for this object if it is not keeping its old gravity setting:")]
     [SerializeField] private bool newGravity = true;
 
+    [Header("Whether the held object is locked in one of the player's hands when grabbed:")]
+    [SerializeField] private bool isLocked = false;
+
     [Header("\nTHROWING")]
 
     [Header("Whether this object can be thrown by the player:")]
@@ -65,6 +68,8 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
 
     [Header("The delay before reenabling collision for the player's hands (to prevent the hands bumping the object):")]
     [SerializeField] private float collisionDelay = 0.5f;
+
+    [Header(":")]
 
     [Header("\nEVENTS")]
 
@@ -123,6 +128,9 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     /// The current previous position of this object
     /// </summary>
     private Vector3 previousPosition = Vector3.zero;
+
+
+    // FUNCTIONS
 
     /// <summary>
     /// IHandInteractableVR Interface - Adds this object's implementation to the interface.
@@ -270,7 +278,7 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
         else if (selectref(isRight, ref heldRightObject, ref heldLeftObject) == gameObject)
         {
             // Check if the player is no longer grabbing the object, if they can no longer grab, or if the object is out of reach
-            if (!selectref(isRight, ref grabbingRight, ref grabbingLeft) || !selectref(isRight, ref grabbableRight, ref grabbableLeft))
+            if (!isLocked && (!selectref(isRight, ref grabbingRight, ref grabbingLeft) || !selectref(isRight, ref grabbableRight, ref grabbableLeft)))
             {
                 Drop(isRight);
             }
@@ -451,6 +459,9 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
         }
     }
 
+
+    // GETTERS
+
     /// <summary>
     /// Returns if the object is currently being grabbed
     /// </summary>
@@ -486,6 +497,54 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     {
         return isRight ? heldRightObject == gameObject : heldLeftObject == gameObject;
     }
+
+
+    // LOCKING ITEM
+
+    /// <summary>
+    /// Returns whether the object is currently locked
+    /// </summary>
+    /// <returns></returns>
+    public bool IsLocked()
+    {
+        return isLocked;
+    }
+
+    /// <summary>
+    /// Locks the player's item to their hands when grabbed
+    /// </summary>
+    /// <returns></returns>
+    public bool Lock(bool isLocked = true)
+    {
+        this.isLocked = isLocked;
+
+        return isLocked;
+    }
+
+    /// <summary>
+    /// Unlocks this item so it may be dropped
+    /// </summary>
+    /// <returns></returns>
+    public bool Unlock(bool isUnlocked = false)
+    {
+        this.isLocked = isUnlocked;
+
+        return isLocked;
+    }
+
+    /// <summary>
+    /// Locks or unlocks the player's item from their hands
+    /// </summary>
+    /// <returns></returns>
+    public bool ToggleLock()
+    {
+        isLocked = !isLocked;
+
+        return isLocked;
+    }
+
+
+    // HELPER FUNCTIONS
 
     /// <summary>
     /// Select from a boolean and return the chosen data

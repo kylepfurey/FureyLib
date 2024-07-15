@@ -14,7 +14,7 @@ class State(StateBase):
         self.state_machine = state_machine
 
         # Change the state type enum here!
-        state_machine.current_state_type = StateType.STATE
+        self.state_machine.current_state_type = StateType.STATE
 
         pass
 

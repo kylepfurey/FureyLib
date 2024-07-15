@@ -63,10 +63,10 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
     {
         FlowParticle particle = collision.gameObject.GetComponent<FlowParticle>();
 
-        particle.gameObject.layer = 8;
-
         if (!onlyRaygunCollisions && particle != null)
         {
+            particle.gameObject.layer = 8;
+
             tracedLines.Add(new List<GameObject>());
 
             if (tracedLines.Count > maxNumberOfBeams)
@@ -103,7 +103,7 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
                 hitPoint.y = Clamp(hitPoint.y, 0, 100);
                 hitPoint.z = Clamp(hitPoint.z, 0, 100);
 
-                hitPoint = GetBoundsToWorld(hitPoint);
+                hitPoint = GetRelativeToWorld(hitPoint);
 
                 particle.transform.position = hitPoint;
 
@@ -170,20 +170,11 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
 
                 vector = beam.transform.forward;
 
-                if (vector.x <= 0)
-                {
-                    vector.x = Abs(vector.x);
-                }
+                vector.x = Abs(vector.x);
 
-                if (vector.y <= 0)
-                {
-                    vector.y = Abs(vector.y);
-                }
+                vector.y = Abs(vector.y);
 
-                if (vector.z <= 0)
-                {
-                    vector.z = Abs(vector.z);
-                }
+                vector.z = Abs(vector.z);
 
                 color = new Color(vector.x, vector.y, vector.z, color.a);
 
@@ -193,20 +184,11 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
 
                 vector = flowData.flowFile.Sample(GetRelativeToBounds(particle.transform.position)).normalized;
 
-                if (vector.x <= 0)
-                {
-                    vector.x = Abs(vector.x);
-                }
+                vector.x = Abs(vector.x);
 
-                if (vector.y <= 0)
-                {
-                    vector.y = Abs(vector.y);
-                }
+                vector.y = Abs(vector.y);
 
-                if (vector.z <= 0)
-                {
-                    vector.z = Abs(vector.z);
-                }
+                vector.z = Abs(vector.z);
 
                 color = new Color(vector.x, vector.y, vector.z, color.a);
 
@@ -216,20 +198,11 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
 
                 vector = GetDensity(particle.transform.position).normalized;
 
-                if (vector.x <= 0)
-                {
-                    vector.x = Abs(vector.x);
-                }
+                vector.x = Abs(vector.x);
 
-                if (vector.y <= 0)
-                {
-                    vector.y = Abs(vector.y);
-                }
+                vector.y = Abs(vector.y);
 
-                if (vector.z <= 0)
-                {
-                    vector.z = Abs(vector.z);
-                }
+                vector.z = Abs(vector.z);
 
                 color = new Color(vector.x, vector.y, vector.z, color.a);
 
@@ -239,20 +212,11 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
 
                 vector = BDipole(GetRelativeToBounds(particle.transform.position)).normalized;
 
-                if (vector.x <= 0)
-                {
-                    vector.x = Abs(vector.x);
-                }
+                vector.x = Abs(vector.x);
 
-                if (vector.y <= 0)
-                {
-                    vector.y = Abs(vector.y);
-                }
+                vector.y = Abs(vector.y);
 
-                if (vector.z <= 0)
-                {
-                    vector.z = Abs(vector.z);
-                }
+                vector.z = Abs(vector.z);
 
                 color = new Color(vector.x, vector.y, vector.z, color.a);
 
@@ -262,20 +226,11 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
 
                 vector = GetRelativeToBounds(particle.transform.position).normalized;
 
-                if (vector.x <= 0)
-                {
-                    vector.x = Abs(vector.x);
-                }
+                vector.x = Abs(vector.x);
 
-                if (vector.y <= 0)
-                {
-                    vector.y = Abs(vector.y);
-                }
+                vector.y = Abs(vector.y);
 
-                if (vector.z <= 0)
-                {
-                    vector.z = Abs(vector.z);
-                }
+                vector.z = Abs(vector.z);
 
                 color = new Color(vector.x, vector.y, vector.z, color.a);
 
@@ -289,6 +244,8 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
         beam.sharedMaterial.SetColor("_EmissionColor", color * intensity);
 
         beam.sharedMaterial.EnableKeyword("_EMISSION");
+
+        beam.transform.parent = flowData.transform.parent;
 
         list.Add(beam.gameObject);
 
@@ -310,20 +267,19 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
     {
         GameObject flowDataScaleParent = flowData.transform.parent.transform.parent.gameObject;
 
-        position = position - flowDataScaleParent.transform.position;
+        GameObject gameObject = new GameObject();
 
-        position.x += flowData.particleOrigin.x * flowDataScaleParent.transform.localScale.x;
-        position.z += flowData.particleOrigin.z * flowDataScaleParent.transform.localScale.z;
+        gameObject.transform.position = position;
 
-        position.x /= flowDataScaleParent.transform.localScale.x;
-        position.y /= flowDataScaleParent.transform.localScale.y;
-        position.z /= flowDataScaleParent.transform.localScale.z;
+        gameObject.transform.parent = flowDataScaleParent.transform;
 
-        position *= ParticleVisibility.particleScale;
+        position = gameObject.transform.localPosition * 100;
 
-        position.x = Round(position.x);
-        position.y = Round(position.y);
-        position.z = Round(position.z);
+        position.x += 50;
+
+        position.z += 50;
+
+        Destroy(gameObject);
 
         return position;
     }
@@ -333,20 +289,23 @@ public class FlowTracing : MonoBehaviour, IRaygunShootable
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    public Vector3 GetBoundsToWorld(Vector3 position)
+    public Vector3 GetRelativeToWorld(Vector3 position)
     {
         GameObject flowDataScaleParent = flowData.transform.parent.transform.parent.gameObject;
 
-        position /= ParticleVisibility.particleScale;
+        GameObject gameObject = new GameObject();
 
-        position.z *= flowDataScaleParent.transform.localScale.z;
-        position.y *= flowDataScaleParent.transform.localScale.y;
-        position.x *= flowDataScaleParent.transform.localScale.x;
+        gameObject.transform.parent = flowDataScaleParent.transform;
 
-        position.z -= flowData.particleOrigin.z * flowDataScaleParent.transform.localScale.z;
-        position.x -= flowData.particleOrigin.x * flowDataScaleParent.transform.localScale.x;
+        position.x -= 50;
 
-        position += flowDataScaleParent.transform.position;
+        position.z -= 50;
+
+        gameObject.transform.localPosition = position / 100;
+
+        position = gameObject.transform.position;
+
+        Destroy(gameObject);
 
         return position;
     }

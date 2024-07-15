@@ -10,13 +10,13 @@ public class State : StateBase
     /// <summary>
     /// Constructor (sets state machine)
     /// </summary>
-    /// <param name="StateMachine"></param>
-    public State(StateMachine StateMachine)
+    /// <param name="stateMachine"></param>
+    public State(StateMachine stateMachine)
     {
-        stateMachine = StateMachine;
+        this.stateMachine = stateMachine;
 
         // Change the state type enum here!
-        stateMachine.currentStateType = StateType.State;
+        this.stateMachine.currentStateType = StateType.State;
     }
 
     /// <summary>

@@ -18,8 +18,8 @@ public class FlowParticle : MonoBehaviour
     [Header("Movable rigidbody that is affected by particle field data.")]
 
     [Header("\nVelocity Settings")]
-    [SerializeField] private float velocitySpeed = 1;
-    [SerializeField] private float velocityLerp = 0.25f;
+    [SerializeField] private float velocitySpeed = 0.5f;
+    [SerializeField] private float velocityLerp = 0.5f;
 
     [Header("\nParticle Settings")]
     public float q = 1;
@@ -136,18 +136,18 @@ public class FlowParticle : MonoBehaviour
             // Update the particle velocity
             if (flowLikeOceanCurrent)
             {
-                rigidbody.velocity = Lerp(rigidbody.velocity, TranslateRelative(flowDataScaleParent.transform, flowData.flowFile.Sample(GetRelativeToBounds(transform.position)) * velocitySpeed / 4) - flowDataScaleParent.transform.position, velocityLerp);
+                rigidbody.velocity = Lerp(rigidbody.velocity, (flowData.flowFile.Sample(GetRelativeToBounds(transform.position)) * velocitySpeed), velocityLerp);
             }
             else
             {
-                Vector3 next = BorisStep(GetRelativeToBounds(transform.position), flowData.flowFile.Sample(GetRelativeToBounds(transform.position))) * velocitySpeed * 100;
+                Vector3 next = BorisStep(GetRelativeToBounds(transform.position), flowData.flowFile.Sample(GetRelativeToBounds(transform.position))) * velocitySpeed;
 
-                rigidbody.velocity = Lerp(rigidbody.velocity, TranslateRelative(flowDataScaleParent.transform, SphToCrt(next.x, next.y, next.z)) - flowDataScaleParent.transform.position, velocityLerp);
+                rigidbody.velocity = Lerp(rigidbody.velocity, next, velocityLerp);
             }
 
             // Update the static variables
             coordinate = GetRelativeToBounds(transform.position);
-            direction = transform.forward;
+            direction = rigidbody.velocity.normalized;
             velocity = flowData.flowFile.Sample(coordinate);
             density = GetDensity(coordinate);
             magnetic = BDipole(coordinate).normalized;
@@ -211,12 +211,20 @@ public class FlowParticle : MonoBehaviour
         particles.Remove(gameObject);
     }
 
+
+    // GETTERS
+
     /// <summary>
     /// Checks if the particle is currently in bounds
     /// </summary>
     /// <returns></returns>
     public bool InBounds()
     {
+        if (flowData == null)
+        {
+            return false;
+        }
+
         Vector3 position = GetRelativeToBounds(transform.position);
 
         return position.x >= 0 && position.x <= ParticleVisibility.particleScale && position.y >= 0 && position.y <= ParticleVisibility.particleScale && position.z >= 0 && position.z <= ParticleVisibility.particleScale;
@@ -229,20 +237,19 @@ public class FlowParticle : MonoBehaviour
     /// <returns></returns>
     public Vector3 GetRelativeToBounds(Vector3 position)
     {
-        position = position - flowDataScaleParent.transform.position;
+        GameObject gameObject = new GameObject();
 
-        position.x += flowData.particleOrigin.x * flowDataScaleParent.transform.localScale.x;
-        position.z += flowData.particleOrigin.z * flowDataScaleParent.transform.localScale.z;
+        gameObject.transform.position = position;
 
-        position.x /= flowDataScaleParent.transform.localScale.x;
-        position.y /= flowDataScaleParent.transform.localScale.y;
-        position.z /= flowDataScaleParent.transform.localScale.z;
+        gameObject.transform.parent = flowDataScaleParent.transform;
 
-        position *= ParticleVisibility.particleScale;
+        position = gameObject.transform.localPosition * 100;
 
-        position.x = Round(position.x);
-        position.y = Round(position.y);
-        position.z = Round(position.z);
+        position.x += 50;
+
+        position.z += 50;
+
+        Destroy(gameObject);
 
         return position;
     }
@@ -252,18 +259,21 @@ public class FlowParticle : MonoBehaviour
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    public Vector3 GetBoundsToWorld(Vector3 position)
+    public Vector3 GetRelativeToWorld(Vector3 position)
     {
-        position /= ParticleVisibility.particleScale;
+        GameObject gameObject = new GameObject();
 
-        position.z *= flowDataScaleParent.transform.localScale.z;
-        position.y *= flowDataScaleParent.transform.localScale.y;
-        position.x *= flowDataScaleParent.transform.localScale.x;
+        gameObject.transform.parent = flowDataScaleParent.transform;
 
-        position.z -= flowData.particleOrigin.z * flowDataScaleParent.transform.localScale.z;
-        position.x -= flowData.particleOrigin.x * flowDataScaleParent.transform.localScale.x;
+        position.x -= 50;
 
-        position += flowDataScaleParent.transform.position;
+        position.z -= 50;
+
+        gameObject.transform.localPosition = position / 100;
+
+        position = gameObject.transform.position;
+
+        Destroy(gameObject);
 
         return position;
     }
@@ -390,6 +400,9 @@ public class FlowParticle : MonoBehaviour
         return J;
     }
 
+
+    // HELPER FUNCTIONS
+
     /// <summary>
     /// Returns the squared distance between two vectors
     /// </summary>
@@ -403,20 +416,5 @@ public class FlowParticle : MonoBehaviour
         float zDistance = pointA.z - pointB.z;
 
         return xDistance * xDistance + yDistance * yDistance + zDistance * zDistance;
-    }
-
-    /// <summary>
-    /// Returns an offset vector3 based on the relative transform and given offset vector 3
-    /// </summary>
-    /// <param name="transform"></param>
-    /// <param name="offset"></param>
-    /// <returns></returns>
-    private static Vector3 TranslateRelative(Transform transform, Vector3 offset)
-    {
-        Vector3 directionX = transform.right * offset.x;
-        Vector3 directionY = transform.up * offset.y;
-        Vector3 directionZ = transform.forward * offset.z;
-
-        return transform.position + directionX + directionY + directionZ;
     }
 }

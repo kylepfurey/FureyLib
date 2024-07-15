@@ -18,7 +18,7 @@ public partial class NewGodotScript : Node
     // New variables here
 
 
-    // CONSTRUCTORS AND DECONSTRUCTOR
+    // CONSTRUCTORS
 
     /// <summary>
     /// Default constructor

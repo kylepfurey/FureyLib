@@ -2,6 +2,7 @@
 # Name
 # Creator
 
+
 class Class:
     """Template class script."""
 
@@ -14,11 +15,13 @@ class Class:
 
     def __init__(self):
         """Default constructor"""
-    pass
 
-    def __int__(self, copied):
+        pass
+
+    def __copy__(self, copied):
         """Copy constructor"""
-    pass
+
+        pass
 
     # New constructors here
 
@@ -27,4 +30,4 @@ class Class:
 
     # New functions here
 
-pass
+    pass

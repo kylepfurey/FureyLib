@@ -8,4 +8,7 @@ from function import *
 
 def function():
     """Example function"""
+
     print("Function called!")
+
+    pass

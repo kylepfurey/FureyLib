@@ -1735,31 +1735,9 @@ public struct GridGraph
     public WeightType defaultWeight;
 
     /// <summary>
-    /// Default constructor.
-    /// </summary>
-    public GridGraph()
-    {
-        this.adjacentNavigation = true;
-
-        this.diagonalNavigation = true;
-
-        this.ignoreOccupied = true;
-
-        this.occupied = null;
-
-        this.invertOccupied = false;
-
-        this.ignoreWeights = true;
-
-        this.weights = null;
-
-        this.defaultWeight = 1;
-    }
-
-    /// <summary>
     /// Graph constructor.
     /// </summary>
-    public GridGraph(bool adjacentNavigation, bool diagonalNavigation = true, bool ignoreOccupied = false, HashSet<GridSpace> occupied = null, bool invertOccupied = false, bool ignoreWeights = false, Dictionary<GridSpace, WeightType> weights = null, WeightType defaultWeight = 1)
+    public GridGraph(bool adjacentNavigation = true, bool diagonalNavigation = true, bool ignoreOccupied = false, HashSet<GridSpace> occupied = null, bool invertOccupied = false, bool ignoreWeights = false, Dictionary<GridSpace, WeightType> weights = null, WeightType defaultWeight = 1)
     {
         this.adjacentNavigation = adjacentNavigation;
 

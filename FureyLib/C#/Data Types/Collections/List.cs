@@ -6,6 +6,8 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// Class used to store and dynamically reallocate an array for expanding storage.

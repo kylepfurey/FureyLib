@@ -2,8 +2,10 @@
 // Graph and Node Data Structures Script
 // by Kyle Furey
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Define the weighted node type
 using WeightType = System.Single;
@@ -268,39 +270,25 @@ public struct Connection<DataType>
     /// <summary>
     /// The node that owns this connection
     /// </summary>
-    public Node<DataType> from = null;
+    public Node<DataType> from;
 
     /// <summary>
     /// The node that is being connected to by the from node
     /// </summary>
-    public Node<DataType> to = null;
+    public Node<DataType> to;
 
     /// <summary>
     /// The weight of this connection
     /// </summary>
-    public WeightType weight = 1;
+    public WeightType weight;
 
     /// <summary>
     /// Whether this connection is active
     /// </summary>
-    public bool active = true;
+    public bool active;
 
 
     // CONNECTION CONSTRUCTORS
-
-    /// <summary>
-    /// Default constructor
-    /// </summary>
-    public Connection()
-    {
-        from = null;
-
-        to = null;
-
-        weight = 1;
-
-        active = true;
-    }
 
     /// <summary>
     /// Connection constructor
@@ -309,7 +297,7 @@ public struct Connection<DataType>
     /// <param name="to"></param>
     /// <param name="weight"></param>
     /// <param name="active"></param>
-    public Connection(Node<DataType> from, Node<DataType> to, WeightType weight = 1, bool active = true)
+    public Connection(Node<DataType> from = null, Node<DataType> to = null, WeightType weight = 1, bool active = true)
     {
         this.from = from;
 
@@ -608,19 +596,18 @@ public struct Graph<DataType> : IEnumerable, IEnumerable<Node<DataType>>
     // GRAPH CONSTRUCTORS
 
     /// <summary>
-    /// Default constructor
-    /// </summary>
-    public Graph()
-    {
-        nodes = new HashSet<Node<DataType>>();
-    }
-
-    /// <summary>
     /// Node constructor
     /// </summary>
     /// <param name="nodes"></param>
     public Graph(HashSet<Node<DataType>> nodes)
     {
+        if (nodes == null)
+        {
+            this.nodes = new HashSet<Node<DataType>>();
+
+            return;
+        }
+
         this.nodes = nodes;
     }
 

@@ -2,7 +2,7 @@
 // Tuple Data Structures Script
 // by Kyle Furey
 
-// REFERENCES: https://en.cppreference.com/w/cpp/utility/tuple, https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples
+// REFERENCES: https://cplusplus.com/reference/tuple/tuple/, https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples
 
 /// <summary>
 /// Container for two readonly elements of different types.
@@ -14,25 +14,20 @@ public readonly struct Tuple<DataType1, DataType2>
     /// <summary>
     /// Element 1
     /// </summary>
-    public readonly DataType1 item1 = default(DataType1);
+    public readonly DataType1 item1;
 
     /// <summary>
     /// Element 2
     /// </summary>
-    public readonly DataType2 item2 = default(DataType2);
+    public readonly DataType2 item2;
 
     /// <summary>
     /// The total number of elements
     /// </summary>
-    public readonly int Count = 2;
+    public const int Count = 2;
 
 
     // CONSTRUCTORS
-
-    /// <summary>
-    /// Default constructor
-    /// </summary>
-    public Tuple() { }
 
     /// <summary>
     /// Element constructor
@@ -64,30 +59,25 @@ public readonly struct Tuple<DataType1, DataType2, DataType3>
     /// <summary>
     /// Element 1
     /// </summary>
-    public readonly DataType1 item1 = default(DataType1);
+    public readonly DataType1 item1;
 
     /// <summary>
     /// Element 2
     /// </summary>
-    public readonly DataType2 item2 = default(DataType2);
+    public readonly DataType2 item2;
 
     /// <summary>
     /// Element 3
     /// </summary>
-    public readonly DataType3 item3 = default(DataType3);
+    public readonly DataType3 item3;
 
     /// <summary>
     /// The total number of elements
     /// </summary>
-    public readonly int Count = 3;
+    public const int Count = 3;
 
 
     // CONSTRUCTORS
-
-    /// <summary>
-    /// Default constructor
-    /// </summary>
-    public Tuple() { }
 
     /// <summary>
     /// Element constructor
@@ -121,35 +111,30 @@ public readonly struct Tuple<DataType1, DataType2, DataType3, DataType4>
     /// <summary>
     /// Element 1
     /// </summary>
-    public readonly DataType1 item1 = default(DataType1);
+    public readonly DataType1 item1;
 
     /// <summary>
     /// Element 2
     /// </summary>
-    public readonly DataType2 item2 = default(DataType2);
+    public readonly DataType2 item2;
 
     /// <summary>
     /// Element 3
     /// </summary>
-    public readonly DataType3 item3 = default(DataType3);
+    public readonly DataType3 item3;
 
     /// <summary>
     /// Element 4
     /// </summary>
-    public readonly DataType4 item4 = default(DataType4);
+    public readonly DataType4 item4;
 
     /// <summary>
     /// The total number of elements
     /// </summary>
-    public readonly int Count = 4;
+    public const int Count = 4;
 
 
     // CONSTRUCTORS
-
-    /// <summary>
-    /// Default constructor
-    /// </summary>
-    public Tuple() { }
 
     /// <summary>
     /// Element constructor
@@ -185,40 +170,35 @@ public readonly struct Tuple<DataType1, DataType2, DataType3, DataType4, DataTyp
     /// <summary>
     /// Element 1
     /// </summary>
-    public readonly DataType1 item1 = default(DataType1);
+    public readonly DataType1 item1;
 
     /// <summary>
     /// Element 2
     /// </summary>
-    public readonly DataType2 item2 = default(DataType2);
+    public readonly DataType2 item2;
 
     /// <summary>
     /// Element 3
     /// </summary>
-    public readonly DataType3 item3 = default(DataType3);
+    public readonly DataType3 item3;
 
     /// <summary>
     /// Element 4
     /// </summary>
-    public readonly DataType4 item4 = default(DataType4);
+    public readonly DataType4 item4;
 
     /// <summary>
     /// Element 5
     /// </summary>
-    public readonly DataType5 item5 = default(DataType5);
+    public readonly DataType5 item5;
 
     /// <summary>
     /// The total number of elements
     /// </summary>
-    public readonly int Count = 5;
+    public const int Count = 5;
 
 
     // CONSTRUCTORS
-
-    /// <summary>
-    /// Default constructor
-    /// </summary>
-    public Tuple() { }
 
     /// <summary>
     /// Element constructor
@@ -256,45 +236,40 @@ public readonly struct Tuple<DataType1, DataType2, DataType3, DataType4, DataTyp
     /// <summary>
     /// Element 1
     /// </summary>
-    public readonly DataType1 item1 = default(DataType1);
+    public readonly DataType1 item1;
 
     /// <summary>
     /// Element 2
     /// </summary>
-    public readonly DataType2 item2 = default(DataType2);
+    public readonly DataType2 item2;
 
     /// <summary>
     /// Element 3
     /// </summary>
-    public readonly DataType3 item3 = default(DataType3);
+    public readonly DataType3 item3;
 
     /// <summary>
     /// Element 4
     /// </summary>
-    public readonly DataType4 item4 = default(DataType4);
+    public readonly DataType4 item4;
 
     /// <summary>
     /// Element 5
     /// </summary>
-    public readonly DataType5 item5 = default(DataType5);
+    public readonly DataType5 item5;
 
     /// <summary>
     /// Element 6
     /// </summary>
-    public readonly DataType6 item6 = default(DataType6);
+    public readonly DataType6 item6;
 
     /// <summary>
     /// The total number of elements
     /// </summary>
-    public readonly int Count = 6;
+    public const int Count = 6;
 
 
     // CONSTRUCTORS
-
-    /// <summary>
-    /// Default constructor
-    /// </summary>
-    public Tuple() { }
 
     /// <summary>
     /// Element constructor
@@ -334,50 +309,45 @@ public readonly struct Tuple<DataType1, DataType2, DataType3, DataType4, DataTyp
     /// <summary>
     /// Element 1
     /// </summary>
-    public readonly DataType1 item1 = default(DataType1);
+    public readonly DataType1 item1;
 
     /// <summary>
     /// Element 2
     /// </summary>
-    public readonly DataType2 item2 = default(DataType2);
+    public readonly DataType2 item2;
 
     /// <summary>
     /// Element 3
     /// </summary>
-    public readonly DataType3 item3 = default(DataType3);
+    public readonly DataType3 item3;
 
     /// <summary>
     /// Element 4
     /// </summary>
-    public readonly DataType4 item4 = default(DataType4);
+    public readonly DataType4 item4;
 
     /// <summary>
     /// Element 5
     /// </summary>
-    public readonly DataType5 item5 = default(DataType5);
+    public readonly DataType5 item5;
 
     /// <summary>
     /// Element 6
     /// </summary>
-    public readonly DataType6 item6 = default(DataType6);
+    public readonly DataType6 item6;
 
     /// <summary>
     /// Element 7
     /// </summary>
-    public readonly DataType7 item7 = default(DataType7);
+    public readonly DataType7 item7;
 
     /// <summary>
     /// The total number of elements
     /// </summary>
-    public readonly int Count = 7;
+    public const int Count = 7;
 
 
     // CONSTRUCTORS
-
-    /// <summary>
-    /// Default constructor
-    /// </summary>
-    public Tuple() { }
 
     /// <summary>
     /// Element constructor
@@ -419,55 +389,50 @@ public readonly struct Tuple<DataType1, DataType2, DataType3, DataType4, DataTyp
     /// <summary>
     /// Element 1
     /// </summary>
-    public readonly DataType1 item1 = default(DataType1);
+    public readonly DataType1 item1;
 
     /// <summary>
     /// Element 2
     /// </summary>
-    public readonly DataType2 item2 = default(DataType2);
+    public readonly DataType2 item2;
 
     /// <summary>
     /// Element 3
     /// </summary>
-    public readonly DataType3 item3 = default(DataType3);
+    public readonly DataType3 item3;
 
     /// <summary>
     /// Element 4
     /// </summary>
-    public readonly DataType4 item4 = default(DataType4);
+    public readonly DataType4 item4;
 
     /// <summary>
     /// Element 5
     /// </summary>
-    public readonly DataType5 item5 = default(DataType5);
+    public readonly DataType5 item5;
 
     /// <summary>
     /// Element 6
     /// </summary>
-    public readonly DataType6 item6 = default(DataType6);
+    public readonly DataType6 item6;
 
     /// <summary>
     /// Element 7
     /// </summary>
-    public readonly DataType7 item7 = default(DataType7);
+    public readonly DataType7 item7;
 
     /// <summary>
     /// Element 8
     /// </summary>
-    public readonly DataType8 item8 = default(DataType8);
+    public readonly DataType8 item8;
 
     /// <summary>
     /// The total number of elements
     /// </summary>
-    public readonly int Count = 8;
+    public const int Count = 8;
 
 
     // CONSTRUCTORS
-
-    /// <summary>
-    /// Default constructor
-    /// </summary>
-    public Tuple() { }
 
     /// <summary>
     /// Element constructor
@@ -511,60 +476,55 @@ public readonly struct Tuple<DataType1, DataType2, DataType3, DataType4, DataTyp
     /// <summary>
     /// Element 1
     /// </summary>
-    public readonly DataType1 item1 = default(DataType1);
+    public readonly DataType1 item1;
 
     /// <summary>
     /// Element 2
     /// </summary>
-    public readonly DataType2 item2 = default(DataType2);
+    public readonly DataType2 item2;
 
     /// <summary>
     /// Element 3
     /// </summary>
-    public readonly DataType3 item3 = default(DataType3);
+    public readonly DataType3 item3;
 
     /// <summary>
     /// Element 4
     /// </summary>
-    public readonly DataType4 item4 = default(DataType4);
+    public readonly DataType4 item4;
 
     /// <summary>
     /// Element 5
     /// </summary>
-    public readonly DataType5 item5 = default(DataType5);
+    public readonly DataType5 item5;
 
     /// <summary>
     /// Element 6
     /// </summary>
-    public readonly DataType6 item6 = default(DataType6);
+    public readonly DataType6 item6;
 
     /// <summary>
     /// Element 7
     /// </summary>
-    public readonly DataType7 item7 = default(DataType7);
+    public readonly DataType7 item7;
 
     /// <summary>
     /// Element 8
     /// </summary>
-    public readonly DataType8 item8 = default(DataType8);
+    public readonly DataType8 item8;
 
     /// <summary>
     /// Element 9
     /// </summary>
-    public readonly DataType9 item9 = default(DataType9);
+    public readonly DataType9 item9;
 
     /// <summary>
     /// The total number of elements
     /// </summary>
-    public readonly int Count = 9;
+    public const int Count = 9;
 
 
     // CONSTRUCTORS
-
-    /// <summary>
-    /// Default constructor
-    /// </summary>
-    public Tuple() { }
 
     /// <summary>
     /// Element constructor
@@ -610,65 +570,60 @@ public readonly struct Tuple<DataType1, DataType2, DataType3, DataType4, DataTyp
     /// <summary>
     /// Element 1
     /// </summary>
-    public readonly DataType1 item1 = default(DataType1);
+    public readonly DataType1 item1;
 
     /// <summary>
     /// Element 2
     /// </summary>
-    public readonly DataType2 item2 = default(DataType2);
+    public readonly DataType2 item2;
 
     /// <summary>
     /// Element 3
     /// </summary>
-    public readonly DataType3 item3 = default(DataType3);
+    public readonly DataType3 item3;
 
     /// <summary>
     /// Element 4
     /// </summary>
-    public readonly DataType4 item4 = default(DataType4);
+    public readonly DataType4 item4;
 
     /// <summary>
     /// Element 5
     /// </summary>
-    public readonly DataType5 item5 = default(DataType5);
+    public readonly DataType5 item5;
 
     /// <summary>
     /// Element 6
     /// </summary>
-    public readonly DataType6 item6 = default(DataType6);
+    public readonly DataType6 item6;
 
     /// <summary>
     /// Element 7
     /// </summary>
-    public readonly DataType7 item7 = default(DataType7);
+    public readonly DataType7 item7;
 
     /// <summary>
     /// Element 8
     /// </summary>
-    public readonly DataType8 item8 = default(DataType8);
+    public readonly DataType8 item8;
 
     /// <summary>
     /// Element 9
     /// </summary>
-    public readonly DataType9 item9 = default(DataType9);
+    public readonly DataType9 item9;
 
     /// <summary>
     /// Element 10
     /// </summary>
-    public readonly DataType10 item10 = default(DataType10);
+    public readonly DataType10 item10;
 
     /// <summary>
     /// The total number of elements
     /// </summary>
-    public readonly int Count = 10;
+    public const int Count = 10;
 
 
     // CONSTRUCTORS
-
-    /// <summary>
-    /// Default constructor
-    /// </summary>
-    public Tuple() { }
 
     /// <summary>
     /// Element constructor

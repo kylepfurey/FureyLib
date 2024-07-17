@@ -266,39 +266,11 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
     }
 
     /// <summary>
-    /// Returns the highest priority element without dequeuing it safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPeek()
-    {
-        if (queue.Count == 0)
-        {
-            return default(DataType);
-        }
-
-        return queue.First.Value.data;
-    }
-
-    /// <summary>
     /// Returns the lowest priority element
     /// </summary>
     /// <returns></returns>
     public DataType PeekLast()
     {
-        return queue.Last.Value.data;
-    }
-
-    /// <summary>
-    /// Returns the lowest priority element safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPeekLast()
-    {
-        if (queue.Count == 0)
-        {
-            return default(DataType);
-        }
-
         return queue.Last.Value.data;
     }
 
@@ -312,39 +284,11 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
     }
 
     /// <summary>
-    /// Returns the highest priority element and its priority without dequeuing it safely
-    /// </summary>
-    /// <returns></returns>
-    public PriorityQueueNode<DataType> TryPeekNode()
-    {
-        if (queue.Count == 0)
-        {
-            return null;
-        }
-
-        return queue.First.Value;
-    }
-
-    /// <summary>
     /// Returns the lowest priority element and its priority
     /// </summary>
     /// <returns></returns>
     public PriorityQueueNode<DataType> PeekLastNode()
     {
-        return queue.Last.Value;
-    }
-
-    /// <summary>
-    /// Returns the lowest priority element and its priority safely
-    /// </summary>
-    /// <returns></returns>
-    public PriorityQueueNode<DataType> TryPeekLastNode()
-    {
-        if (queue.Count == 0)
-        {
-            return null;
-        }
-
         return queue.Last.Value;
     }
 
@@ -510,42 +454,6 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
     /// <returns></returns>
     public PriorityQueueNode<DataType> DequeueNode()
     {
-        PriorityQueueNode<DataType> element = queue.First.Value;
-
-        queue.RemoveFirst();
-
-        return element;
-    }
-
-    /// <summary>
-    /// Remove and return the element with the greatest priority from the queue safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryDequeue()
-    {
-        if (queue.Count == 0)
-        {
-            return default(DataType);
-        }
-
-        DataType element = queue.First.Value.data;
-
-        queue.RemoveFirst();
-
-        return element;
-    }
-
-    /// <summary>
-    /// Remove and return the element with the greatest priority from the queue safely with its priority
-    /// </summary>
-    /// <returns></returns>
-    public PriorityQueueNode<DataType> TryDequeueNode()
-    {
-        if (queue.Count == 0)
-        {
-            return null;
-        }
-
         PriorityQueueNode<DataType> element = queue.First.Value;
 
         queue.RemoveFirst();
@@ -992,39 +900,11 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     }
 
     /// <summary>
-    /// Returns the highest priority element without dequeuing it safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPeek()
-    {
-        if (queue.Count == 0)
-        {
-            return default(DataType);
-        }
-
-        return queue.First.Value.data;
-    }
-
-    /// <summary>
     /// Returns the lowest priority element
     /// </summary>
     /// <returns></returns>
     public DataType PeekLast()
     {
-        return queue.Last.Value.data;
-    }
-
-    /// <summary>
-    /// Returns the lowest priority element safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPeekLast()
-    {
-        if (queue.Count == 0)
-        {
-            return default(DataType);
-        }
-
         return queue.Last.Value.data;
     }
 
@@ -1038,39 +918,11 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     }
 
     /// <summary>
-    /// Returns the highest priority element and its priority without dequeuing it safely
-    /// </summary>
-    /// <returns></returns>
-    public PriorityQueueNode<DataType, PriorityType> TryPeekNode()
-    {
-        if (queue.Count == 0)
-        {
-            return null;
-        }
-
-        return queue.First.Value;
-    }
-
-    /// <summary>
     /// Returns the lowest priority element and its priority
     /// </summary>
     /// <returns></returns>
     public PriorityQueueNode<DataType, PriorityType> PeekLastNode()
     {
-        return queue.Last.Value;
-    }
-
-    /// <summary>
-    /// Returns the lowest priority element and its priority safely
-    /// </summary>
-    /// <returns></returns>
-    public PriorityQueueNode<DataType, PriorityType> TryPeekLastNode()
-    {
-        if (queue.Count == 0)
-        {
-            return null;
-        }
-
         return queue.Last.Value;
     }
 
@@ -1236,42 +1088,6 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     /// <returns></returns>
     public PriorityQueueNode<DataType, PriorityType> DequeueNode()
     {
-        PriorityQueueNode<DataType, PriorityType> element = queue.First.Value;
-
-        queue.RemoveFirst();
-
-        return element;
-    }
-
-    /// <summary>
-    /// Remove and return the element with the greatest priority from the queue safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryDequeue()
-    {
-        if (queue.Count == 0)
-        {
-            return default(DataType);
-        }
-
-        DataType element = queue.First.Value.data;
-
-        queue.RemoveFirst();
-
-        return element;
-    }
-
-    /// <summary>
-    /// Remove and return the element with the greatest priority from the queue safely with its priority
-    /// </summary>
-    /// <returns></returns>
-    public PriorityQueueNode<DataType, PriorityType> TryDequeueNode()
-    {
-        if (queue.Count == 0)
-        {
-            return null;
-        }
-
         PriorityQueueNode<DataType, PriorityType> element = queue.First.Value;
 
         queue.RemoveFirst();

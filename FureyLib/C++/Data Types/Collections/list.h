@@ -198,15 +198,6 @@ public:
 		node_size = moved_list.node_size;
 
 		moved_list.node_size = 0;
-
-		list_node<data_type>* current = head;
-
-		for (int i = 0; i < node_size; i++)
-		{
-			current->my_list = this;
-
-			current = current->next;
-		}
 	}
 
 	// Data constructor
@@ -415,8 +406,6 @@ public:
 	// Node constructor
 	list(list_node<data_type>* node)
 	{
-		node->my_list = this;
-
 		head = node;
 
 		head->previous = head;
@@ -685,13 +674,6 @@ public:
 		moved_list.node_size = 0;
 
 		list_node<data_type>* current = head;
-
-		for (int i = 0; i < node_size; i++)
-		{
-			current->my_list = this;
-
-			current = current->next;
-		}
 
 		return *this;
 	}
@@ -1029,8 +1011,6 @@ public:
 	{
 		if (node_size == 0)
 		{
-			new_node->my_list = this;
-
 			head = new_node;
 
 			head->next = head;
@@ -1041,8 +1021,6 @@ public:
 
 			return *this;
 		}
-
-		new_node->my_list = this;
 
 		new_node->previous = head->previous;
 
@@ -1162,8 +1140,6 @@ public:
 	{
 		if (node_size == 0)
 		{
-			new_node->my_list = this;
-
 			head = new_node;
 
 			head->next = head;
@@ -1174,8 +1150,6 @@ public:
 
 			return *this;
 		}
-
-		new_node->my_list = this;
 
 		new_node->previous = head->previous;
 
@@ -1265,8 +1239,6 @@ public:
 	{
 		if (node_size == 0)
 		{
-			new_node->my_list = this;
-
 			head = new_node;
 
 			head->next = head;
@@ -1277,8 +1249,6 @@ public:
 
 			return *this;
 		}
-
-		new_node->my_list = this;
 
 		new_node->previous = node->previous;
 
@@ -1303,8 +1273,6 @@ public:
 	{
 		if (node_size == 0)
 		{
-			new_node->my_list = this;
-
 			head = new_node;
 
 			head->next = head;
@@ -1315,8 +1283,6 @@ public:
 
 			return *this;
 		}
-
-		new_node->my_list = this;
 
 		new_node->previous = node;
 
@@ -1481,8 +1447,6 @@ public:
 	// Replaces the node with the given node
 	list<data_type>& replace(list_node<data_type>* replaced_node, list_node<data_type>* new_node)
 	{
-		new_node->my_list = this;
-
 		replaced_node->previous->next = new_node;
 
 		replaced_node->next->previous = new_node;
@@ -1773,24 +1737,6 @@ public:
 		swapped_data.head = data;
 
 		swapped_data.node_size = current_count;
-
-		list_node<data_type>* current = swapped_data->head;
-
-		for (int i = 0; i < swapped_data.node_size; i++)
-		{
-			current->my_list = swapped_data;
-
-			current = current->next;
-		}
-
-		current = head;
-
-		for (int i = 0; i < node_size; i++)
-		{
-			current->my_list = this;
-
-			current = current->next;
-		}
 
 		return *this;
 	}

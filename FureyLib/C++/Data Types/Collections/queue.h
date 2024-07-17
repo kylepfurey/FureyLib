@@ -234,31 +234,9 @@ public:
 		return my_queue.front();
 	}
 
-	// Returns the oldest element without popping it safely
-	data_type peek()
-	{
-		if (my_queue.size() == 0)
-		{
-			return data_type();
-		}
-
-		return my_queue.front();
-	}
-
 	// Returns the most recent element
 	data_type back()
 	{
-		return my_queue.back();
-	}
-
-	// Returns the most recent element safely
-	data_type peek_back()
-	{
-		if (my_queue.size() == 0)
-		{
-			return data_type();
-		}
-
 		return my_queue.back();
 	}
 
@@ -301,21 +279,6 @@ public:
 	// Remove and return the last element from the queue
 	data_type pop()
 	{
-		data_type element = my_queue.front();
-
-		my_queue.pop_front();
-
-		return element;
-	}
-
-	// Remove and return the last element from the queue safely
-	data_type safe_pop()
-	{
-		if (my_queue.size() == 0)
-		{
-			return data_type();
-		}
-
 		data_type element = my_queue.front();
 
 		my_queue.pop_front();

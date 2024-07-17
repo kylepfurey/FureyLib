@@ -329,31 +329,9 @@ public:
 		return my_stack.front().data;
 	}
 
-	// Returns the highest priority element without popping it safely
-	data_type peek()
-	{
-		if (my_stack.size() == 0)
-		{
-			return data_type();
-		}
-
-		return my_stack.front().data;
-	}
-
 	// Returns the lowest priority element
 	data_type bottom()
 	{
-		return my_stack.back().data;
-	}
-
-	// Returns the lowest priority element safely
-	data_type peek_back()
-	{
-		if (my_stack.size() == 0)
-		{
-			return data_type();
-		}
-
 		return my_stack.back().data;
 	}
 
@@ -363,31 +341,9 @@ public:
 		return my_stack.front();
 	}
 
-	// Returns the highest priority element and its priority without popping it safely
-	priority_stack_node<data_type, priority_type> peek_node()
-	{
-		if (my_stack.size() == 0)
-		{
-			return nullptr;
-		}
-
-		return my_stack.front();
-	}
-
 	// Returns the lowest priority element and its priority
 	priority_stack_node<data_type, priority_type> bottom_node()
 	{
-		return my_stack.back();
-	}
-
-	// Returns the lowest priority element and its priority safely
-	priority_stack_node<data_type, priority_type> peek_back_node()
-	{
-		if (my_stack.size() == 0)
-		{
-			return nullptr;
-		}
-
 		return my_stack.back();
 	}
 
@@ -525,36 +481,6 @@ public:
 	// Remove and return the element with the greatest priority from the stack with its priority
 	priority_stack_node<data_type, priority_type> pop_node()
 	{
-		priority_stack_node<data_type, priority_type> element = my_stack.front();
-
-		my_stack.pop_front();
-
-		return element;
-	}
-
-	// Remove and return the element with the greatest priority from the stack safely
-	data_type safe_pop()
-	{
-		if (my_stack.size() == 0)
-		{
-			return data_type();
-		}
-
-		data_type element = my_stack.front().data;
-
-		my_stack.pop_front();
-
-		return element;
-	}
-
-	// Remove and return the element with the greatest priority from the stack safely with its priority
-	priority_stack_node<data_type, priority_type> safe_pop_node()
-	{
-		if (my_stack.size() == 0)
-		{
-			return nullptr;
-		}
-
 		priority_stack_node<data_type, priority_type> element = my_stack.front();
 
 		my_stack.pop_front();

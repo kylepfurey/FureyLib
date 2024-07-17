@@ -234,31 +234,9 @@ public:
 		return my_stack.front();
 	}
 
-	// Returns the most recent without popping it safely
-	data_type peek()
-	{
-		if (my_stack.size() == 0)
-		{
-			return data_type();
-		}
-
-		return my_stack.front();
-	}
-
 	// Returns the oldest element
 	data_type back()
 	{
-		return my_stack.back();
-	}
-
-	// Returns the oldest element safely
-	data_type peek_back()
-	{
-		if (my_stack.size() == 0)
-		{
-			return data_type();
-		}
-
 		return my_stack.back();
 	}
 
@@ -301,21 +279,6 @@ public:
 	// Remove and return the top element from the stack
 	data_type pop()
 	{
-		data_type element = my_stack.front();
-
-		my_stack.pop_front();
-
-		return element;
-	}
-
-	// Remove and return the top element from the stack safely
-	data_type safe_pop()
-	{
-		if (my_stack.size() == 0)
-		{
-			return data_type();
-		}
-
 		data_type element = my_stack.front();
 
 		my_stack.pop_front();

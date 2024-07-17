@@ -207,39 +207,11 @@ public class Stack<DataType> : IEnumerable, IEnumerable<DataType>
     }
 
     /// <summary>
-    /// Returns the most recent element without popping it safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPeek()
-    {
-        if (stack.Count == 0)
-        {
-            return default(DataType);
-        }
-
-        return stack.First.Value;
-    }
-
-    /// <summary>
     /// Returns the oldest element
     /// </summary>
     /// <returns></returns>
     public DataType PeekLast()
     {
-        return stack.Last.Value;
-    }
-
-    /// <summary>
-    /// Returns the oldest element safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPeekLast()
-    {
-        if (stack.Count == 0)
-        {
-            return default(DataType);
-        }
-
         return stack.Last.Value;
     }
 
@@ -301,24 +273,6 @@ public class Stack<DataType> : IEnumerable, IEnumerable<DataType>
     /// <returns></returns>
     public DataType Pop()
     {
-        DataType element = stack.First.Value;
-
-        stack.RemoveFirst();
-
-        return element;
-    }
-
-    /// <summary>
-    /// Remove and return the top element from the stack safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPop()
-    {
-        if (stack.Count == 0)
-        {
-            return default(DataType);
-        }
-
         DataType element = stack.First.Value;
 
         stack.RemoveFirst();

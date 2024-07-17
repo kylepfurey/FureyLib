@@ -356,7 +356,7 @@ public:
 	// Get a pointer to the end of the vector's array
 	data_type* end()
 	{
-		return vector_data + (vector_size - 1);
+		return vector_data + vector_size;
 	}
 
 

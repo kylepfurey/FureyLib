@@ -1747,8 +1747,8 @@ public class LinkedListNode<DataType>
     /// <summary>
     /// Default constructor
     /// </summary>
-    /// <param name="previous"></param>
     /// <param name="data"></param>
+    /// <param name="previous"></param>
     /// <param name="next"></param>
     public LinkedListNode(DataType data = default(DataType), LinkedListNode<DataType> previous = null, LinkedListNode<DataType> next = null)
     {

@@ -207,39 +207,11 @@ public class Queue<DataType> : IEnumerable, IEnumerable<DataType>
     }
 
     /// <summary>
-    /// Returns the oldest element without dequeuing it safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPeek()
-    {
-        if (queue.Count == 0)
-        {
-            return default(DataType);
-        }
-
-        return queue.First.Value;
-    }
-
-    /// <summary>
     /// Returns the most recent element
     /// </summary>
     /// <returns></returns>
     public DataType PeekLast()
     {
-        return queue.Last.Value;
-    }
-
-    /// <summary>
-    /// Returns the most recent element safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPeekLast()
-    {
-        if (queue.Count == 0)
-        {
-            return default(DataType);
-        }
-
         return queue.Last.Value;
     }
 
@@ -301,24 +273,6 @@ public class Queue<DataType> : IEnumerable, IEnumerable<DataType>
     /// <returns></returns>
     public DataType Dequeue()
     {
-        DataType element = queue.First.Value;
-
-        queue.RemoveFirst();
-
-        return element;
-    }
-
-    /// <summary>
-    /// Remove and return the last element from the queue safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryDequeue()
-    {
-        if (queue.Count == 0)
-        {
-            return default(DataType);
-        }
-
         DataType element = queue.First.Value;
 
         queue.RemoveFirst();

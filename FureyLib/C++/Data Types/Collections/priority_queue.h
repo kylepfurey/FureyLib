@@ -329,31 +329,9 @@ public:
 		return my_queue.front().data;
 	}
 
-	// Returns the highest priority element without popping it safely
-	data_type peek()
-	{
-		if (my_queue.size() == 0)
-		{
-			return data_type();
-		}
-
-		return my_queue.front().data;
-	}
-
 	// Returns the lowest priority element
 	data_type bottom()
 	{
-		return my_queue.back().data;
-	}
-
-	// Returns the lowest priority element safely
-	data_type peek_back()
-	{
-		if (my_queue.size() == 0)
-		{
-			return data_type();
-		}
-
 		return my_queue.back().data;
 	}
 
@@ -363,31 +341,9 @@ public:
 		return my_queue.front();
 	}
 
-	// Returns the highest priority element and its priority without popping it safely
-	priority_queue_node<data_type, priority_type> peek_node()
-	{
-		if (my_queue.size() == 0)
-		{
-			return nullptr;
-		}
-
-		return my_queue.front();
-	}
-
 	// Returns the lowest priority element and its priority
 	priority_queue_node<data_type, priority_type> bottom_node()
 	{
-		return my_queue.back();
-	}
-
-	// Returns the lowest priority element and its priority safely
-	priority_queue_node<data_type, priority_type> peek_back_node()
-	{
-		if (my_queue.size() == 0)
-		{
-			return nullptr;
-		}
-
 		return my_queue.back();
 	}
 
@@ -525,36 +481,6 @@ public:
 	// Remove and return the element with the greatest priority from the queue with its priority
 	priority_queue_node<data_type, priority_type> pop_node()
 	{
-		priority_queue_node<data_type, priority_type> element = my_queue.front();
-
-		my_queue.pop_front();
-
-		return element;
-	}
-
-	// Remove and return the element with the greatest priority from the queue safely
-	data_type safe_pop()
-	{
-		if (my_queue.size() == 0)
-		{
-			return data_type();
-		}
-
-		data_type element = my_queue.front().data;
-
-		my_queue.pop_front();
-
-		return element;
-	}
-
-	// Remove and return the element with the greatest priority from the queue safely with its priority
-	priority_queue_node<data_type, priority_type> safe_pop_node()
-	{
-		if (my_queue.size() == 0)
-		{
-			return nullptr;
-		}
-
 		priority_queue_node<data_type, priority_type> element = my_queue.front();
 
 		my_queue.pop_front();

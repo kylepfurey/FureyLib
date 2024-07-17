@@ -266,39 +266,11 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
     }
 
     /// <summary>
-    /// Returns the highest priority element without popping it safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPeek()
-    {
-        if (stack.Count == 0)
-        {
-            return default(DataType);
-        }
-
-        return stack.First.Value.data;
-    }
-
-    /// <summary>
     /// Returns the lowest priority element
     /// </summary>
     /// <returns></returns>
     public DataType PeekLast()
     {
-        return stack.Last.Value.data;
-    }
-
-    /// <summary>
-    /// Returns the lowest priority element safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPeekLast()
-    {
-        if (stack.Count == 0)
-        {
-            return default(DataType);
-        }
-
         return stack.Last.Value.data;
     }
 
@@ -312,39 +284,11 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
     }
 
     /// <summary>
-    /// Returns the highest priority element and its priority without popping it safely
-    /// </summary>
-    /// <returns></returns>
-    public PriorityStackNode<DataType> TryPeekNode()
-    {
-        if (stack.Count == 0)
-        {
-            return null;
-        }
-
-        return stack.First.Value;
-    }
-
-    /// <summary>
     /// Returns the lowest priority element and its priority
     /// </summary>
     /// <returns></returns>
     public PriorityStackNode<DataType> PeekLastNode()
     {
-        return stack.Last.Value;
-    }
-
-    /// <summary>
-    /// Returns the lowest priority element and its priority safely
-    /// </summary>
-    /// <returns></returns>
-    public PriorityStackNode<DataType> TryPeekLastNode()
-    {
-        if (stack.Count == 0)
-        {
-            return null;
-        }
-
         return stack.Last.Value;
     }
 
@@ -510,42 +454,6 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
     /// <returns></returns>
     public PriorityStackNode<DataType> PopNode()
     {
-        PriorityStackNode<DataType> element = stack.First.Value;
-
-        stack.RemoveFirst();
-
-        return element;
-    }
-
-    /// <summary>
-    /// Remove and return the element with the greatest priority from the stack safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPop()
-    {
-        if (stack.Count == 0)
-        {
-            return default(DataType);
-        }
-
-        DataType element = stack.First.Value.data;
-
-        stack.RemoveFirst();
-
-        return element;
-    }
-
-    /// <summary>
-    /// Remove and return the element with the greatest priority from the stack safely with its priority
-    /// </summary>
-    /// <returns></returns>
-    public PriorityStackNode<DataType> TryPopNode()
-    {
-        if (stack.Count == 0)
-        {
-            return null;
-        }
-
         PriorityStackNode<DataType> element = stack.First.Value;
 
         stack.RemoveFirst();
@@ -992,39 +900,11 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     }
 
     /// <summary>
-    /// Returns the highest priority element without popping it safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPeek()
-    {
-        if (stack.Count == 0)
-        {
-            return default(DataType);
-        }
-
-        return stack.First.Value.data;
-    }
-
-    /// <summary>
     /// Returns the lowest priority element
     /// </summary>
     /// <returns></returns>
     public DataType PeekLast()
     {
-        return stack.Last.Value.data;
-    }
-
-    /// <summary>
-    /// Returns the lowest priority element safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPeekLast()
-    {
-        if (stack.Count == 0)
-        {
-            return default(DataType);
-        }
-
         return stack.Last.Value.data;
     }
 
@@ -1038,39 +918,11 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     }
 
     /// <summary>
-    /// Returns the highest priority element and its priority without popping it safely
-    /// </summary>
-    /// <returns></returns>
-    public PriorityStackNode<DataType, PriorityType> TryPeekNode()
-    {
-        if (stack.Count == 0)
-        {
-            return null;
-        }
-
-        return stack.First.Value;
-    }
-
-    /// <summary>
     /// Returns the lowest priority element and its priority
     /// </summary>
     /// <returns></returns>
     public PriorityStackNode<DataType, PriorityType> PeekLastNode()
     {
-        return stack.Last.Value;
-    }
-
-    /// <summary>
-    /// Returns the lowest priority element and its priority safely
-    /// </summary>
-    /// <returns></returns>
-    public PriorityStackNode<DataType, PriorityType> TryPeekLastNode()
-    {
-        if (stack.Count == 0)
-        {
-            return null;
-        }
-
         return stack.Last.Value;
     }
 
@@ -1236,42 +1088,6 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     /// <returns></returns>
     public PriorityStackNode<DataType, PriorityType> PopNode()
     {
-        PriorityStackNode<DataType, PriorityType> element = stack.First.Value;
-
-        stack.RemoveFirst();
-
-        return element;
-    }
-
-    /// <summary>
-    /// Remove and return the element with the greatest priority from the stack safely
-    /// </summary>
-    /// <returns></returns>
-    public DataType TryPop()
-    {
-        if (stack.Count == 0)
-        {
-            return default(DataType);
-        }
-
-        DataType element = stack.First.Value.data;
-
-        stack.RemoveFirst();
-
-        return element;
-    }
-
-    /// <summary>
-    /// Remove and return the element with the greatest priority from the stack safely with its priority
-    /// </summary>
-    /// <returns></returns>
-    public PriorityStackNode<DataType, PriorityType> TryPopNode()
-    {
-        if (stack.Count == 0)
-        {
-            return null;
-        }
-
         PriorityStackNode<DataType, PriorityType> element = stack.First.Value;
 
         stack.RemoveFirst();

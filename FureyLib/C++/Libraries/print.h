@@ -4,7 +4,6 @@
 
 #pragma once
 #include <iostream>
-#include <string>
 #include <cstdarg>
 
 // Include this heading to use the library

@@ -156,47 +156,6 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
         queue.AddLast(new PriorityQueueNode<DataType>(this, data, priority));
     }
 
-    /// <summary>
-    /// Node constructor
-    /// </summary>
-    /// <param name="node"></param>
-    public PriorityQueue(PriorityQueueNode<DataType> node)
-    {
-        queue = new LinkedList<PriorityQueueNode<DataType>>();
-
-        node.queue = this;
-
-        queue.AddLast(node);
-    }
-
-    /// <summary>
-    /// Node array constructor
-    /// </summary>
-    /// <param name="nodes"></param>
-    public PriorityQueue(params PriorityQueueNode<DataType>[] nodes)
-    {
-        queue = new LinkedList<PriorityQueueNode<DataType>>();
-
-        for (int i = 0; i < nodes.Length; i++)
-        {
-            Enqueue(nodes[i]);
-        }
-    }
-
-    /// <summary>
-    /// Enumerable constructor
-    /// </summary>
-    /// <param name="nodes"></param>
-    public PriorityQueue(IEnumerable<PriorityQueueNode<DataType>> nodes)
-    {
-        queue = new LinkedList<PriorityQueueNode<DataType>>();
-
-        foreach (PriorityQueueNode<DataType> node in nodes)
-        {
-            Enqueue(node);
-        }
-    }
-
 
     // EQUALITY
 

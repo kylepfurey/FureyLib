@@ -156,47 +156,6 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
         stack.AddLast(new PriorityStackNode<DataType>(this, data, priority));
     }
 
-    /// <summary>
-    /// Node constructor
-    /// </summary>
-    /// <param name="node"></param>
-    public PriorityStack(PriorityStackNode<DataType> node)
-    {
-        stack = new LinkedList<PriorityStackNode<DataType>>();
-
-        node.stack = this;
-
-        stack.AddLast(node);
-    }
-
-    /// <summary>
-    /// Node array constructor
-    /// </summary>
-    /// <param name="nodes"></param>
-    public PriorityStack(params PriorityStackNode<DataType>[] nodes)
-    {
-        stack = new LinkedList<PriorityStackNode<DataType>>();
-
-        for (int i = 0; i < nodes.Length; i++)
-        {
-            Push(nodes[i]);
-        }
-    }
-
-    /// <summary>
-    /// Enumerable constructor
-    /// </summary>
-    /// <param name="nodes"></param>
-    public PriorityStack(IEnumerable<PriorityStackNode<DataType>> nodes)
-    {
-        stack = new LinkedList<PriorityStackNode<DataType>>();
-
-        foreach (PriorityStackNode<DataType> node in nodes)
-        {
-            Push(node);
-        }
-    }
-
 
     // EQUALITY
 

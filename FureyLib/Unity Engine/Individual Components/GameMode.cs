@@ -16,10 +16,9 @@ public enum GameModeType
     None = 0,
 
     /// <summary>
-    /// Pong - Two players take turns deflecting a ball back and forth with their hands.
-    /// The opponent of the player that misses earns a point for each miss.
+    /// Example game mode.
     /// </summary>
-    Pong = 1
+    GaneMode = 1
 };
 
 /// <summary>

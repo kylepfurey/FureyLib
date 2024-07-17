@@ -370,7 +370,7 @@ public class MeshObjectGenerator : MonoBehaviour
 
                 wire.transform.LookAt(end);
 
-                wire.transform.localScale = new Vector3(width, width, Vector3.Distance(start, end) + width / 2);
+                wire.transform.localScale = new Vector3(width, width, Vector3.Distance(start, end));
 
                 wire.transform.position += wire.transform.forward * wire.transform.localScale.z / 2;
 

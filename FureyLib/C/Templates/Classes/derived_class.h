@@ -3,6 +3,10 @@
 // by Kyle Furey
 
 #pragma once
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
 #include "base_class.h"
 
 // Include this heading to use the class

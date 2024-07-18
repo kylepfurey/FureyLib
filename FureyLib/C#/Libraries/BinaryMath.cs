@@ -293,7 +293,7 @@ public static class Binary
     {
         if ((valueA < 0) ^ (valueB < 0))
         {
-            return -Subtract(valueA, Multiply(Divide(valueA, valueB), valueB));
+            return Add(Subtract(valueA, Multiply(Divide(valueA, valueB), valueB)), valueB);
         }
         else
         {

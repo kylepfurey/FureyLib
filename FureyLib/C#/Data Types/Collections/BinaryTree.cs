@@ -84,7 +84,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// <param name="currentArray"></param>
     /// <param name="currentNode"></param>
     /// <returns></returns>
-    private void FillArrayRecursively(ref int index, ref DataType[] currentArray, ref BinaryTreeNode<DataType> currentNode)
+    private static void FillArrayRecursively(ref int index, ref DataType[] currentArray, ref BinaryTreeNode<DataType> currentNode)
     {
         if (currentNode.left != null)
         {
@@ -127,7 +127,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// <param name="currentList"></param>
     /// <param name="currentNode"></param>
     /// <returns></returns>
-    private void AddListRecursively(ref List<DataType> currentList, ref BinaryTreeNode<DataType> currentNode)
+    private static void AddListRecursively(ref List<DataType> currentList, ref BinaryTreeNode<DataType> currentNode)
     {
         if (currentNode.left != null)
         {
@@ -873,13 +873,37 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     }
 
     /// <summary>
+    /// Inserts the given node and all of the its children recursively to the given tree
+    /// </summary>
+    /// <param name="currentTree"></param>
+    /// <param name="currentNode"></param>
+    private static void AddChildrenRecursively(ref BinaryTree<DataType> currentTree, ref BinaryTreeNode<DataType> currentNode)
+    {
+        currentTree.Add(currentNode);
+
+        if (currentNode.left != null)
+        {
+            AddChildrenRecursively(ref currentTree, ref currentNode.left);
+        }
+
+        if (currentNode.right != null)
+        {
+            AddChildrenRecursively(ref currentTree, ref currentNode.right);
+        }
+    }
+
+    /// <summary>
     /// Returns a new tree whose root is of the given node
     /// </summary>
     /// <param name="node"></param>
     /// <returns></returns>
-    public BinaryTree<DataType> Subset(BinaryTreeNode<DataType> node)
+    public static BinaryTree<DataType> Subset(BinaryTreeNode<DataType> node)
     {
-        return new BinaryTree<DataType>(node);
+        BinaryTree<DataType> tree = new BinaryTree<DataType>();
+
+        AddChildrenRecursively(ref tree, ref node);
+
+        return tree;
     }
 
     /// <summary>

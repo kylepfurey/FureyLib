@@ -117,7 +117,7 @@ private:
 	// HELPER FUNCTIONS
 
 	// Deallocates the current and connected nodes recursively
-	void deallocate_recursively(binary_tree_node<data_type>*& current_node)
+	static void deallocate_recursively(binary_tree_node<data_type>*& current_node)
 	{
 		if (current_node->left != nullptr)
 		{
@@ -141,7 +141,7 @@ private:
 	}
 
 	// Fills an array with this node and all of its children recursively in an array of nodes
-	void fill_array_recursively(int& index, data_type*& current_array, binary_tree_node<data_type>*& current_node)
+	static void fill_array_recursively(int& index, data_type*& current_array, binary_tree_node<data_type>*& current_node)
 	{
 		if (current_node->left != nullptr)
 		{
@@ -159,7 +159,7 @@ private:
 	}
 
 	// Pushes this node and all of its children recursively to a vector of nodes
-	void push_vector_recursively(std::vector<data_type>& current_vector, binary_tree_node<data_type>*& current_node)
+	static void push_vector_recursively(std::vector<data_type>& current_vector, binary_tree_node<data_type>*& current_node)
 	{
 		if (current_node->left != nullptr)
 		{
@@ -171,6 +171,22 @@ private:
 		if (current_node->right != nullptr)
 		{
 			push_vector_recursively(current_vector, current_node->right);
+		}
+	}
+
+	// Inserts the given node and all of the its children recursively to the given tree
+	static void insert_children_recursively(binary_tree<data_type>& current_tree, binary_tree_node<data_type>*& current_node)
+	{
+		current_tree.insert(current_node);
+
+		if (current_node->left != nullptr)
+		{
+			insert_children_recursively(current_tree, current_node->left);
+		}
+
+		if (current_node->right != nullptr)
+		{
+			insert_children_recursively(current_tree, current_node->right);
 		}
 	}
 
@@ -977,9 +993,13 @@ public:
 	}
 
 	// Returns a new tree whose root is of the given node
-	binary_tree<data_type> subset(binary_tree_node<data_type>* node)
+	static binary_tree<data_type> subset(binary_tree_node<data_type>* node)
 	{
-		return binary_tree<data_type>(node);
+		binary_tree<data_type> tree = binary_tree<data_type>();
+
+		insert_children_recursively(tree, node);
+
+		return tree;
 	}
 
 	// Merges the given binary tree into this binary tree

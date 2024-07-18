@@ -8,7 +8,7 @@
 #include "binary_math.h"
 
 // Binary Math Function Libary
-static class binary
+class binary
 {
 public:
 
@@ -245,7 +245,7 @@ public:
 	{
 		if ((valueA < 0) ^ (valueB < 0))
 		{
-			return -subtract(valueA, multiply(divide(valueA, valueB), valueB));
+			return add(subtract(valueA, multiply(divide(valueA, valueB), valueB)), valueB);
 		}
 		else
 		{

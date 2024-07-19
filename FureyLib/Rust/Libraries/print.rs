@@ -2,8 +2,7 @@
 // Print Functions Script
 // by Kyle Furey
 
-use std::io;
-use std::string;
+use std::io::*;
 
 // Include this heading to use the library
 // mod print;

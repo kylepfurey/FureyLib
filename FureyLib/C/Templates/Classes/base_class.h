@@ -12,7 +12,7 @@
 #include "base_class.h"
 
 // A structure that owns its own data, methods, and can be inherited from to share different properties.
-#define class struct
+#define class(name) typedef struct name name; struct name
 
 // Represents a function pointer with a return type, variable name, and potential parameters.
 #define FUNCTION(return, variable, ...) return (*variable) (__VA_ARGS__)
@@ -20,11 +20,8 @@
 
 // BASE CLASS
 
-// Forward declaration of base class
-typedef class base_class base_class;
-
 // Template for a base class structure in C.
-class base_class
+class(base_class)
 {
 	// VARIABLES
 
@@ -33,37 +30,38 @@ class base_class
 
 	// FUNCTIONS
 
-	// New functions here
+	// New function pointers here
 
 
 	// DESTRUCTOR
 
-	// Properly destroys this class
+	// Properly destroys this class (call at the end of this object's scope)
 	FUNCTION(void, destruct, base_class*);
 };
 
 
 // BASE CLASS FUNCTIONS
 
-// New functions here
+// New function definitions here
 
 
 // BASE CLASS CONSTRUCTORS
 
-void destruct_base(base_class* target);
+void destruct_base(base_class* self);
 
 // Default constructor:
 // Returns a newly constructed instance of the given class
 base_class construct_base()
 {
-	base_class target;
+	base_class self =
+	{
+		// New constructor code here
 
-	// Set destructor
-	target.destruct = &destruct_base;
+		// Set destructor
+		self.destruct = &destruct_base
+	};
 
-	// New constructor code here
-
-	return target;
+	return self;
 }
 
 // New constructors here
@@ -73,7 +71,7 @@ base_class construct_base()
 
 // Destructor:
 // Properly destroys this class
-void destruct_base(base_class* target)
+void destruct_base(base_class* self)
 {
 	// New destructor code here
 }

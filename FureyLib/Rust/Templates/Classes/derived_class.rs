@@ -2,11 +2,14 @@
 // Derived Rust Class Structure Script
 // by Kyle Furey
 
-use std::mem;
-use std::io;
-use std::string;
+use std::mem::*;
+use std::rc::*;
+use std::boxed::*;
+use std::io::*;
+use std::string::*;
+use std::vec::*;
 use std::collections::*;
-use std::ops;
+use std::ops::*;
 mod base_class;
 use crate::base_class::*;
 
@@ -15,7 +18,7 @@ use crate::base_class::*;
 // use crate::derived_class::*;
 
 // Template for a derived class structure in Rust.
-pub struct DerivedClass
+class!(DerivedClass,
 {
     // BASE CLASS
 
@@ -26,7 +29,7 @@ pub struct DerivedClass
     // VARIABLES
 
     // New variables here
-}
+});
 
 // Functions and methods for derived class.
 impl DerivedClass
@@ -35,12 +38,12 @@ impl DerivedClass
 
     // Default constructor:
     // Returns a newly constructed instance of the given class
-    pub fn construct() -> DerivedClass
+    pub fn new() -> DerivedClass
     {
-        let target: DerivedClass = DerivedClass
+        let mut target: DerivedClass = DerivedClass
         {
             // Call base constructor
-            base: BaseClass::construct(),
+            base: BaseClass::new(),
 
             // New constructor code here
         };

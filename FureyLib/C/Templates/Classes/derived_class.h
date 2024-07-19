@@ -12,17 +12,11 @@
 // Include this heading to use the class
 #include "derived_class.h"
 
-// Retrieves the base class of the given class.
-#define super(class) class.base
-
 
 // DERIVED CLASS
 
-// Forward declaration of derived class
-typedef class derived_class derived_class;
-
 // Template for a derived class structure in C.
-class derived_class
+class(derived_class)
 {
 	// BASE CLASS
 
@@ -37,40 +31,41 @@ class derived_class
 
 	// FUNCTIONS
 
-	// New functions here
+	// New function pointers here
 
 
 	// DESTRUCTOR
 
-	// Properly destroys this class
+	// Properly destroys this class (call at the end of this object's scope)
 	FUNCTION(void, destruct, derived_class*);
 };
 
 
 // DERIVED CLASS FUNCTIONS
 
-// New functions here
+// New function definitions here
 
 
 // DERIVED CLASS CONSTRUCTORS
 
-void destruct_derived(derived_class* target);
+void destruct_derived(derived_class* self);
 
 // Default constructor:
 // Returns a newly constructed instance of the given class
 derived_class construct_derived()
 {
-	derived_class target;
+	derived_class self =
+	{
+		// Call base constructor
+		self.base = construct_base(),
 
-	// Call base constructor
-	target.base = construct_base();
+		// New constructor code here
 
-	// Set destructor
-	target.destruct = &destruct_derived;
+		// Set destructor
+		self.destruct = &destruct_derived
+	};
 
-	// New constructor code here
-
-	return target;
+	return self;
 }
 
 // New constructors here
@@ -80,10 +75,10 @@ derived_class construct_derived()
 
 // Destructor:
 // Properly destroys this class
-void destruct_derived(derived_class* target)
+void destruct_derived(derived_class* self)
 {
 	// New destructor code here
 
 	// Call base destructor
-	destruct_base(&target->base);
+	destruct_base(&self->base);
 }

@@ -19,9 +19,3 @@ pub fn function()
 {
     println!("Function called!");
 }
-
-// Prints a message to the console
-pub fn print(log: &str)
-{
-    println!("{}", log);
-}

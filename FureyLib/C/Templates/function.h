@@ -16,11 +16,3 @@ static void function()
 {
 	printf("Function called!\n");
 }
-
-// Prints a message to the console
-static void print(char* log)
-{
-	printf(log);
-	
-	printf("\n");
-}

@@ -61,7 +61,7 @@ public:
 	}
 
 
-	// TYPE
+	// TYPE AND CASTING
 
 	// Returns the unique hash code of this object's type.
 	virtual size_t type()
@@ -69,14 +69,19 @@ public:
 		return typeid(*this).hash_code();
 	}
 
+	// Casts this object to the given derived type.
+	template<typename data_type> data_type& cast()
+	{
+		return *(data_type*)(this);
+	}
+
 
 	// MEMBERWISE CLONE
 
-	// •  Returns a memberwise clone of the given object.
-	// •  This function must return the same type as the owning class.
-	virtual auto clone()
+	// Returns a memberwise clone of the given object using its copy constructor.
+	template<typename data_type> data_type clone()
 	{
-		return *this;
+		return data_type(*(data_type*)(this));
 	}
 
 

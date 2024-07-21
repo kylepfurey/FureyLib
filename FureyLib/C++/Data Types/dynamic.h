@@ -40,7 +40,7 @@ public:
 	// Copy constructor
 	dynamic(const dynamic& copied)
 	{
-		data = new sptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->get<CONVERSION_TYPE>()));
+		data = new sptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->cast<CONVERSION_TYPE>()));
 	}
 
 	// Move constructor
@@ -74,16 +74,10 @@ public:
 
 	// GETTERS AND SETTERS
 
-	// Get the data as the given type (use get_string() for std::string casting)
+	// Get the data as the given type
 	template <typename data_type> data_type get()
 	{
-		return *data->get<data_type>();
-	}
-
-	// Retrieve a string representation of the given data (prevents string length exceptions)
-	std::string get_string()
-	{
-		return *data->get<char*>();
+		return *data->cast<data_type>();
 	}
 
 	// Set the current data to the given dynamic's data
@@ -91,7 +85,7 @@ public:
 	{
 		delete data;
 
-		data = new sptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*obj.data->get<CONVERSION_TYPE>()));
+		data = new sptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*obj.data->cast<CONVERSION_TYPE>()));
 
 		return *this;
 	}
@@ -124,7 +118,7 @@ public:
 	{
 		delete data;
 
-		data = new sptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->get<CONVERSION_TYPE>()));
+		data = new sptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->cast<CONVERSION_TYPE>()));
 
 		return *this;
 	}
@@ -134,7 +128,7 @@ public:
 	{
 		delete data;
 
-		data = new sptr<data_type>(new data_type(*copied.data->get<data_type>()));
+		data = new sptr<data_type>(new data_type(*copied.data->cast<data_type>()));
 
 		return *this;
 	}
@@ -175,7 +169,7 @@ public:
 	// Get data as the given type and deallocate
 	template <typename data_type> data_type release()
 	{
-		data_type data = *this->data->get<data_type>();
+		data_type data = *this->data->cast<data_type>();
 
 		delete this->data;
 
@@ -195,13 +189,13 @@ public:
 			return data == obj.data;
 		}
 
-		return *data->get<CONVERSION_TYPE>() == *obj.data->get<CONVERSION_TYPE>();
+		return *data->cast<CONVERSION_TYPE>() == *obj.data->cast<CONVERSION_TYPE>();
 	}
 
 	// Returns whether the given data is equal to this dynamic's data
 	template<typename data_type> bool equals(data_type data)
 	{
-		return *this->data->get<data_type>() == data;
+		return *this->data->cast<data_type>() == data;
 	}
 
 
@@ -221,7 +215,7 @@ public:
 	{
 		delete data;
 
-		data = new sptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->get<CONVERSION_TYPE>()));
+		data = new sptr<CONVERSION_TYPE>(new CONVERSION_TYPE(*copied.data->cast<CONVERSION_TYPE>()));
 
 		return *this;
 	}
@@ -267,7 +261,7 @@ public:
 			return data == obj.data;
 		}
 
-		return *data->get<CONVERSION_TYPE>() == *obj.data->get<CONVERSION_TYPE>();
+		return *data->cast<CONVERSION_TYPE>() == *obj.data->cast<CONVERSION_TYPE>();
 	}
 
 	// Returns whether this dynamic's data is not equal to another dynamic's data 
@@ -278,19 +272,19 @@ public:
 			return data != obj.data;
 		}
 
-		return *data->get<CONVERSION_TYPE>() != *obj.data->get<CONVERSION_TYPE>();
+		return *data->cast<CONVERSION_TYPE>() != *obj.data->cast<CONVERSION_TYPE>();
 	}
 
 	// Returns whether this dynamic's data is equal to the given data 
 	template <typename data_type> bool operator==(data_type data)
 	{
-		return *this->data->get<data_type>() == data;
+		return *this->data->cast<data_type>() == data;
 	}
 
 	// Returns whether this dynamic's data is not equal to another dynamic's data 
 	template <typename data_type> bool operator!=(data_type data)
 	{
-		return *this->data->get<data_type>() != data;
+		return *this->data->cast<data_type>() != data;
 	}
 
 

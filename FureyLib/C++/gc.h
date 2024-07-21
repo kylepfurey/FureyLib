@@ -20,14 +20,19 @@ class garbage_base
 {
 public:
 
+	// CONSTRUCTOR AND DESTRUCTOR
+	
 	// Default constructor.
-	garbage_base() { }
+	garbage_base() = default;
 
 	// Virtual destructor used to properly deallocate the pointer class's pointer.
-	virtual ~garbage_base() { }
+	virtual ~garbage_base() = default;
+	
+	
+	// CASTING
 
 	// Cast to shared pointer.
-	template<typename data_type> std::shared_ptr<data_type>& get()
+	template<typename data_type> std::shared_ptr<data_type>& cast()
 	{
 		return ((garbage<data_type>*)this)->ptr;
 	}
@@ -104,6 +109,17 @@ private:
 
 public:
 
+	// DESTRUCTOR
+
+	// Deallocates the garbage collector's remaining memory when the program closes.
+	~garbage_collector()
+	{
+		int total = collect_garbage();
+
+		std::cout << std::endl << "Garbage Collector successfully deallocated " << total << " total bytes of memory." << std::endl;
+	}
+
+
 	// MEMORY ALLOCATION
 
 	// •  Allocates new memory in place of the new keyword.
@@ -150,7 +166,7 @@ public:
 		{
 			for (int i = 0; i < cpp_memory.size(); i++)
 			{
-				if (cpp_memory[i]->get<data_type>().get() == ptr)
+				if (cpp_memory[i]->cast<data_type>().get() == ptr)
 				{
 					delete cpp_memory[i];
 
@@ -222,21 +238,10 @@ public:
 	{
 		deallocate_cpp_memory(ptr);
 	}
-
-
-	// DESTRUCTOR
-
-	// Deallocates the garbage collector's remaining memory when the program closes.
-	~garbage_collector()
-	{
-		int total = collect_garbage();
-
-		std::cout << std::endl << "Garbage Collector successfully deallocated " << total << " total bytes of memory." << std::endl;
-	}
 };
 
 // Overrides the new keyword to store newly allocated memory to the garbage collector.
-#define new gc += new 
+#define new gc += new
 
 // Overrides the malloc() function to store newly allocated memory to the garbage collector.
 #define malloc gc + malloc
@@ -248,7 +253,7 @@ public:
 #define realloc gc + realloc
 
 // Overrides the delete keyword to safely delete and remove memory from the garbage collector.
-#define delete gc -= 
+#define delete gc -=
 
 // Overrides the free() function to safely delete and remove memory from the garbage collector.
 #define free gc.deallocate_c_memory

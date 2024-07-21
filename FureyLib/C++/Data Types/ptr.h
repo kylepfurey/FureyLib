@@ -23,7 +23,7 @@ public:
 	// CONSTRUCTORS AND DESTRUCTOR
 
 	// Default constructor
-	ptr_base() { }
+	ptr_base() = default;
 
 	// Pointer constructor
 	template<typename data_type> ptr_base(data_type* data)
@@ -32,24 +32,15 @@ public:
 	}
 
 	// Virtual destructor used to properly deallocate the pointer class's pointer
-	virtual ~ptr_base() { }
+	virtual ~ptr_base() = default;
 
 
-	// GET POINTER
+	// CASTING
 
 	// Cast to shared pointer
-	template<typename data_type> sptr<data_type>& get()
+	template<typename data_type> sptr<data_type>& cast()
 	{
 		return *((sptr<data_type>*)this);
-	}
-
-
-	// ASSIGNMENT OPERATORS
-
-	// Pointer assignment operator
-	template<typename data_type> sptr<data_type> operator=(data_type* data)
-	{
-		return sptr<data_type>(data);
 	}
 };
 
@@ -130,9 +121,6 @@ public:
 
 
 	// FUNCTIONS
-
-	// Delete cast
-	template<typename data_type> sptr<data_type>& get() = delete;
 
 	// Returns a pointer to the given data
 	virtual data_type* get()
@@ -276,12 +264,6 @@ public:
 	virtual bool is_null()
 	{
 		return data == nullptr;
-	}
-
-	// Returns whether the pointer is null
-	virtual bool is_not_null()
-	{
-		return data != nullptr;
 	}
 
 	// Returns the total number of pointers sharing this pointer
@@ -546,9 +528,6 @@ public:
 
 	// FUNCTIONS
 
-	// Delete cast
-	template<typename data_type> sptr<data_type[]>& get() = delete;
-
 	// Returns a pointer to the given data
 	virtual data_type* get()
 	{
@@ -691,12 +670,6 @@ public:
 	virtual bool is_null()
 	{
 		return data == nullptr;
-	}
-
-	// Returns whether the pointer is null
-	virtual bool is_not_null()
-	{
-		return data != nullptr;
 	}
 
 	// Returns the total number of pointers sharing this pointer
@@ -967,9 +940,6 @@ public:
 
 	// FUNCTIONS
 
-	// Delete cast
-	template<typename data_type> sptr<data_type>& get() = delete;
-
 	// Returns a pointer to the given data
 	virtual void* get()
 	{
@@ -1112,12 +1082,6 @@ public:
 	virtual bool is_null()
 	{
 		return data == nullptr;
-	}
-
-	// Returns whether the pointer is null
-	virtual bool is_not_null()
-	{
-		return data != nullptr;
 	}
 
 	// Returns the total number of pointers sharing this pointer
@@ -1337,9 +1301,6 @@ public:
 
 	// FUNCTIONS
 
-	// Delete cast
-	template<typename data_type> sptr<data_type>& get() = delete;
-
 	// Returns a pointer to the given data
 	virtual data_type* get()
 	{
@@ -1414,12 +1375,6 @@ public:
 	virtual bool is_null()
 	{
 		return data == nullptr;
-	}
-
-	// Returns whether the pointer is null
-	virtual bool is_not_null()
-	{
-		return data != nullptr;
 	}
 
 
@@ -1528,9 +1483,6 @@ public:
 
 	// FUNCTIONS
 
-	// Delete cast
-	template<typename data_type> sptr<data_type[]>& get() = delete;
-
 	// Returns a pointer to the given data
 	virtual data_type* get()
 	{
@@ -1605,12 +1557,6 @@ public:
 	virtual bool is_null()
 	{
 		return data == nullptr;
-	}
-
-	// Returns whether the pointer is null
-	virtual bool is_not_null()
-	{
-		return data != nullptr;
 	}
 
 
@@ -1725,9 +1671,6 @@ public:
 
 	// FUNCTIONS
 
-	// Delete cast
-	template<typename data_type> sptr<data_type>& get() = delete;
-
 	// Returns a pointer to the given data
 	virtual void* get()
 	{
@@ -1802,12 +1745,6 @@ public:
 	virtual bool is_null()
 	{
 		return data == nullptr;
-	}
-
-	// Returns whether the pointer is null
-	virtual bool is_not_null()
-	{
-		return data != nullptr;
 	}
 
 
@@ -1886,18 +1823,15 @@ public:
 	}
 
 	// Destructor
-	virtual ~wptr() { }
+	virtual ~wptr() = default;
 
 
 	// FUNCTIONS
 
-	// Delete cast
-	template<typename data_type> sptr<data_type>& get() = delete;
-
 	// Check if the shared pointer is valid
 	virtual bool check()
 	{
-		return shared->is_not_null();
+		return !(shared->is_null());
 	}
 
 	// Receive the shared pointer
@@ -1926,7 +1860,7 @@ public:
 	// Check if the shared pointer is valid
 	virtual operator bool()
 	{
-		return shared->is_not_null();
+		return !(shared->is_null());
 	}
 };
 
@@ -1957,18 +1891,15 @@ public:
 	}
 
 	// Destructor
-	virtual ~wptr() { }
+	virtual ~wptr() = default;
 
 
 	// FUNCTIONS
 
-	// Delete cast
-	template<typename data_type> sptr<data_type[]>& get() = delete;
-
 	// Check if the shared pointer is valid
 	virtual bool check()
 	{
-		return shared->is_not_null();
+		return !(shared->is_null());
 	}
 
 	// Receive the shared pointer
@@ -1997,7 +1928,7 @@ public:
 	// Check if the shared pointer is valid
 	virtual operator bool()
 	{
-		return shared->is_not_null();
+		return !(shared->is_null());
 	}
 };
 
@@ -2028,18 +1959,15 @@ public:
 	}
 
 	// Destructor
-	virtual ~wptr() { }
+	virtual ~wptr() = default;
 
 
 	// FUNCTIONS
 
-	// Delete cast
-	template<typename data_type> sptr<data_type>& get() = delete;
-
 	// Check if the shared pointer is valid
 	virtual bool check()
 	{
-		return shared->is_not_null();
+		return !(shared->is_null());
 	}
 
 	// Receive the shared pointer
@@ -2068,7 +1996,7 @@ public:
 	// Check if the shared pointer is valid
 	virtual operator bool()
 	{
-		return shared->is_not_null();
+		return !(shared->is_null());
 	}
 };
 
@@ -2079,10 +2007,8 @@ std::map<void*, int> sptr<void>::count = std::map<void*, int>();
 
 // •  A wrapper for a newly created pointer that automatically deallocates on destruction.
 // •  Pointer is shared and only deallocates when it is the last pointer to the stored memory.
-// •  Inherits from the ptr_base storage class.
 #define ptr sptr
 
 // •  A wrapper for a newly created pointer that automatically deallocates on destruction.
 // •  Pointer is shared and only deallocates when it is the last pointer to the stored memory.
-// •  Inherits from the ptr_base storage class.
 #define smart_ptr sptr

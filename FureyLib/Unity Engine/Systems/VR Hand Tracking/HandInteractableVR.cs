@@ -10,11 +10,11 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 
 /// <summary>
-/// Template for a new object interactable by VR hands.
+/// A template for a new object interactable by VR hands.
 /// </summary>
 public class HandInteractableVR : MonoBehaviour, IHandInteractableVR
 {
-    [Header("Template for a new object interactable by VR hands.")]
+    [Header("A template for a new object interactable by VR hands.")]
 
     [Header("\nCONFIGURATION")]
 

@@ -26,7 +26,7 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
 
     [Header("The offset for grabbed objects:")]
     [SerializeField] private Vector3 grabPositionOffset = new Vector3(0, -0.07f, 0.07f);
-    [SerializeField] private bool rotationOffset = false;
+    [SerializeField] private bool rotationOffset = true;
     [SerializeField] private Vector3 leftRotationOffset = new Vector3(0, 0, 0);
     [SerializeField] private Vector3 rightRotationOffset = new Vector3(0, 0, 0);
 
@@ -68,8 +68,6 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
 
     [Header("The delay before reenabling collision for the player's hands (to prevent the hands bumping the object):")]
     [SerializeField] private float collisionDelay = 0.5f;
-
-    [Header(":")]
 
     [Header("\nEVENTS")]
 

@@ -2,7 +2,9 @@
 // Game Mode Base Class Script
 // by Kyle Furey
 
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 
 /// <summary>
@@ -18,13 +20,13 @@ public enum GameModeType
     /// <summary>
     /// Example game mode.
     /// </summary>
-    GaneMode = 1
+    GameMode = 1
 };
 
 /// <summary>
 /// Base class for a customizable game mode through generalized settings and virtual functions.
 /// </summary>
-public abstract class GameMode : MonoBehaviour
+public abstract class GameModeBase : MonoBehaviour
 {
     [Header("Base class for a customizable game mode through generalized settings and virtual functions.")]
 

@@ -8,7 +8,7 @@ from state_machine import StateType, StateBase
 class State(StateBase):
     """A template for a new state machine state."""
 
-    def __init__(self, state_machine):
+    def __init__(self, state_machine: StateMachine):
         """Constructor (sets state machine)"""
 
         self.state_machine = state_machine
@@ -22,7 +22,7 @@ class State(StateBase):
         """Called when this state is set as the state machine's current state"""
 
         # Calls the base class's function
-        super(self).on_state_enter()
+        super()
 
         pass
 
@@ -30,7 +30,7 @@ class State(StateBase):
         """Called every frame while this state is the state machine's current state"""
 
         # Calls the base class's function
-        super(self).on_state_update()
+        super()
 
         pass
 
@@ -38,7 +38,7 @@ class State(StateBase):
         """Called when this state machine's current state is no longer this state"""
 
         # Calls the base class's function
-        super(self).on_state_exit()
+        super()
 
         pass
 

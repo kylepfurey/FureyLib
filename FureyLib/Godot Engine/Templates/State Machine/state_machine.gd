@@ -15,14 +15,14 @@ var current_state = null
 var current_state_type = StateType.NONE
 """The current state of this state machine"""
 
-func _init(new_state):
+func _init(new_state: StateBase):
 	"""Starting state constructor"""
 
 	self.switch_state(new_state)
 
 	pass
 
-func switch_state(new_state):
+func switch_state(new_state: StateBase):
 	"""Properly switches the state machine's current state"""
 
 	# Exit the current state
@@ -48,7 +48,7 @@ func _ready():
 	
 	pass
 
-func _process(delta):
+func _process(delta: float):
 	"""Updates the current state (should be called each tick)"""
 
 	# Call the current state's update function

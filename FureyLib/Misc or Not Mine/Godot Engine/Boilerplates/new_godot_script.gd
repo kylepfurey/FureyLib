@@ -18,7 +18,7 @@ func _init():
 
 	pass
 
-func _copy(copied):
+func _copy(copied: NewGodotScript):
 	"""Copy constructor"""
 
 	pass
@@ -33,7 +33,7 @@ func _ready():
 
 	pass # Replace with function body.
 
-func _process(delta):
+func _process(delta: float):
 	"""Called every frame. 'delta' is the elapsed time since the previous frame."""
 
 	pass

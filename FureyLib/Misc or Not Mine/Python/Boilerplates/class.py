@@ -18,7 +18,7 @@ class Class:
 
         pass
 
-    def __copy__(self, copied):
+    def __copy__(self, copied: Class):
         """Copy constructor"""
 
         pass

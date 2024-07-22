@@ -6,7 +6,7 @@
 class_name State extends StateBase
 """A template for a new state machine state."""
 
-func _init(state_machine):
+func _init(state_machine: StateMachine):
 	"""Constructor (sets state machine)"""
 
 	self.state_machine = state_machine

@@ -40,7 +40,7 @@ public static class Async
     }
 
     /// <summary>
-    /// Runs the given function asynchronously and returns the result
+    /// Runs the given function asynchronously
     /// </summary>
     /// <param name="function"></param>
     /// <param name="parameters"></param>

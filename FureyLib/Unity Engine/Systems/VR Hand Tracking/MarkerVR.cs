@@ -221,79 +221,88 @@ public class MarkerVR : MonoBehaviour, IHandInteractableVR
 
                     if (hitRenderer != null)
                     {
-                        Texture2D texture = (useMainTexture ? hitRenderer.sharedMaterial.mainTexture : hitRenderer.sharedMaterial.GetTexture(textureParameter)) as Texture2D;
+                        Mesh mesh = hit.transform.gameObject.GetComponent<MeshFilter>().sharedMesh;
 
-                        Texture2D roughness = hitRenderer.sharedMaterial.GetTexture(roughnessParameter) as Texture2D;
-
-                        if (texture != null && texture.isReadable)
+                        if (mesh != null && mesh.isReadable)
                         {
-                            if (!textures.ContainsKey(hit.transform.gameObject))
+                            Texture2D texture = (useMainTexture ? hitRenderer.sharedMaterial.mainTexture : hitRenderer.sharedMaterial.GetTexture(textureParameter)) as Texture2D;
+
+                            Texture2D roughness = hitRenderer.sharedMaterial.GetTexture(roughnessParameter) as Texture2D;
+
+                            if (texture != null && texture.isReadable)
                             {
-                                materials[hit.transform.gameObject] = hitRenderer.sharedMaterial;
-
-                                hitRenderer.sharedMaterial = new Material(hitRenderer.sharedMaterial);
-
-                                textures[hit.transform.gameObject] = texture;
-
-                                if (useMainTexture)
+                                if (!textures.ContainsKey(hit.transform.gameObject))
                                 {
-                                    hitRenderer.sharedMaterial.mainTexture = new Texture2D(texture.width, texture.height, texture.format, true);
+                                    materials[hit.transform.gameObject] = hitRenderer.sharedMaterial;
 
-                                    hitRenderer.sharedMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
+                                    hitRenderer.sharedMaterial = new Material(hitRenderer.sharedMaterial);
+
+                                    textures[hit.transform.gameObject] = texture;
+
+                                    if (useMainTexture)
+                                    {
+                                        hitRenderer.sharedMaterial.mainTexture = new Texture2D(texture.width, texture.height, texture.format, true);
+
+                                        hitRenderer.sharedMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
+                                    }
+                                    else
+                                    {
+                                        hitRenderer.sharedMaterial.SetTexture(textureParameter, new Texture2D(texture.width, texture.height, texture.format, true));
+
+                                        hitRenderer.sharedMaterial.GetTexture(textureParameter).wrapMode = TextureWrapMode.Repeat;
+                                    }
+
+                                    Graphics.CopyTexture(textures[hit.transform.gameObject], useMainTexture ? hitRenderer.sharedMaterial.mainTexture : hitRenderer.sharedMaterial.GetTexture(textureParameter));
+
+                                    if (roughness != null && roughness.isReadable)
+                                    {
+                                        roughnessTextures[hit.transform.gameObject] = roughness;
+
+                                        hitRenderer.sharedMaterial.SetTexture(roughnessParameter, new Texture2D(roughness.width, roughness.height, roughness.format, true));
+
+                                        hitRenderer.sharedMaterial.GetTexture(roughnessParameter).wrapMode = TextureWrapMode.Repeat;
+
+                                        Graphics.CopyTexture(roughnessTextures[hit.transform.gameObject], hitRenderer.sharedMaterial.GetTexture(roughnessParameter));
+                                    }
                                 }
-                                else
+
+                                float distance = DistanceSquared(transform.position, lastDrawnPosition);
+
+                                if (distance > markerUpdateDistance * markerUpdateDistance)
                                 {
-                                    hitRenderer.sharedMaterial.SetTexture(textureParameter, new Texture2D(texture.width, texture.height, texture.format, true));
+                                    lastDrawnPosition = transform.position;
 
-                                    hitRenderer.sharedMaterial.GetTexture(textureParameter).wrapMode = TextureWrapMode.Repeat;
-                                }
+                                    Draw(hitRenderer, hit.textureCoord);
 
-                                Graphics.CopyTexture(textures[hit.transform.gameObject], useMainTexture ? hitRenderer.sharedMaterial.mainTexture : hitRenderer.sharedMaterial.GetTexture(textureParameter));
+                                    texture.Apply();
 
-                                if (roughness != null && roughness.isReadable)
-                                {
-                                    roughnessTextures[hit.transform.gameObject] = roughness;
+                                    if (roughness != null && roughness.isReadable)
+                                    {
+                                        roughness.Apply();
+                                    }
 
-                                    hitRenderer.sharedMaterial.SetTexture(roughnessParameter, new Texture2D(roughness.width, roughness.height, roughness.format, true));
+                                    if (!isEraser && !infiniteInk)
+                                    {
+                                        remainingInk -= markerUpdateDistance <= 0 ? 0.25f : markerUpdateDistance * 10;
+                                    }
 
-                                    hitRenderer.sharedMaterial.GetTexture(roughnessParameter).wrapMode = TextureWrapMode.Repeat;
-
-                                    Graphics.CopyTexture(roughnessTextures[hit.transform.gameObject], hitRenderer.sharedMaterial.GetTexture(roughnessParameter));
+                                    onDraw.Invoke();
                                 }
                             }
-
-                            float distance = DistanceSquared(transform.position, lastDrawnPosition);
-
-                            if (distance > markerUpdateDistance * markerUpdateDistance)
+                            else
                             {
-                                lastDrawnPosition = transform.position;
-
-                                Draw(hitRenderer, hit.textureCoord);
-
-                                texture.Apply();
-
-                                if (roughness != null && roughness.isReadable)
-                                {
-                                    roughness.Apply();
-                                }
-
-                                if (!isEraser && !infiniteInk)
-                                {
-                                    remainingInk -= markerUpdateDistance <= 0 ? 0.25f : markerUpdateDistance * 10;
-                                }
-
-                                onDraw.Invoke();
+                                Debug.LogError("ERROR: Drawn texture is not set to Read / Write or is missing!");
                             }
                         }
                         else
                         {
-                            Debug.LogError("ERROR: Drawn texture is not set to Read / Write or is missing!");
+                            Debug.LogError("ERROR: Drawn-on mesh is not set to Read / Write or is missing!");
                         }
                     }
                 }
                 else
                 {
-                    Debug.LogWarning("NOTE: To drawn on an object with a marker, the object must: have a concave mesh collider, have a material with a Read / Write texture imported in an editable format, and have the \"Drawable\" tag.");
+                    Debug.LogWarning("NOTE: To draw on an object with a marker, the object must: have a mesh with Read / Write enabled and a Generated Collider, have a concave mesh collider attached, have a material with a Read / Write texture imported in an editable format, and have the \"Drawable\" tag.");
                 }
             }
         }

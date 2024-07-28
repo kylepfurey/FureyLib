@@ -5,6 +5,7 @@
 using System;
 using System.IO;
 using UnityEngine;
+using static UnityEngine.JsonUtility; // Serializer
 
 /// <summary>
 /// A collection of variables that can be stored and loaded to resume progress in a game.
@@ -137,35 +138,35 @@ public class SaveFile
     // SERIALIZATION FUNCTIONS
 
     /// <summary>
-    /// Serializes the given save data structure into a JSON string that can be saved to a text file.
+    /// Serializes the given save data structure into a Json string that can be saved to a text file.
     /// </summary>
-    public static string SaveToJSON(SaveData saveData)
+    public static string SaveToJson(SaveData saveData)
     {
         return JsonUtility.ToJson(saveData, true);
     }
 
     /// <summary>
-    /// Serializes this save file's save data structure into a JSON string that can be saved to a text file.
+    /// Serializes this save file's save data structure into a Json string that can be saved to a text file.
     /// </summary>
-    public string ToJSON()
+    public string ToJson()
     {
-        return SaveToJSON(saveData);
+        return SaveToJson(saveData);
     }
 
     /// <summary>
-    /// Reads the given JSON string as a save data structure that can be loaded into a save file.
+    /// Reads the given Json string as a save data structure that can be loaded into a save file.
     /// </summary>
-    public static SaveData JSONToSave(string saveDataJSON)
+    public static SaveData JsonToSave(string saveDataJson)
     {
-        return JsonUtility.FromJson<SaveData>(saveDataJSON);
+        return FromJson<SaveData>(saveDataJson);
     }
 
     /// <summary>
-    /// Reads the given JSON string as a save data structure and loads it into this save file.
+    /// Reads the given Json string as a save data structure and loads it into this save file.
     /// </summary>
-    public SaveData ReadJSON(string saveDataJSON)
+    public SaveData ReadJson(string saveDataJson)
     {
-        saveData = JSONToSave(saveDataJSON);
+        saveData = JsonToSave(saveDataJson);
 
         return saveData;
     }
@@ -210,7 +211,7 @@ public class SaveFile
 
             saveData.directory = directory;
 
-            string json = ToJSON();
+            string json = ToJson();
 
             foreach (char letter in json)
             {
@@ -274,7 +275,7 @@ public class SaveFile
 
             file.Close();
 
-            saveData = JSONToSave(json);
+            saveData = JsonToSave(json);
 
             return true;
         }

@@ -14,7 +14,7 @@
 
 // •  Base class for all objects in a program.
 // •  Inherit from object to share common methods and generic storage across any type.
-// •  All new types should inherit from this and provide a to_string() implementation.
+// •  All new types should inherit from this class and at least provide a to_string() implementation.
 class object
 {
 public:
@@ -145,6 +145,23 @@ public:
 	virtual bool ref_equals(object*& other)
 	{
 		return this == other;
+	}
+
+
+	// SERIALIZATION
+
+	// Converts the object's values into a Json formatted string.
+	virtual std::string to_json()
+	{
+		return "{}";
+	}
+
+	// •  Reads the given Json formatted string and assigns the object's values from the string.
+	// •  It is recommended to assume the Json is formatted with indents.
+	// •  Returns whether the Json string was successfully parsed.
+	virtual bool read_json(std::string json)
+	{
+		return false;
 	}
 };
 

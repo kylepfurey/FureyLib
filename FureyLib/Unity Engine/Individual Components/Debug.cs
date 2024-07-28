@@ -3,7 +3,6 @@
 // by Kyle Furey
 
 // SOURCE: https://docs.unity3d.com/ScriptReference/Debug.html
-// REFERENCE: https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-write-text-to-a-file
 
 using System;
 using System.IO;

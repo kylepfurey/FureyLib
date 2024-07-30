@@ -524,9 +524,9 @@ public static class Noise
             {
                 for (int x = 0; x < xLength; x++)
                 {
-                    Precision average = array[x, y, z];
+                    Precision average = 0;
 
-                    int denominator = 1;
+                    int denominator = 0;
 
                     for (int zOffset = -1; zOffset < 2; zOffset++)
                     {

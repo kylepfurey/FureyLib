@@ -142,7 +142,7 @@ public:
 	}
 
 	// Returns whether two objects share the same memory addresses.
-	virtual bool ref_equals(object*& other)
+	virtual bool ref_equals(object* other)
 	{
 		return this == other;
 	}

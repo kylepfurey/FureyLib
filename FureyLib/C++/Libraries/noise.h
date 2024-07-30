@@ -650,9 +650,9 @@ public:
 			{
 				for (int x = 0; x < size_x; x++)
 				{
-					PRECISION average = vector[{x, y, z}];
+					PRECISION average = 0;
 
-					int denominator = 1;
+					int denominator = 0;
 
 					for (int z_offset = -1; z_offset < 2; z_offset++)
 					{

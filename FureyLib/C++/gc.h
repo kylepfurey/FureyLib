@@ -5,7 +5,8 @@
 #pragma once
 #include <memory>
 #include <iostream>
-#include <vector>
+#include <list>
+#include <algorithm>
 
 // Include this heading to enable safe garbage collection
 #include "gc.h"
@@ -21,14 +22,14 @@ class garbage_base
 public:
 
 	// CONSTRUCTOR AND DESTRUCTOR
-	
+
 	// Default constructor.
 	garbage_base() = default;
 
 	// Virtual destructor used to properly deallocate the pointer class's pointer.
 	virtual ~garbage_base() = default;
-	
-	
+
+
 	// CASTING
 
 	// Cast to shared pointer.
@@ -67,10 +68,10 @@ private:
 	// ALLOCATED MEMORY
 
 	// All of the garbage collector's newly allocated memory using the new keyword.
-	std::vector<garbage_base*> cpp_memory = std::vector<garbage_base*>();
+	std::list<garbage_base*> cpp_memory = std::list<garbage_base*>();
 
 	// All of the garbage collector's newly allocated memory using the malloc() functions.
-	std::vector<void*> c_memory = std::vector<void*>();
+	std::list<void*> c_memory = std::list<void*>();
 
 
 	// GARBAGE COLLECTION
@@ -82,24 +83,20 @@ private:
 	{
 		int total = 0;
 
-		for (int i = 0; i < cpp_memory.size(); i++)
+		for (auto current : cpp_memory)
 		{
-			total += sizeof(cpp_memory[i]);
+			total++;
 
-			delete cpp_memory[i];
-
-			cpp_memory[i] = nullptr;
+			delete current;
 		}
 
 		cpp_memory.clear();
 
-		for (int i = 0; i < c_memory.size(); i++)
+		for (auto current : c_memory)
 		{
-			total += sizeof(c_memory[i]);
+			total++;
 
-			free(c_memory[i]);
-
-			c_memory[i] = nullptr;
+			free(current);
 		}
 
 		c_memory.clear();
@@ -116,7 +113,7 @@ public:
 	{
 		int total = collect_garbage();
 
-		std::cout << std::endl << "Garbage Collector successfully deallocated " << total << " total bytes of memory." << std::endl;
+		std::cout << std::endl << "Garbage Collector automatically deallocated " << total << (total == 1 ? " pointer successfully." : " total pointers successfully.") << std::endl;
 	}
 
 
@@ -124,7 +121,7 @@ public:
 
 	// •  Allocates new memory in place of the new keyword.
 	// •  Stores the pointer in the garbage collector's memory before returning the new pointer.
-	template<typename data_type> data_type*& allocate_cpp_memory(data_type*& ptr)
+	template<typename data_type> data_type* allocate_cpp_memory(data_type* ptr)
 	{
 		cpp_memory.push_back(new garbage<data_type>(ptr));
 
@@ -133,7 +130,7 @@ public:
 
 	// •  Allocates new memory in place of the malloc() functions.
 	// •  Stores the pointer in the garbage collector's memory before returning the new pointer.
-	void*& allocate_c_memory(void*& ptr)
+	void* allocate_c_memory(void* ptr)
 	{
 		c_memory.push_back(ptr);
 
@@ -144,13 +141,13 @@ public:
 	// MEMORY ALLOCATION OPERATOR
 
 	// Operator used to take new pointers as a parameter for the allocate_cpp_memory() function.
-	template<typename data_type> data_type*& operator+=(data_type* ptr)
+	template<typename data_type> data_type* operator+=(data_type* ptr)
 	{
 		return allocate_cpp_memory(ptr);
 	}
 
 	// Operator used to take new pointers as a parameter for the allocate_c_memory() function.
-	void*& operator+(void* ptr)
+	void* operator+(void* ptr)
 	{
 		return allocate_c_memory(ptr);
 	}
@@ -164,15 +161,13 @@ public:
 	{
 		if (ptr != nullptr)
 		{
-			for (int i = 0; i < cpp_memory.size(); i++)
+			for (auto current : cpp_memory)
 			{
-				if (cpp_memory[i]->cast<data_type>().get() == ptr)
+				if (current->cast<data_type>().get() == ptr)
 				{
-					delete cpp_memory[i];
+					delete current;
 
-					cpp_memory[i] = nullptr;
-
-					cpp_memory.erase(cpp_memory.begin() + i);
+					cpp_memory.erase(std::find(cpp_memory.begin(), cpp_memory.end(), current));
 
 					break;
 				}
@@ -188,15 +183,13 @@ public:
 	{
 		if (ptr != nullptr)
 		{
-			for (int i = 0; i < c_memory.size(); i++)
+			for (auto current : c_memory)
 			{
-				if (c_memory[i] == ptr)
+				if (current == ptr)
 				{
-					free(c_memory[i]);
+					free(current);
 
-					c_memory[i] = nullptr;
-
-					c_memory.erase(c_memory.begin() + i);
+					c_memory.erase(std::find(c_memory.begin(), c_memory.end(), current));
 
 					break;
 				}
@@ -212,15 +205,13 @@ public:
 	{
 		if (ptr != nullptr)
 		{
-			for (int i = 0; i < c_memory.size(); i++)
+			for (auto current : c_memory)
 			{
-				if (c_memory[i] == ptr)
+				if (current == ptr)
 				{
-					free(c_memory[i]);
+					free(current);
 
-					c_memory[i] = nullptr;
-
-					c_memory.erase(c_memory.begin() + i);
+					c_memory.erase(std::find(c_memory.begin(), c_memory.end(), current));
 
 					break;
 				}

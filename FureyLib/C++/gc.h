@@ -78,7 +78,8 @@ private:
 
 	// •  Deletes all of the garbage collector's current memory.
 	// •  Automatically called when the garbage collector destructs at the end of the program.
-	// •  Returns the total number of bytes deallocated.
+	// •  Returns the total number of pointers deallocated.
+	// •  WARNING: Calling this function manually will result in dangling pointers! Use delete or free() instead.
 	int collect_garbage()
 	{
 		int total = 0;

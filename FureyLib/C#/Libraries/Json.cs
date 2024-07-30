@@ -14,7 +14,8 @@ using static Json;
 /// <summary>
 /// •  Serializes and deserializes data to and from Json files.<br/>
 /// •  Serialized classes and structures should have the [System.Serializable] attribute above the class.<br/>
-/// •  Note: Depending on the implemented serializer, public properties may only be serialized.
+/// •  Public fields / properties are always serialized by default.<br/>
+/// •  Note: Depending on the serializer, private and protected fields / properties may never be serialized.
 /// </summary>
 public static class Json
 {
@@ -35,6 +36,8 @@ public static class Json
     public static string Serialize<DataType>(DataType data, bool inline)
     {
         JsonSerializerOptions options = new JsonSerializerOptions();
+
+        options.IncludeFields = true;
 
         options.WriteIndented = !inline;
 
@@ -57,6 +60,8 @@ public static class Json
     public static DataType Deserialize<DataType>(string json, bool inline)
     {
         JsonSerializerOptions options = new JsonSerializerOptions();
+
+        options.IncludeFields = true;
 
         options.WriteIndented = !Json.inline;
 

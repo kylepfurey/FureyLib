@@ -12,8 +12,9 @@ using static Json;
 
 /// <summary>
 /// •  Serializes and deserializes data to and from Json files.<br/>
-/// •  Serialized classes and structures should have the [System.Serializable] attribute above the class.<br/>
-/// •  Use [UnityEngine.SerializeField] to serialize a private or protected field. Public fields are always serialized.
+/// •  Serialized classes and structures should have the [System.Serializable] attribute above the class or inherit from UnityEngine.Object.<br/>
+/// •  Public fields are always serialized by default.<br/>
+/// •  Note: Use [UnityEngine.SerializeField] to serialize a private or protected fields.
 /// </summary>
 public static class Json
 {

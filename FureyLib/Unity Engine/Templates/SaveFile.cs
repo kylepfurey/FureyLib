@@ -13,17 +13,17 @@ using static UnityEngine.JsonUtility; // Serializer
 [Serializable]
 public struct SaveData
 {
-    // SAVED PROPERTIES
+    // SAVED VARIABLES
 
     /// <summary>
     /// The name of the file to save.
     /// </summary>
-    public string fileName { get; set; }
+    public string fileName;
 
     /// <summary>
     /// The file path to the save file.
     /// </summary>
-    public string directory { get; set; }
+    public string directory;
 
     // New save data here
 
@@ -39,7 +39,7 @@ public struct SaveData
 
         this.directory = directory;
 
-        // Initialize save data properties here!
+        // Initialize save data variables here!
     }
 }
 

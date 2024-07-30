@@ -2,6 +2,8 @@
 // Object Factory Class Script
 // by Kyle Furey
 
+// OPTIONAL REQUIREMENT: object.h
+
 #include <list>
 #include <algorithm>
 #include "object.h"

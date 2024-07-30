@@ -15,7 +15,7 @@ public class Factory : IEnumerable, IEnumerable<object>
     /// <summary>
     /// All of this factory's objects.
     /// </summary>
-    public <object> objects = new LinkedList<object>();
+    public LinkedList<object> objects = new LinkedList<object>();
 
 
     // COUNT

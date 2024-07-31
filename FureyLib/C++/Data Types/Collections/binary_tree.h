@@ -14,11 +14,11 @@
 // Include this heading to use the class
 #include "binary_tree.h"
 
-// Forward declaration of binary_tree_node
-template<typename data_type> class binary_tree_node;
+// Forward declaration of binary_node
+template<typename data_type> class binary_node;
 
 // Class that stores unique data and connections to the left and right nodes in a binary search tree.
-template<typename data_type> class binary_tree_node
+template<typename data_type> class binary_node
 {
 public:
 
@@ -28,19 +28,19 @@ public:
 	data_type data = data_type();
 
 	// A link to the parent (above) node
-	binary_tree_node<data_type>* parent = nullptr;
+	binary_node<data_type>* parent = nullptr;
 
 	// A link to the left (lesser) node
-	binary_tree_node<data_type>* left = nullptr;
+	binary_node<data_type>* left = nullptr;
 
 	// A link to the right (greater) node
-	binary_tree_node<data_type>* right = nullptr;
+	binary_node<data_type>* right = nullptr;
 
 
 	// CONSTRUCTOR
 
 	// Default constructor
-	binary_tree_node(data_type data = data_type(), binary_tree_node<data_type>* left = nullptr, binary_tree_node<data_type>* right = nullptr, binary_tree_node<data_type>* parent = nullptr)
+	binary_node(data_type data = data_type(), binary_node<data_type>* left = nullptr, binary_node<data_type>* right = nullptr, binary_node<data_type>* parent = nullptr)
 	{
 		this->data = data;
 
@@ -54,10 +54,37 @@ public:
 
 	// FUNCTIONS
 
-	// Returns the leftmost node of this node
-	binary_tree_node<data_type>* lower_bound()
+	// Searches for the given data by traversing this node's connected nodes and returns the node that matches (or null)
+	binary_node<data_type> binary_search(data_type data)
 	{
-		binary_tree_node<data_type>* node = this;
+		binary_node<data_type>* current = this;
+
+		while (current != nullptr)
+		{
+			if (current->data == data)
+			{
+				return current;
+			}
+			else
+			{
+				if (data > current->data)
+				{
+					current = current->left;
+				}
+				else
+				{
+					current = current->right;
+				}
+			}
+		}
+
+		return current;
+	}
+
+	// Returns the leftmost node of this node
+	binary_node<data_type>* lower_bound()
+	{
+		binary_node<data_type>* node = this;
 
 		while (node->left != nullptr)
 		{
@@ -68,9 +95,9 @@ public:
 	}
 
 	// Returns the root node of this node
-	binary_tree_node<data_type>* root()
+	binary_node<data_type>* root()
 	{
-		binary_tree_node<data_type>* node = this;
+		binary_node<data_type>* node = this;
 
 		while (node->parent != nullptr)
 		{
@@ -81,9 +108,9 @@ public:
 	}
 
 	// Returns the rightmost node of this node
-	binary_tree_node<data_type>* upper_bound()
+	binary_node<data_type>* upper_bound()
 	{
-		binary_tree_node<data_type>* node = this;
+		binary_node<data_type>* node = this;
 
 		while (node->right != nullptr)
 		{
@@ -108,7 +135,7 @@ private:
 	// VARIABLES
 
 	// The root (starting) node of the binary tree
-	binary_tree_node<data_type>* root = nullptr;
+	binary_node<data_type>* root = nullptr;
 
 	// The current number of nodes in the binary tree
 	int node_size = 0;
@@ -117,14 +144,14 @@ private:
 	// HELPER FUNCTIONS
 
 	// Deallocates the current and connected nodes recursively
-	static void deallocate_recursively(binary_tree_node<data_type>*& current_node)
+	static void deallocate_recursively(binary_node<data_type>*& current_node)
 	{
 		if (current_node->left != nullptr)
 		{
 			deallocate_recursively(current_node->left);
 		}
 
-		binary_tree_node<data_type>* node = current_node;
+		binary_node<data_type>* node = current_node;
 
 		if (current_node->right != nullptr)
 		{
@@ -141,7 +168,7 @@ private:
 	}
 
 	// Fills an array with this node and all of its children recursively in an array of nodes
-	static void fill_array_recursively(int& index, data_type*& current_array, binary_tree_node<data_type>*& current_node)
+	static void fill_array_recursively(int& index, data_type*& current_array, binary_node<data_type>*& current_node)
 	{
 		if (current_node->left != nullptr)
 		{
@@ -159,7 +186,7 @@ private:
 	}
 
 	// Pushes this node and all of its children recursively to a vector of nodes
-	static void push_vector_recursively(std::vector<data_type>& current_vector, binary_tree_node<data_type>*& current_node)
+	static void push_vector_recursively(std::vector<data_type>& current_vector, binary_node<data_type>*& current_node)
 	{
 		if (current_node->left != nullptr)
 		{
@@ -175,7 +202,7 @@ private:
 	}
 
 	// Inserts the given node and all of the its children recursively to the given tree
-	static void insert_children_recursively(binary_tree<data_type>& current_tree, binary_tree_node<data_type>*& current_node)
+	static void insert_children_recursively(binary_tree<data_type>& current_tree, binary_node<data_type>*& current_node)
 	{
 		current_tree.insert(current_node);
 
@@ -276,7 +303,7 @@ public:
 	// Data constructor
 	binary_tree(data_type data)
 	{
-		root = new binary_tree_node<data_type>(data);
+		root = new binary_node<data_type>(data);
 
 		node_size = 1;
 	}
@@ -506,9 +533,9 @@ public:
 	// ITERATORS
 
 	// Returns the leftmost node in the binary tree
-	binary_tree_node<data_type>* begin()
+	binary_node<data_type>* begin()
 	{
-		binary_tree_node<data_type>* node = root;
+		binary_node<data_type>* node = root;
 
 		while (node->left != nullptr)
 		{
@@ -519,15 +546,15 @@ public:
 	}
 
 	// Returns the root node in the binary tree
-	binary_tree_node<data_type>* middle()
+	binary_node<data_type>* middle()
 	{
 		return root;
 	}
 
 	// Returns the rightmost node in the binary tree
-	binary_tree_node<data_type>* end()
+	binary_node<data_type>* end()
 	{
-		binary_tree_node<data_type>* node = root;
+		binary_node<data_type>* node = root;
 
 		while (node->right != nullptr)
 		{
@@ -607,9 +634,9 @@ public:
 	}
 
 	// Inserts a new node of the given data into the binary tree
-	binary_tree_node<data_type>* insert(data_type data)
+	binary_node<data_type>* insert(data_type data)
 	{
-		binary_tree_node<data_type>* new_node = new binary_tree_node<data_type>(data);
+		binary_node<data_type>* new_node = new binary_node<data_type>(data);
 
 		insert(new_node);
 
@@ -617,7 +644,7 @@ public:
 	}
 
 	// Inserts a new node of the given data into the binary tree
-	binary_tree<data_type>& insert(binary_tree_node<data_type>* new_node)
+	binary_tree<data_type>& insert(binary_node<data_type>* new_node)
 	{
 		if (node_size == 0)
 		{
@@ -628,7 +655,7 @@ public:
 			return *this;
 		}
 
-		binary_tree_node<data_type>* node = root;
+		binary_node<data_type>* node = root;
 
 		while (!node->is_leaf())
 		{
@@ -695,9 +722,9 @@ public:
 	}
 
 	// Remove, deallocate, and return a node of the given data if it is present
-	binary_tree_node<data_type>* erase(data_type data)
+	binary_node<data_type>* erase(data_type data)
 	{
-		binary_tree_node<data_type>* node = find(data);
+		binary_node<data_type>* node = find(data);
 
 		erase(node);
 
@@ -705,11 +732,11 @@ public:
 	}
 
 	// Removes and deallocates a node from the binary tree
-	data_type erase(binary_tree_node<data_type>* removed_node)
+	data_type erase(binary_node<data_type>* removed_node)
 	{
-		if (!contains(removed_node))
+		if (!count(removed_node))
 		{
-			return *this;
+			return data_type();
 		}
 
 		data_type data = removed_node->data;
@@ -780,22 +807,22 @@ public:
 		}
 		else
 		{
-			binary_tree_node<data_type>* node = removed_node->left;
+			binary_node<data_type>* node = removed_node->right;
 
-			while (node->right != nullptr)
+			while (node->left != nullptr)
 			{
-				node = node->right;
+				node = node->left;
 			}
 
 			if (removed_node != root)
 			{
-				if (removed_node->parent->left == removed_node)
+				if (removed_node->parent->right == removed_node)
 				{
-					removed_node->parent->left = node;
+					removed_node->parent->right = node;
 				}
 				else
 				{
-					removed_node->parent->right = node;
+					removed_node->parent->left = node;
 				}
 			}
 			else
@@ -803,23 +830,23 @@ public:
 				root = node;
 			}
 
-			if (removed_node->left != node)
+			if (removed_node->right != node)
 			{
-				node->parent->right = node->left;
+				node->parent->left = node->right;
 
-				if (node->left != nullptr)
+				if (node->right != nullptr)
 				{
-					node->left->parent = node->parent;
+					node->right->parent = node->parent;
 				}
 
-				node->left = removed_node->left;
+				node->right = removed_node->right;
 
-				removed_node->left->parent = node;
+				removed_node->right->parent = node;
 			}
 
-			node->right = removed_node->right;
+			node->left = removed_node->left;
 
-			removed_node->right->parent = node;
+			removed_node->left->parent = node;
 
 			node->parent = removed_node->parent;
 		}
@@ -850,7 +877,7 @@ public:
 	// Swaps the binary tree's nodes with another binary tree's nodes
 	binary_tree<data_type>& swap(binary_tree<data_type>& swapped_data)
 	{
-		binary_tree_node<data_type>* data = root;
+		binary_node<data_type>* data = root;
 
 		int count = node_size;
 
@@ -880,9 +907,9 @@ public:
 	}
 
 	// Creates and inserts a new  node of the given data into the binary tree
-	template<typename ... argument_types> binary_tree_node<data_type>* emplace(argument_types ... arguments)
+	template<typename ... argument_types> binary_node<data_type>* emplace(argument_types ... arguments)
 	{
-		binary_tree_node<data_type>* new_node = new binary_tree_node<data_type>(data_type(arguments...));
+		binary_node<data_type>* new_node = new binary_node<data_type>(data_type(arguments...));
 
 		insert(new_node);
 
@@ -893,9 +920,9 @@ public:
 	// ELEMENT OPERATIONS
 
 	// Finds and an existing node and if successful, removes it and inserts a new node
-	binary_tree_node<data_type>* replace(data_type replaced_data, data_type new_data)
+	binary_node<data_type>* replace(data_type replaced_data, data_type new_data)
 	{
-		binary_tree_node<data_type>* node = find(replaced_data);
+		binary_node<data_type>* node = find(replaced_data);
 
 		if (node == nullptr)
 		{
@@ -910,7 +937,7 @@ public:
 	}
 
 	// Removes the replaced node and inserts the new one
-	binary_tree<data_type>& replace(binary_tree_node<data_type>* replaced_node, binary_tree_node<data_type>* new_node)
+	binary_tree<data_type>& replace(binary_node<data_type>* replaced_node, binary_node<data_type>* new_node)
 	{
 		erase(replaced_node);
 
@@ -923,14 +950,14 @@ public:
 	// OPERATIONS
 
 	// Finds the matching node of the given data if it is present
-	binary_tree_node<data_type>* find(data_type data)
+	binary_node<data_type>* find(data_type data)
 	{
 		if (node_size == 0)
 		{
 			return nullptr;
 		}
 
-		binary_tree_node<data_type>* node = root;
+		binary_node<data_type>* node = root;
 
 		while (node != nullptr)
 		{
@@ -955,45 +982,24 @@ public:
 	}
 
 	// Returns whether the binary tree contains the given data
-	bool contains(data_type contained_data)
+	bool count(data_type contained_data)
 	{
 		return find(contained_data) != nullptr;
 	}
 
 	// Returns whether the binary tree contains the given node
-	bool contains(binary_tree_node<data_type>* new_node)
+	bool count(binary_node<data_type>* new_node)
 	{
 		if (node_size == 0 || new_node == nullptr)
 		{
 			return false;
 		}
 
-		binary_tree_node<data_type>* node = root;
-
-		while (node != nullptr)
-		{
-			if (node == new_node)
-			{
-				return true;
-			}
-			else
-			{
-				if (node->data > new_node->data)
-				{
-					node = node->left;
-				}
-				else
-				{
-					node = node->right;
-				}
-			}
-		}
-
-		return false;
+		return root == new_node->root();
 	}
 
 	// Returns a new tree whose root is of the given node
-	static binary_tree<data_type> subset(binary_tree_node<data_type>* node)
+	static binary_tree<data_type> subset(binary_node<data_type>* node)
 	{
 		binary_tree<data_type> tree = binary_tree<data_type>();
 

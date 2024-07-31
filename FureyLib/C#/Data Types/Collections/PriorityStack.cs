@@ -610,7 +610,7 @@ public class PriorityStackNode<DataType>
 /// •  Elements with higher priority are popped first.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<DataType> where PriorityType : IComparable
+public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<DataType> where PriorityType : IComparable, IComparable<DataType>
 {
     // VARIABLES
 
@@ -1164,7 +1164,7 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
 /// Class that stores data and its priority value for insertion in a priority stack.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class PriorityStackNode<DataType, PriorityType> where PriorityType : IComparable
+public class PriorityStackNode<DataType, PriorityType> where PriorityType : IComparable, IComparable<DataType>
 {
     // VARIABLES
 

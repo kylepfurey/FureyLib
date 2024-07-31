@@ -610,7 +610,7 @@ public class PriorityQueueNode<DataType>
 /// •  Elements with higher priority are dequeued first.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<DataType> where PriorityType : IComparable
+public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<DataType> where PriorityType : IComparable, IComparable<DataType>
 {
     // VARIABLES
 
@@ -1164,7 +1164,7 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
 /// Class that stores data and its priority value for insertion in a priority queue.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class PriorityQueueNode<DataType, PriorityType> where PriorityType : IComparable
+public class PriorityQueueNode<DataType, PriorityType> where PriorityType : IComparable, IComparable<DataType>
 {
     // VARIABLES
 

@@ -58,9 +58,9 @@ public:
 	std::shared_ptr<data_type>& get() = delete;
 };
 
-// •  Collects and stores pointers to newly allocated memory for automatic deallocation at the end of the program.
+// •  Stores copies of pointers to dynamically allocated memory for automatic deallocation at the end of the program if they are not already freed.
 // •  Do not make an instance of this class as there is already a global instance named "gc".
-// •  Note:  Use containers such as std::array and std::vector for allocation of multiple variables instead of C arrays.
+// •  Note: Use containers such as std::array and std::vector for allocation of multiple variables instead of C arrays.
 class garbage_collector
 {
 private:
@@ -72,6 +72,53 @@ private:
 
 	// All of the garbage collector's newly allocated memory using the malloc() functions.
 	std::list<void*> c_memory = std::list<void*>();
+
+public:
+
+	// CONSTRUCTORS
+
+	// Default constructor.
+	garbage_collector()
+	{
+		cpp_memory = std::list<garbage_base*>();
+
+		c_memory = std::list<void*>();
+	}
+
+	// Delete copy constructor.
+	garbage_collector(const garbage_collector& copied) = delete;
+
+	// Move constructor.
+	garbage_collector(garbage_collector&& moved) noexcept
+	{
+		cpp_memory = moved.cpp_memory;
+
+		c_memory = moved.c_memory;
+
+		moved.cpp_memory.clear();
+
+		moved.c_memory.clear();
+	}
+
+
+	// ASSIGNMENT OPERATORS
+
+	// Delete copy assignment operator.
+	garbage_collector& operator=(const garbage_collector& copied) = delete;
+
+	// Move assignment operator.
+	garbage_collector& operator=(garbage_collector&& moved) noexcept
+	{
+		cpp_memory = moved.cpp_memory;
+
+		c_memory = moved.c_memory;
+
+		moved.cpp_memory.clear();
+
+		moved.c_memory.clear();
+
+		return *this;
+	}
 
 
 	// GARBAGE COLLECTION
@@ -105,18 +152,6 @@ private:
 		return total;
 	}
 
-public:
-
-	// DESTRUCTOR
-
-	// Deallocates the garbage collector's remaining memory when the program closes.
-	~garbage_collector()
-	{
-		int total = collect_garbage();
-
-		std::cout << std::endl << "Garbage Collector automatically deallocated " << total << (total == 1 ? " pointer successfully." : " total pointers successfully.") << std::endl;
-	}
-
 
 	// MEMORY ALLOCATION
 
@@ -139,7 +174,7 @@ public:
 	}
 
 
-	// MEMORY ALLOCATION OPERATOR
+	// MEMORY ALLOCATION OPERATORS
 
 	// Operator used to take new pointers as a parameter for the allocate_cpp_memory() function.
 	template<typename data_type> data_type* operator+=(data_type* ptr)
@@ -223,12 +258,29 @@ public:
 	}
 
 
-	// MEMORY DEALLOCATION OPERATOR
+	// MEMORY DEALLOCATION OPERATORS
 
 	// Operator used to take new pointers as a parameter for the deallocate_cpp_memory() function.
 	template<typename data_type> void operator-=(data_type*& ptr)
 	{
 		deallocate_cpp_memory(ptr);
+	}
+
+	// Operator used to take new pointers as a parameter for the deallocate_c_memory() function.
+	void operator-(void*& ptr)
+	{
+		deallocate_c_memory(ptr);
+	}
+
+
+	// DESTRUCTOR
+
+	// Deallocates the garbage collector's remaining memory when the program closes.
+	virtual ~garbage_collector()
+	{
+		int total = collect_garbage();
+
+		std::cout << std::endl << "Garbage Collector automatically deallocated " << total << (total == 1 ? " pointer successfully." : " total pointers successfully.") << std::endl;
 	}
 };
 

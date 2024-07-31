@@ -13,14 +13,14 @@ using System.Linq;
 /// Class used to store a sorted binary search tree for fast retrieval of nodes with unique data.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where DataType : IComparable
+public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where DataType : IComparable, IComparable<DataType>
 {
     // VARIABLES
 
     /// <summary>
     /// The root (starting) node of the binary tree
     /// </summary>
-    private BinaryTreeNode<DataType> root = null;
+    private BinaryNode<DataType> root = null;
 
     /// <summary>
     /// The current number of nodes in the binary tree
@@ -44,7 +44,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// <summary>
     /// Readonly root node variable
     /// </summary>
-    public BinaryTreeNode<DataType> Root
+    public BinaryNode<DataType> Root
     {
         get
         {
@@ -84,7 +84,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// <param name="currentArray"></param>
     /// <param name="currentNode"></param>
     /// <returns></returns>
-    private static void FillArrayRecursively(ref int index, ref DataType[] currentArray, ref BinaryTreeNode<DataType> currentNode)
+    private static void FillArrayRecursively(ref int index, ref DataType[] currentArray, ref BinaryNode<DataType> currentNode)
     {
         if (currentNode.left != null)
         {
@@ -127,7 +127,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// <param name="currentList"></param>
     /// <param name="currentNode"></param>
     /// <returns></returns>
-    private static void AddListRecursively(ref List<DataType> currentList, ref BinaryTreeNode<DataType> currentNode)
+    private static void AddListRecursively(ref List<DataType> currentList, ref BinaryNode<DataType> currentNode)
     {
         if (currentNode.left != null)
         {
@@ -202,7 +202,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// <param name="data"></param>
     public BinaryTree(DataType data)
     {
-        root = new BinaryTreeNode<DataType>(data);
+        root = new BinaryNode<DataType>(data);
 
         nodeCount = 1;
     }
@@ -313,9 +313,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// Returns the leftmost node in the binary tree
     /// </summary>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> Begin()
+    public BinaryNode<DataType> Begin()
     {
-        BinaryTreeNode<DataType> node = root;
+        BinaryNode<DataType> node = root;
 
         while (node.left != null)
         {
@@ -329,7 +329,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// Returns the root node in the binary tree
     /// </summary>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> Middle()
+    public BinaryNode<DataType> Middle()
     {
         return root;
     }
@@ -338,9 +338,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// Returns the rightmost node in the binary tree
     /// </summary>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> End()
+    public BinaryNode<DataType> End()
     {
-        BinaryTreeNode<DataType> node = root;
+        BinaryNode<DataType> node = root;
 
         while (node.right != null)
         {
@@ -437,9 +437,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> Add(DataType data)
+    public BinaryNode<DataType> Add(DataType data)
     {
-        BinaryTreeNode<DataType> newNode = new BinaryTreeNode<DataType>(data);
+        BinaryNode<DataType> newNode = new BinaryNode<DataType>(data);
 
         Add(newNode);
 
@@ -451,7 +451,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// </summary>
     /// <param name="newNode"></param>
     /// <returns></returns>
-    public BinaryTree<DataType> Add(BinaryTreeNode<DataType> newNode)
+    public BinaryTree<DataType> Add(BinaryNode<DataType> newNode)
     {
         if (nodeCount == 0)
         {
@@ -462,7 +462,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
             return this;
         }
 
-        BinaryTreeNode<DataType> node = root;
+        BinaryNode<DataType> node = root;
 
         while (!node.IsLeaf())
         {
@@ -533,9 +533,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> Remove(DataType data)
+    public BinaryNode<DataType> Remove(DataType data)
     {
-        BinaryTreeNode<DataType> node = Find(data);
+        BinaryNode<DataType> node = Find(data);
 
         Remove(node);
 
@@ -547,7 +547,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// </summary>
     /// <param name="removedNode"></param>
     /// <returns></returns>
-    public BinaryTree<DataType> Remove(BinaryTreeNode<DataType> removedNode)
+    public BinaryTree<DataType> Remove(BinaryNode<DataType> removedNode)
     {
         if (!Contains(removedNode))
         {
@@ -618,22 +618,22 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
         }
         else
         {
-            BinaryTreeNode<DataType> node = removedNode.left;
+            BinaryNode<DataType> node = removedNode.right;
 
-            while (node.right != null)
+            while (node.left != null)
             {
-                node = node.right;
+                node = node.left;
             }
 
             if (removedNode != root)
             {
-                if (removedNode.parent.left == removedNode)
+                if (removedNode.parent.right == removedNode)
                 {
-                    removedNode.parent.left = node;
+                    removedNode.parent.right = node;
                 }
                 else
                 {
-                    removedNode.parent.right = node;
+                    removedNode.parent.left = node;
                 }
             }
             else
@@ -641,23 +641,23 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
                 root = node;
             }
 
-            if (removedNode.left != node)
+            if (removedNode.right != node)
             {
-                node.parent.right = node.left;
+                node.parent.left = node.right;
 
-                if (node.left != null)
+                if (node.right != null)
                 {
-                    node.left.parent = node.parent;
+                    node.right.parent = node.parent;
                 }
 
-                node.left = removedNode.left;
+                node.right = removedNode.right;
 
-                removedNode.left.parent = node;
+                removedNode.right.parent = node;
             }
 
-            node.right = removedNode.right;
+            node.left = removedNode.left;
 
-            removedNode.right.parent = node;
+            removedNode.left.parent = node;
 
             node.parent = removedNode.parent;
         }
@@ -669,7 +669,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// Remove and return the leftmost node from its connected nodes in the binary tree
     /// </summary>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> RemoveLeft()
+    public BinaryNode<DataType> RemoveLeft()
     {
         return Remove(Left());
     }
@@ -678,7 +678,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// Remove and return the root node from its connected nodes in the binary tree
     /// </summary>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> RemoveRoot()
+    public BinaryNode<DataType> RemoveRoot()
     {
         return Remove(root.data);
     }
@@ -687,7 +687,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// Remove and return the rightmost node from its connected nodes in the binary tree
     /// </summary>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> RemoveRight()
+    public BinaryNode<DataType> RemoveRight()
     {
         return Remove(Right());
     }
@@ -699,7 +699,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// <returns></returns>
     public BinaryTree<DataType> Swap(BinaryTree<DataType> swappedData)
     {
-        BinaryTreeNode<DataType> data = root;
+        BinaryNode<DataType> data = root;
 
         int count = nodeCount;
 
@@ -734,9 +734,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> Emplace(ref DataType data)
+    public BinaryNode<DataType> Emplace(ref DataType data)
     {
-        BinaryTreeNode<DataType> newNode = new BinaryTreeNode<DataType>(data);
+        BinaryNode<DataType> newNode = new BinaryNode<DataType>(data);
 
         Add(newNode);
 
@@ -752,9 +752,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// <param name="replacedData"></param>
     /// <param name="newData"></param>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> Replace(DataType replacedData, DataType newData)
+    public BinaryNode<DataType> Replace(DataType replacedData, DataType newData)
     {
-        BinaryTreeNode<DataType> node = Find(replacedData);
+        BinaryNode<DataType> node = Find(replacedData);
 
         if (node == null)
         {
@@ -774,7 +774,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// <param name="replacedNode"></param>
     /// <param name="newNode"></param>
     /// <returns></returns>
-    public BinaryTree<DataType> Replace(BinaryTreeNode<DataType> replacedNode, BinaryTreeNode<DataType> newNode)
+    public BinaryTree<DataType> Replace(BinaryNode<DataType> replacedNode, BinaryNode<DataType> newNode)
     {
         Remove(replacedNode);
 
@@ -791,14 +791,14 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> Find(DataType data)
+    public BinaryNode<DataType> Find(DataType data)
     {
         if (nodeCount == 0)
         {
             return null;
         }
 
-        BinaryTreeNode<DataType> node = root;
+        BinaryNode<DataType> node = root;
 
         while (node != null)
         {
@@ -839,37 +839,14 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// </summary>
     /// <param name="newNode"></param>
     /// <returns></returns>
-    public bool Contains(BinaryTreeNode<DataType> newNode)
+    public bool Contains(BinaryNode<DataType> newNode)
     {
         if (nodeCount == 0 || newNode == null)
         {
             return false;
         }
 
-        BinaryTreeNode<DataType> node = root;
-
-        while (node != null)
-        {
-            if (node == newNode)
-            {
-                return true;
-            }
-            else
-            {
-                int comparison = node.data.CompareTo(newNode.data);
-
-                if (comparison > 0)
-                {
-                    node = node.left;
-                }
-                else
-                {
-                    node = node.right;
-                }
-            }
-        }
-
-        return false;
+        return root == newNode.Root();
     }
 
     /// <summary>
@@ -877,7 +854,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// </summary>
     /// <param name="currentTree"></param>
     /// <param name="currentNode"></param>
-    private static void AddChildrenRecursively(ref BinaryTree<DataType> currentTree, ref BinaryTreeNode<DataType> currentNode)
+    private static void AddChildrenRecursively(ref BinaryTree<DataType> currentTree, ref BinaryNode<DataType> currentNode)
     {
         currentTree.Add(currentNode);
 
@@ -897,7 +874,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
     /// </summary>
     /// <param name="node"></param>
     /// <returns></returns>
-    public static BinaryTree<DataType> Subset(BinaryTreeNode<DataType> node)
+    public static BinaryTree<DataType> Subset(BinaryNode<DataType> node)
     {
         BinaryTree<DataType> tree = new BinaryTree<DataType>();
 
@@ -990,7 +967,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> where Dat
 /// Class that stores unique data and connections to the left and right nodes in a binary search tree.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class BinaryTreeNode<DataType> where DataType : IComparable
+public class BinaryNode<DataType> where DataType : IComparable, IComparable<DataType>
 {
     // VARIABLES
 
@@ -1002,17 +979,17 @@ public class BinaryTreeNode<DataType> where DataType : IComparable
     /// <summary>
     /// A link to the parent (above) node
     /// </summary>
-    public BinaryTreeNode<DataType> parent = null;
+    public BinaryNode<DataType> parent = null;
 
     /// <summary>
     /// A link to the left (lesser) node
     /// </summary>
-    public BinaryTreeNode<DataType> left = null;
+    public BinaryNode<DataType> left = null;
 
     /// <summary>
     /// A link to the right (greater) node
     /// </summary>
-    public BinaryTreeNode<DataType> right = null;
+    public BinaryNode<DataType> right = null;
 
 
     // PROPERTIES
@@ -1042,7 +1019,7 @@ public class BinaryTreeNode<DataType> where DataType : IComparable
     /// <summary>
     /// Readonly parent node variable
     /// </summary>
-    public BinaryTreeNode<DataType> Parent
+    public BinaryNode<DataType> Parent
     {
         get
         {
@@ -1053,7 +1030,7 @@ public class BinaryTreeNode<DataType> where DataType : IComparable
     /// <summary>
     /// Readonly left node variable
     /// </summary>
-    public BinaryTreeNode<DataType> Left
+    public BinaryNode<DataType> Left
     {
         get
         {
@@ -1064,7 +1041,7 @@ public class BinaryTreeNode<DataType> where DataType : IComparable
     /// <summary>
     /// Readonly right node variable
     /// </summary>
-    public BinaryTreeNode<DataType> Right
+    public BinaryNode<DataType> Right
     {
         get
         {
@@ -1082,7 +1059,7 @@ public class BinaryTreeNode<DataType> where DataType : IComparable
     /// <param name="left"></param>
     /// <param name="right"></param>
     /// <param name="parent"></param>
-    public BinaryTreeNode(DataType data = default(DataType), BinaryTreeNode<DataType> left = null, BinaryTreeNode<DataType> right = null, BinaryTreeNode<DataType> parent = null)
+    public BinaryNode(DataType data = default(DataType), BinaryNode<DataType> left = null, BinaryNode<DataType> right = null, BinaryNode<DataType> parent = null)
     {
         this.data = data;
 
@@ -1097,12 +1074,45 @@ public class BinaryTreeNode<DataType> where DataType : IComparable
     // FUNCTIONS
 
     /// <summary>
+    /// Searches for the given data by traversing this node's connected nodes and returns the node that matches (or null)
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public BinaryNode<DataType> BinarySearch(DataType data)
+    {
+        BinaryNode<DataType> current = this;
+
+        while (current != null)
+        {
+            if (current.data.Equals(data))
+            {
+                return current;
+            }
+            else
+            {
+                int comparison = current.data.CompareTo(data);
+
+                if (comparison > 0)
+                {
+                    current = current.left;
+                }
+                else
+                {
+                    current = current.right;
+                }
+            }
+        }
+
+        return current;
+    }
+
+    /// <summary>
     /// Returns the leftmost node of this node
     /// </summary>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> LowerBound()
+    public BinaryNode<DataType> LowerBound()
     {
-        BinaryTreeNode<DataType> node = this;
+        BinaryNode<DataType> node = this;
 
         while (node.left != null)
         {
@@ -1116,9 +1126,9 @@ public class BinaryTreeNode<DataType> where DataType : IComparable
     /// Returns the root node of this node
     /// </summary>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> Root()
+    public BinaryNode<DataType> Root()
     {
-        BinaryTreeNode<DataType> node = this;
+        BinaryNode<DataType> node = this;
 
         while (node.parent != null)
         {
@@ -1132,9 +1142,9 @@ public class BinaryTreeNode<DataType> where DataType : IComparable
     /// Returns the rightmost node of this node
     /// </summary>
     /// <returns></returns>
-    public BinaryTreeNode<DataType> UpperBound()
+    public BinaryNode<DataType> UpperBound()
     {
-        BinaryTreeNode<DataType> node = this;
+        BinaryNode<DataType> node = this;
 
         while (node.right != null)
         {

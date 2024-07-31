@@ -111,7 +111,7 @@ public:
 	factory(const factory& copied) = delete;
 
 	// Move constructor.
-	factory(factory&& moved)
+	factory(factory&& moved) noexcept
 	{
 		objects = moved.objects();
 
@@ -131,7 +131,7 @@ public:
 	factory<base_type>& operator=(const factory& copied) = delete;
 
 	// Move assignment operator.
-	factory<base_type>& operator=(factory&& moved)
+	factory<base_type>& operator=(factory&& moved) noexcept
 	{
 		objects = moved.objects();
 

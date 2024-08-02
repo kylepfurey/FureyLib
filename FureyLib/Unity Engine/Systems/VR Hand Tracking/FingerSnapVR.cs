@@ -95,7 +95,7 @@ public class FingerSnapVR : MonoBehaviour, IHandInteractableVR
             {
                 leftSnapReady = true;
             }
-            else if (leftSnapReady && (HandTrackerVR.GetGesture(HandVR.Gesture.Point, false) || HandTrackerVR.GetGesture(HandVR.Gesture.FingerGun, false)))
+            else if (leftSnapReady && (HandTrackerVR.GetGesture(HandVR.Gesture.Point, false) || HandTrackerVR.GetGesture(HandVR.Gesture.Grip, false)))
             {
                 leftSnapReady = false;
 
@@ -121,7 +121,7 @@ public class FingerSnapVR : MonoBehaviour, IHandInteractableVR
             {
                 rightSnapReady = true;
             }
-            else if (rightSnapReady && (HandTrackerVR.GetGesture(HandVR.Gesture.Point, true) || HandTrackerVR.GetGesture(HandVR.Gesture.FingerGun, true)))
+            else if (rightSnapReady && (HandTrackerVR.GetGesture(HandVR.Gesture.Point, true) || HandTrackerVR.GetGesture(HandVR.Gesture.Grip, true)))
             {
                 rightSnapReady = false;
 

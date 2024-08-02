@@ -20,10 +20,10 @@ public interface IHandInteractableVR
     /// A list of all objects that implement this interface. Each new implemented interface should be added to this.
     /// OnSetHands() is automatically called when hands are initialized.
     /// </summary>
-    public static List<IHandInteractableVR> implementations = new List<IHandInteractableVR>();
+    public static HashSet<IHandInteractableVR> implementations = new HashSet<IHandInteractableVR>();
 
     /// <summary>
-    /// Whether the VR hands have been successfully configured.
+    /// Whether the VR hands have been successfully configured. Do not modify this variable, only read from it.
     /// </summary>
     public static bool handsSet = false;
 
@@ -84,23 +84,6 @@ public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
     public UnityEvent onHandsSet = null;
 
     /// <summary>
-    /// Update() is called once per frame
-    /// </summary>
-    private void Update()
-    {
-        // Update the gestures both hands are making
-        if (leftHand != null && rightHand != null)
-        {
-            for (int i = 0; i < System.Enum.GetNames(typeof(HandVR.Gesture)).Length; i++)
-            {
-                leftGestures[(HandVR.Gesture)i] = leftHand.GetGesture((HandVR.Gesture)i);
-
-                rightGestures[(HandVR.Gesture)i] = rightHand.GetGesture((HandVR.Gesture)i);
-            }
-        }
-    }
-
-    /// <summary>
     /// IHandInteractableVR Interface - Adds this object's implementation to the interface.
     /// </summary>
     private void Awake()
@@ -114,12 +97,30 @@ public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
         for (int i = 0; i < System.Enum.GetNames(typeof(HandVR.Gesture)).Length; i++)
         {
             leftGestures[(HandVR.Gesture)i] = false;
+
             rightGestures[(HandVR.Gesture)i] = false;
         }
 
         if (setHandsOnStart)
         {
             OnSetHands();
+        }
+    }
+
+    /// <summary>
+    /// Updates the status of each gesture
+    /// </summary>
+    private void Update()
+    {
+        // Update the gestures both hands are making
+        if (leftHand != null && rightHand != null)
+        {
+            for (int i = 0; i < System.Enum.GetNames(typeof(HandVR.Gesture)).Length; i++)
+            {
+                leftGestures[(HandVR.Gesture)i] = leftHand.GetGesture((HandVR.Gesture)i);
+
+                rightGestures[(HandVR.Gesture)i] = rightHand.GetGesture((HandVR.Gesture)i);
+            }
         }
     }
 
@@ -140,9 +141,9 @@ public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
 
                 IHandInteractableVR.handsSet = true;
 
-                for (int i = 0; i < IHandInteractableVR.implementations.Count; i++)
+                foreach (IHandInteractableVR implementation in IHandInteractableVR.implementations)
                 {
-                    IHandInteractableVR.implementations[i].OnSetHands();
+                    implementation.OnSetHands();
                 }
 
                 onHandsSet.Invoke();
@@ -157,7 +158,11 @@ public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
     /// <summary>
     /// IHandInteractableVR Interface - Removes the object's implementation to the interface.
     /// </summary>
-    private void OnDestroy() { }
+    private void OnDestroy()
+    {
+        // Reset the hand tracking system
+        IHandInteractableVR.handsSet = false;
+    }
 
     /// <summary>
     /// Whether the given hand is making the given gesture

@@ -101,6 +101,11 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
         get { return heldRightObject; }
     }
 
+    /// <summary>
+    /// The layer used to ignore the player's collision
+    /// </summary>
+    public const int ignorePlayerLayer = 3;
+
     // The time the player has been grabbing with each hand
     private bool grabbingLeft = false;
     private float leftGrabTime = 0;
@@ -126,6 +131,11 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
     /// The current previous position of this object
     /// </summary>
     private Vector3 previousPosition = Vector3.zero;
+
+    /// <summary>
+    /// The previous collision layer of this object
+    /// </summary>
+    private int previousLayer = 0;
 
 
     // FUNCTIONS
@@ -264,9 +274,15 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
                 // Check if the rigidbody exists 
                 if (rigidbody != null)
                 {
+                    // Update gravity
                     gravitySetting = rigidbody.useGravity;
 
                     rigidbody.useGravity = false;
+
+                    // Update collision layers
+                    previousLayer = rigidbody.gameObject.layer;
+
+                    rigidbody.gameObject.layer = ignorePlayerLayer;
                 }
 
                 // Invoke the grab event
@@ -342,6 +358,9 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
                     rigidbody.useGravity = newGravity;
                 }
 
+                // Reset collision layer
+                rigidbody.gameObject.layer = previousLayer;
+
                 // Check if this object is throwable
                 if (throwable)
                 {
@@ -362,6 +381,9 @@ public class HandGrabbableVR : MonoBehaviour, IHandInteractableVR
             {
                 rigidbody.useGravity = newGravity;
             }
+
+            // Reset collision layer
+            rigidbody.gameObject.layer = previousLayer;
 
             // Check if this object is throwable
             if (throwable)

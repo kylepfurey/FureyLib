@@ -84,7 +84,7 @@ public static class Pathfinding
     /// •  Time complexity and precision depend on the selected pathfinding algorithm.<br/>
     /// •  Will calculate the closest location to the goal if the goal is unreachable.
     /// </summary>
-    public static Stack<Node<DataType>> Pathfind<DataType>(Algorithm algorithm, Node<DataType> start, Node<DataType> end, HeuristicType heuristicScale = 1)
+    public static Stack<Node<DataType>> Pathfind<DataType>(Algorithm algorithm, Node<DataType> start, Node<DataType> end, HeuristicType heuristicScale = 1.1f)
     {
         switch (algorithm)
         {
@@ -646,7 +646,7 @@ public static class Pathfinding
     /// •  Guarantees the fastest and possibly least resistant route in shorter time.<br/>
     /// •  Will calculate the closest location to the goal if the goal is unreachable.
     /// </summary>
-    public static Stack<Node<DataType>> AStarSearch<DataType>(Node<DataType> start, Node<DataType> end, HeuristicType heuristicScale = 1)
+    public static Stack<Node<DataType>> AStarSearch<DataType>(Node<DataType> start, Node<DataType> end, HeuristicType heuristicScale = 1.1f)
     {
         // Check if the start and end node are identical
         if (start == end)

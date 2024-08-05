@@ -107,7 +107,7 @@ public static class Pathfinding2D
     /// •  Time complexity and precision depend on the selected pathfinding algorithm.<br/>
     /// •  Will calculate the closest location to the goal if the goal is unreachable.
     /// </summary>
-    public static Stack<GridSpace> Pathfind(Algorithm algorithm, GridSpace start, GridSpace end, GridGraph graphSettings, HeuristicType heuristicScale = 1)
+    public static Stack<GridSpace> Pathfind(Algorithm algorithm, GridSpace start, GridSpace end, GridGraph graphSettings, HeuristicType heuristicScale = 1.1f)
     {
         switch (algorithm)
         {
@@ -268,7 +268,7 @@ public static class Pathfinding2D
             foreach (GridSpace to in from.Values)
             {
                 // Calculate the new heuristic
-                HeuristicType newHeuristic = CalculateHeuristic(to, end);
+                HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
 
                 // Check if the new heuristic is closer to the goal
                 if (newHeuristic < currentHeuristic)
@@ -429,7 +429,7 @@ public static class Pathfinding2D
             foreach (GridSpace to in from.Values)
             {
                 // Calculate the new heuristic
-                HeuristicType newHeuristic = CalculateHeuristic(to, end);
+                HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
 
                 // Check if the new heuristic is closer to the goal
                 if (newHeuristic < currentHeuristic)
@@ -564,7 +564,7 @@ public static class Pathfinding2D
                         if (!from.ContainsKey(connection))
                         {
                             // Enqueue our connected node to the frontier
-                            frontier.Enqueue(connection, CalculateHeuristic(connection, end));
+                            frontier.Enqueue(connection, CalculateHeuristic(connection, end, !graphSettings.diagonalNavigation));
 
                             // Add our connected node as our key and our current node as our value to the dictionary
                             from[connection] = current;
@@ -590,7 +590,7 @@ public static class Pathfinding2D
             foreach (GridSpace to in from.Values)
             {
                 // Calculate the new heuristic
-                HeuristicType newHeuristic = CalculateHeuristic(to, end);
+                HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
 
                 // Check if the new heuristic is closer to the goal
                 if (newHeuristic < currentHeuristic)
@@ -786,7 +786,7 @@ public static class Pathfinding2D
             foreach (GridSpace to in from.Values)
             {
                 // Calculate the new heuristic
-                HeuristicType newHeuristic = CalculateHeuristic(to, end);
+                HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
 
                 // Check if the new heuristic is closer to the goal
                 if (newHeuristic < currentHeuristic)
@@ -835,7 +835,7 @@ public static class Pathfinding2D
     /// •  Guarantees the fastest and possibly least resistant route in shorter time.<br/>
     /// •  Will calculate the closest location to the goal if the goal is unreachable.
     /// </summary>
-    public static Stack<GridSpace> AStarSearch(GridSpace start, GridSpace end, GridGraph graphSettings, HeuristicType heuristicScale = 1)
+    public static Stack<GridSpace> AStarSearch(GridSpace start, GridSpace end, GridGraph graphSettings, HeuristicType heuristicScale = 1.1f)
     {
         // Check that we can actually move
         if (!graphSettings.adjacentNavigation && !graphSettings.diagonalNavigation)
@@ -956,7 +956,7 @@ public static class Pathfinding2D
                             weights[connection] = newCost;
 
                             // Enqueue our connected node to the frontier
-                            frontier.Enqueue(connection, newCost + (CalculateHeuristic(connection, end) * heuristicScale * 2));
+                            frontier.Enqueue(connection, newCost + (CalculateHeuristic(connection, end, !graphSettings.diagonalNavigation) * heuristicScale * (0.0001f + graphSettings.defaultWeight)));
 
                             // Add our connected node as our key and our current node as our value to the dictionary
                             from[connection] = current;
@@ -982,7 +982,7 @@ public static class Pathfinding2D
             foreach (GridSpace to in from.Values)
             {
                 // Calculate the new heuristic
-                HeuristicType newHeuristic = CalculateHeuristic(to, end);
+                HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
 
                 // Check if the new heuristic is closer to the goal
                 if (newHeuristic < currentHeuristic)
@@ -1243,7 +1243,7 @@ public static class Pathfinding3D
     /// •  Time complexity and precision depend on the selected pathfinding algorithm.<br/>
     /// •  Will calculate the closest location to the goal if the goal is unreachable.
     /// </summary>
-    public static Stack<GridSpace3D> Pathfind(Algorithm algorithm, GridSpace3D start, GridSpace3D end, GridGraph3D graphSettings, HeuristicType heuristicScale = 1)
+    public static Stack<GridSpace3D> Pathfind(Algorithm algorithm, GridSpace3D start, GridSpace3D end, GridGraph3D graphSettings, HeuristicType heuristicScale = 1.1f)
     {
         switch (algorithm)
         {
@@ -1393,16 +1393,8 @@ public static class Pathfinding3D
                             }
                             else
                             {
-                                // { 1, 1, 0 }
-                                if (z == 0)
-                                {
-                                    if (!graphSettings.diagonalNavigation)
-                                    {
-                                        continue;
-                                    }
-                                }
-                                // { 1, 1, 1 }
-                                else if (!graphSettings.triagonalNavigation)
+                                // { 1, 1, 0 } && { 1, 1, 1 }
+                                if (!graphSettings.diagonalNavigation)
                                 {
                                     continue;
                                 }
@@ -1445,7 +1437,7 @@ public static class Pathfinding3D
             foreach (GridSpace3D to in from.Values)
             {
                 // Calculate the new heuristic
-                HeuristicType newHeuristic = CalculateHeuristic(to, end);
+                HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
 
                 // Check if the new heuristic is closer to the goal
                 if (newHeuristic < currentHeuristic)
@@ -1595,16 +1587,8 @@ public static class Pathfinding3D
                             }
                             else
                             {
-                                // { 1, 1, 0 }
-                                if (z == 0)
-                                {
-                                    if (!graphSettings.diagonalNavigation)
-                                    {
-                                        continue;
-                                    }
-                                }
-                                // { 1, 1, 1 }
-                                else if (!graphSettings.triagonalNavigation)
+                                // { 1, 1, 0 } && { 1, 1, 1 }
+                                if (!graphSettings.diagonalNavigation)
                                 {
                                     continue;
                                 }
@@ -1629,34 +1613,34 @@ public static class Pathfinding3D
                     }
                 }
             }
+        }
 
-            // Clear the frontier
-            frontier.Clear();
+        // Clear the frontier
+        frontier.Clear();
 
-            // Check that we made it to our end node
-            if (current != end)
+        // Check that we made it to our end node
+        if (current != end)
+        {
+            // Store our new goal
+            current = start;
+
+            // Store our current heuristic
+            HeuristicType currentHeuristic = HeuristicType.MaxValue;
+
+            // Calculate the closest node to our goal
+            foreach (GridSpace3D to in from.Values)
             {
-                // Store our new goal
-                current = start;
+                // Calculate the new heuristic
+                HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
 
-                // Store our current heuristic
-                HeuristicType currentHeuristic = HeuristicType.MaxValue;
-
-                // Calculate the closest node to our goal
-                foreach (GridSpace3D to in from.Values)
+                // Check if the new heuristic is closer to the goal
+                if (newHeuristic < currentHeuristic)
                 {
-                    // Calculate the new heuristic
-                    HeuristicType newHeuristic = CalculateHeuristic(to, end);
+                    // Mark the new goal
+                    current = to;
 
-                    // Check if the new heuristic is closer to the goal
-                    if (newHeuristic < currentHeuristic)
-                    {
-                        // Mark the new goal
-                        current = to;
-
-                        // Update the heuristic
-                        currentHeuristic = newHeuristic;
-                    }
+                    // Update the heuristic
+                    currentHeuristic = newHeuristic;
                 }
             }
         }
@@ -1797,16 +1781,8 @@ public static class Pathfinding3D
                             }
                             else
                             {
-                                // { 1, 1, 0 }
-                                if (z == 0)
-                                {
-                                    if (!graphSettings.diagonalNavigation)
-                                    {
-                                        continue;
-                                    }
-                                }
-                                // { 1, 1, 1 }
-                                else if (!graphSettings.triagonalNavigation)
+                                // { 1, 1, 0 } && { 1, 1, 1 }
+                                if (!graphSettings.diagonalNavigation)
                                 {
                                     continue;
                                 }
@@ -1822,7 +1798,7 @@ public static class Pathfinding3D
                             if (!from.ContainsKey(connection))
                             {
                                 // Enqueue our connected node to the frontier
-                                frontier.Enqueue(connection, CalculateHeuristic(connection, end));
+                                frontier.Enqueue(connection, CalculateHeuristic(connection, end, !graphSettings.diagonalNavigation));
 
                                 // Add our connected node as our key and our current node as our value to the dictionary
                                 from[connection] = current;
@@ -1849,7 +1825,7 @@ public static class Pathfinding3D
             foreach (GridSpace3D to in from.Values)
             {
                 // Calculate the new heuristic
-                HeuristicType newHeuristic = CalculateHeuristic(to, end);
+                HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
 
                 // Check if the new heuristic is closer to the goal
                 if (newHeuristic < currentHeuristic)
@@ -2018,16 +1994,8 @@ public static class Pathfinding3D
                             }
                             else
                             {
-                                // { 1, 1, 0 }
-                                if (z == 0)
-                                {
-                                    if (!graphSettings.diagonalNavigation)
-                                    {
-                                        continue;
-                                    }
-                                }
-                                // { 1, 1, 1 }
-                                else if (!graphSettings.triagonalNavigation)
+                                // { 1, 1, 0 } && { 1, 1, 1 }
+                                if (!graphSettings.diagonalNavigation)
                                 {
                                     continue;
                                 }
@@ -2086,7 +2054,7 @@ public static class Pathfinding3D
             foreach (GridSpace3D to in from.Values)
             {
                 // Calculate the new heuristic
-                HeuristicType newHeuristic = CalculateHeuristic(to, end);
+                HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
 
                 // Check if the new heuristic is closer to the goal
                 if (newHeuristic < currentHeuristic)
@@ -2135,7 +2103,7 @@ public static class Pathfinding3D
     /// •  Guarantees the fastest and possibly least resistant route in shorter time.<br/>
     /// •  Will calculate the closest location to the goal if the goal is unreachable.
     /// </summary>
-    public static Stack<GridSpace3D> AStarSearch(GridSpace3D start, GridSpace3D end, GridGraph3D graphSettings, HeuristicType heuristicScale = 1)
+    public static Stack<GridSpace3D> AStarSearch(GridSpace3D start, GridSpace3D end, GridGraph3D graphSettings, HeuristicType heuristicScale = 1.1f)
     {
         // Check that we can actually move
         if (!graphSettings.adjacentNavigation && !graphSettings.diagonalNavigation)
@@ -2255,16 +2223,8 @@ public static class Pathfinding3D
                             }
                             else
                             {
-                                // { 1, 1, 0 }
-                                if (z == 0)
-                                {
-                                    if (!graphSettings.diagonalNavigation)
-                                    {
-                                        continue;
-                                    }
-                                }
-                                // { 1, 1, 1 }
-                                else if (!graphSettings.triagonalNavigation)
+                                // { 1, 1, 0 } && { 1, 1, 1 }
+                                if (!graphSettings.diagonalNavigation)
                                 {
                                     continue;
                                 }
@@ -2296,7 +2256,7 @@ public static class Pathfinding3D
                                 weights[connection] = newCost;
 
                                 // Enqueue our connected node to the frontier
-                                frontier.Enqueue(connection, newCost + (CalculateHeuristic(connection, end) * heuristicScale * 2));
+                                frontier.Enqueue(connection, newCost + (CalculateHeuristic(connection, end, !graphSettings.diagonalNavigation) * heuristicScale * (0.0001f + graphSettings.defaultWeight)));
 
                                 // Add our connected node as our key and our current node as our value to the dictionary
                                 from[connection] = current;
@@ -2323,7 +2283,7 @@ public static class Pathfinding3D
             foreach (GridSpace3D to in from.Values)
             {
                 // Calculate the new heuristic
-                HeuristicType newHeuristic = CalculateHeuristic(to, end);
+                HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
 
                 // Check if the new heuristic is closer to the goal
                 if (newHeuristic < currentHeuristic)
@@ -2445,11 +2405,6 @@ public struct GridGraph3D
     public bool diagonalNavigation;
 
     /// <summary>
-    /// Whether this graph enables moving diagonally in two directions.
-    /// </summary>
-    public bool triagonalNavigation;
-
-    /// <summary>
     /// Whether this graph ignores occupied spaces.
     /// </summary>
     public bool ignoreOccupied;
@@ -2482,13 +2437,11 @@ public struct GridGraph3D
     /// <summary>
     /// Graph constructor.
     /// </summary>
-    public GridGraph3D(bool adjacentNavigation = true, bool diagonalNavigation = true, bool triagonalNavigation = true, bool ignoreOccupied = false, HashSet<GridSpace3D> occupied = null, bool invertOccupied = false, bool ignoreWeights = false, Dictionary<GridSpace3D, WeightType> weights = null, WeightType defaultWeight = 1)
+    public GridGraph3D(bool adjacentNavigation = true, bool diagonalNavigation = true, bool ignoreOccupied = false, HashSet<GridSpace3D> occupied = null, bool invertOccupied = false, bool ignoreWeights = false, Dictionary<GridSpace3D, WeightType> weights = null, WeightType defaultWeight = 1)
     {
         this.adjacentNavigation = adjacentNavigation;
 
         this.diagonalNavigation = diagonalNavigation;
-
-        this.triagonalNavigation = triagonalNavigation;
 
         this.ignoreOccupied = ignoreOccupied;
 

@@ -228,7 +228,7 @@ public:
 	// •  Searches every possible node starting from oldest to newest.
 	// •  Time complexity and precision depend on the selected pathfinding algorithm.
 	// •  Will calculate the closest location to the goal if the goal is unreachable.
-	static std::stack<grid_space> pathfind(algorithm algorithm, grid_space start, grid_space end, grid_graph graph_settings, HEURISTIC_TYPE heuristic_scale = 1)
+	static std::stack<grid_space> pathfind(algorithm algorithm, grid_space start, grid_space end, grid_graph graph_settings, HEURISTIC_TYPE heuristic_scale = 1.1f)
 	{
 		switch (algorithm)
 		{
@@ -389,7 +389,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -550,7 +550,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -685,7 +685,7 @@ public:
 						if (!from.count(connection))
 						{
 							// Enqueue our connected node to the frontier
-							frontier.insert({ calculate_heuristic(connection, end), connection });
+							frontier.insert({ calculate_heuristic(connection, end, !graph_settings.diagonal_navigation), connection });
 
 							// Add our connected node as our key and our current node as our value to the map
 							from[connection] = current;
@@ -711,7 +711,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -905,7 +905,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -950,7 +950,7 @@ public:
 	// •  Searches every possible node from oldest to newest but queues nodes with less weight first + the heuristic, and recalculates routes if a faster way to a node is found.
 	// •  Guarantees the fastest and possibly least resistant route in shorter time.
 	// •  Will calculate the closest location to the goal if the goal is unreachable.
-	static std::stack<grid_space> a_star_search(grid_space start, grid_space end, grid_graph graph_settings, HEURISTIC_TYPE heuristic_scale = 1)
+	static std::stack<grid_space> a_star_search(grid_space start, grid_space end, grid_graph graph_settings, HEURISTIC_TYPE heuristic_scale = 1.1f)
 	{
 		// Check that we can actually move
 		if (!graph_settings.adjacent_navigation && !graph_settings.diagonal_navigation)
@@ -1073,7 +1073,7 @@ public:
 							weights[connection] = new_cost;
 
 							// Enqueue our connected node to the frontier
-							frontier.insert({ new_cost + (calculate_heuristic(connection, end) * heuristic_scale * 2), connection });
+							frontier.insert({ new_cost + (calculate_heuristic(connection, end, !graph_settings.diagonal_navigation) * heuristic_scale * (0.0001f + graph_settings.default_weight)), connection });
 
 							// Add our connected node as our key and our current node as our value to the map
 							from[connection] = current;
@@ -1099,7 +1099,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -1226,9 +1226,6 @@ public:
 	// Whether this graph enables moving diagonally.
 	bool diagonal_navigation;
 
-	// Whether this graph enables moving diagonally in two directions.
-	bool triagonal_navigation;
-
 	// Whether this graph ignores occupied spaces.
 	bool ignore_occupied;
 
@@ -1254,8 +1251,6 @@ public:
 
 		this->diagonal_navigation = true;
 
-		this->triagonal_navigation = true;
-
 		this->ignore_occupied = true;
 
 		this->occupied = std::set<grid_space_3D>();
@@ -1270,13 +1265,11 @@ public:
 	}
 
 	// Graph constructor.
-	grid_graph_3D(bool adjacent_navigation, bool diagonal_navigation = true, bool triagonal_navigation = true, bool ignore_occupied = false, std::set<grid_space_3D> occupied = std::set<grid_space_3D>(), bool invert_occupied = false, bool ignore_weights = false, std::map<grid_space_3D, WEIGHT_TYPE> weights = std::map<grid_space_3D, WEIGHT_TYPE>(), WEIGHT_TYPE default_weight = 1)
+	grid_graph_3D(bool adjacent_navigation, bool diagonal_navigation = true, bool ignore_occupied = false, std::set<grid_space_3D> occupied = std::set<grid_space_3D>(), bool invert_occupied = false, bool ignore_weights = false, std::map<grid_space_3D, WEIGHT_TYPE> weights = std::map<grid_space_3D, WEIGHT_TYPE>(), WEIGHT_TYPE default_weight = 1)
 	{
 		this->adjacent_navigation = adjacent_navigation;
 
 		this->diagonal_navigation = diagonal_navigation;
-
-		this->triagonal_navigation = triagonal_navigation;
 
 		this->ignore_occupied = ignore_occupied;
 
@@ -1361,7 +1354,7 @@ public:
 	// •  Searches every possible node starting from oldest to newest.
 	// •  Time complexity and precision depend on the selected pathfinding algorithm.
 	// •  Will calculate the closest location to the goal if the goal is unreachable.
-	static std::stack<grid_space_3D> pathfind(algorithm algorithm, grid_space_3D start, grid_space_3D end, grid_graph_3D graph_settings, HEURISTIC_TYPE heuristic_scale = 1)
+	static std::stack<grid_space_3D> pathfind(algorithm algorithm, grid_space_3D start, grid_space_3D end, grid_graph_3D graph_settings, HEURISTIC_TYPE heuristic_scale = 1.1f)
 	{
 		switch (algorithm)
 		{
@@ -1511,16 +1504,8 @@ public:
 							}
 							else
 							{
-								// { 1, 1, 0 }
-								if (z == 0)
-								{
-									if (!graph_settings.diagonal_navigation)
-									{
-										continue;
-									}
-								}
-								// { 1, 1, 1 }
-								else if (!graph_settings.triagonal_navigation)
+								// { 1, 1, 0 } && { 1, 1, 1 }
+								if (!graph_settings.diagonal_navigation)
 								{
 									continue;
 								}
@@ -1545,34 +1530,34 @@ public:
 					}
 				}
 			}
+		}
 
-			// Clear the frontier
-			frontier = std::stack<grid_space_3D>();
+		// Clear the frontier
+		frontier = std::stack<grid_space_3D>();
 
-			// Check that we made it to our end node
-			if (current != end)
+		// Check that we made it to our end node
+		if (current != end)
+		{
+			// Store our new goal
+			current = start;
+
+			// Store our current heuristic
+			HEURISTIC_TYPE current_heuristic = INT_MAX;
+
+			// Calculate the closest node to our goal
+			for (auto to : from)
 			{
-				// Store our new goal
-				current = start;
+				// Calculate the new heuristic
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
 
-				// Store our current heuristic
-				HEURISTIC_TYPE current_heuristic = INT_MAX;
-
-				// Calculate the closest node to our goal
-				for (auto to : from)
+				// Check if the new heuristic is closer to the goal
+				if (new_heuristic < current_heuristic)
 				{
-					// Calculate the new heuristic
-					HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+					// Mark the new goal
+					current = to.second;
 
-					// Check if the new heuristic is closer to the goal
-					if (new_heuristic < current_heuristic)
-					{
-						// Mark the new goal
-						current = to.second;
-
-						// Update the heuristic
-						current_heuristic = new_heuristic;
-					}
+					// Update the heuristic
+					current_heuristic = new_heuristic;
 				}
 			}
 		}
@@ -1713,16 +1698,8 @@ public:
 							}
 							else
 							{
-								// { 1, 1, 0 }
-								if (z == 0)
-								{
-									if (!graph_settings.diagonal_navigation)
-									{
-										continue;
-									}
-								}
-								// { 1, 1, 1 }
-								else if (!graph_settings.triagonal_navigation)
+								// { 1, 1, 0 } && { 1, 1, 1 }
+								if (!graph_settings.diagonal_navigation)
 								{
 									continue;
 								}
@@ -1765,7 +1742,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -1915,16 +1892,8 @@ public:
 							}
 							else
 							{
-								// { 1, 1, 0 }
-								if (z == 0)
-								{
-									if (!graph_settings.diagonal_navigation)
-									{
-										continue;
-									}
-								}
-								// { 1, 1, 1 }
-								else if (!graph_settings.triagonal_navigation)
+								// { 1, 1, 0 } && { 1, 1, 1 }
+								if (!graph_settings.diagonal_navigation)
 								{
 									continue;
 								}
@@ -1940,7 +1909,7 @@ public:
 							if (!from.count(connection))
 							{
 								// Enqueue our connected node to the frontier
-								frontier.insert({ calculate_heuristic(connection, end), connection });
+								frontier.insert({ calculate_heuristic(connection, end, !graph_settings.diagonal_navigation), connection });
 
 								// Add our connected node as our key and our current node as our value to the map
 								from[connection] = current;
@@ -1967,7 +1936,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -2134,16 +2103,8 @@ public:
 							}
 							else
 							{
-								// { 1, 1, 0 }
-								if (z == 0)
-								{
-									if (!graph_settings.diagonal_navigation)
-									{
-										continue;
-									}
-								}
-								// { 1, 1, 1 }
-								else if (!graph_settings.triagonal_navigation)
+								// { 1, 1, 0 } && { 1, 1, 1 }
+								if (!graph_settings.diagonal_navigation)
 								{
 									continue;
 								}
@@ -2202,7 +2163,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -2247,7 +2208,7 @@ public:
 	// •  Searches every possible node from oldest to newest but queues nodes with less weight first + the heuristic, and recalculates routes if a faster way to a node is found.
 	// •  Guarantees the fastest and possibly least resistant route in shorter time.
 	// •  Will calculate the closest location to the goal if the goal is unreachable.
-	static std::stack<grid_space_3D> a_star_search(grid_space_3D start, grid_space_3D end, grid_graph_3D graph_settings, HEURISTIC_TYPE heuristic_scale = 1)
+	static std::stack<grid_space_3D> a_star_search(grid_space_3D start, grid_space_3D end, grid_graph_3D graph_settings, HEURISTIC_TYPE heuristic_scale = 1.1f)
 	{
 		// Check that we can actually move
 		if (!graph_settings.adjacent_navigation && !graph_settings.diagonal_navigation)
@@ -2369,16 +2330,8 @@ public:
 							}
 							else
 							{
-								// { 1, 1, 0 }
-								if (z == 0)
-								{
-									if (!graph_settings.diagonal_navigation)
-									{
-										continue;
-									}
-								}
-								// { 1, 1, 1 }
-								else if (!graph_settings.triagonal_navigation)
+								// { 1, 1, 0 } && { 1, 1, 1 }
+								if (!graph_settings.diagonal_navigation)
 								{
 									continue;
 								}
@@ -2410,7 +2363,7 @@ public:
 								weights[connection] = new_cost;
 
 								// Enqueue our connected node to the frontier
-								frontier.insert({ new_cost + (calculate_heuristic(connection, end) * heuristic_scale * 2), connection });
+								frontier.insert({ new_cost + (calculate_heuristic(connection, end, !graph_settings.diagonal_navigation) * heuristic_scale * (0.0001f + graph_settings.default_weight)), connection });
 
 								// Add our connected node as our key and our current node as our value to the map
 								from[connection] = current;
@@ -2437,7 +2390,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)

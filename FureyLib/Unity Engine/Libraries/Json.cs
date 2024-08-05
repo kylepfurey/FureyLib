@@ -64,11 +64,7 @@ public static class Json
     /// <returns>The imported Json file's corresponding values. Throws an exception if the file is not a valid Json file.</returns>
     public static DataType Import<DataType>(string path)
     {
-        if (!path.Contains('.'))
-        {
-            path += ".json";
-        }
-        else if (!path.ToLower().Contains(".json"))
+        if (!path.ToLower().Contains(".json"))
         {
             throw new FileNotFoundException("The given path \"" + path + "\" is not to a .json file.");
         }
@@ -129,11 +125,7 @@ public static class Json
     /// <returns>Whether the file's deletion was successful.</returns>
     public static bool Delete<DataType>(string path)
     {
-        if (!path.Contains('.'))
-        {
-            path += ".json";
-        }
-        else if (!path.ToLower().Contains(".json"))
+        if (!path.ToLower().Contains(".json"))
         {
             throw new FileNotFoundException("The given path \"" + path + "\" does not end in .json. Make sure to write the file's name with .json at the end of it.");
         }
@@ -157,11 +149,7 @@ public static class Json
     /// <returns></returns>
     public static bool Exists(string path)
     {
-        if (!path.Contains('.'))
-        {
-            path += ".json";
-        }
-        else if (!path.ToLower().Contains(".json"))
+        if (!path.ToLower().Contains(".json"))
         {
             return false;
         }

@@ -272,6 +272,24 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
         return false;
     }
 
+    /// <summary>
+    /// Returns the highest priority value
+    /// </summary>
+    /// <returns></returns>
+    public PriorityType HighestPriority()
+    {
+        return stack.First.Value.priority;
+    }
+
+    /// <summary>
+    /// Returns the lowest priority value
+    /// </summary>
+    /// <returns></returns>
+    public PriorityType LowestPriority()
+    {
+        return stack.Last.Value.priority;
+    }
+
 
     // MODIFIERS
 
@@ -904,6 +922,24 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Returns the highest priority value
+    /// </summary>
+    /// <returns></returns>
+    public PriorityType HighestPriority()
+    {
+        return stack.First.Value.priority;
+    }
+
+    /// <summary>
+    /// Returns the lowest priority value
+    /// </summary>
+    /// <returns></returns>
+    public PriorityType LowestPriority()
+    {
+        return stack.Last.Value.priority;
     }
 
 

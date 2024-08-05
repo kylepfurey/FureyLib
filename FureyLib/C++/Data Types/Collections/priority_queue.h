@@ -280,6 +280,18 @@ public:
 		return false;
 	}
 
+	// Returns the highest priority value
+	priority_type highest_priority()
+	{
+		return my_queue.front().priority;
+	}
+
+	// Returns the lowest priority value
+	priority_type lowest_priority()
+	{
+		return my_queue.back().priority;
+	}
+
 
 	// MODIFIERS
 

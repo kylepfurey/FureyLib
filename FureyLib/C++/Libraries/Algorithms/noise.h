@@ -57,22 +57,22 @@ private:
 	{
 		switch (hash & 0xF)
 		{
-			case 0x0: return x + y;
-			case 0x1: return -x + y;
-			case 0x2: return x - y;
-			case 0x3: return -x - y;
-			case 0x4: return x + z;
-			case 0x5: return -x + z;
-			case 0x6: return x - z;
-			case 0x7: return -x - z;
-			case 0x8: return y + z;
-			case 0x9: return -y + z;
-			case 0xA: return y - z;
-			case 0xB: return -y - z;
-			case 0xC: return y + x;
-			case 0xD: return -y + z;
-			case 0xE: return y - x;
-			case 0xF: return -y - z;
+		case 0x0: return x + y;
+		case 0x1: return -x + y;
+		case 0x2: return x - y;
+		case 0x3: return -x - y;
+		case 0x4: return x + z;
+		case 0x5: return -x + z;
+		case 0x6: return x - z;
+		case 0x7: return -x - z;
+		case 0x8: return y + z;
+		case 0x9: return -y + z;
+		case 0xA: return y - z;
+		case 0xB: return -y - z;
+		case 0xC: return y + x;
+		case 0xD: return -y + z;
+		case 0xE: return y - x;
+		case 0xF: return -y - z;
 		}
 
 		return 0;
@@ -511,28 +511,24 @@ public:
 	// Blurs the given noise vector together based on the given alpha value.
 	static std::vector<PRECISION> blur(std::vector<PRECISION> vector, PRECISION alpha)
 	{
+		int size_x = vector.size();
+
 		std::vector<PRECISION> copied_vector = std::vector<PRECISION>(vector.size());
 
 		for (int x = 0; x < vector.size(); x++)
 		{
-			PRECISION average = vector[x];
+			PRECISION average = 0;
 
-			int denominator = 1;
+			int denominator = 0;
 
-			// LEFT
-			if (x - 1 >= 0)
+			for (int x_offset = -1; x_offset < 2; x_offset++)
 			{
-				denominator++;
+				if (x + x_offset >= 0 && x + x_offset < size_x)
+				{
+					denominator++;
 
-				average += vector[x - 1];
-			}
-
-			// RIGHT
-			if (x + 1 < vector.size())
-			{
-				denominator++;
-
-				average += vector[x + 1];
+					average += vector[x + x_offset];
+				}
 			}
 
 			average /= denominator;
@@ -544,11 +540,11 @@ public:
 	}
 
 	// Blurs the given noise vector together based on the given alpha value.
-	static array_2D<PRECISION> blur(array_2D<PRECISION> vector, PRECISION alpha)
+	static array_2D<PRECISION> blur(array_2D<PRECISION> array, PRECISION alpha)
 	{
-		int size_x = vector.size_x();
+		int size_x = array.size_x();
 
-		int size_y = vector.size_y();
+		int size_y = array.size_y();
 
 		array_2D<PRECISION> copied_vector = array_2D<PRECISION>(size_x, size_y);
 
@@ -556,77 +552,26 @@ public:
 		{
 			for (int x = 0; x < size_x; x++)
 			{
-				PRECISION average = vector[{x, y}];
+				PRECISION average = 0;
 
-				int denominator = 1;
+				int denominator = 0;
 
-				// LEFT
-				if (x - 1 >= 0)
+				for (int y_offset = -1; y_offset < 2; y_offset++)
 				{
-					denominator++;
+					for (int x_offset = -1; x_offset < 2; x_offset++)
+					{
+						if (x + x_offset >= 0 && x + x_offset < size_x && y + y_offset >= 0 && y + y_offset < size_y)
+						{
+							denominator++;
 
-					average += vector[{x - 1, y}];
-				}
-
-				// RIGHT
-				if (x + 1 < size_x)
-				{
-					denominator++;
-
-					average += vector[{x + 1, y}];
-				}
-
-				// DOWN
-				if (y - 1 >= 0)
-				{
-					denominator++;
-
-					average += vector[{x, y - 1}];
-				}
-
-				// UP
-				if (y + 1 < size_y)
-				{
-					denominator++;
-
-					average += vector[{x, y + 1}];
-				}
-
-				// LEFT DOWN
-				if (x - 1 >= 0 && y - 1 >= 0)
-				{
-					denominator++;
-
-					average += vector[{x - 1, y - 1}];
-				}
-
-				// RIGHT DOWN
-				if (x + 1 < size_x && y - 1 >= 0)
-				{
-					denominator++;
-
-					average += vector[{x + 1, y - 1}];
-				}
-
-				// RIGHT UP
-				if (x + 1 < size_x && y + 1 < size_y)
-				{
-					denominator++;
-
-					average += vector[{x + 1, y + 1}];
-				}
-
-				// LEFT UP
-				if (x - 1 >= 0 && y + 1 < size_y)
-				{
-					denominator++;
-
-					average += vector[{x - 1, y + 1}];
+							average += array[{x + x_offset, y + y_offset}];
+						}
+					}
 				}
 
 				average /= denominator;
 
-				copied_vector[{x, y}] = lerp(vector[{x, y}], average, alpha);
+				copied_vector[{x, y}] = lerp(array[{x, y}], average, alpha);
 			}
 		}
 
@@ -634,13 +579,13 @@ public:
 	}
 
 	// Blurs the given noise vector together based on the given alpha value.
-	static array_3D<PRECISION> blur(array_3D<PRECISION> vector, PRECISION alpha)
+	static array_3D<PRECISION> blur(array_3D<PRECISION> array, PRECISION alpha)
 	{
-		int size_x = vector.size_x();
+		int size_x = array.size_x();
 
-		int size_y = vector.size_y();
+		int size_y = array.size_y();
 
-		int size_z = vector.size_z();
+		int size_z = array.size_z();
 
 		array_3D<PRECISION> copied_vector = array_3D<PRECISION>(size_x, size_y, size_z);
 
@@ -664,7 +609,7 @@ public:
 								{
 									denominator++;
 
-									average += vector[{x + x_offset, y + y_offset, z + z_offset}];
+									average += array[{x + x_offset, y + y_offset, z + z_offset}];
 								}
 							}
 						}
@@ -672,7 +617,7 @@ public:
 
 					average /= denominator;
 
-					copied_vector[{x, y, z}] = lerp(vector[{x, y, z}], average, alpha);
+					copied_vector[{x, y, z}] = lerp(array[{x, y, z}], average, alpha);
 				}
 			}
 		}
@@ -684,8 +629,13 @@ public:
 
 // STATIC VARIABLE INITIALIZATION
 
+// The seed used to calculate random noise values. The seed is random by default.
 int noise::seed = noise::set_seed(std::random_device()());
+
+// The default value to tile the noise at.
 int perlin::tiling = 0;
+
+// Ken Perlin's permutation table.
 unsigned char perlin::permutation[] =
 {
 	151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,

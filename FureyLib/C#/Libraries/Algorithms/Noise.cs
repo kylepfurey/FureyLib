@@ -381,28 +381,24 @@ public static class Noise
     /// </summary>
     public static Precision[] Blur(Precision[] array, Precision alpha)
     {
+        int xLength = array.Length;
+
         Precision[] copiedArray = new Precision[array.Length];
 
         for (int x = 0; x < array.Length; x++)
         {
-            Precision average = array[x];
+            Precision average = 0;
 
-            int denominator = 1;
+            int denominator = 0;
 
-            // LEFT
-            if (x - 1 >= 0)
+            for (int xOffset = -1; xOffset < 2; xOffset++)
             {
-                denominator++;
+                if (x + xOffset >= 0 && x + xOffset < xLength)
+                {
+                    denominator++;
 
-                average += array[x - 1];
-            }
-
-            // RIGHT
-            if (x + 1 < array.Length)
-            {
-                denominator++;
-
-                average += array[x + 1];
+                    average += array[x + xOffset];
+                }
             }
 
             average /= denominator;
@@ -428,72 +424,21 @@ public static class Noise
         {
             for (int x = 0; x < xLength; x++)
             {
-                Precision average = array[x, y];
+                Precision average = 0;
 
-                int denominator = 1;
+                int denominator = 0;
 
-                // LEFT
-                if (x - 1 >= 0)
+                for (int yOffset = -1; yOffset < 2; yOffset++)
                 {
-                    denominator++;
+                    for (int xOffset = -1; xOffset < 2; xOffset++)
+                    {
+                        if (x + xOffset >= 0 && x + xOffset < xLength && y + yOffset >= 0 && y + yOffset < yLength)
+                        {
+                            denominator++;
 
-                    average += array[x - 1, y];
-                }
-
-                // RIGHT
-                if (x + 1 < xLength)
-                {
-                    denominator++;
-
-                    average += array[x + 1, y];
-                }
-
-                // DOWN
-                if (y - 1 >= 0)
-                {
-                    denominator++;
-
-                    average += array[x, y - 1];
-                }
-
-                // UP
-                if (y + 1 < yLength)
-                {
-                    denominator++;
-
-                    average += array[x, y + 1];
-                }
-
-                // LEFT DOWN
-                if (x - 1 >= 0 && y - 1 >= 0)
-                {
-                    denominator++;
-
-                    average += array[x - 1, y - 1];
-                }
-
-                // RIGHT DOWN
-                if (x + 1 < xLength && y - 1 >= 0)
-                {
-                    denominator++;
-
-                    average += array[x + 1, y - 1];
-                }
-
-                // RIGHT UP
-                if (x + 1 < xLength && y + 1 < yLength)
-                {
-                    denominator++;
-
-                    average += array[x + 1, y + 1];
-                }
-
-                // LEFT UP
-                if (x - 1 >= 0 && y + 1 < yLength)
-                {
-                    denominator++;
-
-                    average += array[x - 1, y + 1];
+                            average += array[x + xOffset, y + yOffset];
+                        }
+                    }
                 }
 
                 average /= denominator;

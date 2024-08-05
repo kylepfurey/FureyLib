@@ -117,7 +117,7 @@ public static class Json
     /// <summary>
     /// Creates or overwrites a Json file of the given data to the given path.
     /// </summary>
-    /// <returns>Whether a Json file was overwritten (a file is always created unless an exception is thrown).</returns>
+    /// <returns>Whether a Json file was overwritten. Throws an exception if the destination is not a valid Json file.</returns>
     public static bool Export<DataType>(DataType data, string path)
     {
         if (!path.ToLower().Contains(".json"))
@@ -144,7 +144,7 @@ public static class Json
     /// <summary>
     /// Deletes the Json file at the given path.
     /// </summary>
-    /// <returns>Whether the file's deletion was successful.</returns>
+    /// <returns>Whether the file's deletion was successful. Throws an exception if the file is not a valid Json file.</returns>
     public static bool Delete<DataType>(string path)
     {
         if (!path.ToLower().Contains(".json"))
@@ -154,7 +154,7 @@ public static class Json
 
         if (!File.Exists(path))
         {
-            return false;
+            throw new JsonException("The given .json file does not exist at path \"" + path + "\".");
         }
         else
         {

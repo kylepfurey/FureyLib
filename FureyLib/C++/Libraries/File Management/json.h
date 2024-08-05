@@ -52,6 +52,7 @@ public:
 
 	// •  Reads a Json file at the given path and returns its data.
 	// •  Returns the imported Json file's corresponding values.
+	// •  Throws an exception if the file is not a valid Json file.
 	template <typename data_type> static data_type load(std::string path)
 	{
 		if (to_lower(path).find(".json") == std::string::npos)
@@ -84,6 +85,7 @@ public:
 
 	// •  Creates or overwrites a Json file of the given data to the given path.
 	// •  Returns whether a Json file was overwritten.
+	// •  Throws an exception if the destination is not a valid Json file.
 	static bool save(object* data, std::string path)
 	{
 		if (to_lower(path).find(".json") == std::string::npos)
@@ -106,6 +108,7 @@ public:
 
 	// •  Creates or overwrites a Json file of the given data to the given path.
 	// •  Returns whether a Json file was overwritten.
+	// •  Throws an exception if the destination is not a valid Json file.
 	template <typename data_type> static bool save(data_type& data, std::string path)
 	{
 		if (to_lower(path).find(".json") == std::string::npos)
@@ -128,6 +131,7 @@ public:
 
 	// •  Deletes the Json file at the given path.
 	// •  Returns whether the file's deletion was successful.
+	// •  Throws an exception if the file is not a valid Json file.
 	static bool erase(std::string path)
 	{
 		if (to_lower(path).find(".json") == std::string::npos)
@@ -139,7 +143,7 @@ public:
 
 		if (stat(path.c_str(), &storage) != 0)
 		{
-			return false;
+			std::abort();
 		}
 		else
 		{

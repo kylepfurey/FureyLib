@@ -699,7 +699,7 @@ public:
 					weights[connection.to] = new_cost;
 
 					// Enqueue our connected node to the frontier based on the heuristic function
-					frontier.push(connection.to, new_cost + (calculate_heuristic(connection.to, end) * heuristic_scale));
+					frontier.push(connection.to, new_cost + (calculate_heuristic(connection.to, end) * heuristic_scale * 2));
 
 					// Add our connected node as our key and our current node as our value to the dictionary
 					from[connection.to] = current;

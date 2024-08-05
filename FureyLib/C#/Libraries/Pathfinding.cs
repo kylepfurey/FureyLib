@@ -720,7 +720,7 @@ public static class Pathfinding
                     weights[connection.to] = newCost;
 
                     // Enqueue our connected node to the frontier based on the heuristic function
-                    frontier.Enqueue(connection.to, newCost + (CalculateHeuristic(connection.to, end) * heuristicScale));
+                    frontier.Enqueue(connection.to, newCost + (CalculateHeuristic(connection.to, end) * heuristicScale * 2));
 
                     // Add our connected node as our key and our current node as our value to the dictionary
                     from[connection.to] = current;

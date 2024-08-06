@@ -189,7 +189,7 @@ public static class Pathfinding2D
                 break;
             }
 
-            // Dequeue our current node and increment our number of loops
+            // Dequeue our current node
             current = frontier.Pop();
 
             // Check if we made it to our goal
@@ -350,7 +350,7 @@ public static class Pathfinding2D
                 break;
             }
 
-            // Dequeue our current node and increment our number of loops
+            // Dequeue our current node
             current = frontier.Dequeue();
 
             // Check if we made it to our goal
@@ -511,7 +511,7 @@ public static class Pathfinding2D
                 break;
             }
 
-            // Dequeue our current node and increment our number of loops
+            // Dequeue our current node
             current = frontier.Dequeue();
 
             // Check if we made it to our goal
@@ -519,6 +519,9 @@ public static class Pathfinding2D
             {
                 break;
             }
+
+            // Compare connections with the current change in space to prefer diagonal movements
+            bool direction = Math.Abs(end.x - current.x) < Math.Abs(end.y - current.y);
 
             // Loop through connections
             for (int y = -1; y < 2; y++)
@@ -558,13 +561,21 @@ public static class Pathfinding2D
                     // Store the current connection
                     GridSpace connection = current + new GridSpace(x, y);
 
+                    // Check for a diagonal bonus
+                    bool bonus = false;
+
+                    if (!graphSettings.diagonalNavigation)
+                    {
+                        bonus = direction == (connection.y - current.y != 0);
+                    }
+
                     if (graphSettings.ignoreOccupied || graphSettings.occupied == null || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
                     {
                         // Check that our connected node is not currently in our dictionary
                         if (!from.ContainsKey(connection))
                         {
                             // Enqueue our connected node to the frontier
-                            frontier.Enqueue(connection, CalculateHeuristic(connection, end, !graphSettings.diagonalNavigation));
+                            frontier.Enqueue(connection, CalculateHeuristic(connection, end, !graphSettings.diagonalNavigation) + (bonus ? 0 : 0.0001f));
 
                             // Add our connected node as our key and our current node as our value to the dictionary
                             from[connection] = current;
@@ -691,7 +702,7 @@ public static class Pathfinding2D
                 break;
             }
 
-            // Dequeue our current node and increment our number of loops
+            // Dequeue our current node
             current = frontier.Dequeue();
 
             // Check if we made it to our goal
@@ -699,6 +710,9 @@ public static class Pathfinding2D
             {
                 break;
             }
+
+            // Compare connections with the current change in space to prefer diagonal movements
+            bool direction = Math.Abs(end.x - current.x) < Math.Abs(end.y - current.y);
 
             // Loop through connections
             for (int y = -1; y < 2; y++)
@@ -741,6 +755,14 @@ public static class Pathfinding2D
                     // Store the new total cost
                     WeightType newCost;
 
+                    // Check for a diagonal bonus
+                    bool bonus = false;
+
+                    if (!graphSettings.diagonalNavigation)
+                    {
+                        bonus = direction == (connection.y - current.y != 0);
+                    }
+
                     // Store the new total cost of traveling this node
                     if (graphSettings.ignoreWeights || graphSettings.weights == null || !graphSettings.weights.ContainsKey(connection))
                     {
@@ -760,7 +782,7 @@ public static class Pathfinding2D
                             weights[connection] = newCost;
 
                             // Enqueue our connected node to the frontier
-                            frontier.Enqueue(connection, newCost);
+                            frontier.Enqueue(connection, newCost + (bonus ? 0 : 0.0001f));
 
                             // Add our connected node as our key and our current node as our value to the dictionary
                             from[connection] = current;
@@ -887,7 +909,7 @@ public static class Pathfinding2D
                 break;
             }
 
-            // Dequeue our current node and increment our number of loops
+            // Dequeue our current node
             current = frontier.Dequeue();
 
             // Check if we made it to our goal
@@ -895,6 +917,9 @@ public static class Pathfinding2D
             {
                 break;
             }
+
+            // Compare connections with the current change in space to prefer diagonal movements
+            bool direction = Math.Abs(end.x - current.x) < Math.Abs(end.y - current.y);
 
             // Loop through connections
             for (int y = -1; y < 2; y++)
@@ -937,6 +962,14 @@ public static class Pathfinding2D
                     // Store the new total cost
                     WeightType newCost;
 
+                    // Check for a diagonal bonus
+                    bool bonus = false;
+
+                    if (!graphSettings.diagonalNavigation)
+                    {
+                        bonus = direction == (connection.y - current.y != 0);
+                    }
+
                     // Store the new total cost of traveling this node
                     if (graphSettings.ignoreWeights || graphSettings.weights == null || !graphSettings.weights.ContainsKey(connection))
                     {
@@ -956,7 +989,7 @@ public static class Pathfinding2D
                             weights[connection] = newCost;
 
                             // Enqueue our connected node to the frontier
-                            frontier.Enqueue(connection, newCost + (CalculateHeuristic(connection, end, !graphSettings.diagonalNavigation) * heuristicScale * (0.0001f + graphSettings.defaultWeight)));
+                            frontier.Enqueue(connection, newCost + (CalculateHeuristic(connection, end, !graphSettings.diagonalNavigation) * heuristicScale * (0.0001f + graphSettings.defaultWeight)) + (bonus ? 0 : 0.0001f));
 
                             // Add our connected node as our key and our current node as our value to the dictionary
                             from[connection] = current;
@@ -1325,7 +1358,7 @@ public static class Pathfinding3D
                 break;
             }
 
-            // Dequeue our current node and increment our number of loops
+            // Dequeue our current node
             current = frontier.Pop();
 
             // Check if we made it to our goal
@@ -1519,7 +1552,7 @@ public static class Pathfinding3D
                 break;
             }
 
-            // Dequeue our current node and increment our number of loops
+            // Dequeue our current node
             current = frontier.Dequeue();
 
             // Check if we made it to our goal
@@ -1713,13 +1746,46 @@ public static class Pathfinding3D
                 break;
             }
 
-            // Dequeue our current node and increment our number of loops
+            // Dequeue our current node
             current = frontier.Dequeue();
 
             // Check if we made it to our goal
             if (current == end)
             {
                 break;
+            }
+
+            // Compare connections with the current change in space to prefer diagonal movements
+            int direction = 0;
+
+            if (!graphSettings.diagonalNavigation)
+            {
+                if (Math.Abs(end.x - current.x) < Math.Abs(end.y - current.y))
+                {
+                    // Z >
+                    if (Math.Abs(end.y - current.y) < Math.Abs(end.z - current.z))
+                    {
+                        direction = 3;
+                    }
+                    // Y >
+                    else
+                    {
+                        direction = 2;
+                    }
+                }
+                else
+                {
+                    // Z >
+                    if (Math.Abs(end.x - current.x) < Math.Abs(end.z - current.z))
+                    {
+                        direction = 3;
+                    }
+                    // X >
+                    else
+                    {
+                        direction = 1;
+                    }
+                }
             }
 
             // Loop through connections
@@ -1792,13 +1858,43 @@ public static class Pathfinding3D
                         // Store the current connection
                         GridSpace3D connection = current + new GridSpace3D(x, y, z);
 
+                        // Check for a diagonal bonus
+                        bool bonus = false;
+
+                        if (!graphSettings.diagonalNavigation)
+                        {
+                            switch (direction)
+                            {
+                                // X
+                                case 1:
+
+                                    bonus = connection.x - current.x != 0;
+
+                                    break;
+
+                                // Y
+                                case 2:
+
+                                    bonus = connection.y - current.y != 0;
+
+                                    break;
+
+                                // Z
+                                case 3:
+
+                                    bonus = connection.z - current.z != 0;
+
+                                    break;
+                            }
+                        }
+
                         if (graphSettings.ignoreOccupied || graphSettings.occupied == null || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
                         {
                             // Check that our connected node is not currently in our dictionary
                             if (!from.ContainsKey(connection))
                             {
                                 // Enqueue our connected node to the frontier
-                                frontier.Enqueue(connection, CalculateHeuristic(connection, end, !graphSettings.diagonalNavigation));
+                                frontier.Enqueue(connection, CalculateHeuristic(connection, end, !graphSettings.diagonalNavigation) + (bonus ? 0 : 0.0001f));
 
                                 // Add our connected node as our key and our current node as our value to the dictionary
                                 from[connection] = current;
@@ -1926,13 +2022,46 @@ public static class Pathfinding3D
                 break;
             }
 
-            // Dequeue our current node and increment our number of loops
+            // Dequeue our current node
             current = frontier.Dequeue();
 
             // Check if we made it to our goal
             if (current == end)
             {
                 break;
+            }
+
+            // Compare connections with the current change in space to prefer diagonal movements
+            int direction = 0;
+
+            if (!graphSettings.diagonalNavigation)
+            {
+                if (Math.Abs(end.x - current.x) < Math.Abs(end.y - current.y))
+                {
+                    // Z >
+                    if (Math.Abs(end.y - current.y) < Math.Abs(end.z - current.z))
+                    {
+                        direction = 3;
+                    }
+                    // Y >
+                    else
+                    {
+                        direction = 2;
+                    }
+                }
+                else
+                {
+                    // Z >
+                    if (Math.Abs(end.x - current.x) < Math.Abs(end.z - current.z))
+                    {
+                        direction = 3;
+                    }
+                    // X >
+                    else
+                    {
+                        direction = 1;
+                    }
+                }
             }
 
             // Loop through connections
@@ -2008,6 +2137,36 @@ public static class Pathfinding3D
                         // Store the new total cost
                         WeightType newCost;
 
+                        // Check for a diagonal bonus
+                        bool bonus = false;
+
+                        if (!graphSettings.diagonalNavigation)
+                        {
+                            switch (direction)
+                            {
+                                // X
+                                case 1:
+
+                                    bonus = connection.x - current.x != 0;
+
+                                    break;
+
+                                // Y
+                                case 2:
+
+                                    bonus = connection.y - current.y != 0;
+
+                                    break;
+
+                                // Z
+                                case 3:
+
+                                    bonus = connection.z - current.z != 0;
+
+                                    break;
+                            }
+                        }
+
                         // Store the new total cost of traveling this node
                         if (graphSettings.ignoreWeights || graphSettings.weights == null || !graphSettings.weights.ContainsKey(connection))
                         {
@@ -2027,7 +2186,7 @@ public static class Pathfinding3D
                                 weights[connection] = newCost;
 
                                 // Enqueue our connected node to the frontier
-                                frontier.Enqueue(connection, newCost);
+                                frontier.Enqueue(connection, newCost + (bonus ? 0 : 0.0001f));
 
                                 // Add our connected node as our key and our current node as our value to the dictionary
                                 from[connection] = current;
@@ -2155,13 +2314,46 @@ public static class Pathfinding3D
                 break;
             }
 
-            // Dequeue our current node and increment our number of loops
+            // Dequeue our current node
             current = frontier.Dequeue();
 
             // Check if we made it to our goal
             if (current == end)
             {
                 break;
+            }
+
+            // Compare connections with the current change in space to prefer diagonal movements
+            int direction = 0;
+
+            if (!graphSettings.diagonalNavigation)
+            {
+                if (Math.Abs(end.x - current.x) < Math.Abs(end.y - current.y))
+                {
+                    // Z >
+                    if (Math.Abs(end.y - current.y) < Math.Abs(end.z - current.z))
+                    {
+                        direction = 3;
+                    }
+                    // Y >
+                    else
+                    {
+                        direction = 2;
+                    }
+                }
+                else
+                {
+                    // Z >
+                    if (Math.Abs(end.x - current.x) < Math.Abs(end.z - current.z))
+                    {
+                        direction = 3;
+                    }
+                    // X >
+                    else
+                    {
+                        direction = 1;
+                    }
+                }
             }
 
             // Loop through connections
@@ -2237,6 +2429,36 @@ public static class Pathfinding3D
                         // Store the new total cost
                         WeightType newCost;
 
+                        // Check for a diagonal bonus
+                        bool bonus = false;
+
+                        if (!graphSettings.diagonalNavigation)
+                        {
+                            switch (direction)
+                            {
+                                // X
+                                case 1:
+
+                                    bonus = connection.x - current.x != 0;
+
+                                    break;
+
+                                // Y
+                                case 2:
+
+                                    bonus = connection.y - current.y != 0;
+
+                                    break;
+
+                                // Z
+                                case 3:
+
+                                    bonus = connection.z - current.z != 0;
+
+                                    break;
+                            }
+                        }
+
                         // Store the new total cost of traveling this node
                         if (graphSettings.ignoreWeights || graphSettings.weights == null || !graphSettings.weights.ContainsKey(connection))
                         {
@@ -2256,7 +2478,7 @@ public static class Pathfinding3D
                                 weights[connection] = newCost;
 
                                 // Enqueue our connected node to the frontier
-                                frontier.Enqueue(connection, newCost + (CalculateHeuristic(connection, end, !graphSettings.diagonalNavigation) * heuristicScale * (0.0001f + graphSettings.defaultWeight)));
+                                frontier.Enqueue(connection, newCost + (CalculateHeuristic(connection, end, !graphSettings.diagonalNavigation) * heuristicScale * (0.0001f + graphSettings.defaultWeight)) + (bonus ? 0 : 0.0001f));
 
                                 // Add our connected node as our key and our current node as our value to the dictionary
                                 from[connection] = current;

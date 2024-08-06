@@ -16,7 +16,7 @@
 #include <climits>
 
 // Include this heading to use the library
-#include "pathfinding_grid.h";
+#include "pathfinding_grid.h"
 
 // Define the heuristic value type.
 #define HEURISTIC_TYPE float
@@ -285,7 +285,7 @@ public:
 
 		// Make a map to store each node's node before it (which will eventually store the route from the end node to the start)
 		// KEY = TO  VALUE = FROM
-		// from[currentgrid_space] = the node immediately before currentgrid_space
+		// from[current_grid_space] = the node immediately before current_grid_space
 		std::map<grid_space, grid_space> from = std::map<grid_space, grid_space>
 		{
 			// Set our start node's value to an impossible node in our route map
@@ -308,7 +308,7 @@ public:
 				break;
 			}
 
-			// Pop our current node and increment our number of loops
+			// Pop our current node
 			current = frontier.top();
 
 			frontier.pop();
@@ -446,7 +446,7 @@ public:
 
 		// Make a map to store each node's node before it (which will eventually store the route from the end node to the start)
 		// KEY = TO  VALUE = FROM
-		// from[currentgrid_space] = the node immediately before currentgrid_space
+		// from[current_grid_space] = the node immediately before current_grid_space
 		std::map<grid_space, grid_space> from = std::map<grid_space, grid_space>
 		{
 			// Set our start node's value to an impossible node in our route map
@@ -469,7 +469,7 @@ public:
 				break;
 			}
 
-			// Pop our current node and increment our number of loops
+			// Pop our current node
 			current = frontier.front();
 
 			frontier.pop();
@@ -630,7 +630,7 @@ public:
 				break;
 			}
 
-			// Pop our current node and increment our number of loops
+			// Pop our current node
 			current = frontier.begin()->second;
 
 			frontier.erase(frontier.begin()->first);
@@ -640,6 +640,9 @@ public:
 			{
 				break;
 			}
+
+			// Compare connections with the current change in space to prefer diagonal movements
+			bool direction = std::abs(end.x - current.x) < std::abs(end.y - current.y);
 
 			// Loop through connections
 			for (int y = -1; y < 2; y++)
@@ -679,13 +682,21 @@ public:
 					// Store the current connection
 					grid_space connection = current + grid_space(x, y);
 
+					// Check for a diagonal bonus
+					bool bonus = false;
+
+					if (!graph_settings.diagonal_navigation)
+					{
+						bonus = direction == (connection.y - current.y != 0);
+					}
+
 					if (graph_settings.ignore_occupied || (graph_settings.invert_occupied ? graph_settings.occupied.count(connection) : !graph_settings.occupied.count(connection)))
 					{
 						// Check that our connected node is not currently in our map
 						if (!from.count(connection))
 						{
 							// Enqueue our connected node to the frontier
-							frontier.insert({ calculate_heuristic(connection, end, !graph_settings.diagonal_navigation), connection });
+							frontier.insert({ calculate_heuristic(connection, end, !graph_settings.diagonal_navigation) + (bonus ? 0 : 0.0001f), connection });
 
 							// Add our connected node as our key and our current node as our value to the map
 							from[connection] = current;
@@ -778,7 +789,7 @@ public:
 
 		// Make a map to store each node's node before it (which will eventually store the route from the end node to the start)
 		// KEY = TO  VALUE = FROM
-		// from[currentgrid_space] = the node immediately before currentgrid_space
+		// from[current_grid_space] = the node immediately before current_grid_space
 		std::map<grid_space, grid_space> from = std::map<grid_space, grid_space>
 		{
 			// Set our start node's value to an impossible node in our route map
@@ -808,7 +819,7 @@ public:
 				break;
 			}
 
-			// Pop our current node and increment our number of loops
+			// Pop our current node
 			current = frontier.begin()->second;
 
 			frontier.erase(frontier.begin()->first);
@@ -818,6 +829,9 @@ public:
 			{
 				break;
 			}
+
+			// Compare connections with the current change in space to prefer diagonal movements
+			bool direction = std::abs(end.x - current.x) < std::abs(end.y - current.y);
 
 			// Loop through connections
 			for (int y = -1; y < 2; y++)
@@ -860,6 +874,14 @@ public:
 					// Store the total cost
 					WEIGHT_TYPE new_cost;
 
+					// Check for a diagonal bonus
+					bool bonus = false;
+
+					if (!graph_settings.diagonal_navigation)
+					{
+						bonus = direction == (connection.y - current.y != 0);
+					}
+
 					// Store the total cost of traveling this node
 					if (graph_settings.ignore_weights || !graph_settings.weights.count(connection))
 					{
@@ -879,7 +901,7 @@ public:
 							weights[connection] = new_cost;
 
 							// Enqueue our connected node to the frontier
-							frontier.insert({ new_cost, connection });
+							frontier.insert({ new_cost + (bonus ? 0 : 0.0001f), connection });
 
 							// Add our connected node as our key and our current node as our value to the map
 							from[connection] = current;
@@ -972,7 +994,7 @@ public:
 
 		// Make a map to store each node's node before it (which will eventually store the route from the end node to the start)
 		// KEY = TO  VALUE = FROM
-		// from[currentgrid_space] = the node immediately before currentgrid_space
+		// from[current_grid_space] = the node immediately before current_grid_space
 		std::map<grid_space, grid_space> from = std::map<grid_space, grid_space>
 		{
 			// Set our start node's value to an impossible node in our route map
@@ -1002,7 +1024,7 @@ public:
 				break;
 			}
 
-			// Pop our current node and increment our number of loops
+			// Pop our current node
 			current = frontier.begin()->second;
 
 			frontier.erase(frontier.begin()->first);
@@ -1012,6 +1034,9 @@ public:
 			{
 				break;
 			}
+
+			// Compare connections with the current change in space to prefer diagonal movements
+			bool direction = std::abs(end.x - current.x) < std::abs(end.y - current.y);
 
 			// Loop through connections
 			for (int y = -1; y < 2; y++)
@@ -1054,6 +1079,14 @@ public:
 					// Store the total cost
 					WEIGHT_TYPE new_cost;
 
+					// Check for a diagonal bonus
+					bool bonus = false;
+
+					if (!graph_settings.diagonal_navigation)
+					{
+						bonus = direction == (connection.y - current.y != 0);
+					}
+
 					// Store the total cost of traveling this node
 					if (graph_settings.ignore_weights || !graph_settings.weights.count(connection))
 					{
@@ -1073,7 +1106,7 @@ public:
 							weights[connection] = new_cost;
 
 							// Enqueue our connected node to the frontier
-							frontier.insert({ new_cost + (calculate_heuristic(connection, end, !graph_settings.diagonal_navigation) * heuristic_scale * (0.0001f + graph_settings.default_weight)), connection });
+							frontier.insert({ new_cost + (calculate_heuristic(connection, end, !graph_settings.diagonal_navigation) * heuristic_scale * (0.0001f + graph_settings.default_weight)) + (bonus ? 0 : 0.0001f), connection });
 
 							// Add our connected node as our key and our current node as our value to the map
 							from[connection] = current;
@@ -1411,7 +1444,7 @@ public:
 
 		// Make a map to store each node's node before it (which will eventually store the route from the end node to the start)
 		// KEY = TO  VALUE = FROM
-		// from[currentgrid_space_3D] = the node immediately before currentgrid_space_3D
+		// from[current_grid_space_3D] = the node immediately before current_grid_space_3D
 		std::map<grid_space_3D, grid_space_3D> from = std::map<grid_space_3D, grid_space_3D>
 		{
 			// Set our start node's value to an impossible node in our route map
@@ -1434,7 +1467,7 @@ public:
 				break;
 			}
 
-			// Pop our current node and increment our number of loops
+			// Pop our current node
 			current = frontier.top();
 
 			frontier.pop();
@@ -1605,7 +1638,7 @@ public:
 
 		// Make a map to store each node's node before it (which will eventually store the route from the end node to the start)
 		// KEY = TO  VALUE = FROM
-		// from[currentgrid_space_3D] = the node immediately before currentgrid_space_3D
+		// from[current_grid_space_3D] = the node immediately before current_grid_space_3D
 		std::map<grid_space_3D, grid_space_3D> from = std::map<grid_space_3D, grid_space_3D>
 		{
 			// Set our start node's value to an impossible node in our route map
@@ -1628,7 +1661,7 @@ public:
 				break;
 			}
 
-			// Pop our current node and increment our number of loops
+			// Pop our current node
 			current = frontier.front();
 
 			frontier.pop();
@@ -1822,7 +1855,7 @@ public:
 				break;
 			}
 
-			// Pop our current node and increment our number of loops
+			// Pop our current node
 			current = frontier.begin()->second;
 
 			frontier.erase(frontier.begin()->first);
@@ -1831,6 +1864,39 @@ public:
 			if (current == end)
 			{
 				break;
+			}
+
+			// Compare connections with the current change in space to prefer diagonal movements
+			int direction = 0;
+
+			if (!graph_settings.diagonal_navigation)
+			{
+				if (std::abs(end.x - current.x) < std::abs(end.y - current.y))
+				{
+					// Z >
+					if (std::abs(end.y - current.y) < std::abs(end.z - current.z))
+					{
+						direction = 3;
+					}
+					// Y >
+					else
+					{
+						direction = 2;
+					}
+				}
+				else
+				{
+					// Z >
+					if (std::abs(end.x - current.x) < std::abs(end.z - current.z))
+					{
+						direction = 3;
+					}
+					// X >
+					else
+					{
+						direction = 1;
+					}
+				}
 			}
 
 			// Loop through connections
@@ -1903,13 +1969,43 @@ public:
 						// Store the current connection
 						grid_space_3D connection = current + grid_space_3D(x, y, z);
 
+						// Check for a diagonal bonus
+						bool bonus = false;
+
+						if (!graph_settings.diagonal_navigation)
+						{
+							switch (direction)
+							{
+								// X
+							case 1:
+
+								bonus = connection.x - current.x != 0;
+
+								break;
+
+								// Y
+							case 2:
+
+								bonus = connection.y - current.y != 0;
+
+								break;
+
+								// Z
+							case 3:
+
+								bonus = connection.z - current.z != 0;
+
+								break;
+							}
+						}
+
 						if (graph_settings.ignore_occupied || (graph_settings.invert_occupied ? graph_settings.occupied.count(connection) : !graph_settings.occupied.count(connection)))
 						{
 							// Check that our connected node is not currently in our map
 							if (!from.count(connection))
 							{
 								// Enqueue our connected node to the frontier
-								frontier.insert({ calculate_heuristic(connection, end, !graph_settings.diagonal_navigation), connection });
+								frontier.insert({ calculate_heuristic(connection, end, !graph_settings.diagonal_navigation) + (bonus ? 0 : 0.0001f), connection });
 
 								// Add our connected node as our key and our current node as our value to the map
 								from[connection] = current;
@@ -2003,7 +2099,7 @@ public:
 
 		// Make a map to store each node's node before it (which will eventually store the route from the end node to the start)
 		// KEY = TO  VALUE = FROM
-		// from[currentgrid_space_3D] = the node immediately before currentgrid_space_3D
+		// from[current_grid_space_3D] = the node immediately before current_grid_space_3D
 		std::map<grid_space_3D, grid_space_3D> from = std::map<grid_space_3D, grid_space_3D>
 		{
 			// Set our start node's value to an impossible node in our route map
@@ -2033,7 +2129,7 @@ public:
 				break;
 			}
 
-			// Pop our current node and increment our number of loops
+			// Pop our current node
 			current = frontier.begin()->second;
 
 			frontier.erase(frontier.begin()->first);
@@ -2042,6 +2138,39 @@ public:
 			if (current == end)
 			{
 				break;
+			}
+
+			// Compare connections with the current change in space to prefer diagonal movements
+			int direction = 0;
+
+			if (!graph_settings.diagonal_navigation)
+			{
+				if (std::abs(end.x - current.x) < std::abs(end.y - current.y))
+				{
+					// Z >
+					if (std::abs(end.y - current.y) < std::abs(end.z - current.z))
+					{
+						direction = 3;
+					}
+					// Y >
+					else
+					{
+						direction = 2;
+					}
+				}
+				else
+				{
+					// Z >
+					if (std::abs(end.x - current.x) < std::abs(end.z - current.z))
+					{
+						direction = 3;
+					}
+					// X >
+					else
+					{
+						direction = 1;
+					}
+				}
 			}
 
 			// Loop through connections
@@ -2117,6 +2246,36 @@ public:
 						// Store the total cost
 						WEIGHT_TYPE new_cost;
 
+						// Check for a diagonal bonus
+						bool bonus = false;
+
+						if (!graph_settings.diagonal_navigation)
+						{
+							switch (direction)
+							{
+								// X
+							case 1:
+
+								bonus = connection.x - current.x != 0;
+
+								break;
+
+								// Y
+							case 2:
+
+								bonus = connection.y - current.y != 0;
+
+								break;
+
+								// Z
+							case 3:
+
+								bonus = connection.z - current.z != 0;
+
+								break;
+							}
+						}
+
 						// Store the total cost of traveling this node
 						if (graph_settings.ignore_weights || !graph_settings.weights.count(connection))
 						{
@@ -2136,7 +2295,7 @@ public:
 								weights[connection] = new_cost;
 
 								// Enqueue our connected node to the frontier
-								frontier.insert({ new_cost, connection });
+								frontier.insert({ new_cost + (bonus ? 0 : 0.0001f), connection });
 
 								// Add our connected node as our key and our current node as our value to the map
 								from[connection] = current;
@@ -2230,7 +2389,7 @@ public:
 
 		// Make a map to store each node's node before it (which will eventually store the route from the end node to the start)
 		// KEY = TO  VALUE = FROM
-		// from[currentgrid_space_3D] = the node immediately before currentgrid_space_3D
+		// from[current_grid_space_3D] = the node immediately before current_grid_space_3D
 		std::map<grid_space_3D, grid_space_3D> from = std::map<grid_space_3D, grid_space_3D>
 		{
 			// Set our start node's value to an impossible node in our route map
@@ -2260,7 +2419,7 @@ public:
 				break;
 			}
 
-			// Pop our current node and increment our number of loops
+			// Pop our current node
 			current = frontier.begin()->second;
 
 			frontier.erase(frontier.begin()->first);
@@ -2269,6 +2428,39 @@ public:
 			if (current == end)
 			{
 				break;
+			}
+
+			// Compare connections with the current change in space to prefer diagonal movements
+			int direction = 0;
+
+			if (!graph_settings.diagonal_navigation)
+			{
+				if (std::abs(end.x - current.x) < std::abs(end.y - current.y))
+				{
+					// Z >
+					if (std::abs(end.y - current.y) < std::abs(end.z - current.z))
+					{
+						direction = 3;
+					}
+					// Y >
+					else
+					{
+						direction = 2;
+					}
+				}
+				else
+				{
+					// Z >
+					if (std::abs(end.x - current.x) < std::abs(end.z - current.z))
+					{
+						direction = 3;
+					}
+					// X >
+					else
+					{
+						direction = 1;
+					}
+				}
 			}
 
 			// Loop through connections
@@ -2344,6 +2536,36 @@ public:
 						// Store the total cost
 						WEIGHT_TYPE new_cost;
 
+						// Check for a diagonal bonus
+						bool bonus = false;
+
+						if (!graph_settings.diagonal_navigation)
+						{
+							switch (direction)
+							{
+								// X
+							case 1:
+
+								bonus = connection.x - current.x != 0;
+
+								break;
+
+								// Y
+							case 2:
+
+								bonus = connection.y - current.y != 0;
+
+								break;
+
+								// Z
+							case 3:
+
+								bonus = connection.z - current.z != 0;
+
+								break;
+							}
+						}
+
 						// Store the total cost of traveling this node
 						if (graph_settings.ignore_weights || !graph_settings.weights.count(connection))
 						{
@@ -2363,7 +2585,7 @@ public:
 								weights[connection] = new_cost;
 
 								// Enqueue our connected node to the frontier
-								frontier.insert({ new_cost + (calculate_heuristic(connection, end, !graph_settings.diagonal_navigation) * heuristic_scale * (0.0001f + graph_settings.default_weight)), connection });
+								frontier.insert({ new_cost + (calculate_heuristic(connection, end, !graph_settings.diagonal_navigation) * heuristic_scale * (0.0001f + graph_settings.default_weight)) + (bonus ? 0 : 0.0001f), connection });
 
 								// Add our connected node as our key and our current node as our value to the map
 								from[connection] = current;

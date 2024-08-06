@@ -19,10 +19,16 @@ class object
 {
 public:
 
-	// DEALLOCATION
+	// CONSTRUCTOR AND DESTRUCTOR
+
+	// Default constructor.
+	object() { }
 
 	// Virtual destructor.
 	virtual ~object() = default;
+
+
+	// DEALLOCATION
 
 	// Releases this object's memory.
 	virtual void destroy() { }
@@ -37,7 +43,7 @@ public:
 	}
 
 	// Returns a string interpretation of the given object.
-	explicit virtual operator std::string()
+	virtual operator std::string()
 	{
 		return to_string();
 	}
@@ -50,7 +56,7 @@ public:
 	{
 		int code = 0;
 
-		const std::string str = to_string();
+		std::string str = to_string();
 
 		for (int i = 0; i < str.length(); i++)
 		{
@@ -64,12 +70,12 @@ public:
 	// TYPE AND CASTING
 
 	// Returns the unique hash code of this object's type.
-	virtual size_t type()
+	size_t type()
 	{
 		return typeid(*this).hash_code();
 	}
 
-	// Casts this object to the given derived type.
+	// Downcasts this object to the given derived type.
 	template<typename data_type> data_type& cast()
 	{
 		return *(data_type*)(this);
@@ -78,7 +84,7 @@ public:
 
 	// MEMBERWISE CLONE
 
-	// Returns a memberwise clone of the given object using its copy constructor.
+	// Returns a memberwise clone of this object using its copy constructor.
 	template<typename data_type> data_type clone()
 	{
 		return data_type(*(data_type*)(this));
@@ -94,7 +100,7 @@ public:
 	}
 
 	// Returns whether this object is considered null.
-	explicit virtual operator bool()
+	virtual operator bool()
 	{
 		return !is_null();
 	}
@@ -108,22 +114,10 @@ public:
 
 	// EQUALITY BY VALUE
 
-	// Returns whether the given object is equal to another by value.
+	// Returns whether the given object is equal to this by value.
 	virtual bool equals(object& other)
 	{
 		return to_string() == other.to_string();
-	}
-
-	// Returns whether the given object is equal to another by value.
-	virtual bool operator==(object& other)
-	{
-		return equals(other);
-	}
-
-	// Returns whether the given object is not equal to another by value.
-	virtual bool operator!=(object& other)
-	{
-		return !equals(other);
 	}
 
 	// Returns whether the given objects are equal to each other by value.
@@ -132,19 +126,31 @@ public:
 		return left.to_string() == right.to_string();
 	}
 
+	// Returns whether the given object is equal to this by value.
+	virtual bool operator==(object& other)
+	{
+		return equals(other);
+	}
+
+	// Returns whether the given object is not equal to this by value.
+	virtual bool operator!=(object& other)
+	{
+		return !equals(other);
+	}
+
 
 	// EQUALITY BY REFERENCE
 
-	// Returns whether two objects share the same memory addresses.
+	// Returns whether the given object shares the same memory address.
 	virtual bool ref_equals(object& other)
 	{
 		return this == &other;
 	}
 
-	// Returns whether two objects share the same memory addresses.
-	virtual bool ref_equals(object* other)
+	// Returns whether the given objects share the same memory addresses.
+	static bool ref_equals(object& left, object& right)
 	{
-		return this == other;
+		return &left == &right;
 	}
 
 

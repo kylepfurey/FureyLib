@@ -143,6 +143,18 @@ public abstract class GameModeBase : MonoBehaviour
     // UNITY FUNCTIONS
 
     /// <summary>
+    /// Sets the starting values.
+    /// </summary>
+    public virtual void Awake()
+    {
+        currentLives = startingLives;
+
+        currentScore = startingScore;
+
+        timeLimitRemaining = startingTimeLimit;
+    }
+
+    /// <summary>
     /// Updates the time limit.
     /// </summary>
     public virtual void Update()

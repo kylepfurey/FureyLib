@@ -25,8 +25,10 @@ public class GameMode : GameModeBase
     /// <summary>
     /// Configures the game mode.
     /// </summary>
-    private void Awake()
+    public override void Awake()
     {
+		base.Awake();
+		
         // Change the game mode type enum here!
         type = GameModeType.GameMode;
     }

@@ -54,19 +54,6 @@ public static class Math
     }
 
     /// <summary>
-    /// Returns the cross product of a vector
-    /// </summary>
-    /// <param name="pointA"></param>
-    /// <param name="pointB"></param>
-    /// <param name="pointC"></param>
-    /// <param name="useY"></param>
-    /// <returns></returns>
-    public static float CrossProduct(Vector3 pointA, Vector3 pointB, Vector3 pointC, bool useY = false)
-    {
-        return (pointB.x - pointA.x) * (useY ? (pointC.y - pointA.y) : (pointC.z - pointA.z)) - (pointC.x - pointA.x) * (useY ? (pointB.y - pointA.y) : (pointB.z - pointA.z));
-    }
-
-    /// <summary>
     /// Rotate a direction by a euler rotation
     /// </summary>
     /// <param name="direction"></param>
@@ -271,6 +258,33 @@ public static class Math
         vector = new Vector3(vector.x * scalar.x, vector.y * scalar.y, vector.z * scalar.z);
 
         return vector;
+    }
+
+    /// <summary>
+    /// Returns the cross product of two vectors.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <returns></returns>
+    public static Vector3 CrossProduct(Vector3 left, Vector3 right)
+    {
+        return new Vector3(
+            left.y * right.z - left.z * right.y,
+            left.z * right.x - left.x * right.z,
+            left.x * right.y - left.y * right.x);
+    }
+
+    /// <summary>
+    /// Returns the dot product of two vectors.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <returns></returns>
+    public static float DotProduct(Vector3 left, Vector3 right)
+    {
+        return left.x * right.x +
+               left.y * right.y +
+               left.z * right.z;
     }
 
 

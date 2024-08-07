@@ -55,6 +55,16 @@
 			"Enabled": true
 		},
 		{
+			"Name": "OpenXR",
+			"Enabled": true,
+			"SupportedTargetPlatforms": [
+				"Win64",
+				"Linux",
+				"Android",
+				"VisionOS"
+			]
+		},
+		{
 			"Name": "OculusXR",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/8313d8d7e7cf4e03a33e79eb757bccba",
@@ -70,6 +80,10 @@
 				"Win64",
 				"Android"
 			]
+		},
+		{
+			"Name": "OnlineSubsystemOculus",
+			"Enabled": true
 		},
 		{
 			"Name": "OpenXRHandTracking",
@@ -97,5 +111,16 @@
 				"Linux",
 				"Android"
 			]
+		},
+		{
+			"Name": "XRVisualization",
+			"Enabled": true
+		},
+		{
+			"Name": "HPMotionController",
+			"Enabled": true,
+			"SupportedTargetPlatforms": [
+				"Win64"
+			]
 		}
-	]
+	],

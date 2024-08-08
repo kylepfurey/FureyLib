@@ -346,11 +346,6 @@ public class ButtonVR : MonoBehaviour, IHandInteractableVR
 
                 GetComponent<Renderer>().material = unclickedMaterial == null ? GetComponent<Renderer>().material : unclickedMaterial;
 
-                if (clickedSound != null)
-                {
-                    AudioSource.PlayClipAtPoint(clickedSound, transform.position);
-                }
-
                 if (elapsedTime != 0)
                 {
                     onRelease.Invoke();
@@ -399,7 +394,7 @@ public class ButtonVR : MonoBehaviour, IHandInteractableVR
 /// <summary>
 /// Stores the current state of a VR button.
 /// </summary>
-public struct ButtonStateVR
+public readonly struct ButtonStateVR
 {
     /// <summary>
     /// Whether the button is currently active and usable

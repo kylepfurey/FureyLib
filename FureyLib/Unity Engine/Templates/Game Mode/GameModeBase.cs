@@ -107,6 +107,7 @@ public abstract class GameModeBase : MonoBehaviour
     public UnityEvent onTimeLimitDecrease = null;
     public UnityEvent onTimeLimitReset = null;
 
+
     // PROTECTED VARIABLES
 
     /// <summary>
@@ -220,7 +221,7 @@ public abstract class GameModeBase : MonoBehaviour
     /// <summary>
     /// Increases the current score.
     /// </summary>
-    public virtual void IncreaseScore(int deltaScore)
+    public virtual void IncreaseScore(int deltaScore = 1)
     {
         currentScore += deltaScore;
 
@@ -228,7 +229,7 @@ public abstract class GameModeBase : MonoBehaviour
 
         onScoreChange.Invoke();
 
-        if (currentScore >= targetScore)
+        if (hasTargetScore && currentScore >= targetScore)
         {
             onTargetScoreReached.Invoke();
         }
@@ -244,7 +245,7 @@ public abstract class GameModeBase : MonoBehaviour
     /// <summary>
     /// Decreases the current score.
     /// </summary>
-    public virtual void DecreaseScore(int deltaScore)
+    public virtual void DecreaseScore(int deltaScore = 1)
     {
         currentScore -= deltaScore;
 
@@ -259,7 +260,7 @@ public abstract class GameModeBase : MonoBehaviour
     // LIFE FUNCTIONS
 
     /// <summary>
-    /// Resets the players live count.
+    /// Resets the player's life count.
     /// </summary>
     public virtual void ResetLives()
     {
@@ -457,7 +458,7 @@ public abstract class GameModeBase : MonoBehaviour
     /// <param name="seconds"></param>
     public virtual void DecreaseTimeLimit(float seconds)
     {
-        timeLimitRemaining += seconds;
+        timeLimitRemaining -= seconds;
 
         onTimeLimitDecrease.Invoke();
 

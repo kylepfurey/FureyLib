@@ -104,7 +104,7 @@ public class GameMode : GameModeBase
     /// <summary>
     /// Increases the current score.
     /// </summary>
-    public override void IncreaseScore(int deltaScore)
+    public override void IncreaseScore(int deltaScore = 1)
     {
         // Calls the base function
         base.IncreaseScore(deltaScore);
@@ -113,7 +113,7 @@ public class GameMode : GameModeBase
     /// <summary>
     /// Decreases the current score.
     /// </summary>
-    public override void DecreaseScore(int deltaScore)
+    public override void DecreaseScore(int deltaScore = 1)
     {
         // Calls the base function
         base.DecreaseLives(deltaScore);
@@ -123,7 +123,7 @@ public class GameMode : GameModeBase
     // LIFE FUNCTIONS
 
     /// <summary>
-    /// Resets the players live count.
+    /// Resets the player's life count.
     /// </summary>
     public override void ResetLives()
     {

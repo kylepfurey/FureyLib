@@ -258,6 +258,39 @@ public class Object : IDisposable, ICloneable, IEquatable<Object>
     }
 
 
+    // INSTANTIATION
+
+    /// <summary>
+    /// Instantiates a new object.
+    /// </summary>
+    /// <returns></returns>
+    public static Object Instantiate()
+    {
+        return new Object();
+    }
+
+    /// <summary>
+    /// Instantiates a new object of the given derived type.
+    /// </summary>
+    /// <typeparam name="DerivedType"></typeparam>
+    /// <returns></returns>
+    public static DerivedType Instantiate<DerivedType>() where DerivedType : Object, new()
+    {
+        return new DerivedType();
+    }
+
+    /// <summary>
+    /// Instantiates a new derived object of the given template.
+    /// </summary>
+    /// <param name="template"></param>
+    /// <typeparam name="DerivedType"></typeparam>
+    /// <returns></returns>
+    public static DerivedType Instantiate<DerivedType>(DerivedType template) where DerivedType : Object
+    {
+        return (DerivedType)template.Clone();
+    }
+
+
     // SERIALIZATION
 
     /// <summary>

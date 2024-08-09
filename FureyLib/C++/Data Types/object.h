@@ -154,6 +154,33 @@ public:
 	}
 
 
+	// INSTANTIATION
+
+	// Instantiates a new object.
+	static object instantiate()
+	{
+		return object();
+	}
+
+	// Instantiates a new object of the given derived type.
+	template <typename derived_type, typename ... argument_types> static derived_type instantiate(argument_types ... arguments)
+	{
+		return derived_type(arguments...);
+	}
+
+	// Instantiates a new derived object of the given template.
+	template <typename derived_type> static derived_type instantiate(derived_type _template)
+	{
+		return derived_type(_template);
+	}
+
+	// Instantiates a new derived object of the given template.
+	template <typename derived_type> static derived_type instantiate(derived_type* _template)
+	{
+		return derived_type(*_template);
+	}
+
+
 	// SERIALIZATION
 
 	// Converts the object's values into a Json formatted string.

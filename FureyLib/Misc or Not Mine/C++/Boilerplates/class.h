@@ -22,7 +22,7 @@ public:
 	// New variables here
 
 
-	// CONSTRUCTORS AND DECONSTRUCTOR
+	// CONSTRUCTORS AND DESTRUCTOR
 
 	// Default constructor
 	my_class()
@@ -44,7 +44,7 @@ public:
 
 	// New constructors here
 
-	// Deconstructor
+	// Destructor
 	virtual ~my_class()
 	{
 

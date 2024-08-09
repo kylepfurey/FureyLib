@@ -2,6 +2,8 @@
 // Byte Data Type Header Script
 // by Kyle Furey
 
+// REQUIREMENT: byte.cpp
+
 #pragma once
 #include <string>
 #include <vector>

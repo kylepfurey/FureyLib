@@ -13,6 +13,18 @@
 !/Config/**
 !/Plugins/**
 
+# Ignore MetaXR Plugins
+/Plugins/MetaXR/**
+/Plugins/MetaXRPlatform/**
+
+# Do not ignore build icons
+!/Build/Android/res/**
+!/Build/IOS/Resources/**
+!/Build/Linux/**
+!/Build/Mac/**
+!/Build/TVOS/Resources/**
+!/Build/Windows/**
+
 # Only allow .uasset and .umap files from /Content dir.
 # They're tracked by git-lfs, don't forget to track other
 # files if adding them here.

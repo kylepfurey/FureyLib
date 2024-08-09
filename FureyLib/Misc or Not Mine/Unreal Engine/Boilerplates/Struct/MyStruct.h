@@ -6,8 +6,9 @@
 
 #pragma once
 #include "CoreMinimal.h"
+#include "MyStruct.generated.h"
 
-// Include this heading to use the class
+// Include this heading to use the struct
 // #include "MyStruct.h"
 
 /** Template Unreal structure script. */
@@ -32,16 +33,18 @@ public:
 	// VARIABLES
 
 	/** Example setting. */
-	UPROPERTY(BlueprintReadWrite)
-	bool setting = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Category")
+	bool bSetting = false;
 
 	// New variables here
 
 
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 
 	/** Default constructor. */
 	FMyStruct();
+
+	// New constructors here
 
 
 	// FUNCTIONS

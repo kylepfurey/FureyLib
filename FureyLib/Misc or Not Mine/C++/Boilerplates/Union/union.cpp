@@ -2,28 +2,28 @@
 // Name
 // Creator
 
-// REQUIREMENT: MyClass.h
+// REQUIREMENT: union.h
 
-// Include this heading to use the class
-#include "MyClass.h"
+// Include this heading to use the union
+#include "union.h"
 
 
 // CONSTRUCTORS AND DESTRUCTOR
 
 // Default constructor.
-FMyClass::FMyClass()
+my_union::my_union()
 {
 
 }
 
 // Copy constructor.
-FMyClass::FMyClass(const FMyClass& Copied)
+my_union::my_union(const my_union& copied)
 {
 
 }
 
 // Move constructor.
-FMyClass::FMyClass(FMyClass&& Moved) noexcept
+my_union::my_union(my_union&& moved) noexcept
 {
 
 }
@@ -31,7 +31,7 @@ FMyClass::FMyClass(FMyClass&& Moved) noexcept
 // New constructors here
 
 // Destructor.
-FMyClass::~FMyClass()
+my_union::~my_union()
 {
 
 }

@@ -6,7 +6,7 @@
 
 #pragma once
 #include "CoreMinimal.h"
-#include "UMyObject/NoExportTypes.h"
+#include "UObject/NoExportTypes.h"
 #include "MyObject.generated.h"
 
 // Include this heading to use the class
@@ -36,10 +36,12 @@ public:
 	// New variables here
 
 
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 
 	/** Default constructor. */
 	UMyObject();
+
+	// New constructors here
 
 
 	// FUNCTIONS

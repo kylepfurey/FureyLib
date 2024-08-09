@@ -156,12 +156,6 @@ public:
 
 	// INSTANTIATION
 
-	// Instantiates a new object.
-	static object instantiate()
-	{
-		return object();
-	}
-
 	// Instantiates a new object of the given derived type.
 	template <typename derived_type, typename ... argument_types> static derived_type instantiate(argument_types ... arguments)
 	{

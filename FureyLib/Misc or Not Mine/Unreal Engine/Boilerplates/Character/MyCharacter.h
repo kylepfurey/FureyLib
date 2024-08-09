@@ -42,10 +42,12 @@ public:
 	// New variables here
 
 
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 
 	/** Default constructor. */
 	AMyCharacter();
+
+	// New constructors here
 
 
 	// UNREAL FUNCTIONS

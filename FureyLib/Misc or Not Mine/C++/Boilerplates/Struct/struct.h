@@ -2,6 +2,8 @@
 // Name
 // Creator
 
+// REQUIREMENT: struct.cpp
+
 #pragma once
 #include <memory>
 #include <iostream>
@@ -9,13 +11,11 @@
 #include <vector>
 #include <map>
 
-// Only one of the union's variables may be stored at a time
+// Include this heading to use the struct
+#include "struct.h"
 
-// Include this heading to use the union
-#include "union.h"
-
-// Template union script.
-union my_union
+// Template structure script.
+struct my_struct
 {
 private:
 
@@ -38,30 +38,18 @@ public:
 	// CONSTRUCTORS AND DESTRUCTOR
 
 	// Default constructor.
-	my_union()
-	{
-
-	}
+	my_struct();
 
 	// Copy constructor.
-	my_union(const my_union& copied)
-	{
-
-	}
+	my_struct(const my_struct& copied);
 
 	// Move constructor.
-	my_union(my_union&& moved) noexcept
-	{
-
-	}
+	my_struct(my_struct&& moved) noexcept;
 
 	// New constructors here
 
 	// Destructor.
-	virtual ~my_union()
-	{
-
-	}
+	virtual ~my_struct();
 
 
 	// FUNCTIONS
@@ -72,13 +60,13 @@ public:
 	// OPERATORS
 
 	// Copy assignment operator.
-	my_union& operator=(const my_union& copied)
+	my_struct& operator=(const my_struct& copied)
 	{
 		return *this;
 	}
 
 	// Move assignment operator.
-	my_union& operator=(my_union&& moved) noexcept
+	my_struct& operator=(my_struct&& moved) noexcept
 	{
 		return *this;
 	}

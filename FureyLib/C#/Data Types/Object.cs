@@ -14,7 +14,7 @@ using System.Text.Json; // Serializer
 /// •  Inherit from object to share common methods and generic storage across any type.<br/>
 /// •  All new types should inherit from this class and at least provide a ToString() implementation.
 /// </summary>
-public class Object : IDisposable, ICloneable, IEquatable<Object>
+public abstract class Object : IDisposable, ICloneable, IEquatable<Object>
 {
     // CONSTRUCTOR AND DESTRUCTOR
 
@@ -259,15 +259,6 @@ public class Object : IDisposable, ICloneable, IEquatable<Object>
 
 
     // INSTANTIATION
-
-    /// <summary>
-    /// Instantiates a new object.
-    /// </summary>
-    /// <returns></returns>
-    public static Object Instantiate()
-    {
-        return new Object();
-    }
 
     /// <summary>
     /// Instantiates a new object of the given derived type.

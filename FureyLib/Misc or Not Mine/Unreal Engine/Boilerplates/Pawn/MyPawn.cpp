@@ -8,7 +8,7 @@
 #include "MyPawn.h"
 
 
-// CONSTRUCTOR
+// CONSTRUCTORS
 
 // Default constructor.
 AMyPawn::AMyPawn()
@@ -17,23 +17,25 @@ AMyPawn::AMyPawn()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+// New constructors here
+
 
 // UNREAL FUNCTIONS
 
 // Called when the game starts or when spawned.
-virtual void AMyPawn::BeginPlay() override
+void AMyPawn::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
 // Called every frame.
-virtual void AMyPawn::Tick(float DeltaTime) override
+void AMyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
 // Called to bind functionality to input.
-virtual void AMyPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override
+void AMyPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }

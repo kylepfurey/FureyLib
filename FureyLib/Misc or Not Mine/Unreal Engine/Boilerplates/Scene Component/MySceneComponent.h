@@ -10,7 +10,7 @@
 #include "MySceneComponent.generated.h"
 
 // Include this heading to use the class
-#include "MySceneComponent.h"
+// #include "MySceneComponent.h"
 
 /** Template Unreal scene component script. */
 UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -42,10 +42,12 @@ public:
 	// New variables here
 
 
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 
 	/** Default constructor. */
 	UMySceneComponent();
+
+	// New constructors here
 
 
 	// UNREAL FUNCTIONS

@@ -8,13 +8,15 @@
 #include "MyObject.h"
 
 
-// CONSTRUCTOR
+// CONSTRUCTORS
 
 // Default constructor.
 UMyObject::UMyObject()
 {
 
 }
+
+// New constructors here
 
 
 // FUNCTIONS

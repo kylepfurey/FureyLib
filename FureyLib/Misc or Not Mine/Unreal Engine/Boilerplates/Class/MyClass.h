@@ -11,7 +11,7 @@
 // #include "MyClass.h"
 
 /** Template Unreal class script. */
-class GAME_API MyClass
+class GAME_API FMyClass
 {
 protected:
 
@@ -34,18 +34,18 @@ public:
 	// CONSTRUCTORS AND DESTRUCTOR
 
 	/** Default constructor. */
-	MyClass();
+	FMyClass();
 
 	/** Copy constructor. */
-	MyClass(const MyClass& Copied);
+	FMyClass(const FMyClass& Copied);
 
 	/** Move constructor. */
-	MyClass(MyClass&& Moved) noexcept;
+	FMyClass(FMyClass&& Moved) noexcept;
 
 	// New constructors here
 
 	/** Destructor. */
-	virtual ~MyClass();
+	virtual ~FMyClass();
 
 
 	// FUNCTIONS
@@ -56,10 +56,16 @@ public:
 	// OPERATORS
 
 	/** Copy assignment operator. */
-	MyClass& operator=(const MyClass& Copied);
+	FMyClass& operator=(const FMyClass& Copied)
+	{
+		return *this;
+	}
 
 	/** Move assignment operator. */
-	MyClass& operator=(MyClass&& Moved) noexcept;
+	FMyClass& operator=(FMyClass&& Moved) noexcept
+	{
+		return *this;
+	}
 
 	// New overloaded operators here
 };

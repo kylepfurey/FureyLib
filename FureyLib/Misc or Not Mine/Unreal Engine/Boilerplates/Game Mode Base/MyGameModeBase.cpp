@@ -8,6 +8,17 @@
 #include "MyGameModeBase.h"
 
 
+// CONSTRUCTORS
+
+// Default constructor.
+AMyGameModeBase::AMyGameModeBase()
+{
+
+}
+
+// New constructors here
+
+
 // FUNCTIONS
 
 // New functions here

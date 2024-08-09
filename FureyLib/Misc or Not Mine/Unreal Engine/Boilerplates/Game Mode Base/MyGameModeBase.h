@@ -10,7 +10,7 @@
 #include "MyGameModeBase.generated.h"
 
 // Include this heading to use the class
-#include "MyGameModeBase.h"
+// #include "MyGameModeBase.h"
 
 /** Template Unreal game mode script. */
 UCLASS(Blueprintable, BlueprintType)
@@ -36,10 +36,12 @@ public:
 	// New variables here
 
 
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 
 	/** Default constructor. */
 	AMyGameModeBase();
+
+	// New constructors here
 
 
 	// FUNCTIONS

@@ -6,7 +6,7 @@
 
 #pragma once
 
-// Include this heading to use the structure
+// Include this heading to use the struct
 #include "tuple.h"
 
 // Container for two readonly elements of different types.

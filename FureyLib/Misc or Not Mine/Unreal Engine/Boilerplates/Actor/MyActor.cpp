@@ -8,7 +8,7 @@
 #include "MyActor.h"
 
 
-// CONSTRUCTOR
+// CONSTRUCTORS
 
 // Default constructor.
 AMyActor::AMyActor()
@@ -17,17 +17,19 @@ AMyActor::AMyActor()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+// New constructors here
+
 
 // UNREAL FUNCTIONS
 
 // Called when the game starts or when spawned.
-virtual void AMyActor::BeginPlay() override
+void AMyActor::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
 // Called every frame.
-virtual void AMyActor::Tick(float DeltaTime) override
+void AMyActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }

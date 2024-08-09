@@ -8,7 +8,7 @@
 #include "MyCharacter.h"
 
 
-// CONSTRUCTOR
+// CONSTRUCTORS
 
 // Default constructor.
 AMyCharacter::AMyCharacter()
@@ -17,23 +17,25 @@ AMyCharacter::AMyCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+// New constructors here
+
 
 // UNREAL FUNCTIONS
 
 // Called when the game starts or when spawned.
-virtual void AMyCharacter::BeginPlay() override
+void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
 // Called every frame.
-virtual void AMyCharacter::Tick(float DeltaTime) override
+void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
 // Called to bind functionality to input.
-virtual void AMyCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override
+void AMyCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }

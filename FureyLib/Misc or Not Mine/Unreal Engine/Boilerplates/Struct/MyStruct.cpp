@@ -4,17 +4,19 @@
 
 // REQUIREMENT: MyStruct.h
 
-// Include this heading to use the class
+// Include this heading to use the struct
 #include "MyStruct.h"
 
 
-// CONSTRUCTOR
+// CONSTRUCTORS
 
 // Default constructor.
 FMyStruct::FMyStruct()
 {
 
 }
+
+// New constructors here
 
 
 // FUNCTIONS

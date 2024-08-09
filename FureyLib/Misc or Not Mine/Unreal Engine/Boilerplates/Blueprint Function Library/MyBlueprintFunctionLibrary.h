@@ -24,7 +24,7 @@ public:
 
 	/** Description. */
 	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "Category", meta = (Keywords = "Keywords"))
-	static void Function(bool Input, UObject* __WorldContext, bool& Output);
+	static void Function(bool Input, bool& Output);
 
 	// New functions here
 };

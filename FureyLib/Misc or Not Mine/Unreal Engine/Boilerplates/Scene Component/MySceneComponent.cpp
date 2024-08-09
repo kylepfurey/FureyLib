@@ -8,7 +8,7 @@
 #include "MySceneComponent.h"
 
 
-// CONSTRUCTOR
+// CONSTRUCTORS
 
 // Default constructor.
 UMySceneComponent::UMySceneComponent()
@@ -18,17 +18,19 @@ UMySceneComponent::UMySceneComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
+// New constructors here
+
 
 // UNREAL FUNCTIONS
 
 // Called when the game starts.
-virtual void UMySceneComponent::BeginPlay() override
+void UMySceneComponent::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
 // Called every frame.
-virtual void UMySceneComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override
+void UMySceneComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }

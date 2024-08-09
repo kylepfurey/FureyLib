@@ -36,10 +36,12 @@ public:
 	// New variables here
 
 
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 
 	/** Default constructor. */
 	UMyGameInstance();
+
+	// New constructors here
 
 
 	// FUNCTIONS

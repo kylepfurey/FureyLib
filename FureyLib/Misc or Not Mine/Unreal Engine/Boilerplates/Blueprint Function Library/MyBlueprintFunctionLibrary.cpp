@@ -11,7 +11,7 @@
 // STATIC FUNCTIONS
 
 // Description.
-static void UMyBlueprintFunctionLibrary::Function(bool Input, UObject* __WorldContext, bool& Output)
+void UMyBlueprintFunctionLibrary::Function(bool Input, bool& Output)
 {
 	Output = Input;
 }

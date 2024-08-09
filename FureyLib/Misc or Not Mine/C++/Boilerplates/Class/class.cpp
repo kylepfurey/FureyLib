@@ -2,28 +2,28 @@
 // Name
 // Creator
 
-// REQUIREMENT: MyClass.h
+// REQUIREMENT: class.h
 
 // Include this heading to use the class
-#include "MyClass.h"
+#include "class.h"
 
 
 // CONSTRUCTORS AND DESTRUCTOR
 
 // Default constructor.
-FMyClass::FMyClass()
+my_class::my_class()
 {
 
 }
 
 // Copy constructor.
-FMyClass::FMyClass(const FMyClass& Copied)
+my_class::my_class(const my_class& copied)
 {
 
 }
 
 // Move constructor.
-FMyClass::FMyClass(FMyClass&& Moved) noexcept
+my_class::my_class(my_class&& moved) noexcept
 {
 
 }
@@ -31,7 +31,7 @@ FMyClass::FMyClass(FMyClass&& Moved) noexcept
 // New constructors here
 
 // Destructor.
-FMyClass::~FMyClass()
+my_class::~my_class()
 {
 
 }

@@ -42,10 +42,12 @@ public:
 	// New variables here
 
 
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 
 	/** Default constructor. */
 	AMyPawn();
+
+	// New constructors here
 
 
 	// UNREAL FUNCTIONS

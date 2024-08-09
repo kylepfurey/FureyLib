@@ -9,7 +9,7 @@ using System.Collections.Generic;
 /// <summary>
 /// Template structure script.
 /// </summary>
-public struct Structure
+public struct Struct
 {
     // VARIABLES
 
@@ -21,7 +21,7 @@ public struct Structure
     /// <summary>
     /// Default constructor.
     /// </summary>
-    public Structure()
+    public Struct()
     {
 
     }
@@ -30,7 +30,7 @@ public struct Structure
     /// Copy constructor.
     /// </summary>
     /// <param name="copied"></param>
-    public Structure(Structure copied)
+    public Struct(Struct copied)
     {
 
     }

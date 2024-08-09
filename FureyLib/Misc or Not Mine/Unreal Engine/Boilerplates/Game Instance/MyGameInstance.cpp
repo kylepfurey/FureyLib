@@ -8,13 +8,15 @@
 #include "MyGameInstance.h"
 
 
-// CONSTRUCTOR
+// CONSTRUCTORS
 
 // Default constructor.
 UMyGameInstance::UMyGameInstance()
 {
 
 }
+
+// New constructors here
 
 
 // FUNCTIONS

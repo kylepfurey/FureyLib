@@ -2,6 +2,8 @@
 // Name
 // Creator
 
+// REQUIREMENT: class.cpp
+
 #pragma once
 #include <iostream>
 #include <memory>
@@ -36,30 +38,18 @@ public:
 	// CONSTRUCTORS AND DESTRUCTOR
 
 	// Default constructor.
-	my_class()
-	{
-
-	}
+	my_class();
 
 	// Copy constructor.
-	my_class(const my_class& copied)
-	{
-
-	}
+	my_class(const my_class& copied);
 
 	// Move constructor.
-	my_class(my_class&& moved) noexcept
-	{
-
-	}
+	my_class(my_class&& moved) noexcept;
 
 	// New constructors here
 
 	// Destructor.
-	virtual ~my_class()
-	{
-
-	}
+	virtual ~my_class();
 
 
 	// FUNCTIONS

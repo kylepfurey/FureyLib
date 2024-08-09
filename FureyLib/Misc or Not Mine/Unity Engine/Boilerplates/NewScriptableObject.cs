@@ -24,32 +24,10 @@ public class NewScriptableObject : ScriptableObject
     // New variables here
 
 
-    // CONSTRUCTORS AND DECONSTRUCTOR
+    // UNITY FUNCTIONS
 
     /// <summary>
-    /// Default constructor
-    /// </summary>
-    public NewScriptableObject()
-    {
-
-    }
-
-    /// <summary>
-    /// Copy constructor
-    /// </summary>
-    /// <param name="copied"></param>
-    public NewScriptableObject(NewScriptableObject copied)
-    {
-
-    }
-
-    // New constructors here
-
-
-    // FUNCTIONS
-
-    /// <summary>
-    /// Awake() is called when the script is loaded
+    /// Awake() is called when the script is loaded.
     /// </summary>
     private void Awake()
     {
@@ -57,7 +35,7 @@ public class NewScriptableObject : ScriptableObject
     }
 
     /// <summary>
-    /// Start() is called before the first frame update
+    /// Start() is called before the first frame update.
     /// </summary>
     private void Start()
     {
@@ -65,7 +43,7 @@ public class NewScriptableObject : ScriptableObject
     }
 
     /// <summary>
-    /// Update() is called once per frame
+    /// Update() is called once per frame.
     /// </summary>
     private void Update()
     {
@@ -73,7 +51,7 @@ public class NewScriptableObject : ScriptableObject
     }
 
     /// <summary>
-    /// FixedUpdate() is called once per physics tick
+    /// FixedUpdate() is called once per physics tick.
     /// </summary>
     private void FixedUpdate()
     {
@@ -81,7 +59,7 @@ public class NewScriptableObject : ScriptableObject
     }
 
     /// <summary>
-    /// LateUpdate() is called once per frame after Update
+    /// LateUpdate() is called once per frame after Update().
     /// </summary>
     private void LateUpdate()
     {
@@ -89,12 +67,15 @@ public class NewScriptableObject : ScriptableObject
     }
 
     /// <summary>
-    /// OnValidate() is called when one of this component's values are changed in the editor
+    /// OnValidate() is called when one of this component's values are changed in the editor.
     /// </summary>
     private void OnValidate()
     {
 
     }
+
+
+    // FUNCTIONS
 
     // New functions here
 }

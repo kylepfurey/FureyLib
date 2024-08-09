@@ -3,7 +3,7 @@
 
 
 def main():
-    """Entry point of the program"""
+    """Entry point of the program."""
 
     print("Hello, Dinner!")
 
@@ -12,7 +12,7 @@ def main():
     pass
 
 
-# Starts the application
+# Starts the application.
 if __name__ == "__main__":
 
     main()

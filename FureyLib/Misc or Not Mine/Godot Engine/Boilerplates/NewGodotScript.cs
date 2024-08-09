@@ -21,18 +21,9 @@ public partial class NewGodotScript : Node
     // CONSTRUCTORS
 
     /// <summary>
-    /// Default constructor
+    /// Default constructor.
     /// </summary>
     public NewGodotScript()
-    {
-
-    }
-
-    /// <summary>
-    /// Copy constructor
-    /// </summary>
-    /// <param name="copied"></param>
-    public NewGodotScript(NewGodotScript copied)
     {
 
     }
@@ -40,7 +31,7 @@ public partial class NewGodotScript : Node
     // New constructors here
 
 
-    // FUNCTIONS
+    // GODOT FUNCTIONS
 
     /// <summary>
     /// Called when the node enters the scene tree for the first time.
@@ -58,6 +49,9 @@ public partial class NewGodotScript : Node
     {
 
     }
+	
+	
+	// FUNCTIONS
 
     // New functions here
 }

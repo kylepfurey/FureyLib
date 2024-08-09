@@ -6,5 +6,3 @@
 console.log('Hello, Dinner!');
 
 // New code here
-
-while (true) { }

@@ -14,10 +14,12 @@ public struct Structure
     // VARIABLES
 
     // New variables here
-
+	
+	
+	// CONSTRUCTORS
 
     /// <summary>
-    /// Default constructor
+    /// Default constructor.
     /// </summary>
     public Structure()
     {
@@ -25,7 +27,7 @@ public struct Structure
     }
 
     /// <summary>
-    /// Copy constructor
+    /// Copy constructor.
     /// </summary>
     /// <param name="copied"></param>
     public Structure(Structure copied)

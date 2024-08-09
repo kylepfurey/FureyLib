@@ -13,10 +13,10 @@ namespace Application
     public class Program
     {
         /// <summary>
-        /// Entry point of the program
+        /// Entry point of the program.
         /// </summary>
         /// <param name="args"></param>
-        /// <returns>The return code of the program</returns>
+        /// <returns>The return code of the program.</returns>
         public static int Main(params string[] args)
         {
             Console.WriteLine("Hello, Dinner!");

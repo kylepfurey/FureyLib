@@ -15,6 +15,17 @@
 // Template structure script.
 struct my_structure
 {
+private:
+
+	// VARIABLES
+
+	// New variables here
+
+
+	// FUNCTIONS
+
+	// New functions here
+
 public:
 
 	// VARIABLES
@@ -22,21 +33,21 @@ public:
 	// New variables here
 
 
-	// CONSTRUCTORS AND DECONSTRUCTOR
+	// CONSTRUCTORS AND DESTRUCTOR
 
-	// Default constructor
+	// Default constructor.
 	my_structure()
 	{
 
 	}
 
-	// Copy constructor
+	// Copy constructor.
 	my_structure(const my_structure& copied)
 	{
 
 	}
 
-	// Move constructor
+	// Move constructor.
 	my_structure(my_structure&& moved) noexcept
 	{
 
@@ -44,7 +55,7 @@ public:
 
 	// New constructors here
 
-	// Deconstructor
+	// Destructor.
 	virtual ~my_structure()
 	{
 
@@ -58,13 +69,13 @@ public:
 
 	// OPERATORS
 
-	// Copy assignment operator
+	// Copy assignment operator.
 	my_structure& operator=(const my_structure& copied)
 	{
 		return *this;
 	}
 
-	// Move assignment operator
+	// Move assignment operator.
 	my_structure& operator=(my_structure&& moved) noexcept
 	{
 		return *this;

@@ -2,6 +2,8 @@
 // Byte Data Type Function Definitions Script
 // by Kyle Furey
 
+// REQUIREMENT: byte.h
+
 #pragma once
 
 // Include this heading to use the class

@@ -19,7 +19,7 @@ public class Class
     // CONSTRUCTORS
 
     /// <summary>
-    /// Default constructor
+    /// Default constructor.
     /// </summary>
     public Class()
     {
@@ -27,7 +27,7 @@ public class Class
     }
 
     /// <summary>
-    /// Copy constructor
+    /// Copy constructor.
     /// </summary>
     /// <param name="copied"></param>
     public Class(Class copied)

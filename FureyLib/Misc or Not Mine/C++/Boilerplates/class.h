@@ -15,6 +15,17 @@
 // Template class script.
 class my_class
 {
+private:
+
+	// VARIABLES
+
+	// New variables here
+
+
+	// FUNCTIONS
+
+	// New functions here
+
 public:
 
 	// VARIABLES
@@ -22,21 +33,21 @@ public:
 	// New variables here
 
 
-	// CONSTRUCTORS AND DECONSTRUCTOR
+	// CONSTRUCTORS AND DESTRUCTOR
 
-	// Default constructor
+	// Default constructor.
 	my_class()
 	{
 
 	}
 
-	// Copy constructor
+	// Copy constructor.
 	my_class(const my_class& copied)
 	{
 
 	}
 
-	// Move constructor
+	// Move constructor.
 	my_class(my_class&& moved) noexcept
 	{
 
@@ -44,7 +55,7 @@ public:
 
 	// New constructors here
 
-	// Deconstructor
+	// Destructor.
 	virtual ~my_class()
 	{
 
@@ -58,13 +69,13 @@ public:
 
 	// OPERATORS
 
-	// Copy assignment operator
+	// Copy assignment operator.
 	my_class& operator=(const my_class& copied)
 	{
 		return *this;
 	}
 
-	// Move assignment operator
+	// Move assignment operator.
 	my_class& operator=(my_class&& moved) noexcept
 	{
 		return *this;

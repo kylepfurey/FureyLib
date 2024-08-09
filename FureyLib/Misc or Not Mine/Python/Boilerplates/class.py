@@ -14,12 +14,12 @@ class Class:
     # CONSTRUCTORS
 
     def __init__(self):
-        """Default constructor"""
+        """Default constructor."""
 
         pass
 
     def __copy__(self, copied: Class):
-        """Copy constructor"""
+        """Copy constructor."""
 
         pass
 

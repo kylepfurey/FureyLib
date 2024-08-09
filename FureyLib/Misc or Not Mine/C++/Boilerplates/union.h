@@ -17,6 +17,17 @@
 // Template union script.
 union my_union
 {
+private:
+
+	// VARIABLES
+
+	// New variables here
+
+
+	// FUNCTIONS
+
+	// New functions here
+
 public:
 
 	// VARIABLES
@@ -24,21 +35,21 @@ public:
 	// New variables here
 
 
-	// CONSTRUCTORS AND DECONSTRUCTOR
+	// CONSTRUCTORS AND DESTRUCTOR
 
-	// Default constructor
+	// Default constructor.
 	my_union()
 	{
 
 	}
 
-	// Copy constructor
+	// Copy constructor.
 	my_union(const my_union& copied)
 	{
 
 	}
 
-	// Move constructor
+	// Move constructor.
 	my_union(my_union&& moved) noexcept
 	{
 
@@ -46,7 +57,7 @@ public:
 
 	// New constructors here
 
-	// Deconstructor
+	// Destructor.
 	virtual ~my_union()
 	{
 
@@ -60,13 +71,13 @@ public:
 
 	// OPERATORS
 
-	// Copy assignment operator
+	// Copy assignment operator.
 	my_union& operator=(const my_union& copied)
 	{
 		return *this;
 	}
 
-	// Move assignment operator
+	// Move assignment operator.
 	my_union& operator=(my_union&& moved) noexcept
 	{
 		return *this;

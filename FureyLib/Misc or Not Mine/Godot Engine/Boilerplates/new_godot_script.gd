@@ -14,19 +14,14 @@ class_name NewGodotScript extends Node
 # CONSTRUCTORS
 
 func _init():
-	"""Default constructor"""
-
-	pass
-
-func _copy(copied: NewGodotScript):
-	"""Copy constructor"""
+	"""Default constructor."""
 
 	pass
 
 # New constructors here
 
 
-# FUNCTIONS
+# GODOT FUNCTIONS
 
 func _ready():
 	"""Called when the node enters the scene tree for the first time."""
@@ -37,6 +32,9 @@ func _process(delta: float):
 	"""Called every frame. 'delta' is the elapsed time since the previous frame."""
 
 	pass
+
+
+# FUNCTIONS
 
 # New functions here
 

@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-// Entry point of the program
+// Entry point of the program.
 int main(int argc, char** argv)
 {
 	printf("Hello, Dinner!\n");

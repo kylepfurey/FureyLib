@@ -21,7 +21,7 @@ public interface IInterface
     // FUNCTIONS
 
     /// <summary>
-    /// Contracted function
+    /// Contracted function.
     /// </summary>
     public abstract void Function();
 

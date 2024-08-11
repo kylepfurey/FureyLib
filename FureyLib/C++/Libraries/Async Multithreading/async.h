@@ -11,10 +11,7 @@
 #include "async.h"
 
 // Represents a referenced bool that can be used to indicate when an asynchronous function has completed.
-#define TASK std::future<bool> 
-
-// Await keyword used to await a task, result, or condition.
-#define AWAIT(task) async::await(task);
+#define TASK std::future<bool>
 
 // Creates a lambda expression with the given captures and code.
 #define LAMBDA(...) [__VA_ARGS__] () mutable -> void

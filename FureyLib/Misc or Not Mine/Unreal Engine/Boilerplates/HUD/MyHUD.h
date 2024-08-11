@@ -2,19 +2,19 @@
 // Name
 // Creator
 
-// REQUIREMENT: MyGameInstance.cpp
+// REQUIREMENT: MyHUD.cpp
 
 #pragma once
 #include "CoreMinimal.h"
-#include "Engine/GameInstance.h"
-#include "MyGameInstance.generated.h"
+#include "GameFramework/HUD.h"
+#include "MyHUD.generated.h"
 
 // Include this heading to use the class
-// #include "MyGameInstance.h"
+// #include "MyHUD.h"
 
-/** Template Unreal game instance script. */
+/** Template Unreal HUD script. */
 UCLASS(Blueprintable, BlueprintType)
-class MYGAME_API UMyGameInstance : public UGameInstance
+class MYGAME_API AMyHUD : public AHUD
 {
 	GENERATED_BODY()
 
@@ -39,7 +39,7 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
-	UMyGameInstance();
+	AMyHUD();
 
 	// New constructors here
 

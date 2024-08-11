@@ -2,19 +2,19 @@
 // Name
 // Creator
 
-// REQUIREMENT: MyGameInstance.cpp
+// REQUIREMENT: MyFactory.cpp
 
 #pragma once
 #include "CoreMinimal.h"
-#include "Engine/GameInstance.h"
-#include "MyGameInstance.generated.h"
+#include "Factories/Factory.h"
+#include "MyFactory.generated.h"
 
 // Include this heading to use the class
-// #include "MyGameInstance.h"
+// #include "MyFactory.h"
 
-/** Template Unreal game instance script. */
+/** Template Unreal factory script. */
 UCLASS(Blueprintable, BlueprintType)
-class MYGAME_API UMyGameInstance : public UGameInstance
+class MYGAME_API UMyFactory : public UFactory
 {
 	GENERATED_BODY()
 
@@ -39,7 +39,7 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
-	UMyGameInstance();
+	UMyFactory();
 
 	// New constructors here
 

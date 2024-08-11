@@ -2,19 +2,19 @@
 // Name
 // Creator
 
-// REQUIREMENT: MyGameInstance.cpp
+// REQUIREMENT: MyGameStateBase.cpp
 
 #pragma once
 #include "CoreMinimal.h"
-#include "Engine/GameInstance.h"
-#include "MyGameInstance.generated.h"
+#include "GameFramework/GameStateBase.h"
+#include "MyGameStateBase.generated.h"
 
 // Include this heading to use the class
-// #include "MyGameInstance.h"
+// #include "MyGameStateBase.h"
 
-/** Template Unreal game instance script. */
+/** Template Unreal game state script. */
 UCLASS(Blueprintable, BlueprintType)
-class MYGAME_API UMyGameInstance : public UGameInstance
+class MYGAME_API AMyGameStateBase : public AGameStateBase
 {
 	GENERATED_BODY()
 
@@ -39,7 +39,7 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
-	UMyGameInstance();
+	AMyGameStateBase();
 
 	// New constructors here
 

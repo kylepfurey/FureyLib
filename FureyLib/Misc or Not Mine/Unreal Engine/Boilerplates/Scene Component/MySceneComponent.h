@@ -14,7 +14,7 @@
 
 /** Template Unreal scene component script. */
 UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class GAME_API UMySceneComponent : public USceneComponent
+class MYGAME_API UMySceneComponent : public USceneComponent
 {
 	GENERATED_BODY()
 

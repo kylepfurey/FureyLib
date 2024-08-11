@@ -11,7 +11,7 @@
 // #include "MyClass.h"
 
 /** Template Unreal class script. */
-class GAME_API FMyClass
+class MYGAME_API FMyClass
 {
 protected:
 

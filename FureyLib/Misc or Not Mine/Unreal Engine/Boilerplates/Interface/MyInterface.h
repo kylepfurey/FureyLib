@@ -22,7 +22,7 @@ class UMyInterface : public UInterface
 // Inherit from the following interface to implement it.
 
 /** Template Unreal interface script. */
-class GAME_API IMyInterface
+class MYGAME_API IMyInterface
 {
 	GENERATED_BODY()
 

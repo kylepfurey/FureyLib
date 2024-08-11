@@ -14,7 +14,7 @@
 
 /** Template Unreal character script. */
 UCLASS(Blueprintable, BlueprintType)
-class GAME_API AMyCharacter : public ACharacter
+class MYGAME_API AMyCharacter : public ACharacter
 {
 	GENERATED_BODY()
 

@@ -14,7 +14,7 @@
 
 /** Template Unreal actor component script. */
 UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class GAME_API UMyActorComponent : public UActorComponent
+class MYGAME_API UMyActorComponent : public UActorComponent
 {
 	GENERATED_BODY()
 

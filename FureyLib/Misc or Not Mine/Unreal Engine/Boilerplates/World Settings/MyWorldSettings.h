@@ -2,19 +2,19 @@
 // Name
 // Creator
 
-// REQUIREMENT: MyGameInstance.cpp
+// REQUIREMENT: MyWorldSettings.cpp
 
 #pragma once
 #include "CoreMinimal.h"
-#include "Engine/GameInstance.h"
-#include "MyGameInstance.generated.h"
+#include "GameFramework/WorldSettings.h"
+#include "MyWorldSettings.generated.h"
 
 // Include this heading to use the class
-// #include "MyGameInstance.h"
+// #include "MyWorldSettings.h"
 
-/** Template Unreal game instance script. */
+/** Template Unreal world settings script. */
 UCLASS(Blueprintable, BlueprintType)
-class MYGAME_API UMyGameInstance : public UGameInstance
+class MYGAME_API AMyWorldSettings : public AWorldSettings
 {
 	GENERATED_BODY()
 
@@ -39,7 +39,7 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
-	UMyGameInstance();
+	AMyWorldSettings();
 
 	// New constructors here
 

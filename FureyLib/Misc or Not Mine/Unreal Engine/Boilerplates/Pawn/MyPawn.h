@@ -14,7 +14,7 @@
 
 /** Template Unreal pawn script. */
 UCLASS(Blueprintable, BlueprintType)
-class GAME_API AMyPawn : public APawn
+class MYGAME_API AMyPawn : public APawn
 {
 	GENERATED_BODY()
 

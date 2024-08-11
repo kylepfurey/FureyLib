@@ -20,7 +20,7 @@ DECLARE_DYNAMIC_DELEGATE(FFunctionPointerDelegate);
 
 /** A wrapper object that stores and can invoke an Unreal delegate. */
 UCLASS(Blueprintable, BlueprintType)
-class GAME_API UFunctionPointer : public UObject
+class MYGAME_API UFunctionPointer : public UObject
 {
 	GENERATED_BODY()
 

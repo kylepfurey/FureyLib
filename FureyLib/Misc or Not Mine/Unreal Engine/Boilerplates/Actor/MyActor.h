@@ -14,7 +14,7 @@
 
 /** Template Unreal actor script. */
 UCLASS(Blueprintable, BlueprintType)
-class GAME_API AMyActor : public AActor
+class MYGAME_API AMyActor : public AActor
 {
 	GENERATED_BODY()
 

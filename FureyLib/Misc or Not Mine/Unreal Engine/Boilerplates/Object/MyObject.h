@@ -14,7 +14,7 @@
 
 /** Template Unreal object script. */
 UCLASS(Blueprintable, BlueprintType)
-class GAME_API UMyObject : public UObject
+class MYGAME_API UMyObject : public UObject
 {
 	GENERATED_BODY()
 

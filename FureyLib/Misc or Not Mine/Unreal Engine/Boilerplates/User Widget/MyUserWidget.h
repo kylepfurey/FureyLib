@@ -2,19 +2,19 @@
 // Name
 // Creator
 
-// REQUIREMENT: MyGameInstance.cpp
+// REQUIREMENT: MyUserWidget.cpp
 
 #pragma once
 #include "CoreMinimal.h"
-#include "Engine/GameInstance.h"
-#include "MyGameInstance.generated.h"
+#include "Blueprint/UserWidget.h"
+#include "MyUserWidget.generated.h"
 
 // Include this heading to use the class
-// #include "MyGameInstance.h"
+// #include "MyUserWidget.h"
 
-/** Template Unreal game instance script. */
+/** Template Unreal user widget script. */
 UCLASS(Blueprintable, BlueprintType)
-class MYGAME_API UMyGameInstance : public UGameInstance
+class MYGAME_API UMyUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -39,7 +39,7 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
-	UMyGameInstance();
+	UMyUserWidget();
 
 	// New constructors here
 

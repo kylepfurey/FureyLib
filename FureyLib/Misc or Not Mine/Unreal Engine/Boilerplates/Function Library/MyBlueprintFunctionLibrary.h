@@ -14,7 +14,7 @@
 
 /** Template Unreal static function library script. */
 UCLASS(Blueprintable, BlueprintType)
-class GAME_API UMyBlueprintFunctionLibrary : public UBlueprintFunctionLibrary
+class MYGAME_API UMyBlueprintFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 

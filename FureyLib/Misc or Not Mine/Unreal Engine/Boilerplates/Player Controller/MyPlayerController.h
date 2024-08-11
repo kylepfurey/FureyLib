@@ -14,7 +14,7 @@
 
 /** Template Unreal player controller script. */
 UCLASS(Blueprintable, BlueprintType)
-class GAME_API AMyPlayerController : public APlayerController
+class MYGAME_API AMyPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 

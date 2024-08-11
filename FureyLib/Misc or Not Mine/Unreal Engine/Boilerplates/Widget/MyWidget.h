@@ -2,19 +2,19 @@
 // Name
 // Creator
 
-// REQUIREMENT: MyGameModeBase.cpp
+// REQUIREMENT: MyWidget.cpp
 
 #pragma once
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
-#include "MyGameModeBase.generated.h"
+#include "Components/Widget.h"
+#include "MyWidget.generated.h"
 
 // Include this heading to use the class
-// #include "MyGameModeBase.h"
+// #include "MyWidget.h"
 
-/** Template Unreal game mode script. */
+/** Template Unreal widget script. */
 UCLASS(Blueprintable, BlueprintType)
-class GAME_API AMyGameModeBase : public AGameModeBase
+class MYGAME_API UMyWidget : public UWidget
 {
 	GENERATED_BODY()
 
@@ -39,7 +39,7 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
-	AMyGameModeBase();
+	UMyWidget();
 
 	// New constructors here
 

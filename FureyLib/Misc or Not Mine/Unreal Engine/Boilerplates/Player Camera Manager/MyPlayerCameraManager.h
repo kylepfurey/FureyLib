@@ -2,19 +2,19 @@
 // Name
 // Creator
 
-// REQUIREMENT: MyGameInstance.cpp
+// REQUIREMENT: MyPlayerCameraManager.cpp
 
 #pragma once
 #include "CoreMinimal.h"
-#include "Engine/GameInstance.h"
-#include "MyGameInstance.generated.h"
+#include "Camera/PlayerCameraManager.h"
+#include "MyPlayerCameraManager.generated.h"
 
 // Include this heading to use the class
-// #include "MyGameInstance.h"
+// #include "MyPlayerCameraManager.h"
 
-/** Template Unreal game instance script. */
+/** Template Unreal player camera manager script. */
 UCLASS(Blueprintable, BlueprintType)
-class MYGAME_API UMyGameInstance : public UGameInstance
+class MYGAME_API AMyPlayerCameraManager : public APlayerCameraManager
 {
 	GENERATED_BODY()
 
@@ -39,7 +39,7 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
-	UMyGameInstance();
+	AMyPlayerCameraManager();
 
 	// New constructors here
 

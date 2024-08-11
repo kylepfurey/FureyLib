@@ -8,7 +8,7 @@
 #include "MyStruct.h"
 
 
-// CONSTRUCTORS
+// CONSTRUCTORS AND DESTRUCTOR
 
 // Default constructor.
 FMyStruct::FMyStruct()
@@ -17,6 +17,12 @@ FMyStruct::FMyStruct()
 }
 
 // New constructors here
+
+// Destructor.
+FMyStruct::~FMyStruct()
+{
+
+}
 
 
 // FUNCTIONS

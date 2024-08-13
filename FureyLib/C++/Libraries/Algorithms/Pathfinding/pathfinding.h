@@ -2,9 +2,9 @@
 // Static Node Pathfinding Functions Script
 // by Kyle Furey
 
-// REFERENCE: https://www.redblobgames.com/pathfinding/a-star/introduction.html
-
 // REQUIREMENT: graph.h
+
+// REFERENCE: https://www.redblobgames.com/pathfinding/a-star/introduction.html
 
 #pragma once
 #include <map>
@@ -590,6 +590,8 @@ public:
 					current_heuristic = new_heuristic;
 				}
 			}
+			
+			return dijkstra_search(current, end);
 		}
 
 		// Store our route
@@ -735,6 +737,8 @@ public:
 					current_heuristic = new_heuristic;
 				}
 			}
+			
+			return a_star_search(current, end, heuristic_scale);
 		}
 
 		// Store our route

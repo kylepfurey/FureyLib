@@ -2,9 +2,9 @@
 // Static Node Pathfinding Functions Script
 // by Kyle Furey
 
-// REFERENCE: https://www.redblobgames.com/pathfinding/a-star/introduction.html
-
 // REQUIREMENT: Graph.cs
+
+// REFERENCE: https://www.redblobgames.com/pathfinding/a-star/introduction.html
 
 using System;
 using System.Collections.Generic;
@@ -609,6 +609,8 @@ public static class Pathfinding
                     currentHeuristic = newHeuristic;
                 }
             }
+
+            return DijkstraSearch(start, current);
         }
 
         // Store our route
@@ -756,6 +758,8 @@ public static class Pathfinding
                     currentHeuristic = newHeuristic;
                 }
             }
+
+            return AStarSearch(start, current, heuristicScale);
         }
 
         // Store our route

@@ -820,6 +820,8 @@ public static class Pathfinding2D
                     currentHeuristic = newHeuristic;
                 }
             }
+
+            return DijkstraSearch(start, current, graphSettings);
         }
 
         // Store our route
@@ -1027,6 +1029,8 @@ public static class Pathfinding2D
                     currentHeuristic = newHeuristic;
                 }
             }
+
+            return AStarSearch(start, current, graphSettings, heuristicScale);
         }
 
         // Store our route
@@ -2225,6 +2229,8 @@ public static class Pathfinding3D
                     currentHeuristic = newHeuristic;
                 }
             }
+
+            return DijkstraSearch(start, current, graphSettings);
         }
 
         // Store our route
@@ -2517,6 +2523,8 @@ public static class Pathfinding3D
                     currentHeuristic = newHeuristic;
                 }
             }
+
+            return AStarSearch(start, current, graphSettings, heuristicScale);
         }
 
         // Store our route

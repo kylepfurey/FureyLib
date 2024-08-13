@@ -939,6 +939,8 @@ public:
 					current_heuristic = new_heuristic;
 				}
 			}
+			
+			return dijkstra(current, end, graph_settings);
 		}
 
 		// Store our route
@@ -1144,6 +1146,8 @@ public:
 					current_heuristic = new_heuristic;
 				}
 			}
+			
+			return a_star_search(current, end, graph_settings, heuristic_scale);
 		}
 
 		// Store our route
@@ -2334,6 +2338,8 @@ public:
 					current_heuristic = new_heuristic;
 				}
 			}
+			
+			return dijkstra_search(current, end, graph_settings);
 		}
 
 		// Store our route
@@ -2624,6 +2630,8 @@ public:
 					current_heuristic = new_heuristic;
 				}
 			}
+			
+			return a_star_search(current, end, graph_settings, heuristic_scale);
 		}
 
 		// Store our route

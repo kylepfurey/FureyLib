@@ -105,7 +105,7 @@ public:
 	template<typename data_type> static std::stack<node<data_type>*> depth_first_search(node<data_type>* start, node<data_type>* end)
 	{
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || !start->active)
 		{
 			return std::stack<node<data_type>*>();
 		}
@@ -188,8 +188,13 @@ public:
 			// Calculate the closest node to our goal
 			for (auto to : from)
 			{
+				if (to.first == nullptr)
+				{
+					continue;
+				}
+
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -227,7 +232,7 @@ public:
 	template<typename data_type> static std::stack<node<data_type>*> breadth_first_search(node<data_type>* start, node<data_type>* end)
 	{
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || !start->active)
 		{
 			return std::stack<node<data_type>*>();
 		}
@@ -310,8 +315,13 @@ public:
 			// Calculate the closest node to our goal
 			for (auto to : from)
 			{
+				if (to.first == nullptr)
+				{
+					continue;
+				}
+
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -349,7 +359,7 @@ public:
 	template<typename data_type> static std::stack<node<data_type>*> heuristic_search(node<data_type>* start, node<data_type>* end)
 	{
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || !start->active)
 		{
 			return std::stack<node<data_type>*>();
 		}
@@ -432,8 +442,13 @@ public:
 			// Calculate the closest node to our goal
 			for (auto to : from)
 			{
+				if (to.first == nullptr)
+				{
+					continue;
+				}
+
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -481,7 +496,7 @@ public:
 	template<typename data_type> static std::stack<node<data_type>*> dijkstra_search(node<data_type>* start, node<data_type>* end)
 	{
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || !start->active)
 		{
 			return std::stack<node<data_type>*>();
 		}
@@ -577,8 +592,13 @@ public:
 			// Calculate the closest node to our goal
 			for (auto to : from)
 			{
+				if (to.first == nullptr)
+				{
+					continue;
+				}
+
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -590,8 +610,6 @@ public:
 					current_heuristic = new_heuristic;
 				}
 			}
-			
-			return dijkstra_search(current, end);
 		}
 
 		// Store our route
@@ -628,7 +646,7 @@ public:
 	template<typename data_type> static std::stack<node<data_type>*> a_star_search(node<data_type>* start, node<data_type>* end, HEURISTIC_TYPE heuristic_scale = 1.1f.1f)
 	{
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || !start->active)
 		{
 			return std::stack<node<data_type>*>();
 		}
@@ -724,8 +742,13 @@ public:
 			// Calculate the closest node to our goal
 			for (auto to : from)
 			{
+				if (to.first == nullptr)
+				{
+					continue;
+				}
+
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -737,8 +760,6 @@ public:
 					current_heuristic = new_heuristic;
 				}
 			}
-			
-			return a_star_search(current, end, heuristic_scale);
 		}
 
 		// Store our route

@@ -124,7 +124,7 @@ public static class Pathfinding
     public static Stack<Node<DataType>> DepthFirstSearch<DataType>(Node<DataType> start, Node<DataType> end)
     {
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || !start.active)
         {
             return new Stack<Node<DataType>>();
         }
@@ -203,8 +203,13 @@ public static class Pathfinding
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (Node<DataType> to in from.Values)
+            foreach (Node<DataType> to in from.Keys)
             {
+                if (to == null)
+                {
+                    continue;
+                }
+
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end);
 
@@ -246,7 +251,7 @@ public static class Pathfinding
     public static Stack<Node<DataType>> BreadthFirstSearch<DataType>(Node<DataType> start, Node<DataType> end)
     {
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || !start.active)
         {
             return new Stack<Node<DataType>>();
         }
@@ -325,8 +330,13 @@ public static class Pathfinding
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (Node<DataType> to in from.Values)
+            foreach (Node<DataType> to in from.Keys)
             {
+                if (to == null)
+                {
+                    continue;
+                }
+
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end);
 
@@ -368,7 +378,7 @@ public static class Pathfinding
     public static Stack<Node<DataType>> HeuristicSearch<DataType>(Node<DataType> start, Node<DataType> end)
     {
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || !start.active)
         {
             return new Stack<Node<DataType>>();
         }
@@ -447,8 +457,13 @@ public static class Pathfinding
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (Node<DataType> to in from.Values)
+            foreach (Node<DataType> to in from.Keys)
             {
+                if (to == null)
+                {
+                    continue;
+                }
+
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end);
 
@@ -502,7 +517,7 @@ public static class Pathfinding
     public static Stack<Node<DataType>> DijkstraSearch<DataType>(Node<DataType> start, Node<DataType> end)
     {
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || !start.active)
         {
             return new Stack<Node<DataType>>();
         }
@@ -594,8 +609,13 @@ public static class Pathfinding
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (Node<DataType> to in from.Values)
+            foreach (Node<DataType> to in from.Keys)
             {
+                if (to == null)
+                {
+                    continue;
+                }
+
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end);
 
@@ -609,8 +629,6 @@ public static class Pathfinding
                     currentHeuristic = newHeuristic;
                 }
             }
-
-            return DijkstraSearch(start, current);
         }
 
         // Store our route
@@ -651,7 +669,7 @@ public static class Pathfinding
     public static Stack<Node<DataType>> AStarSearch<DataType>(Node<DataType> start, Node<DataType> end, HeuristicType heuristicScale = 1.1f)
     {
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || !start.active)
         {
             return new Stack<Node<DataType>>();
         }
@@ -743,8 +761,13 @@ public static class Pathfinding
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (Node<DataType> to in from.Values)
+            foreach (Node<DataType> to in from.Keys)
             {
+                if (to == null)
+                {
+                    continue;
+                }
+
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end);
 
@@ -758,8 +781,6 @@ public static class Pathfinding
                     currentHeuristic = newHeuristic;
                 }
             }
-
-            return AStarSearch(start, current, heuristicScale);
         }
 
         // Store our route

@@ -6,7 +6,7 @@
 #include "state_machine.h"
 
 // Base class macro
-#define base state_base::
+#define base state_base
 
 // A template for a new state machine state.
 class state : public state_base

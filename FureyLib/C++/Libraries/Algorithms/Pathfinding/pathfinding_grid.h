@@ -272,7 +272,7 @@ public:
 		}
 
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || (graph_settings.invert_occupied ? !graph_settings.occupied.count(start) : graph_settings.occupied.count(start)))
 		{
 			return std::stack<grid_space>();
 		}
@@ -389,7 +389,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -433,7 +433,7 @@ public:
 		}
 
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || (graph_settings.invert_occupied ? !graph_settings.occupied.count(start) : graph_settings.occupied.count(start)))
 		{
 			return std::stack<grid_space>();
 		}
@@ -550,7 +550,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -594,7 +594,7 @@ public:
 		}
 
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || (graph_settings.invert_occupied ? !graph_settings.occupied.count(start) : graph_settings.occupied.count(start)))
 		{
 			return std::stack<grid_space>();
 		}
@@ -722,7 +722,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -776,7 +776,7 @@ public:
 		}
 
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || (graph_settings.invert_occupied ? !graph_settings.occupied.count(start) : graph_settings.occupied.count(start)))
 		{
 			return std::stack<grid_space>();
 		}
@@ -927,7 +927,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -939,8 +939,6 @@ public:
 					current_heuristic = new_heuristic;
 				}
 			}
-			
-			return dijkstra(current, end, graph_settings);
 		}
 
 		// Store our route
@@ -983,7 +981,7 @@ public:
 		}
 
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || (graph_settings.invert_occupied ? !graph_settings.occupied.count(start) : graph_settings.occupied.count(start)))
 		{
 			return std::stack<grid_space>();
 		}
@@ -1134,7 +1132,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -1146,8 +1144,6 @@ public:
 					current_heuristic = new_heuristic;
 				}
 			}
-			
-			return a_star_search(current, end, graph_settings, heuristic_scale);
 		}
 
 		// Store our route
@@ -1435,7 +1431,7 @@ public:
 		}
 
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || (graph_settings.invert_occupied ? !graph_settings.occupied.count(start) : graph_settings.occupied.count(start)))
 		{
 			return std::stack<grid_space_3D>();
 		}
@@ -1585,7 +1581,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -1629,7 +1625,7 @@ public:
 		}
 
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || (graph_settings.invert_occupied ? !graph_settings.occupied.count(start) : graph_settings.occupied.count(start)))
 		{
 			return std::stack<grid_space_3D>();
 		}
@@ -1779,7 +1775,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -1823,7 +1819,7 @@ public:
 		}
 
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || (graph_settings.invert_occupied ? !graph_settings.occupied.count(start) : graph_settings.occupied.count(start)))
 		{
 			return std::stack<grid_space_3D>();
 		}
@@ -2036,7 +2032,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -2090,7 +2086,7 @@ public:
 		}
 
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || (graph_settings.invert_occupied ? !graph_settings.occupied.count(start) : graph_settings.occupied.count(start)))
 		{
 			return std::stack<grid_space_3D>();
 		}
@@ -2326,7 +2322,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -2338,8 +2334,6 @@ public:
 					current_heuristic = new_heuristic;
 				}
 			}
-			
-			return dijkstra_search(current, end, graph_settings);
 		}
 
 		// Store our route
@@ -2382,7 +2376,7 @@ public:
 		}
 
 		// Check if the start and end node are identical
-		if (start == end)
+		if (start == end || (graph_settings.invert_occupied ? !graph_settings.occupied.count(start) : graph_settings.occupied.count(start)))
 		{
 			return std::stack<grid_space_3D>();
 		}
@@ -2618,7 +2612,7 @@ public:
 			for (auto to : from)
 			{
 				// Calculate the new heuristic
-				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.second, end, !graph_settings.diagonal_navigation);
+				HEURISTIC_TYPE new_heuristic = calculate_heuristic(to.first, end, !graph_settings.diagonal_navigation);
 
 				// Check if the new heuristic is closer to the goal
 				if (new_heuristic < current_heuristic)
@@ -2630,8 +2624,6 @@ public:
 					current_heuristic = new_heuristic;
 				}
 			}
-			
-			return a_star_search(current, end, graph_settings, heuristic_scale);
 		}
 
 		// Store our route

@@ -153,7 +153,7 @@ public static class Pathfinding2D
         }
 
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || (graphSettings.invertOccupied ? !graphSettings.occupied.Contains(start) : graphSettings.occupied.Contains(start)))
         {
             return new Stack<GridSpace>();
         }
@@ -236,7 +236,7 @@ public static class Pathfinding2D
                     // Store the current connection
                     GridSpace connection = current + new GridSpace(x, y);
 
-                    if (graphSettings.ignoreOccupied || graphSettings.occupied == null || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
+                    if (graphSettings.ignoreOccupied || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
                     {
                         // Check that our connected node is not currently in our dictionary
                         if (!from.ContainsKey(connection))
@@ -265,7 +265,7 @@ public static class Pathfinding2D
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (GridSpace to in from.Values)
+            foreach (GridSpace to in from.Keys)
             {
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
@@ -314,7 +314,7 @@ public static class Pathfinding2D
         }
 
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || (graphSettings.invertOccupied ? !graphSettings.occupied.Contains(start) : graphSettings.occupied.Contains(start)))
         {
             return new Stack<GridSpace>();
         }
@@ -397,7 +397,7 @@ public static class Pathfinding2D
                     // Store the current connection
                     GridSpace connection = current + new GridSpace(x, y);
 
-                    if (graphSettings.ignoreOccupied || graphSettings.occupied == null || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
+                    if (graphSettings.ignoreOccupied || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
                     {
                         // Check that our connected node is not currently in our dictionary
                         if (!from.ContainsKey(connection))
@@ -426,7 +426,7 @@ public static class Pathfinding2D
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (GridSpace to in from.Values)
+            foreach (GridSpace to in from.Keys)
             {
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
@@ -475,7 +475,7 @@ public static class Pathfinding2D
         }
 
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || (graphSettings.invertOccupied ? !graphSettings.occupied.Contains(start) : graphSettings.occupied.Contains(start)))
         {
             return new Stack<GridSpace>();
         }
@@ -569,7 +569,7 @@ public static class Pathfinding2D
                         bonus = direction == (connection.y - current.y != 0);
                     }
 
-                    if (graphSettings.ignoreOccupied || graphSettings.occupied == null || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
+                    if (graphSettings.ignoreOccupied || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
                     {
                         // Check that our connected node is not currently in our dictionary
                         if (!from.ContainsKey(connection))
@@ -598,7 +598,7 @@ public static class Pathfinding2D
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (GridSpace to in from.Values)
+            foreach (GridSpace to in from.Keys)
             {
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
@@ -659,7 +659,7 @@ public static class Pathfinding2D
         }
 
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || (graphSettings.invertOccupied ? !graphSettings.occupied.Contains(start) : graphSettings.occupied.Contains(start)))
         {
             return new Stack<GridSpace>();
         }
@@ -764,7 +764,7 @@ public static class Pathfinding2D
                     }
 
                     // Store the new total cost of traveling this node
-                    if (graphSettings.ignoreWeights || graphSettings.weights == null || !graphSettings.weights.ContainsKey(connection))
+                    if (graphSettings.ignoreWeights || !graphSettings.weights.ContainsKey(connection))
                     {
                         newCost = weights[current] + graphSettings.defaultWeight;
                     }
@@ -773,7 +773,7 @@ public static class Pathfinding2D
                         newCost = weights[current] + graphSettings.weights[connection];
                     }
 
-                    if (graphSettings.ignoreOccupied || graphSettings.occupied == null || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
+                    if (graphSettings.ignoreOccupied || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
                     {
                         // Check that our connected node is not currently in our dictionary
                         if (!from.ContainsKey(connection) || newCost < weights[connection])
@@ -805,7 +805,7 @@ public static class Pathfinding2D
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (GridSpace to in from.Values)
+            foreach (GridSpace to in from.Keys)
             {
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
@@ -820,8 +820,6 @@ public static class Pathfinding2D
                     currentHeuristic = newHeuristic;
                 }
             }
-
-            return DijkstraSearch(start, current, graphSettings);
         }
 
         // Store our route
@@ -868,7 +866,7 @@ public static class Pathfinding2D
         }
 
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || (graphSettings.invertOccupied ? !graphSettings.occupied.Contains(start) : graphSettings.occupied.Contains(start)))
         {
             return new Stack<GridSpace>();
         }
@@ -973,7 +971,7 @@ public static class Pathfinding2D
                     }
 
                     // Store the new total cost of traveling this node
-                    if (graphSettings.ignoreWeights || graphSettings.weights == null || !graphSettings.weights.ContainsKey(connection))
+                    if (graphSettings.ignoreWeights || !graphSettings.weights.ContainsKey(connection))
                     {
                         newCost = weights[current] + graphSettings.defaultWeight;
                     }
@@ -982,7 +980,7 @@ public static class Pathfinding2D
                         newCost = weights[current] + graphSettings.weights[connection];
                     }
 
-                    if (graphSettings.ignoreOccupied || graphSettings.occupied == null || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
+                    if (graphSettings.ignoreOccupied || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
                     {
                         // Check that our connected node is not currently in our dictionary
                         if (!from.ContainsKey(connection) || newCost < weights[connection])
@@ -1014,7 +1012,7 @@ public static class Pathfinding2D
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (GridSpace to in from.Values)
+            foreach (GridSpace to in from.Keys)
             {
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
@@ -1029,8 +1027,6 @@ public static class Pathfinding2D
                     currentHeuristic = newHeuristic;
                 }
             }
-
-            return AStarSearch(start, current, graphSettings, heuristicScale);
         }
 
         // Store our route
@@ -1164,6 +1160,28 @@ public struct GridGraph
     public WeightType defaultWeight;
 
     /// <summary>
+    /// Default constructor.
+    /// </summary>
+    public GridGraph()
+    {
+        adjacentNavigation = true;
+
+        diagonalNavigation = true;
+
+        ignoreOccupied = false;
+
+        occupied = new HashSet<GridSpace>();
+
+        invertOccupied = false;
+
+        ignoreWeights = false;
+
+        weights = new Dictionary<GridSpace, WeightType>();
+
+        defaultWeight = 1;
+    }
+
+    /// <summary>
     /// Graph constructor.
     /// </summary>
     public GridGraph(bool adjacentNavigation = true, bool diagonalNavigation = true, bool ignoreOccupied = false, HashSet<GridSpace> occupied = null, bool invertOccupied = false, bool ignoreWeights = false, Dictionary<GridSpace, WeightType> weights = null, WeightType defaultWeight = 1)
@@ -1174,13 +1192,13 @@ public struct GridGraph
 
         this.ignoreOccupied = ignoreOccupied;
 
-        this.occupied = occupied;
+        this.occupied = occupied == null ? new HashSet<GridSpace>() : occupied;
 
         this.invertOccupied = invertOccupied;
 
         this.ignoreWeights = ignoreWeights;
 
-        this.weights = weights;
+        this.weights = weights == null ? new Dictionary<GridSpace, WeightType>() : weights;
 
         this.defaultWeight = defaultWeight;
     }
@@ -1326,7 +1344,7 @@ public static class Pathfinding3D
         }
 
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || (graphSettings.invertOccupied ? !graphSettings.occupied.Contains(start) : graphSettings.occupied.Contains(start)))
         {
             return new Stack<GridSpace3D>();
         }
@@ -1441,7 +1459,7 @@ public static class Pathfinding3D
                         // Store the current connection
                         GridSpace3D connection = current + new GridSpace3D(x, y, z);
 
-                        if (graphSettings.ignoreOccupied || graphSettings.occupied == null || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
+                        if (graphSettings.ignoreOccupied || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
                         {
                             // Check that our connected node is not currently in our dictionary
                             if (!from.ContainsKey(connection))
@@ -1471,7 +1489,7 @@ public static class Pathfinding3D
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (GridSpace3D to in from.Values)
+            foreach (GridSpace3D to in from.Keys)
             {
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
@@ -1520,7 +1538,7 @@ public static class Pathfinding3D
         }
 
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || (graphSettings.invertOccupied ? !graphSettings.occupied.Contains(start) : graphSettings.occupied.Contains(start)))
         {
             return new Stack<GridSpace3D>();
         }
@@ -1635,7 +1653,7 @@ public static class Pathfinding3D
                         // Store the current connection
                         GridSpace3D connection = current + new GridSpace3D(x, y, z);
 
-                        if (graphSettings.ignoreOccupied || graphSettings.occupied == null || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
+                        if (graphSettings.ignoreOccupied || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
                         {
                             // Check that our connected node is not currently in our dictionary
                             if (!from.ContainsKey(connection))
@@ -1665,7 +1683,7 @@ public static class Pathfinding3D
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (GridSpace3D to in from.Values)
+            foreach (GridSpace3D to in from.Keys)
             {
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
@@ -1714,7 +1732,7 @@ public static class Pathfinding3D
         }
 
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || (graphSettings.invertOccupied ? !graphSettings.occupied.Contains(start) : graphSettings.occupied.Contains(start)))
         {
             return new Stack<GridSpace3D>();
         }
@@ -1892,7 +1910,7 @@ public static class Pathfinding3D
                             }
                         }
 
-                        if (graphSettings.ignoreOccupied || graphSettings.occupied == null || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
+                        if (graphSettings.ignoreOccupied || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
                         {
                             // Check that our connected node is not currently in our dictionary
                             if (!from.ContainsKey(connection))
@@ -1922,7 +1940,7 @@ public static class Pathfinding3D
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (GridSpace3D to in from.Values)
+            foreach (GridSpace3D to in from.Keys)
             {
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
@@ -1983,7 +2001,7 @@ public static class Pathfinding3D
         }
 
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || (graphSettings.invertOccupied ? !graphSettings.occupied.Contains(start) : graphSettings.occupied.Contains(start)))
         {
             return new Stack<GridSpace3D>();
         }
@@ -2172,7 +2190,7 @@ public static class Pathfinding3D
                         }
 
                         // Store the new total cost of traveling this node
-                        if (graphSettings.ignoreWeights || graphSettings.weights == null || !graphSettings.weights.ContainsKey(connection))
+                        if (graphSettings.ignoreWeights || !graphSettings.weights.ContainsKey(connection))
                         {
                             newCost = weights[current] + graphSettings.defaultWeight;
                         }
@@ -2181,7 +2199,7 @@ public static class Pathfinding3D
                             newCost = weights[current] + graphSettings.weights[connection];
                         }
 
-                        if (graphSettings.ignoreOccupied || graphSettings.occupied == null || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
+                        if (graphSettings.ignoreOccupied || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
                         {
                             // Check that our connected node is not currently in our dictionary
                             if (!from.ContainsKey(connection) || newCost < weights[connection])
@@ -2214,7 +2232,7 @@ public static class Pathfinding3D
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (GridSpace3D to in from.Values)
+            foreach (GridSpace3D to in from.Keys)
             {
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
@@ -2229,8 +2247,6 @@ public static class Pathfinding3D
                     currentHeuristic = newHeuristic;
                 }
             }
-
-            return DijkstraSearch(start, current, graphSettings);
         }
 
         // Store our route
@@ -2277,7 +2293,7 @@ public static class Pathfinding3D
         }
 
         // Check if the start and end node are identical
-        if (start == end)
+        if (start == end || (graphSettings.invertOccupied ? !graphSettings.occupied.Contains(start) : graphSettings.occupied.Contains(start)))
         {
             return new Stack<GridSpace3D>();
         }
@@ -2466,7 +2482,7 @@ public static class Pathfinding3D
                         }
 
                         // Store the new total cost of traveling this node
-                        if (graphSettings.ignoreWeights || graphSettings.weights == null || !graphSettings.weights.ContainsKey(connection))
+                        if (graphSettings.ignoreWeights || !graphSettings.weights.ContainsKey(connection))
                         {
                             newCost = weights[current] + graphSettings.defaultWeight;
                         }
@@ -2475,7 +2491,7 @@ public static class Pathfinding3D
                             newCost = weights[current] + graphSettings.weights[connection];
                         }
 
-                        if (graphSettings.ignoreOccupied || graphSettings.occupied == null || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
+                        if (graphSettings.ignoreOccupied || (graphSettings.invertOccupied ? graphSettings.occupied.Contains(connection) : !graphSettings.occupied.Contains(connection)))
                         {
                             // Check that our connected node is not currently in our dictionary
                             if (!from.ContainsKey(connection) || newCost < weights[connection])
@@ -2508,7 +2524,7 @@ public static class Pathfinding3D
             HeuristicType currentHeuristic = HeuristicType.MaxValue;
 
             // Calculate the closest node to our goal
-            foreach (GridSpace3D to in from.Values)
+            foreach (GridSpace3D to in from.Keys)
             {
                 // Calculate the new heuristic
                 HeuristicType newHeuristic = CalculateHeuristic(to, end, !graphSettings.diagonalNavigation);
@@ -2523,8 +2539,6 @@ public static class Pathfinding3D
                     currentHeuristic = newHeuristic;
                 }
             }
-
-            return AStarSearch(start, current, graphSettings, heuristicScale);
         }
 
         // Store our route
@@ -2665,6 +2679,28 @@ public struct GridGraph3D
     public WeightType defaultWeight;
 
     /// <summary>
+    /// Default constructor.
+    /// </summary>
+    public GridGraph3D()
+    {
+        adjacentNavigation = true;
+
+        diagonalNavigation = true;
+
+        ignoreOccupied = false;
+
+        occupied = new HashSet<GridSpace3D>();
+
+        invertOccupied = false;
+
+        ignoreWeights = false;
+
+        weights = new Dictionary<GridSpace3D, WeightType>();
+
+        defaultWeight = 1;
+    }
+
+    /// <summary>
     /// Graph constructor.
     /// </summary>
     public GridGraph3D(bool adjacentNavigation = true, bool diagonalNavigation = true, bool ignoreOccupied = false, HashSet<GridSpace3D> occupied = null, bool invertOccupied = false, bool ignoreWeights = false, Dictionary<GridSpace3D, WeightType> weights = null, WeightType defaultWeight = 1)
@@ -2675,13 +2711,13 @@ public struct GridGraph3D
 
         this.ignoreOccupied = ignoreOccupied;
 
-        this.occupied = occupied;
+        this.occupied = occupied == null ? new HashSet<GridSpace3D>() : occupied;
 
         this.invertOccupied = invertOccupied;
 
         this.ignoreWeights = ignoreWeights;
 
-        this.weights = weights;
+        this.weights = weights == null ? new Dictionary<GridSpace3D, WeightType>() : weights;
 
         this.defaultWeight = defaultWeight;
     }

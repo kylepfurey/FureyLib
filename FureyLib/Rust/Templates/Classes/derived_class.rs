@@ -23,7 +23,7 @@ class!(DerivedClass,
     // BASE CLASS
 
     // The base class this class derives from
-    pub base: BaseClass,
+    pub super: BaseClass,
 
 
     // VARIABLES
@@ -43,7 +43,7 @@ impl DerivedClass
         let mut target: DerivedClass = DerivedClass
         {
             // Call base constructor
-            base: BaseClass::new(),
+            super: BaseClass::new(),
 
             // New constructor code here
         };

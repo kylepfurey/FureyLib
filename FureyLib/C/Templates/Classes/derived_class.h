@@ -21,7 +21,7 @@ class(derived_class)
 	// BASE CLASS
 
 	// The base class this class derives from
-	base_class base;
+	base_class super;
 
 
 	// VARIABLES
@@ -57,7 +57,7 @@ derived_class construct_derived()
 	derived_class self =
 	{
 		// Call base constructor
-		self.base = construct_base(),
+		self.super = construct_base(),
 
 		// New constructor code here
 
@@ -80,5 +80,5 @@ void destruct_derived(derived_class* self)
 	// New destructor code here
 
 	// Call base destructor
-	destruct_base(&self->base);
+	destruct_base(&self->super);
 }

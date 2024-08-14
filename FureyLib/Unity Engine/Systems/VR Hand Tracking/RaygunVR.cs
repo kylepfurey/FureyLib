@@ -235,6 +235,8 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
         {
             coloredRaygunBodyParts[0].sharedMaterial = new Material(coloredRaygunBodyParts[0].sharedMaterial);
 
+            coloredRaygunBodyParts[0].sharedMaterial.EnableKeyword("_EMISSION");
+
             coloredRaygunBodyParts[0].sharedMaterial.SetColor(raygunColorParameter, beamColor);
 
             coloredRaygunBodyParts[0].sharedMaterial.SetColor(raygunEmissiveColorParameter, beamColor * beamIntensity);
@@ -488,6 +490,8 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
             {
                 ray.sharedMaterial = coloredRaygunBodyParts[0].sharedMaterial;
             }
+
+            ray.sharedMaterial.EnableKeyword("_EMISSION");
 
             ray.sharedMaterial.SetColor(raygunColorParameter, beamColor);
 

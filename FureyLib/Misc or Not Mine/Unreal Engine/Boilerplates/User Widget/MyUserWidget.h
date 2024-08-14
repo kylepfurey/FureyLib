@@ -44,6 +44,18 @@ public:
 	// New constructors here
 
 
+	// UNREAL FUNCTIONS
+
+	/** Called when the widget is created. */
+	virtual void NativeConstruct() override;
+
+	/** Called every frame while this widget is active. */
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+	/** Called when the widget is destroyed. */
+	virtual void NativeDestruct() override;
+
+
 	// FUNCTIONS
 
 	// New functions here

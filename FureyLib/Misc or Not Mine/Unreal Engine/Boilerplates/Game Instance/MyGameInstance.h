@@ -44,6 +44,18 @@ public:
 	// New constructors here
 
 
+	// UNREAL FUNCTIONS
+
+	/** Called when the game is first initialized. */
+	virtual void Init() override;
+
+	/** Called when the game's current world changes. */
+	virtual void OnWorldChanged(UWorld* OldWorld, UWorld* NewWorld) override;
+
+	/** Called when the game is closed. */
+	virtual void Shutdown() override;
+
+
 	// FUNCTIONS
 
 	// New functions here

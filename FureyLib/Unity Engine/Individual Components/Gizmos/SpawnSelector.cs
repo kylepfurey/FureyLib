@@ -15,6 +15,9 @@ public class SpawnSelector : MonoBehaviour
 
     [Header("\nCONFIGURATION")]
 
+    [Header("The current / default spawned game object:")]
+    [SerializeField] private GameObject current = null;
+
     [Header("The list of possible objects to spawn:")]
     public List<GameObject> prefabs = new List<GameObject>();
 
@@ -23,6 +26,9 @@ public class SpawnSelector : MonoBehaviour
 
     [Header("Whether to delete the current object when a new one is spawned:")]
     public bool exclusiveSpawn = true;
+
+    [Header("Whether to copy the transform values of the previous spawned object to the new one:")]
+    public bool replacePreviousTransform = true;
 
     [Header("Events for this selector:")]
     public UnityEvent onSpawn = null;
@@ -40,11 +46,6 @@ public class SpawnSelector : MonoBehaviour
     /// The current object.
     /// </summary>
     public GameObject Current { get => current; }
-
-    /// <summary>
-    /// The current spawned game object.
-    /// </summary>
-    private GameObject current = null;
 
 
     // INDEX FUNCTIONS
@@ -80,6 +81,21 @@ public class SpawnSelector : MonoBehaviour
     /// <returns></returns>
     public GameObject Spawn()
     {
+        Vector3 position = transform.position;
+
+        Quaternion rotation = transform.rotation;
+
+        Transform parent = transform.parent;
+
+        if (replacePreviousTransform && current != null)
+        {
+            position = current.transform.position;
+
+            rotation = current.transform.rotation;
+
+            parent = current.transform.parent;
+        }
+
         if (exclusiveSpawn && current != null)
         {
             onDestroy.Invoke();
@@ -90,6 +106,12 @@ public class SpawnSelector : MonoBehaviour
         onSpawn.Invoke();
 
         current = Instantiate(prefabs[index]);
+
+        current.transform.position = position;
+
+        current.transform.rotation = rotation;
+
+        current.transform.parent = parent;
 
         return current;
     }
@@ -101,6 +123,21 @@ public class SpawnSelector : MonoBehaviour
     /// <returns></returns>
     public GameObject Spawn(int index)
     {
+        Vector3 position = transform.position;
+
+        Quaternion rotation = transform.rotation;
+
+        Transform parent = transform.parent;
+
+        if (replacePreviousTransform && current != null)
+        {
+            position = current.transform.position;
+
+            rotation = current.transform.rotation;
+
+            parent = current.transform.parent;
+        }
+
         if (exclusiveSpawn && current != null)
         {
             onDestroy.Invoke();
@@ -111,6 +148,12 @@ public class SpawnSelector : MonoBehaviour
         onSpawn.Invoke();
 
         current = Instantiate(prefabs[index]);
+
+        current.transform.position = position;
+
+        current.transform.rotation = rotation;
+
+        current.transform.parent = parent;
 
         return current;
     }
@@ -202,6 +245,21 @@ public class SpawnSelector : MonoBehaviour
     /// <returns></returns>
     public GameObject SpawnRandom()
     {
+        Vector3 position = transform.position;
+
+        Quaternion rotation = transform.rotation;
+
+        Transform parent = transform.parent;
+
+        if (replacePreviousTransform && current != null)
+        {
+            position = current.transform.position;
+
+            rotation = current.transform.rotation;
+
+            parent = current.transform.parent;
+        }
+
         if (exclusiveSpawn && current != null)
         {
             onDestroy.Invoke();
@@ -212,6 +270,12 @@ public class SpawnSelector : MonoBehaviour
         onSpawn.Invoke();
 
         current = Instantiate(prefabs[Random.Range(0, prefabs.Count - 1)]);
+
+        current.transform.position = position;
+
+        current.transform.rotation = rotation;
+
+        current.transform.parent = parent;
 
         return current;
     }
@@ -298,7 +362,15 @@ public class SpawnSelector : MonoBehaviour
         {
             onSpawn.Invoke();
 
-            list.Add(Instantiate(current));
+            GameObject spawned = Instantiate(current);
+
+            spawned.transform.position = transform.position;
+
+            spawned.transform.rotation = transform.rotation;
+
+            spawned.transform.parent = transform.parent;
+
+            list.Add(spawned);
         }
 
         return list;

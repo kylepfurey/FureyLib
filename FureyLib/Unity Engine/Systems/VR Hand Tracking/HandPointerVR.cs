@@ -18,8 +18,9 @@ public class HandPointerVR : MonoBehaviour, IHandInteractableVR
 
     [Header("\nPOINTING SETTINGS")]
 
-    [Header("The player's body GameObject:")]
+    [Header("The player object and its rotated body:")]
     [SerializeField] private GameObject player = null;
+    [SerializeField] private GameObject rotatedBody = null;
 
     [Header("A cube \"beam\" indicating where the player is pointing:")]
     [SerializeField] private GameObject pointer = null;
@@ -46,6 +47,7 @@ public class HandPointerVR : MonoBehaviour, IHandInteractableVR
 
     [Header("The tag a trigger must have to be a teleporter:")]
     [SerializeField] private string teleportTag = "Anchor";
+    [SerializeField] private bool rotatePlayerOnTeleport = false;
 
     [Header("Events triggered by teleporting (fading the screen should be one):")]
     public UnityEvent OnTeleport = null;
@@ -257,7 +259,10 @@ public class HandPointerVR : MonoBehaviour, IHandInteractableVR
     {
         player.transform.position = new Vector3(hit.collider.transform.position.x, player.transform.position.y, hit.collider.transform.position.z);
 
-        player.transform.eulerAngles = new Vector3(player.transform.eulerAngles.x, hit.collider.transform.eulerAngles.y, player.transform.eulerAngles.z);
+        if (rotatePlayerOnTeleport)
+        {
+            rotatedBody.transform.eulerAngles = new Vector3(rotatedBody.transform.eulerAngles.x, hit.collider.transform.eulerAngles.y, rotatedBody.transform.eulerAngles.z);
+        }
 
         teleportTimer = 0;
 

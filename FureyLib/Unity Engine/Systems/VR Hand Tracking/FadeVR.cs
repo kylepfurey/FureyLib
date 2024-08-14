@@ -1,16 +1,16 @@
 
-// VR Teleportation Fade Script
+// VR Screen Fading Script
 // by Kyle Furey
 
 using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// The fading of the screen when the player triggers a successful teleport.
+/// Used to quickly fade the screen in VR.
 /// </summary>
-public class TeleportFadeVR : MonoBehaviour
+public class FadeVR : MonoBehaviour
 {
-    [Header("The fading of the screen when the player triggers a successful teleport.")]
+    [Header("Used to quickly fade the screen in VR")]
 
     [Header("\nFADING IN / OUT")]
 
@@ -71,10 +71,27 @@ public class TeleportFadeVR : MonoBehaviour
     }
 
     /// <summary>
-    /// Begin fading in and out the screen (trigger when teleporting)
+    /// Begin fading in and out the screen.
     /// </summary>
     public void Fade()
     {
         isFading = FadingState.FadingIn;
+    }
+
+    /// <summary>
+    /// Attempts to fade the player's screen.
+    /// </summary>
+    public static bool TryFade()
+    {
+        FadeVR instance = VRUser.instance.GetComponentInChildren<FadeVR>();
+
+        if (instance != null)
+        {
+            instance.Fade();
+
+            return true;
+        }
+
+        return false;
     }
 }

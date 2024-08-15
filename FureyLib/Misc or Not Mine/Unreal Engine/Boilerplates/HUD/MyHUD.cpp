@@ -11,9 +11,19 @@
 // CONSTRUCTORS
 
 // Default constructor.
+AMyHUD::AMyHUD()
+{
+	// Set this HUD to call Tick() every frame.
+	// You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+// Object initializer constructor.
 AMyHUD::AMyHUD(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-
+	// Set this HUD to call Tick() every frame.
+	// You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 // New constructors here

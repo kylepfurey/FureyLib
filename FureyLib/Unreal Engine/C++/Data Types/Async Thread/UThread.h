@@ -37,9 +37,12 @@ protected:
 
 public:
 
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 
 	/** Default constructor. */
+	UThread();
+
+	/** Object initializer constructor. */
 	UThread(const FObjectInitializer& ObjectInitializer);
 
 

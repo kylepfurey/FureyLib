@@ -45,6 +45,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	AMyPlayerController();
+
+	/** Object initializer constructor. */
 	AMyPlayerController(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

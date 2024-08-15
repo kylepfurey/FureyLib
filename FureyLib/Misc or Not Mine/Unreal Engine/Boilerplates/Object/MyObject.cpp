@@ -11,6 +11,12 @@
 // CONSTRUCTORS
 
 // Default constructor.
+UMyObject::UMyObject()
+{
+
+}
+
+// Object initializer constructor.
 UMyObject::UMyObject(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 

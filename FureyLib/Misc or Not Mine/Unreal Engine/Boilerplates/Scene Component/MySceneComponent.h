@@ -45,6 +45,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	UMySceneComponent();
+
+	/** Object initializer constructor. */
 	UMySceneComponent(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

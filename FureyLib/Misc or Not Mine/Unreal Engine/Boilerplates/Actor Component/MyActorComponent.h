@@ -45,6 +45,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	UMyActorComponent();
+
+	/** Object initializer constructor. */
 	UMyActorComponent(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

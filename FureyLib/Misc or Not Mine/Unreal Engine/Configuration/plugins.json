@@ -1,17 +1,3 @@
-			"AdditionalDependencies": [
-				"Core",
-				"CoreUObject",
-				"Engine",
-				"InputCore",
-				"UnrealEd",
-				"Blutility",
-				"UMG",
-				"Slate",
-				"SlateCore",
-				"OnlineSubsystem"
-			]
-		}
-	],
 	"Plugins": [
 		{
 			"Name": "ModelingToolsEditorMode",
@@ -69,7 +55,7 @@
 			"Enabled": true
 		},
 		{
-			"Name": "SerializationUtils",
+			"Name": "CodeEditor",
 			"Enabled": true
 		},
 		{
@@ -98,10 +84,6 @@
 				"Win64",
 				"Android"
 			]
-		},
-		{
-			"Name": "OnlineSubsystemOculus",
-			"Enabled": true
 		},
 		{
 			"Name": "OpenXRHandTracking",

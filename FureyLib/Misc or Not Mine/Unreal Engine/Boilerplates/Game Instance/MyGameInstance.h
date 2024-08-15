@@ -39,6 +39,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	UMyGameInstance();
+
+	/** Object initializer constructor. */
 	UMyGameInstance(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

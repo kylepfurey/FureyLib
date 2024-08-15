@@ -11,9 +11,19 @@
 // CONSTRUCTORS
 
 // Default constructor.
+AMyPlayerController::AMyPlayerController()
+{
+	// Set this player controller to call Tick() every frame.
+	// You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+// Object initializer constructor.
 AMyPlayerController::AMyPlayerController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-
+	// Set this player controller to call Tick() every frame.
+	// You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 // New constructors here

@@ -10,7 +10,7 @@
 
 // CONSTRUCTORS
 
-// Default constructor.
+// Object initializer constructor.
 UMyUserWidget::UMyUserWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 

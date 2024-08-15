@@ -11,9 +11,17 @@
 // CONSTRUCTORS
 
 // Default constructor.
+UMyActorComponent::UMyActorComponent()
+{
+	// Set this actor component to call Tick() every frame.
+	// You can turn this off to improve performance if you don't need it.
+	PrimaryComponentTick.bCanEverTick = true;
+}
+
+// Object initializer constructor.
 UMyActorComponent::UMyActorComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.
+	// Set this actor component to be initialized when the game starts, and to be ticked every frame.
 	// You can turn these features off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 }

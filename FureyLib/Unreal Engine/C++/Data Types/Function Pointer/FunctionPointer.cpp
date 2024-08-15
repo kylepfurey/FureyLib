@@ -4,7 +4,7 @@
 
 // REQUIREMENT: FunctionPointer.h
 
-// SOURCE: https://blog.jamie.holdings/2022/04/14/unreal-engine-4-23-accept-delegates-as-arguments-in-blueprint-functions/
+// REFERENCE: https://blog.jamie.holdings/2022/04/14/unreal-engine-4-23-accept-delegates-as-arguments-in-blueprint-functions/
 
 // Include this heading to use the class
 #include "FunctionPointer.h"
@@ -13,6 +13,14 @@
 // CONSTRUCTORS
 
 // Default constructor.
+UFunctionPointer::UFunctionPointer()
+{
+	Delegate = FFunctionPointerDelegate();
+
+	// Function pointer construction should be done in blueprints through the ConstructFunctionPointer() function.
+}
+
+// Object initializer constructor.
 UFunctionPointer::UFunctionPointer(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	Delegate = FFunctionPointerDelegate();

@@ -4,6 +4,8 @@
 
 // REQUIREMENT: MyEditorUtilityWidget.cpp
 
+#if WITH_EDITOR
+
 #pragma once
 #include "CoreMinimal.h"
 #include "EditorUtilityWidget.h"
@@ -38,7 +40,7 @@ public:
 
 	// CONSTRUCTORS
 
-	/** Default constructor. */
+	/** Object initializer constructor. */
 	UMyEditorUtilityWidget(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here
@@ -60,3 +62,5 @@ public:
 
 	// New functions here
 };
+
+#endif

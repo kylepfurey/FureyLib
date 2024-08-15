@@ -45,6 +45,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	AMyHUD();
+
+	/** Object initializer constructor. */
 	AMyHUD(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

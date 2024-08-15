@@ -4,13 +4,15 @@
 
 // REQUIREMENT: MyEditorUtilityWidget.h
 
+#if WITH_EDITOR
+
 // Include this heading to use the class
 #include "MyEditorUtilityWidget.h"
 
 
 // CONSTRUCTORS
 
-// Default constructor.
+// Object initializer constructor.
 UMyEditorUtilityWidget::UMyEditorUtilityWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 
@@ -46,3 +48,5 @@ void UMyEditorUtilityWidget::NativeDestruct()
 // FUNCTIONS
 
 // New functions here
+
+#endif

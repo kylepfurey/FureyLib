@@ -4,6 +4,8 @@
 
 // REQUIREMENT: MyFactory.cpp
 
+#if WITH_EDITOR
+
 #pragma once
 #include "CoreMinimal.h"
 #include "Factories/Factory.h"
@@ -39,6 +41,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	UMyFactory();
+
+	/** Object initializer constructor. */
 	UMyFactory(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here
@@ -60,3 +65,5 @@ public:
 
 	// New functions here
 };
+
+#endif

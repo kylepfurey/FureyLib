@@ -11,6 +11,14 @@
 // CONSTRUCTORS
 
 // Default constructor.
+AMyCharacter::AMyCharacter()
+{
+	// Set this character to call Tick() every frame.
+	// You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+// Object initializer constructor.
 AMyCharacter::AMyCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	// Set this character to call Tick() every frame.

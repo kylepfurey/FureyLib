@@ -11,6 +11,12 @@
 // CONSTRUCTORS
 
 // Default constructor.
+UMyWidget::UMyWidget()
+{
+
+}
+
+// Object initializer constructor.
 UMyWidget::UMyWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 

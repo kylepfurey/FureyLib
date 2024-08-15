@@ -4,7 +4,7 @@
 
 // REQUIREMENT: FunctionPointer.cpp
 
-// SOURCE: https://blog.jamie.holdings/2022/04/14/unreal-engine-4-23-accept-delegates-as-arguments-in-blueprint-functions/
+// REFERENCE: https://blog.jamie.holdings/2022/04/14/unreal-engine-4-23-accept-delegates-as-arguments-in-blueprint-functions/
 
 #pragma once
 #include "CoreMinimal.h"
@@ -38,9 +38,12 @@ protected:
 
 public:
 
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 
 	/** Default constructor. */
+	UFunctionPointer();
+
+	/** Object initializer constructor. */
 	UFunctionPointer(const FObjectInitializer& ObjectInitializer);
 
 

@@ -11,9 +11,19 @@
 // CONSTRUCTORS
 
 // Default constructor.
+AMyPlayerCameraManager::AMyPlayerCameraManager()
+{
+	// Set this player camera manager to call Tick() every frame.
+	// You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+// Object initializer constructor.
 AMyPlayerCameraManager::AMyPlayerCameraManager(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-
+	// Set this player camera manager to call Tick() every frame.
+	// You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 // New constructors here

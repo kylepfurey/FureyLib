@@ -45,6 +45,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	AMyPawn();
+
+	/** Object initializer constructor. */
 	AMyPawn(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

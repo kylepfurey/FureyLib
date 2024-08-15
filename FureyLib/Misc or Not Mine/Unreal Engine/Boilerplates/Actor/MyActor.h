@@ -45,6 +45,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	AMyActor();
+
+	/** Object initializer constructor. */
 	AMyActor(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

@@ -45,6 +45,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	AMyPlayerState();
+
+	/** Object initializer constructor. */
 	AMyPlayerState(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

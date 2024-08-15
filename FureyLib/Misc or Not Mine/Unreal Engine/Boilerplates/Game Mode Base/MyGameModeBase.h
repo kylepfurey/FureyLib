@@ -45,6 +45,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	AMyGameModeBase();
+
+	/** Object initializer constructor. */
 	AMyGameModeBase(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

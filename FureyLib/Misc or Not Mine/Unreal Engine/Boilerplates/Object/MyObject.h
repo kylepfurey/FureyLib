@@ -39,6 +39,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	UMyObject();
+
+	/** Object initializer constructor. */
 	UMyObject(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

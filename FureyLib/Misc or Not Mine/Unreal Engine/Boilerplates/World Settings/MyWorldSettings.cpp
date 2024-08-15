@@ -11,9 +11,19 @@
 // CONSTRUCTORS
 
 // Default constructor.
+AMyWorldSettings::AMyWorldSettings()
+{
+	// Set these world settings to call Tick() every frame.
+	// You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+// Object initializer constructor.
 AMyWorldSettings::AMyWorldSettings(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-
+	// Set these world settings to call Tick() every frame.
+	// You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 // New constructors here

@@ -4,6 +4,8 @@
 
 // REQUIREMENT: MyFactory.h
 
+#if WITH_EDITOR
+
 // Include this heading to use the class
 #include "MyFactory.h"
 
@@ -11,6 +13,12 @@
 // CONSTRUCTORS
 
 // Default constructor.
+UMyFactory::UMyFactory()
+{
+
+}
+
+// Object initializer constructor.
 UMyFactory::UMyFactory(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 
@@ -43,3 +51,5 @@ UObject* UMyFactory::ImportObject(UClass* InClass, UObject* InOuter, FName InNam
 // FUNCTIONS
 
 // New functions here
+
+#endif

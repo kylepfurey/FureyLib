@@ -45,6 +45,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	AMyWorldSettings();
+
+	/** Object initializer constructor. */
 	AMyWorldSettings(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

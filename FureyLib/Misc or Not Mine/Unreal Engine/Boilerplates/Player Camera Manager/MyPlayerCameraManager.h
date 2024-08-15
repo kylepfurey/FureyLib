@@ -45,6 +45,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	AMyPlayerCameraManager();
+
+	/** Object initializer constructor. */
 	AMyPlayerCameraManager(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

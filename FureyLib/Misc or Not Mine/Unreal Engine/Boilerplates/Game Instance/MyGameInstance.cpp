@@ -11,6 +11,12 @@
 // CONSTRUCTORS
 
 // Default constructor.
+UMyGameInstance::UMyGameInstance()
+{
+
+}
+
+// Object initializer constructor.
 UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 

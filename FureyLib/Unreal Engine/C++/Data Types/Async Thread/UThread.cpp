@@ -8,9 +8,19 @@
 #include "UThread.h"
 
 
-// CONSTRUCTOR
+// CONSTRUCTORS
 
 // Default constructor.
+UThread::UThread()
+{
+	Thread = FAsyncThread();
+
+	Delegate = FThreadDelegate();
+
+	// Thread construction should be done in blueprints through the NewThread() function.
+}
+
+// Object initializer constructor.
 UThread::UThread(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	Thread = FAsyncThread();

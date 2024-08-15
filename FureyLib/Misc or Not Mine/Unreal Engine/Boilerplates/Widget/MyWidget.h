@@ -39,6 +39,9 @@ public:
 	// CONSTRUCTORS
 
 	/** Default constructor. */
+	UMyWidget();
+
+	/** Object initializer constructor. */
 	UMyWidget(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

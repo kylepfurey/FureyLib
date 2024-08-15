@@ -38,7 +38,7 @@ public:
 
 	// CONSTRUCTORS
 
-	/** Default constructor. */
+	/** Object initializer constructor. */
 	UMyUserWidget(const FObjectInitializer& ObjectInitializer);
 
 	// New constructors here

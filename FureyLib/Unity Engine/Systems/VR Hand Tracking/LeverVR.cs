@@ -380,7 +380,7 @@ public class LeverVR : MonoBehaviour, IHandInteractableVR
         {
             case Direction2D.Forward:
 
-                percent = Percentage(RotationOnAxis(pivot.transform.localRotation, Axis.X), startDirection.eulerAngles.x, startDirection.eulerAngles.x + backwardForwardClamp.y);
+                percent = Percentage(RotationOnAxis(pivot.transform.localRotation, Axis.X), startDirection.eulerAngles.x, backwardForwardClamp.y);
 
                 break;
 
@@ -398,7 +398,7 @@ public class LeverVR : MonoBehaviour, IHandInteractableVR
 
             case Direction2D.Left:
 
-                percent = Percentage(RotationOnAxis(pivot.transform.localRotation, Axis.Z), startDirection.eulerAngles.z, startDirection.eulerAngles.z + backwardForwardClamp.y);
+                percent = Percentage(RotationOnAxis(pivot.transform.localRotation, Axis.Z), startDirection.eulerAngles.z, backwardForwardClamp.y);
 
                 break;
         }

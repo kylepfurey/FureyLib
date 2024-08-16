@@ -208,7 +208,7 @@ public class Commander : MonoBehaviour
             log = log.Remove(log.Length - 1, 1);
         }
 
-        print(log);
+        Debug.Log(log);
 
         CloseCommander();
     }
@@ -284,7 +284,7 @@ public class Commander : MonoBehaviour
     /// </summary>
     private void help()
     {
-        print("Please enter a command followed by any arguments for that command.");
+        Debug.Log("Please enter a command followed by any arguments for that command.");
     }
 
 
@@ -325,25 +325,26 @@ public class Commander : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    /// <summary>
-    /// Restart scene
-    /// </summary>
-    private void reset()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
 
     // LOAD COMMAND
 
     /// <summary>
-    /// Load a new scene (argument 0 is scene name)
+    /// Load a new scene
     /// </summary>
     private void load()
     {
+        string scene = "";
+
+        foreach (string arg in currentArguments)
+        {
+            scene += arg + " ";
+        }
+
         if (currentArguments.Count > 0)
         {
-            SceneManager.LoadScene(currentArguments[0]);
+            scene = scene.Remove(scene.Length - 1, 1);
+
+            SceneManager.LoadScene(scene);
         }
         else
         {
@@ -361,7 +362,7 @@ public class Commander : MonoBehaviour
     {
         if (currentArguments.Count == 0)
         {
-            Debug.LogWarning("No arguments were given to print!");
+            Debug.LogWarning("No arguments were given to Debug.Log!");
 
             return;
         }
@@ -373,7 +374,7 @@ public class Commander : MonoBehaviour
             log += argument + " ";
         }
 
-        print(log);
+        Debug.Log(log);
     }
 
     /// <summary>
@@ -383,7 +384,7 @@ public class Commander : MonoBehaviour
     {
         if (currentArguments.Count == 0)
         {
-            Debug.LogWarning("No arguments were given to print!");
+            Debug.LogWarning("No arguments were given to Debug.Log!");
 
             return;
         }
@@ -395,6 +396,6 @@ public class Commander : MonoBehaviour
             log += argument + " ";
         }
 
-        print(log);
+        Debug.Log(log);
     }
 }

@@ -1,8 +1,9 @@
 ﻿
-// Binary Search Tree Container Script
+// Red-Black Binary Search Tree Container Script
 // by Kyle Furey
 
 // REFERENCES: https://cplusplus.com/reference/set/set/, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.sortedset-1?view=net-8.0,
+// https://www.geeksforgeeks.org/introduction-to-red-black-tree/
 
 using System;
 using System.Collections;
@@ -10,17 +11,17 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// Class used to store a sorted binary search tree for fast retrieval of nodes with unique data.
+/// Class used to store a sorted red-black binary search tree for fast retrieval of nodes with unique data.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where DataType : IComparable, IComparable<DataType>
+public class RedBlackTree<DataType> : IEnumerable, IEnumerable<DataType> // where DataType : IComparable, IComparable<DataType>
 {
     // VARIABLES
 
     /// <summary>
     /// The root (starting) node of the binary tree
     /// </summary>
-    private BinaryNode<DataType> root = null;
+    private RedBlackNode<DataType> root = null;
 
     /// <summary>
     /// The current number of nodes in the binary tree
@@ -44,7 +45,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// <summary>
     /// Readonly root node variable
     /// </summary>
-    public BinaryNode<DataType> Root
+    public RedBlackNode<DataType> Root
     {
         get
         {
@@ -84,7 +85,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// <param name="currentArray"></param>
     /// <param name="currentNode"></param>
     /// <returns></returns>
-    private static void FillArrayRecursively(ref int index, ref DataType[] currentArray, ref BinaryNode<DataType> currentNode)
+    private static void FillArrayRecursively(ref int index, ref DataType[] currentArray, ref RedBlackNode<DataType> currentNode)
     {
         if (currentNode.left != null)
         {
@@ -127,7 +128,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// <param name="currentList"></param>
     /// <param name="currentNode"></param>
     /// <returns></returns>
-    private static void AddListRecursively(ref List<DataType> currentList, ref BinaryNode<DataType> currentNode)
+    private static void AddListRecursively(ref List<DataType> currentList, ref RedBlackNode<DataType> currentNode)
     {
         if (currentNode.left != null)
         {
@@ -161,12 +162,355 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     }
 
 
+    // REBALANCING TREE
+
+    /// <summary>
+    /// Rotates the given node left relative to its connected nodes
+    /// </summary>
+    /// <param name="node"></param>
+    private void RotateLeft(RedBlackNode<DataType> node)
+    {
+        if (node == null || node.right == null)
+        {
+            return;
+        }
+
+        RedBlackNode<DataType> right = node.right;
+
+        node.right = right.left;
+
+        if (right.left != null)
+        {
+            right.left.parent = node;
+        }
+
+        right.parent = node.parent;
+
+        if (node.parent == null)
+        {
+            root = right;
+        }
+        else if (node == node.parent.left)
+        {
+            node.parent.left = right;
+        }
+        else
+        {
+            node.parent.right = right;
+        }
+
+        right.left = node;
+
+        node.parent = right;
+    }
+
+    /// <summary>
+    /// Rotates the given node right relative to its connected nodes
+    /// </summary>
+    /// <param name="node"></param>
+    private void RotateRight(RedBlackNode<DataType> node)
+    {
+        if (node == null || node.left == null)
+        {
+            return;
+        }
+
+        RedBlackNode<DataType> left = node.left;
+
+        node.left = left.right;
+
+        if (left.right != null)
+        {
+            left.right.parent = node;
+        }
+
+        left.parent = node.parent;
+
+        if (node.parent == null)
+        {
+            root = left;
+        }
+        else if (node == node.parent.right)
+        {
+            node.parent.right = left;
+        }
+        else
+        {
+            node.parent.left = left;
+        }
+
+        left.right = node;
+
+        node.parent = left;
+    }
+
+    /// <summary>
+    /// Rebalances the tree's colors based on the given incoming node's relatives
+    /// </summary>
+    /// <param name="node"></param>
+    private void RebalanceInsertion(RedBlackNode<DataType> node)
+    {
+        if (node.parent.color == RedBlackColor.Red)
+        {
+            RedBlackNode<DataType> uncle = null;
+
+            bool parentIsRight = false;
+
+            if (node.parent.parent.left == node.parent)
+            {
+                uncle = node.parent.parent.right;
+
+                parentIsRight = false;
+            }
+            else
+            {
+                uncle = node.parent.parent.left;
+
+                parentIsRight = true;
+            }
+
+            if (uncle != null && uncle.color == RedBlackColor.Red)
+            {
+                node.parent.color = RedBlackColor.Black;
+
+                uncle.color = RedBlackColor.Black;
+
+                node.parent.parent.color = RedBlackColor.Red;
+
+                if (node.parent.parent != root)
+                {
+                    RebalanceInsertion(node.parent.parent);
+                }
+            }
+            else
+            {
+                RedBlackNode<DataType> grandparent = node.parent.parent;
+
+                RedBlackColor swapped = grandparent.color;
+
+                if (!parentIsRight)
+                {
+                    // LEFT LEFT
+                    if (node.parent.left == node)
+                    {
+                        grandparent.color = node.parent.color;
+
+                        node.parent.color = swapped;
+
+                        RotateRight(grandparent);
+                    }
+                    // LEFT RIGHT
+                    else
+                    {
+                        grandparent.color = node.color;
+
+                        node.color = swapped;
+
+                        swapped = grandparent.color;
+
+                        grandparent.color = node.parent.color;
+
+                        node.parent.color = swapped;
+
+                        RotateLeft(node.parent);
+
+                        RotateRight(grandparent);
+                    }
+                }
+                else
+                {
+                    // RIGHT RIGHT
+                    if (node.parent.right == node)
+                    {
+                        grandparent.color = node.parent.color;
+
+                        node.parent.color = swapped;
+
+                        RotateLeft(grandparent);
+                    }
+                    // RIGHT LEFT
+                    else
+                    {
+                        grandparent.color = node.color;
+
+                        node.color = swapped;
+
+                        swapped = grandparent.color;
+
+                        grandparent.color = node.parent.color;
+
+                        node.parent.color = swapped;
+
+                        RotateRight(node.parent);
+
+                        RotateLeft(grandparent);
+                    }
+                }
+            }
+        }
+
+        root.color = RedBlackColor.Black;
+    }
+
+    /// <summary>
+    /// Rebalances the tree's colors based on the given removed node's relatives
+    /// </summary>
+    /// <param name="node"></param>
+    private void RebalanceRemoval(RedBlackNode<DataType> node, RedBlackColor removedColor)
+    {
+        if (node.color == RedBlackColor.Red || removedColor == RedBlackColor.Red)
+        {
+            node.color = RedBlackColor.Black;
+
+            return;
+        }
+
+        while (node.parent != null && node.color == RedBlackColor.Black)
+        {
+            RedBlackNode<DataType> sibling = null;
+
+            if (node == node.parent.left)
+            {
+                sibling = node.parent.right;
+
+                if (sibling != null)
+                {
+                    if (sibling.color == RedBlackColor.Red)
+                    {
+                        sibling.color = RedBlackColor.Black;
+
+                        node.parent.color = RedBlackColor.Red;
+
+                        RotateLeft(node.parent);
+
+                        sibling = node.parent.right;
+
+                        if (sibling == null)
+                        {
+                            node = node.parent;
+
+                            continue;
+                        }
+                    }
+
+                    if ((sibling.left == null || sibling.left.color == RedBlackColor.Black) && (sibling.right == null || sibling.right.color == RedBlackColor.Black))
+                    {
+                        sibling.color = RedBlackColor.Red;
+
+                        node = node.parent;
+                    }
+                    else
+                    {
+                        if (sibling.right == null || sibling.right.color == RedBlackColor.Black)
+                        {
+                            if (sibling.left != null)
+                            {
+                                sibling.left.color = RedBlackColor.Black;
+                            }
+
+                            sibling.color = RedBlackColor.Red;
+
+                            RotateRight(sibling);
+
+                            sibling = node.parent.right;
+                        }
+
+                        sibling.color = node.parent.color;
+
+                        node.parent.color = RedBlackColor.Black;
+
+                        if (sibling.right != null)
+                        {
+                            sibling.right.color = RedBlackColor.Black;
+                        }
+
+                        RotateLeft(node.parent);
+
+                        break;
+                    }
+                }
+                else
+                {
+                    node = node.parent;
+                }
+            }
+            else
+            {
+                sibling = node.parent.left;
+
+                if (sibling != null)
+                {
+                    if (sibling.color == RedBlackColor.Red)
+                    {
+                        sibling.color = RedBlackColor.Black;
+
+                        node.parent.color = RedBlackColor.Red;
+
+                        RotateRight(node.parent);
+
+                        sibling = node.parent.left;
+
+                        if (sibling == null)
+                        {
+                            node = node.parent;
+
+                            continue;
+                        }
+                    }
+
+                    if ((sibling.right == null || sibling.right.color == RedBlackColor.Black) && (sibling.left == null || sibling.left.color == RedBlackColor.Black))
+                    {
+                        sibling.color = RedBlackColor.Red;
+
+                        node = node.parent;
+                    }
+                    else
+                    {
+                        if (sibling.left == null || sibling.left.color == RedBlackColor.Black)
+                        {
+                            if (sibling.right != null)
+                            {
+                                sibling.right.color = RedBlackColor.Black;
+                            }
+
+                            sibling.color = RedBlackColor.Red;
+
+                            RotateLeft(sibling);
+
+                            sibling = node.parent.left;
+                        }
+
+                        sibling.color = node.parent.color;
+
+                        node.parent.color = RedBlackColor.Black;
+
+                        if (sibling.left != null)
+                        {
+                            sibling.left.color = RedBlackColor.Black;
+                        }
+
+                        RotateRight(node.parent);
+
+                        break;
+                    }
+                }
+                else
+                {
+                    node = node.parent;
+                }
+            }
+        }
+
+        root.color = RedBlackColor.Black;
+    }
+
+
     // CONSTRUCTORS
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    public BinaryTree()
+    public RedBlackTree()
     {
         root = null;
 
@@ -177,7 +521,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// Copy constructor
     /// </summary>
     /// <param name="copiedTree"></param>
-    public BinaryTree(BinaryTree<DataType> copiedTree)
+    public RedBlackTree(RedBlackTree<DataType> copiedTree)
     {
         if (copiedTree.root == null)
         {
@@ -200,9 +544,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// Data constructor
     /// </summary>
     /// <param name="data"></param>
-    public BinaryTree(DataType data)
+    public RedBlackTree(DataType data)
     {
-        root = new BinaryNode<DataType>(data);
+        root = new RedBlackNode<DataType>(data);
 
         nodeCount = 1;
     }
@@ -211,7 +555,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// Array constructor
     /// </summary>
     /// <param name="array"></param>
-    public BinaryTree(params DataType[] array)
+    public RedBlackTree(params DataType[] array)
     {
         if (array.Length == 0)
         {
@@ -232,7 +576,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// Enumerable constructor
     /// </summary>
     /// <param name="list"></param>
-    public BinaryTree(IEnumerable<DataType> list)
+    public RedBlackTree(IEnumerable<DataType> list)
     {
         if (list.Count() == 0)
         {
@@ -257,7 +601,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="comparedTree"></param>
     /// <returns></returns>
-    public bool Equals(BinaryTree<DataType> comparedTree)
+    public bool Equals(RedBlackTree<DataType> comparedTree)
     {
         if (nodeCount == 0 || comparedTree.nodeCount == 0)
         {
@@ -290,7 +634,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// <param name="tree"></param>
     /// <param name="comparedTree"></param>
     /// <returns></returns>
-    public static bool operator ==(BinaryTree<DataType> tree, BinaryTree<DataType> comparedTree)
+    public static bool operator ==(RedBlackTree<DataType> tree, RedBlackTree<DataType> comparedTree)
     {
         return tree.Equals(comparedTree);
     }
@@ -301,7 +645,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// <param name="tree"></param>
     /// <param name="comparedTree"></param>
     /// <returns></returns>
-    public static bool operator !=(BinaryTree<DataType> tree, BinaryTree<DataType> comparedTree)
+    public static bool operator !=(RedBlackTree<DataType> tree, RedBlackTree<DataType> comparedTree)
     {
         return !tree.Equals(comparedTree);
     }
@@ -313,9 +657,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// Returns the leftmost node in the binary tree
     /// </summary>
     /// <returns></returns>
-    public BinaryNode<DataType> Begin()
+    public RedBlackNode<DataType> Begin()
     {
-        BinaryNode<DataType> node = root;
+        RedBlackNode<DataType> node = root;
 
         while (node.left != null)
         {
@@ -329,7 +673,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// Returns the root node in the binary tree
     /// </summary>
     /// <returns></returns>
-    public BinaryNode<DataType> Middle()
+    public RedBlackNode<DataType> Middle()
     {
         return root;
     }
@@ -338,9 +682,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// Returns the rightmost node in the binary tree
     /// </summary>
     /// <returns></returns>
-    public BinaryNode<DataType> End()
+    public RedBlackNode<DataType> End()
     {
-        BinaryNode<DataType> node = root;
+        RedBlackNode<DataType> node = root;
 
         while (node.right != null)
         {
@@ -409,7 +753,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="newData"></param>
     /// <returns></returns>
-    public BinaryTree<DataType> Assign(BinaryTree<DataType> newData)
+    public RedBlackTree<DataType> Assign(RedBlackTree<DataType> newData)
     {
         if (newData.root == null)
         {
@@ -437,9 +781,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public BinaryNode<DataType> Add(DataType data)
+    public RedBlackNode<DataType> Add(DataType data)
     {
-        BinaryNode<DataType> newNode = new BinaryNode<DataType>(data);
+        RedBlackNode<DataType> newNode = new RedBlackNode<DataType>(data);
 
         Add(newNode);
 
@@ -451,10 +795,12 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="newNode"></param>
     /// <returns></returns>
-    public BinaryTree<DataType> Add(BinaryNode<DataType> newNode)
+    public RedBlackTree<DataType> Add(RedBlackNode<DataType> newNode)
     {
         if (nodeCount == 0)
         {
+            newNode.color = RedBlackColor.Black;
+
             root = newNode;
 
             nodeCount = 1;
@@ -462,7 +808,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
             return this;
         }
 
-        BinaryNode<DataType> node = root;
+        newNode.color = RedBlackColor.Red;
+
+        RedBlackNode<DataType> node = root;
 
         while (!node.IsLeaf())
         {
@@ -481,6 +829,8 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
 
                     nodeCount++;
 
+                    RebalanceInsertion(newNode);
+
                     return this;
                 }
                 else
@@ -497,6 +847,8 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
                     newNode.parent = node;
 
                     nodeCount++;
+
+                    RebalanceInsertion(newNode);
 
                     return this;
                 }
@@ -525,6 +877,8 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
 
         nodeCount++;
 
+        RebalanceInsertion(newNode);
+
         return this;
     }
 
@@ -533,9 +887,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public BinaryNode<DataType> Remove(DataType data)
+    public RedBlackNode<DataType> Remove(DataType data)
     {
-        BinaryNode<DataType> node = Find(data);
+        RedBlackNode<DataType> node = Find(data);
 
         Remove(node);
 
@@ -547,7 +901,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="removedNode"></param>
     /// <returns></returns>
-    public BinaryTree<DataType> Remove(BinaryNode<DataType> removedNode)
+    public RedBlackTree<DataType> Remove(RedBlackNode<DataType> removedNode)
     {
         if (!Contains(removedNode))
         {
@@ -565,19 +919,43 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
             return this;
         }
 
+        RedBlackNode<DataType> replacingNode = null;
+
         if (removedNode.IsLeaf())
         {
+            // NIL NODE
+            replacingNode = new RedBlackNode<DataType>();
+
+            replacingNode.color = RedBlackColor.Black;
+
+            replacingNode.parent = removedNode.parent;
+
             if (removedNode.parent.left == removedNode)
             {
-                removedNode.parent.left = null;
+                removedNode.parent.left = replacingNode;
             }
             else
             {
-                removedNode.parent.right = null;
+                removedNode.parent.right = replacingNode;
             }
+
+            RebalanceRemoval(replacingNode, removedNode.color);
+
+            if (replacingNode.parent.left == replacingNode)
+            {
+                replacingNode.parent.left = null;
+            }
+            else
+            {
+                replacingNode.parent.right = null;
+            }
+
+            return this;
         }
         else if (removedNode.right == null)
         {
+            replacingNode = removedNode.left;
+
             removedNode.left.parent = removedNode.parent;
 
             if (removedNode != root)
@@ -595,9 +973,13 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
             {
                 root = removedNode.left;
             }
+
+            removedNode.left.color = removedNode.color;
         }
         else if (removedNode.left == null)
         {
+            replacingNode = removedNode.right;
+
             removedNode.right.parent = removedNode.parent;
 
             if (removedNode != root)
@@ -615,15 +997,19 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
             {
                 root = removedNode.right;
             }
+
+            removedNode.right.color = removedNode.color;
         }
         else
         {
-            BinaryNode<DataType> node = removedNode.right;
+            RedBlackNode<DataType> node = removedNode.right;
 
             while (node.left != null)
             {
                 node = node.left;
             }
+
+            replacingNode = node;
 
             if (removedNode != root)
             {
@@ -660,7 +1046,11 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
             removedNode.left.parent = node;
 
             node.parent = removedNode.parent;
+
+            node.color = removedNode.color;
         }
+
+        RebalanceRemoval(replacingNode, removedNode.color);
 
         return this;
     }
@@ -669,7 +1059,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// Remove and return the leftmost node from its connected nodes in the binary tree
     /// </summary>
     /// <returns></returns>
-    public BinaryNode<DataType> RemoveLeft()
+    public RedBlackNode<DataType> RemoveLeft()
     {
         return Remove(Left());
     }
@@ -678,7 +1068,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// Remove and return the root node from its connected nodes in the binary tree
     /// </summary>
     /// <returns></returns>
-    public BinaryNode<DataType> RemoveRoot()
+    public RedBlackNode<DataType> RemoveRoot()
     {
         return Remove(root.data);
     }
@@ -687,7 +1077,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// Remove and return the rightmost node from its connected nodes in the binary tree
     /// </summary>
     /// <returns></returns>
-    public BinaryNode<DataType> RemoveRight()
+    public RedBlackNode<DataType> RemoveRight()
     {
         return Remove(Right());
     }
@@ -697,9 +1087,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="swappedData"></param>
     /// <returns></returns>
-    public BinaryTree<DataType> Swap(BinaryTree<DataType> swappedData)
+    public RedBlackTree<DataType> Swap(RedBlackTree<DataType> swappedData)
     {
-        BinaryNode<DataType> data = root;
+        RedBlackNode<DataType> data = root;
 
         int count = nodeCount;
 
@@ -734,9 +1124,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public BinaryNode<DataType> Emplace(ref DataType data)
+    public RedBlackNode<DataType> Emplace(ref DataType data)
     {
-        BinaryNode<DataType> newNode = new BinaryNode<DataType>(data);
+        RedBlackNode<DataType> newNode = new RedBlackNode<DataType>(data);
 
         Add(newNode);
 
@@ -752,9 +1142,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// <param name="replacedData"></param>
     /// <param name="newData"></param>
     /// <returns></returns>
-    public BinaryNode<DataType> Replace(DataType replacedData, DataType newData)
+    public RedBlackNode<DataType> Replace(DataType replacedData, DataType newData)
     {
-        BinaryNode<DataType> node = Find(replacedData);
+        RedBlackNode<DataType> node = Find(replacedData);
 
         if (node == null)
         {
@@ -774,7 +1164,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// <param name="replacedNode"></param>
     /// <param name="newNode"></param>
     /// <returns></returns>
-    public BinaryTree<DataType> Replace(BinaryNode<DataType> replacedNode, BinaryNode<DataType> newNode)
+    public RedBlackTree<DataType> Replace(RedBlackNode<DataType> replacedNode, RedBlackNode<DataType> newNode)
     {
         Remove(replacedNode);
 
@@ -791,14 +1181,14 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public BinaryNode<DataType> Find(DataType data)
+    public RedBlackNode<DataType> Find(DataType data)
     {
         if (nodeCount == 0)
         {
             return null;
         }
 
-        BinaryNode<DataType> node = root;
+        RedBlackNode<DataType> node = root;
 
         while (node != null)
         {
@@ -837,7 +1227,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="newNode"></param>
     /// <returns></returns>
-    public bool Contains(BinaryNode<DataType> newNode)
+    public bool Contains(RedBlackNode<DataType> newNode)
     {
         if (nodeCount == 0 || newNode == null)
         {
@@ -852,7 +1242,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="currentTree"></param>
     /// <param name="currentNode"></param>
-    private static void AddChildrenRecursively(ref BinaryTree<DataType> currentTree, ref BinaryNode<DataType> currentNode)
+    private static void AddChildrenRecursively(ref RedBlackTree<DataType> currentTree, ref RedBlackNode<DataType> currentNode)
     {
         currentTree.Add(currentNode);
 
@@ -872,9 +1262,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="node"></param>
     /// <returns></returns>
-    public static BinaryTree<DataType> Subset(BinaryNode<DataType> node)
+    public static RedBlackTree<DataType> Subset(RedBlackNode<DataType> node)
     {
-        BinaryTree<DataType> tree = new BinaryTree<DataType>();
+        RedBlackTree<DataType> tree = new RedBlackTree<DataType>();
 
         AddChildrenRecursively(ref tree, ref node);
 
@@ -886,7 +1276,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// </summary>
     /// <param name="newData"></param>
     /// <returns></returns>
-    public BinaryTree<DataType> Merge(BinaryTree<DataType> newData)
+    public RedBlackTree<DataType> Merge(RedBlackTree<DataType> newData)
     {
         DataType[] array = newData.ToArray();
 
@@ -904,9 +1294,9 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     /// Returns a copy of the binary tree's data
     /// </summary>
     /// <returns></returns>
-    public BinaryTree<DataType> Copy()
+    public RedBlackTree<DataType> Copy()
     {
-        return new BinaryTree<DataType>(this);
+        return new RedBlackTree<DataType>(this);
     }
 
 
@@ -1001,10 +1391,15 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
 }
 
 /// <summary>
-/// Class that stores unique data and connections to the left and right nodes in a binary search tree.
+/// The color of a node in a red-black binary search tree.
+/// </summary>
+public enum RedBlackColor { Black = 0, Red = 1 };
+
+/// <summary>
+/// Class that stores unique data, a red or black value, and connections to the left and right nodes in a red-black binary search tree.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class BinaryNode<DataType> // where DataType : IComparable, IComparable<DataType>
+public class RedBlackNode<DataType> // where DataType : IComparable, IComparable<DataType>
 {
     // VARIABLES
 
@@ -1016,17 +1411,22 @@ public class BinaryNode<DataType> // where DataType : IComparable, IComparable<D
     /// <summary>
     /// A link to the parent (above) node
     /// </summary>
-    public BinaryNode<DataType> parent = null;
+    public RedBlackNode<DataType> parent = null;
 
     /// <summary>
     /// A link to the left (lesser) node
     /// </summary>
-    public BinaryNode<DataType> left = null;
+    public RedBlackNode<DataType> left = null;
 
     /// <summary>
     /// A link to the right (greater) node
     /// </summary>
-    public BinaryNode<DataType> right = null;
+    public RedBlackNode<DataType> right = null;
+
+    /// <summary>
+    /// Whether this node is red or black
+    /// </summary>
+    public RedBlackColor color = RedBlackColor.Red;
 
 
     // PROPERTIES
@@ -1056,7 +1456,7 @@ public class BinaryNode<DataType> // where DataType : IComparable, IComparable<D
     /// <summary>
     /// Readonly parent node variable
     /// </summary>
-    public BinaryNode<DataType> Parent
+    public RedBlackNode<DataType> Parent
     {
         get
         {
@@ -1067,7 +1467,7 @@ public class BinaryNode<DataType> // where DataType : IComparable, IComparable<D
     /// <summary>
     /// Readonly left node variable
     /// </summary>
-    public BinaryNode<DataType> Left
+    public RedBlackNode<DataType> Left
     {
         get
         {
@@ -1078,11 +1478,22 @@ public class BinaryNode<DataType> // where DataType : IComparable, IComparable<D
     /// <summary>
     /// Readonly right node variable
     /// </summary>
-    public BinaryNode<DataType> Right
+    public RedBlackNode<DataType> Right
     {
         get
         {
             return right;
+        }
+    }
+
+    /// <summary>
+    /// Readonly color variable
+    /// </summary>
+    public RedBlackColor Color
+    {
+        get
+        {
+            return color;
         }
     }
 
@@ -1093,12 +1504,15 @@ public class BinaryNode<DataType> // where DataType : IComparable, IComparable<D
     /// Default constructor
     /// </summary>
     /// <param name="data"></param>
+    /// <param name="color"></param>
     /// <param name="left"></param>
     /// <param name="right"></param>
     /// <param name="parent"></param>
-    public BinaryNode(DataType data = default(DataType), BinaryNode<DataType> left = null, BinaryNode<DataType> right = null, BinaryNode<DataType> parent = null)
+    public RedBlackNode(DataType data = default(DataType), RedBlackColor color = RedBlackColor.Red, RedBlackNode<DataType> left = null, RedBlackNode<DataType> right = null, RedBlackNode<DataType> parent = null)
     {
         this.data = data;
+
+        this.color = color;
 
         this.left = left;
 
@@ -1115,9 +1529,9 @@ public class BinaryNode<DataType> // where DataType : IComparable, IComparable<D
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public BinaryNode<DataType> BinarySearch(DataType data)
+    public RedBlackNode<DataType> BinarySearch(DataType data)
     {
-        BinaryNode<DataType> current = this;
+        RedBlackNode<DataType> current = this;
 
         while (current != null)
         {
@@ -1145,9 +1559,9 @@ public class BinaryNode<DataType> // where DataType : IComparable, IComparable<D
     /// Returns the leftmost node of this node
     /// </summary>
     /// <returns></returns>
-    public BinaryNode<DataType> LowerBound()
+    public RedBlackNode<DataType> LowerBound()
     {
-        BinaryNode<DataType> node = this;
+        RedBlackNode<DataType> node = this;
 
         while (node.left != null)
         {
@@ -1161,9 +1575,9 @@ public class BinaryNode<DataType> // where DataType : IComparable, IComparable<D
     /// Returns the root node of this node
     /// </summary>
     /// <returns></returns>
-    public BinaryNode<DataType> Root()
+    public RedBlackNode<DataType> Root()
     {
-        BinaryNode<DataType> node = this;
+        RedBlackNode<DataType> node = this;
 
         while (node.parent != null)
         {
@@ -1177,9 +1591,9 @@ public class BinaryNode<DataType> // where DataType : IComparable, IComparable<D
     /// Returns the rightmost node of this node
     /// </summary>
     /// <returns></returns>
-    public BinaryNode<DataType> UpperBound()
+    public RedBlackNode<DataType> UpperBound()
     {
-        BinaryNode<DataType> node = this;
+        RedBlackNode<DataType> node = this;
 
         while (node.right != null)
         {
@@ -1196,6 +1610,24 @@ public class BinaryNode<DataType> // where DataType : IComparable, IComparable<D
     public bool IsLeaf()
     {
         return left == null && right == null;
+    }
+
+    /// <summary>
+    /// Returns whether this node is red
+    /// </summary>
+    /// <returns></returns>
+    public bool IsRed()
+    {
+        return color == RedBlackColor.Red;
+    }
+
+    /// <summary>
+    /// Returns whether this node is black
+    /// </summary>
+    /// <returns></returns>
+    public bool IsBlack()
+    {
+        return color == RedBlackColor.Black;
     }
 
 

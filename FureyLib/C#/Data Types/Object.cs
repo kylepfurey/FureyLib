@@ -59,7 +59,7 @@ public abstract class Object : IDisposable, ICloneable, IEquatable<Object>
     /// Returns a unique Fowler–Noll–Vo hash code representing this object's value.
     /// </summary>
     /// <returns></returns>
-    public override long GetHashCode()
+    public override int GetHashCode()
     {
         string str = ToString();
 
@@ -72,20 +72,11 @@ public abstract class Object : IDisposable, ICloneable, IEquatable<Object>
             code *= 16777619; 	// FNV Prime
         }
 
-        return code;
+        return (int)code;
     }
 
 
-    // TYPE AND CASTING
-
-    /// <summary>
-    /// Returns this object's type.
-    /// </summary>
-    /// <returns></returns>
-    public Type GetType()
-    {
-        return base.GetType();
-    }
+    // CASTING
 
     /// <summary>
     /// Downcasts this object to the given derived type.
@@ -126,9 +117,9 @@ public abstract class Object : IDisposable, ICloneable, IEquatable<Object>
     /// Returns whether this object is considered null.
     /// </summary>
     /// <returns></returns>
-    public virtual bool IsNull()
+    public static bool IsNull(Object other)
     {
-        return this == null;
+        return other == null;
     }
 
     /// <summary>
@@ -137,7 +128,7 @@ public abstract class Object : IDisposable, ICloneable, IEquatable<Object>
     /// <param name="other"></param>
     public static implicit operator bool(Object other)
     {
-        return !other.IsNull();
+        return other != null;
     }
 
     /// <summary>
@@ -147,7 +138,7 @@ public abstract class Object : IDisposable, ICloneable, IEquatable<Object>
     /// <returns></returns>
     public static bool operator !(Object other)
     {
-        return other.IsNull();
+        return other == null;
     }
 
 
@@ -213,7 +204,8 @@ public abstract class Object : IDisposable, ICloneable, IEquatable<Object>
     /// <summary>
     /// Returns whether the given object is equal to this by value.
     /// </summary>
-    /// <param name="other"></param>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
     /// <returns></returns>
     public static bool operator ==(Object left, Object right)
     {
@@ -223,7 +215,8 @@ public abstract class Object : IDisposable, ICloneable, IEquatable<Object>
     /// <summary>
     /// Returns whether the given object is not equal to this by value.
     /// </summary>
-    /// <param name="other"></param>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
     /// <returns></returns>
     public static bool operator !=(Object left, Object right)
     {

@@ -48,11 +48,11 @@ public:
 	// HASH CODE
 
 	// Returns a unique Fowler–Noll–Vo hash code representing this object's value.
-	virtual long hash_code()
+	virtual int hash_code()
 	{
 		std::string str = to_string();
 
-		long code = 2166136261;
+		long long code = 2166136261l;
 
 		for (int i = 0; i < str.length(); i++)
 		{
@@ -61,7 +61,7 @@ public:
 			code *= 16777619; 	// FNV Prime
 		}
 
-		return code;
+		return (int)code;
 	}
 
 
@@ -92,23 +92,10 @@ public:
 	// NULL CHECK
 
 	// Returns whether this object is considered null.
-	virtual bool is_null()
+	static bool is_null(object* other)
 	{
-		return false;
+		return other == nullptr;
 	}
-
-	// Returns whether this object is considered null.
-	virtual operator bool()
-	{
-		return !is_null();
-	}
-
-	// Returns whether this object is not considered null.
-	virtual bool operator!()
-	{
-		return is_null();
-	}
-
 
 	// EQUALITY BY VALUE
 

@@ -8,7 +8,7 @@
 #include "PlatformVR.h"
 
 
-// STATIC FUNCTIONS
+// PLATFORM FUNCTIONS
 
 // Returns the name of the current platform.
 FString UPlatformVR::GetPlatform()
@@ -49,6 +49,9 @@ bool UPlatformVR::IsEditor()
 {
 	return GIsEditor;
 }
+
+
+// LIGHT NORMALIZATION
 
 // Multiply this value with a light's intensity value to normalize its brightness between PC and Mobile platforms.
 float UPlatformVR::GetLightScalar()
@@ -108,8 +111,8 @@ TArray<ALight*> UPlatformVR::NormalizeLights(TArray<ALight*> Lights)
 	return Lights;
 }
 
-// •  Updates the intensity of a world's lights to ensure its brightness is consistent between platforms. Call this once.
-// •  Returns whether the lights were successfully normalized and all of the lights in the world.
+// Updates the intensity of a world's lights to ensure its brightness is consistent between platforms. Call this once.
+// Returns whether the lights were successfully normalized and all of the lights in the world.
 void UPlatformVR::NormalizeLighting(bool& Success, TArray<ALight*>& Lights)
 {
 	if (!GIsEditor && GWorld != nullptr)

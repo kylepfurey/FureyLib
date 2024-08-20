@@ -36,26 +36,29 @@ class MYGAME_API UPlatformVR : public UBlueprintFunctionLibrary
 
 public:
 
-	// STATIC FUNCTIONS
+	// PLATFORM FUNCTIONS
 
 	/** Returns the name of the current platform. */
-	UFUNCTION(BlueprintCallable, BlueprintPure = true, Category = "PlatformVR", meta = (Keywords = "Get, Platform"))
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "PlatformVR")
 	static FString GetPlatform();
 
 	/** Returns whether the current platform is a Mobile device (the game is playing on a VR headset). */
-	UFUNCTION(BlueprintCallable, BlueprintPure = true, Category = "PlatformVR", meta = (Keywords = "Is, Mobile, Oculus, Android, VR, Headset"))
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "PlatformVR", meta = (Keywords = "Is, Mobile, Oculus, Android, VR, Headset"))
 	static bool IsMobile();
 
 	/** Returns whether the current platform is a PC (the game is playing on Windows, Mac, or Linux). */
-	UFUNCTION(BlueprintCallable, BlueprintPure = true, Category = "PlatformVR", meta = (Keywords = "Is, PC, Windows, Mac, Linux"))
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "PlatformVR", meta = (Keywords = "Is, PC, Windows, Mac, Linux"))
 	static bool IsPC();
 
 	/** Returns whether the game is in editor mode. */
-	UFUNCTION(BlueprintCallable, BlueprintPure = true, Category = "PlatformVR", meta = (Keywords = "Is, Editor, Edit, Mode"))
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "PlatformVR", meta = (Keywords = "Is, Editor, Edit, Mode"))
 	static bool IsEditor();
 
+
+	// LIGHT NORMALIZATION
+
 	/** Multiply this value with a light's intensity value to normalize its brightness between PC and Mobile platforms. */
-	UFUNCTION(BlueprintCallable, BlueprintPure = true, Category = "PlatformVR", meta = (Keywords = "Get, Light, Scalar"))
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "PlatformVR")
 	static float GetLightScalar();
 
 	/** Updates the intensity of a light to ensure its brightness is consistent between platforms. Call this once. */
@@ -67,9 +70,9 @@ public:
 	static TArray<ALight*> NormalizeLights(TArray<ALight*> Lights);
 
 	/**
-	* •  Updates the intensity of a world's lights to ensure its brightness is consistent between platforms. Call this once.
-	* •  Returns whether the lights were successfully normalized and all of the lights in the world.
+	* Updates the intensity of a world's lights to ensure its brightness is consistent between platforms. Call this once.
+	* Returns whether the lights were successfully normalized and all of the lights in the world.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "PlatformVR", meta = (Keywords = "Normalize, Lighting"))
+	UFUNCTION(BlueprintCallable, Category = "PlatformVR")
 	static void NormalizeLighting(bool& Success, TArray<ALight*>& Lights);
 };

@@ -57,6 +57,7 @@ public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
 
     [Header("Events to call when hands are set:")]
     public UnityEvent onHandsSet = null;
+
     /// <summary>
     /// The instance of this class
     /// </summary>

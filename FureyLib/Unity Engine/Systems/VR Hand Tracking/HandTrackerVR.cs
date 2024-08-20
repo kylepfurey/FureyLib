@@ -264,7 +264,7 @@ public class HandVR
     /// <summary>
     /// Gesture type enum (add more if needed)
     /// </summary>
-    public enum Gesture { Open, Fist, Point, Pinch, PinchMiddle, ThumbsUp, FingerGun, FlipOff, Grip };
+    public enum Gesture { Open, Fist, Point, Pinch, PinchMiddle, Grip, ThumbsUp, FingerGun, FlipOff };
 
     /// <summary>
     /// Sets this hand to a found hand object based on the given name. Make sure the name exactly matches the parent of the intended hand.
@@ -605,6 +605,10 @@ public class HandVR
 
                 return DistanceSquared(TranslateRelative(middleTip.transform, new Vector3(0, -0.005f, 0.017f)), TranslateRelative(thumbTip.transform, new Vector3(0, -0.0045f, 0.008f))) < 0.00075f;
 
+            case Gesture.Grip:
+
+                return (middle < 0.4f) && (ring < 0.4f) && (pinky < 0.4f);
+
             case Gesture.ThumbsUp:
 
                 return (thumb >= 0.7f) && (index < 0.4f) && (middle < 0.4f) && (ring < 0.4f) && (pinky < 0.4f);
@@ -616,10 +620,6 @@ public class HandVR
             case Gesture.FlipOff:
 
                 return (index < 0.4f) && (middle >= 0.7f) && (ring < 0.4f) && (pinky < 0.4f);
-
-            case Gesture.Grip:
-
-                return (middle < 0.4f) && (ring < 0.4f) && (pinky < 0.4f);
         }
     }
 

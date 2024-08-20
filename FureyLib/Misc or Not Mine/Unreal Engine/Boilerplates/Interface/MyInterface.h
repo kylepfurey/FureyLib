@@ -13,7 +13,7 @@
 // #include "MyInterface.h"
 
 // This class does not need to be modified. Do not inherit from this class.
-UINTERFACE(NotBlueprintable, BlueprintType, MinimalAPI)
+UINTERFACE(Blueprintable, BlueprintType, MinimalAPI)
 class UMyInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -33,8 +33,8 @@ public:
 	// CONTRACTED FUNCTIONS
 
 	/** Description. */
-	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "Category", meta = (Keywords = "Keywords"))
-	virtual void Function(bool Input, bool& Output);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Category", meta = (Keywords = "Keywords"))
+	void Function(bool Input, bool& Output);
 
 	// New functions here
 };

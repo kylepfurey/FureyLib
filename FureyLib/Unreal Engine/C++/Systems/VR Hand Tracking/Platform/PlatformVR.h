@@ -58,9 +58,17 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure = true, Category = "PlatformVR", meta = (Keywords = "Get, Light, Scalar"))
 	static float GetLightScalar();
 
+	/** Updates the intensity of a light to ensure its brightness is consistent between platforms. Call this once. */
+	UFUNCTION(BlueprintCallable, Category = "PlatformVR", meta = (Keywords = "Normalize, Light, Lighting"))
+	static ALight* NormalizeLight(ALight* Light);
+
+	/** Updates the intensity of a world's lights to ensure its brightness is consistent between platforms. Call this once. */
+	UFUNCTION(BlueprintCallable, Category = "PlatformVR", meta = (Keywords = "Normalize, Lights, Lighting"))
+	static TArray<ALight*> NormalizeLights(TArray<ALight*> Lights);
+
 	/**
-	* Updates the intensity of a world's lights to ensure its brightness is consistent between platforms.
-	* Returns whether the lights were successfully normalized and all of the lights in the world.
+	* •  Updates the intensity of a world's lights to ensure its brightness is consistent between platforms. Call this once.
+	* •  Returns whether the lights were successfully normalized and all of the lights in the world.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "PlatformVR", meta = (Keywords = "Normalize, Lighting"))
 	static void NormalizeLighting(bool& Success, TArray<ALight*>& Lights);

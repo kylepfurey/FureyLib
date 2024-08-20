@@ -85,8 +85,31 @@ float UPlatformVR::GetLightScalar()
 #endif
 }
 
-// Updates the intensity of a world's lights to ensure its brightness is consistent between platforms.
-// Returns whether the lights were successfully normalized and all of the lights in the world.
+// Updates the intensity of a light to ensure its brightness is consistent between platforms. Call this once.
+ALight* UPlatformVR::NormalizeLight(ALight* Light)
+{
+	ULightComponent* Component = Light->GetLightComponent();
+
+	Component->SetIntensity(Component->Intensity * GetLightScalar());
+
+	return Light;
+}
+
+// Updates the intensity of a world's lights to ensure its brightness is consistent between platforms. Call this once.
+TArray<ALight*> UPlatformVR::NormalizeLights(TArray<ALight*> Lights)
+{
+	for (ALight* Light : Lights)
+	{
+		ULightComponent* Component = Light->GetLightComponent();
+
+		Component->SetIntensity(Component->Intensity * GetLightScalar());
+	}
+
+	return Lights;
+}
+
+// •  Updates the intensity of a world's lights to ensure its brightness is consistent between platforms. Call this once.
+// •  Returns whether the lights were successfully normalized and all of the lights in the world.
 void UPlatformVR::NormalizeLighting(bool& Success, TArray<ALight*>& Lights)
 {
 	if (!GIsEditor && GWorld != nullptr)

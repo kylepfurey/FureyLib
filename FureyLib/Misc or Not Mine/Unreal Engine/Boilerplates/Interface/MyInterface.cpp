@@ -7,15 +7,10 @@
 // Include this heading to use the interface
 #include "MyInterface.h"
 
-// Add default functionality here for any IMyInterface functions that are not pure virtual.
+// Add default functionality here for any interface functions that are not pure virtual or a BlueprintNativeEvent.
+// BlueprintNativeEvents can be implemented in C++ via overriding "FunctionName_Implementation()".
 
 
 // CONTRACTED FUNCTIONS
-
-// Description.
-void IMyInterface::Function(bool Input, bool& Output)
-{
-	Output = Input;
-}
 
 // New functions here

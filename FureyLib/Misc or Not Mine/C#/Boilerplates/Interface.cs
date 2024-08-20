@@ -13,11 +13,6 @@ using System.Collections.Generic;
 /// </summary>
 public interface IInterface
 {
-    // CONTRACTED PROPERTIES
-
-    // New properties here
-
-
     // CONTRACTED FUNCTIONS
 
     /// <summary>

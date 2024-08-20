@@ -38,6 +38,25 @@ public interface IHandInteractableVR
 /// </summary>
 public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
 {
+    [Header("Tracks a player's hands in VR through the hand's joints.")]
+
+    [Header("\nCONFIGURATION")]
+
+    [Header("Whether to set the player's hands on start:")]
+    public bool setHandsOnStart = false;
+
+    [Header("The name of the left hand to search for:")]
+    public string leftHandName = "Left Hand Object Name";
+
+    [Header("The name of the right hand to search for:")]
+    public string rightHandName = "Right Hand Object Name";
+
+    [Header("Whether to add collision to the hands:")]
+    public bool addCollision = true;
+    public bool collisionIsTrigger = false;
+
+    [Header("Events to call when hands are set:")]
+    public UnityEvent onHandsSet = null;
     /// <summary>
     /// The instance of this class
     /// </summary>
@@ -62,26 +81,6 @@ public class HandTrackerVR : MonoBehaviour, IHandInteractableVR
     /// The current gestures the right hand is making
     /// </summary>
     public static Dictionary<HandVR.Gesture, bool> rightGestures = new Dictionary<HandVR.Gesture, bool>();
-
-    [Header("Tracks a player's hands in VR through the hand's joints.")]
-
-    [Header("\nCONFIGURATION")]
-
-    [Header("Whether to set the player's hands on start:")]
-    public bool setHandsOnStart = false;
-
-    [Header("The name of the left hand to search for:")]
-    public string leftHandName = "Left Hand Object Name";
-
-    [Header("The name of the right hand to search for:")]
-    public string rightHandName = "Right Hand Object Name";
-
-    [Header("Whether to add collision to the hands:")]
-    public bool addCollision = true;
-    public bool collisionIsTrigger = false;
-
-    [Header("Events to call when hands are set:")]
-    public UnityEvent onHandsSet = null;
 
     /// <summary>
     /// IHandInteractableVR Interface - Adds this object's implementation to the interface.

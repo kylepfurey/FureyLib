@@ -5,7 +5,7 @@
 // REQUIREMENT: MyCharacter.h
 
 // Include this heading to use the class
-#include "MyCharacter.h"
+#include "Boilerplate/MyCharacter.h"
 
 
 // CONSTRUCTORS

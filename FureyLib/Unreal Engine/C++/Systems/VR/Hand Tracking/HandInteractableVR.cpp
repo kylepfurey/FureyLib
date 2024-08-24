@@ -5,10 +5,16 @@
 // REQUIREMENT: HandInteractableVR.h
 
 // Include this heading to use the interface
-#include "HandInteractableVR.h"
+#include "VR/Hand Tracking/HandInteractableVR.h"
 
 
 // IHANDINTERACTABLEVR FUNCTIONS
+
+// Returns whether this object is currently receiving hand tracking input.
+bool IHandInteractableVR::IsHandTrackingImplemented()
+{
+	return Implementations.Contains(_getUObject());
+}
 
 // Call this function when this object is created to enable hand tracking.
 // Make sure to call RemoveHandTracking() when this object is destroyed.

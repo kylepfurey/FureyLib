@@ -11,7 +11,7 @@
 #include "MySlateWidgetStyle.generated.h"
 
 // Include this heading to use the struct
-// #include "MySlateWidgetStyle.h"
+// #include "Boilerplate/MySlateWidgetStyle.h"
 
 /** Template Unreal slate widget style script. */
 USTRUCT(BlueprintType)

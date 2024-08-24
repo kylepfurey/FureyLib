@@ -5,7 +5,7 @@
 // REQUIREMENT: MyPlayerCameraManager.h
 
 // Include this heading to use the class
-#include "MyPlayerCameraManager.h"
+#include "Boilerplate/MyPlayerCameraManager.h"
 
 
 // CONSTRUCTORS

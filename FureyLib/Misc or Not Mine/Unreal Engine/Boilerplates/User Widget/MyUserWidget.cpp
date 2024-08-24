@@ -5,7 +5,7 @@
 // REQUIREMENT: MyUserWidget.h
 
 // Include this heading to use the class
-#include "MyUserWidget.h"
+#include "Boilerplate/MyUserWidget.h"
 
 
 // CONSTRUCTORS

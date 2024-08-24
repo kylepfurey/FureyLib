@@ -5,7 +5,7 @@
 // REQUIREMENT: MyGameStateBase.h
 
 // Include this heading to use the class
-#include "MyGameStateBase.h"
+#include "Boilerplate/MyGameStateBase.h"
 
 
 // CONSTRUCTORS

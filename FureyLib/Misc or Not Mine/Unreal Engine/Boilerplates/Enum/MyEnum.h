@@ -7,7 +7,7 @@
 #include "MyEnum.generated.h"
 
 // Include this heading to use the enum
-// #include "MyEnum.h"
+// #include "Boilerplate/MyEnum.h"
 
 /** Template Unreal enumeration script. */
 UENUM(BlueprintType, meta = (Bitflags), Category = "Category")

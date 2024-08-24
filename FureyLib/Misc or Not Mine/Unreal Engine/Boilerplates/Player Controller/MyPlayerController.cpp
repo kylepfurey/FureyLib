@@ -5,7 +5,7 @@
 // REQUIREMENT: MyPlayerController.h
 
 // Include this heading to use the class
-#include "MyPlayerController.h"
+#include "Boilerplate/MyPlayerController.h"
 
 
 // CONSTRUCTORS

@@ -13,7 +13,7 @@
 #include "FunctionPointer.generated.h"
 
 // Include this heading to use the class
-// #include "FunctionPointer.h"
+// #include "Function Pointer/FunctionPointer.h"
 
 // Delegate declaration.
 DECLARE_DYNAMIC_DELEGATE(FFunctionPointerDelegate);

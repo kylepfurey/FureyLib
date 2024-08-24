@@ -10,7 +10,7 @@
 #include "MyGameInstance.generated.h"
 
 // Include this heading to use the class
-// #include "MyGameInstance.h"
+// #include "Boilerplate/MyGameInstance.h"
 
 /** Template Unreal game instance script. */
 UCLASS(Blueprintable, BlueprintType)

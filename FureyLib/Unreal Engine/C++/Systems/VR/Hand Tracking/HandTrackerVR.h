@@ -2,18 +2,30 @@
 // Static VR Hand Tracking Component Script
 // by Kyle Furey
 
-// REQUIREMENTS: MotionControllerComponent.h, HandInteractableVR.h, HandVR.h, HandTrackerVR.cpp
+// REQUIREMENTS: HandInteractableVR.h, HandVR.h, HandTrackerVR.cpp
 
 #pragma once
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "MotionControllerComponent.h"
-#include "HandInteractableVR.h"
-#include "HandVR.h"
+#include "Camera/CameraComponent.h"
+#include "VR/Hand Tracking/HandInteractableVR.h"
+#include "VR/Hand Tracking/HandVR.h"
 #include "HandTrackerVR.generated.h"
 
 // Include this heading to use the class
-// #include "HandTrackerVR.h"
+// #include "VR/Hand Tracking/HandTrackerVR.h"
+
+/** Each possible state for hand tracking. */
+UENUM(BlueprintType, meta = (Bitflags), Category = "HandTrackerVR")
+enum class EHandTrackingModeVR : uint8
+{
+	NONE = 0	UMETA(DisplayName = "No Hands Tracked"),
+	LEFT = 1	UMETA(DisplayName = "Left Hand Tracked"),
+	RIGHT = 2	UMETA(DisplayName = "Right Hand Tracked"),
+	BOTH = 3	UMETA(DisplayName = "Both Hands Tracked"),
+	MAX			UMETA(Hidden)
+};
 
 /**
 * Singleton hand tracking component class.
@@ -29,39 +41,53 @@ protected:
 
 	// HAND OBJECTS
 
+	/** The headset camera object. */
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetHeadset", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
+	UCameraComponent* Headset = nullptr;
+
 	/** The left hand object. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetLeftHand", Category = "HandTrackerVR")
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetLeftHand", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
 	UHandVR* LeftHand = nullptr;
 
 	/** The right hand object. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetRightHand", Category = "HandTrackerVR")
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetRightHand", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
 	UHandVR* RightHand = nullptr;
 
 
 	// MOTION CONTROLLERS
 
 	/** The motion controller component being used to represent the left hand. */
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetLeftMotionController", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
 	UMotionControllerComponent* LeftHandMotionController = nullptr;
 
 	/** The motion controller component being used to represent the right hand. */
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetRightMotionController", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
 	UMotionControllerComponent* RightHandMotionController = nullptr;
 
 
 	// GESTURE MAPS
 
 	/** Each gesture and whether it is currently active in the left hand. */
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetLeftGestureMap", Category = "HandTrackerVR")
 	TMap<EHandGestureVR, bool> LeftGestures = TMap<EHandGestureVR, bool>();
 
 	/** Each gesture and whether it is currently active in the right hand. */
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetRightGestureMap", Category = "HandTrackerVR")
 	TMap<EHandGestureVR, bool> RightGestures = TMap<EHandGestureVR, bool>();
 
 
 	// HAND TRACKING STATE
 
+	/** The global state of hand tracking input. */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, BlueprintGetter = "GetHandTrackingState", BlueprintSetter = "SetHandTrackingState", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
+	EHandTrackingModeVR State = EHandTrackingModeVR::BOTH;
+
 	/** Whether the left hand is currently being tracked. */
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "IsTrackingLeftHand", Category = "HandTrackerVR")
 	bool bTrackingLeft = false;
 
 	/** Whether the right hand is currently being tracked. */
+	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "IsTrackingRightHand", Category = "HandTrackerVR")
 	bool bTrackingRight = false;
 
 	/** The previous set of active left gestures. */
@@ -92,6 +118,13 @@ protected:
 	virtual void LocateMotionControllers();
 
 	/**
+	* Returns whether this object is currently receiving hand tracking input.
+	* This is the static version used exclusively for blueprint implementations.
+	*/
+	UFUNCTION(BlueprintCallable, Category = "HandInteractableVR")
+	static bool IsHandTrackingVRImplemented(TScriptInterface<IHandInteractableVR> HandInteractableVR);
+
+	/**
 	* Call this function when this object is created to enable hand tracking.
 	* Make sure to call RemoveHandTrackingVR() when this object is destroyed.
 	* This is the static version used exclusively for blueprint implementations.
@@ -118,7 +151,7 @@ public:
 	UHandTrackerVR(const FObjectInitializer& ObjectInitializer);
 
 	/** Hand tracker constructor. */
-	UHandTrackerVR(UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent);
+	UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingModeVR TrackingState = EHandTrackingModeVR::BOTH);
 
 
 	// UNREAL FUNCTIONS
@@ -128,6 +161,14 @@ public:
 
 
 	// HAND TRACKER FUNCTIONS
+
+	/** Returns the global state of hand tracking input. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static EHandTrackingModeVR GetHandTrackingState();
+
+	/** Sets the global state of hand tracking input. */
+	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
+	static void SetHandTrackingState(EHandTrackingModeVR TrackingState);
 
 	/** Returns the current IHandInteractableVR implementations. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
@@ -143,7 +184,7 @@ public:
 
 	/** Constructs a new HandTrackerVR component. */
 	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
-	static UHandTrackerVR* ConstructHandTrackerVR(AActor* Parent, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent);
+	static UHandTrackerVR* ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingModeVR TrackingState = EHandTrackingModeVR::BOTH);
 
 
 	// TRACKING FUNCTIONS
@@ -186,6 +227,25 @@ public:
 	/** Returns the right VR hand. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
 	static UHandVR* GetRightHand();
+
+
+	// HEADSET FUNCTIONS
+
+	/** Returns the headset camera. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static UCameraComponent* GetHeadset();
+
+	/** Returns the headset camera's transform data. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static void GetHeadsetTransform(FVector& WorldPosition, FRotator& WorldRotation);
+
+	/** Returns the player actor. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static AActor* GetPlayer();
+
+	/** Returns the player's transform data. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static void GetPlayerTransform(FVector& WorldPosition, FRotator& WorldRotation, FVector& WorldScale);
 
 
 	// MOTION CONTROLLER FUNCTIONS

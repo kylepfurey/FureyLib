@@ -5,7 +5,7 @@
 // REQUIREMENT: MyObject.h
 
 // Include this heading to use the class
-#include "MyObject.h"
+#include "Boilerplate/MyObject.h"
 
 
 // CONSTRUCTORS

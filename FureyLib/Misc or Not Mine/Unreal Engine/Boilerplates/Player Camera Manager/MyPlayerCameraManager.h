@@ -10,7 +10,7 @@
 #include "MyPlayerCameraManager.generated.h"
 
 // Include this heading to use the class
-// #include "MyPlayerCameraManager.h"
+// #include "Boilerplate/MyPlayerCameraManager.h"
 
 /** Template Unreal player camera manager script. */
 UCLASS(Blueprintable, BlueprintType)

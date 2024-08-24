@@ -2,16 +2,16 @@
 // Asynchronous Thread Object Script
 // by Kyle Furey
 
-// REQUIREMENT: AsyncThread.h, UThread.cpp
+// REQUIREMENTS: AsyncThread.h, UThread.cpp
 
 #pragma once
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "AsyncThread.h"
+#include "Async Thread/AsyncThread.h"
 #include "UThread.generated.h"
 
 // Include this heading to use the class
-// #include "UThread.h"
+// #include "Async Thread/UThread.h"
 
 // Delegate declaration.
 DECLARE_DYNAMIC_DELEGATE(FThreadDelegate);

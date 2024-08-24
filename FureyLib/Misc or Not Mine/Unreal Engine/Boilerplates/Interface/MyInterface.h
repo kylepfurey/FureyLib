@@ -10,7 +10,7 @@
 #include "MyInterface.generated.h"
 
 // Include this heading to use the interface
-// #include "MyInterface.h"
+// #include "Boilerplate/MyInterface.h"
 
 // This class does not need to be modified. Do not inherit from this class.
 UINTERFACE(Blueprintable, BlueprintType, MinimalAPI)

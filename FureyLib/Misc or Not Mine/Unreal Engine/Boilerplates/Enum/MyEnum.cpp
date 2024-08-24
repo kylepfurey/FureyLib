@@ -5,7 +5,7 @@
 // REQUIREMENT: MyEnum.h
 
 // Include this heading to use the enum
-#include "MyEnum.h"
+#include "Boilerplate/MyEnum.h"
 
 
 // This file is not required.

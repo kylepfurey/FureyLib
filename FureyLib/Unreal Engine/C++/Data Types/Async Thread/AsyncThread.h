@@ -13,7 +13,7 @@
 #include "HAL/PlatformMisc.h"
 
 // Include this heading to use the class
-// #include "AsyncThread.h"
+// #include "Async Thread/AsyncThread.h"
 
 // Creates a lambda expression with the given captures and code.
 #define LAMBDA(...) [__VA_ARGS__] () mutable -> void

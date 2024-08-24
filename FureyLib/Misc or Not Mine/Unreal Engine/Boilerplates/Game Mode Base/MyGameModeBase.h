@@ -10,7 +10,7 @@
 #include "MyGameModeBase.generated.h"
 
 // Include this heading to use the class
-// #include "MyGameModeBase.h"
+// #include "Boilerplate/MyGameModeBase.h"
 
 /** Template Unreal game mode base script. */
 UCLASS(Blueprintable, BlueprintType)

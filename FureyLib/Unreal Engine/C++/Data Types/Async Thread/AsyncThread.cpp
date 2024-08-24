@@ -7,7 +7,7 @@
 // REFERENCE: https://forums.unrealengine.com/t/multithreading-and-performance-in-unreal/1216417
 
 // Include this heading to use the class
-#include "AsyncThread.h"
+#include "Async Thread/AsyncThread.h"
 
 
 // CONSTRUCTORS AND DESTRUCTOR

@@ -10,7 +10,7 @@
 #include "MyPawn.generated.h"
 
 // Include this heading to use the class
-// #include "MyPawn.h"
+// #include "Boilerplate/MyPawn.h"
 
 /** Template Unreal pawn script. */
 UCLASS(Blueprintable, BlueprintType)

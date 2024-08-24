@@ -5,7 +5,7 @@
 // REQUIREMENT: MyBlueprintFunctionLibrary.h
 
 // Include this heading to use the library
-#include "MyBlueprintFunctionLibrary.h"
+#include "Boilerplate/MyBlueprintFunctionLibrary.h"
 
 
 // STATIC FUNCTIONS

@@ -5,7 +5,7 @@
 // REQUIREMENT: MyGameInstance.h
 
 // Include this heading to use the class
-#include "MyGameInstance.h"
+#include "Boilerplate/MyGameInstance.h"
 
 
 // CONSTRUCTORS

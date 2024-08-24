@@ -10,7 +10,7 @@
 #include "MyActor.generated.h"
 
 // Include this heading to use the class
-// #include "MyActor.h"
+// #include "Boilerplate/MyActor.h"
 
 /** Template Unreal actor script. */
 UCLASS(Blueprintable, BlueprintType)

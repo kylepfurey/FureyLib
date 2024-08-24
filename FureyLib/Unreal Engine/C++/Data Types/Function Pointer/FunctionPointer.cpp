@@ -7,7 +7,7 @@
 // REFERENCE: https://blog.jamie.holdings/2022/04/14/unreal-engine-4-23-accept-delegates-as-arguments-in-blueprint-functions/
 
 // Include this heading to use the class
-#include "FunctionPointer.h"
+#include "Function Pointer/FunctionPointer.h"
 
 
 // CONSTRUCTORS

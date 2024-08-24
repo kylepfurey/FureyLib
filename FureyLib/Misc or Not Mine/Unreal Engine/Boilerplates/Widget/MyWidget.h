@@ -10,7 +10,7 @@
 #include "MyWidget.generated.h"
 
 // Include this heading to use the class
-// #include "MyWidget.h"
+// #include "Boilerplate/MyWidget.h"
 
 /** Template Unreal widget script. */
 UCLASS(Blueprintable, BlueprintType)

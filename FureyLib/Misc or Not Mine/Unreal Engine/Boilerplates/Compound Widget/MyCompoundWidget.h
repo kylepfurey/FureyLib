@@ -9,7 +9,7 @@
 #include "Widgets/SCompoundWidget.h"
 
 // Include this heading to use the class
-// #include "MyCompoundWidget.h"
+// #include "Boilerplate/MyCompoundWidget.h"
 
 /** Template Unreal compound widget script. */
 class MYGAME_API SMyCompoundWidget : public SCompoundWidget

@@ -5,7 +5,7 @@
 // REQUIREMENT: PlatformVR.h
 
 // Include this heading to use the library
-#include "PlatformVR.h"
+#include "VR/Platform/PlatformVR.h"
 
 
 // PLATFORM FUNCTIONS

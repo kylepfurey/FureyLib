@@ -10,7 +10,7 @@
 #include "MyCharacter.generated.h"
 
 // Include this heading to use the class
-// #include "MyCharacter.h"
+// #include "Boilerplate/MyCharacter.h"
 
 /** Template Unreal character script. */
 UCLASS(Blueprintable, BlueprintType)

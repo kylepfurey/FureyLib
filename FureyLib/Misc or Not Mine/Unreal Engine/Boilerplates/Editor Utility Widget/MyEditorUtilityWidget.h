@@ -12,7 +12,7 @@
 #include "MyEditorUtilityWidget.generated.h"
 
 // Include this heading to use the class
-// #include "MyEditorUtilityWidget.h"
+// #include "Boilerplate/MyEditorUtilityWidget.h"
 
 /** Template Unreal editor utility widget script. */
 UCLASS(Blueprintable, BlueprintType)

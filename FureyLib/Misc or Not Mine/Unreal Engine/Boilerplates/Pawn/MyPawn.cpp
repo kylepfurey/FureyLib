@@ -5,7 +5,7 @@
 // REQUIREMENT: MyPawn.h
 
 // Include this heading to use the class
-#include "MyPawn.h"
+#include "Boilerplate/MyPawn.h"
 
 
 // CONSTRUCTORS

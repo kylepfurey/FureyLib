@@ -5,7 +5,7 @@
 // REQUIREMENT: MyPlayerState.h
 
 // Include this heading to use the class
-#include "MyPlayerState.h"
+#include "Boilerplate/MyPlayerState.h"
 
 
 // CONSTRUCTORS

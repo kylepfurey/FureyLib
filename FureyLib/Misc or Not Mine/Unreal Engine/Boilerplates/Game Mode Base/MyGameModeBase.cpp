@@ -5,7 +5,7 @@
 // REQUIREMENT: MyGameModeBase.h
 
 // Include this heading to use the class
-#include "MyGameModeBase.h"
+#include "Boilerplate/MyGameModeBase.h"
 
 
 // CONSTRUCTORS

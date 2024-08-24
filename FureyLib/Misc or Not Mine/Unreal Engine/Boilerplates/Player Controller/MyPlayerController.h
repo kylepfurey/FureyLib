@@ -10,7 +10,7 @@
 #include "MyPlayerController.generated.h"
 
 // Include this heading to use the class
-// #include "MyPlayerController.h"
+// #include "Boilerplate/MyPlayerController.h"
 
 /** Template Unreal player controller script. */
 UCLASS(Blueprintable, BlueprintType)

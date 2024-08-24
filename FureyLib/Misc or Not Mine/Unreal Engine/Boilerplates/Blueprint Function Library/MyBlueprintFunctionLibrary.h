@@ -10,7 +10,7 @@
 #include "MyBlueprintFunctionLibrary.generated.h"
 
 // Include this heading to use the library
-// #include "MyBlueprintFunctionLibrary.h"
+// #include "Boilerplate/MyBlueprintFunctionLibrary.h"
 
 /** Template Unreal blueprint function library script. */
 UCLASS(Blueprintable, BlueprintType)

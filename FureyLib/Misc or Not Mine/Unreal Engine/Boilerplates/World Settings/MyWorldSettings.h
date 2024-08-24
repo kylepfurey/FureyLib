@@ -10,7 +10,7 @@
 #include "MyWorldSettings.generated.h"
 
 // Include this heading to use the class
-// #include "MyWorldSettings.h"
+// #include "Boilerplate/MyWorldSettings.h"
 
 /** Template Unreal world settings script. */
 UCLASS(Blueprintable, BlueprintType)

@@ -10,7 +10,7 @@
 #include "MyPlayerState.generated.h"
 
 // Include this heading to use the class
-// #include "MyPlayerState.h"
+// #include "Boilerplate/MyPlayerState.h"
 
 /** Template Unreal player state script. */
 UCLASS(Blueprintable, BlueprintType)

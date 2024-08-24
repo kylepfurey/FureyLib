@@ -5,7 +5,7 @@
 // REQUIREMENT: MyCompoundWidget.h
 
 // Include this heading to use the class
-#include "MyCompoundWidget.h"
+#include "Boilerplate/MyCompoundWidget.h"
 #include "SlateOptMacros.h"
 
 

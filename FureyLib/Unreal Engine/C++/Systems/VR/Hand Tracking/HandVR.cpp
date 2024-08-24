@@ -7,7 +7,7 @@
 // REFERENCE: https://developer.oculus.com/documentation/unreal/unreal-hand-tracking/
 
 // Include this heading to use the class
-#include "HandVR.h"
+#include "VR/Hand Tracking/HandVR.h"
 
 
 // CONSTRUCTORS

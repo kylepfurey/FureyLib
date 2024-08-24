@@ -5,7 +5,7 @@
 // REQUIREMENT: HandTrackerVR.h
 
 // Include this heading to use the class
-#include "HandTrackerVR.h"
+#include "VR/Hand Tracking/HandTrackerVR.h"
 
 
 // CONSTRUCTORS
@@ -15,9 +15,19 @@ UHandTrackerVR::UHandTrackerVR()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
+	PrimaryComponentTick.TickGroup = ETickingGroup::TG_PrePhysics;
+
+	PrimaryComponentTick.bHighPriority = true;
+
 	LeftHand = nullptr;
 
 	RightHand = nullptr;
+
+	Headset = nullptr;
+
+	LeftHandMotionController = nullptr;
+
+	RightHandMotionController = nullptr;
 
 	LeftGestures = TMap<EHandGestureVR, bool>();
 
@@ -29,6 +39,8 @@ UHandTrackerVR::UHandTrackerVR()
 
 		RightGestures.Add((EHandGestureVR)Index, false);
 	}
+
+	State = EHandTrackingModeVR::BOTH;
 
 	bTrackingLeft = false;
 
@@ -46,9 +58,19 @@ UHandTrackerVR::UHandTrackerVR(const FObjectInitializer& ObjectInitializer) : Su
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
+	PrimaryComponentTick.TickGroup = ETickingGroup::TG_PrePhysics;
+
+	PrimaryComponentTick.bHighPriority = true;
+
 	LeftHand = nullptr;
 
 	RightHand = nullptr;
+
+	Headset = nullptr;
+
+	LeftHandMotionController = nullptr;
+
+	RightHandMotionController = nullptr;
 
 	LeftGestures = TMap<EHandGestureVR, bool>();
 
@@ -60,6 +82,8 @@ UHandTrackerVR::UHandTrackerVR(const FObjectInitializer& ObjectInitializer) : Su
 
 		RightGestures.Add((EHandGestureVR)Index, false);
 	}
+
+	State = EHandTrackingModeVR::BOTH;
 
 	bTrackingLeft = false;
 
@@ -73,13 +97,23 @@ UHandTrackerVR::UHandTrackerVR(const FObjectInitializer& ObjectInitializer) : Su
 }
 
 // Hand tracker constructor.
-UHandTrackerVR::UHandTrackerVR(UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent)
+UHandTrackerVR::UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingModeVR TrackingState)
 {
 	PrimaryComponentTick.bCanEverTick = true;
+
+	PrimaryComponentTick.TickGroup = ETickingGroup::TG_PrePhysics;
+
+	PrimaryComponentTick.bHighPriority = true;
 
 	LeftHand = UHandVR::ConstructHandVR(false, _LeftHandComponent);
 
 	RightHand = UHandVR::ConstructHandVR(true, _RightHandComponent);
+
+	Headset = _Headset;
+
+	LeftHandMotionController = nullptr;
+
+	RightHandMotionController = nullptr;
 
 	LeftGestures = TMap<EHandGestureVR, bool>();
 
@@ -91,6 +125,8 @@ UHandTrackerVR::UHandTrackerVR(UPoseableMeshComponent* _LeftHandComponent, UPose
 
 		RightGestures.Add((EHandGestureVR)Index, false);
 	}
+
+	State = TrackingState;
 
 	bTrackingLeft = false;
 
@@ -120,9 +156,6 @@ void UHandTrackerVR::BeginPlay()
 
 		// Implement IHandInteractableVR implementation.
 		ImplementHandTracking();
-
-		// Locates the hand's motion controllers.
-		LocateMotionControllers();
 	}
 	else
 	{
@@ -145,22 +178,7 @@ void UHandTrackerVR::BeginDestroy()
 
 		bTrackingRight = false;
 
-		for (UObject* Object : Implementations)
-		{
-			if (Object == this)
-			{
-				continue;
-			}
-
-			if (IsValid(Object))
-			{
-				Execute_OnHandLost(Object, false);
-
-				Execute_OnHandLost(Object, true);
-			}
-		}
-
-		for (EHandGestureVR Gesture : PreviousLeftGestures)
+		if (bTrackingLeft)
 		{
 			for (UObject* Object : Implementations)
 			{
@@ -171,12 +189,12 @@ void UHandTrackerVR::BeginDestroy()
 
 				if (IsValid(Object))
 				{
-					Execute_OnStopGesture(Object, false, Gesture);
+					Execute_OnHandLost(Object, false);
 				}
 			}
 		}
 
-		for (EHandGestureVR Gesture : PreviousRightGestures)
+		if (bTrackingRight)
 		{
 			for (UObject* Object : Implementations)
 			{
@@ -187,7 +205,7 @@ void UHandTrackerVR::BeginDestroy()
 
 				if (IsValid(Object))
 				{
-					Execute_OnStopGesture(Object, true, Gesture);
+					Execute_OnHandLost(Object, true);
 				}
 			}
 		}
@@ -216,19 +234,15 @@ void UHandTrackerVR::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	// Calls the base class's function.
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	bool bLeft = LeftHandMotionController != nullptr && RightHandMotionController->IsTracked();
+	LocateMotionControllers();
 
-	bool bRight = RightHandMotionController != nullptr && RightHandMotionController->IsTracked();
+	bool bLeft = LeftHandMotionController != nullptr && LeftHandMotionController->IsTracked() && EnumHasAnyFlags(State, EHandTrackingModeVR::LEFT);
 
-	if (!HandsSet && bLeft && bRight)
+	bool bRight = RightHandMotionController != nullptr && RightHandMotionController->IsTracked() && EnumHasAnyFlags(State, EHandTrackingModeVR::RIGHT);
+
+	if (!HandsSet && State != EHandTrackingModeVR::NONE && (bLeft || !EnumHasAnyFlags(State, EHandTrackingModeVR::LEFT)) && (bRight || !EnumHasAnyFlags(State, EHandTrackingModeVR::RIGHT)))
 	{
 		Execute_OnSetHands(this);
-
-		Execute_OnHandTracked(this, false);
-
-		Execute_OnHandTracked(this, true);
-
-		return;
 	}
 
 	if (HandsSet)
@@ -238,8 +252,6 @@ void UHandTrackerVR::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 			if (!bTrackingLeft)
 			{
 				Execute_OnHandTracked(this, false);
-
-				return;
 			}
 
 			for (int32 Index = 0; Index < (int32)EHandGestureVR::MAX; Index++)
@@ -292,8 +304,6 @@ void UHandTrackerVR::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 			if (!bTrackingRight)
 			{
 				Execute_OnHandTracked(this, true);
-
-				return;
 			}
 
 			for (int32 Index = 0; Index < (int32)EHandGestureVR::MAX; Index++)
@@ -351,37 +361,50 @@ void UHandTrackerVR::LocateMotionControllers()
 {
 	UPoseableMeshComponent* Component;
 
-	UActorComponent* ParentComponent;
+	USceneComponent* ParentComponent;
 
-	if (LeftHand != nullptr)
+	if (LeftHandMotionController == nullptr)
 	{
-		Component = LeftHand->GetHand();
-
-		if (Component != nullptr)
+		if (LeftHand != nullptr)
 		{
-			ParentComponent = Component->GetAttachParent();
+			Component = LeftHand->GetHand();
 
-			if (ParentComponent != nullptr)
+			if (Component != nullptr)
 			{
-				LeftHandMotionController = Cast<UMotionControllerComponent>(ParentComponent);
+				ParentComponent = Component->GetAttachParent();
+
+				if (ParentComponent != nullptr)
+				{
+					LeftHandMotionController = Cast<UMotionControllerComponent>(ParentComponent);
+				}
 			}
 		}
 	}
 
-	if (RightHand != nullptr)
+	if (RightHandMotionController == nullptr)
 	{
-		Component = RightHand->GetHand();
-
-		if (Component != nullptr)
+		if (RightHand != nullptr)
 		{
-			ParentComponent = Component->GetAttachParent();
+			Component = RightHand->GetHand();
 
-			if (ParentComponent != nullptr)
+			if (Component != nullptr)
 			{
-				RightHandMotionController = Cast<UMotionControllerComponent>(ParentComponent);
+				ParentComponent = Component->GetAttachParent();
+
+				if (ParentComponent != nullptr)
+				{
+					RightHandMotionController = Cast<UMotionControllerComponent>(ParentComponent);
+				}
 			}
 		}
 	}
+}
+
+// Returns whether this object is currently receiving hand tracking input.
+// This is the static version used exclusively for blueprint implementations.
+bool UHandTrackerVR::IsHandTrackingVRImplemented(TScriptInterface<IHandInteractableVR> HandInteractableVR)
+{
+	return Implementations.Contains(HandInteractableVR.GetObject());
 }
 
 // Call this function when this object is created to enable hand tracking.
@@ -413,7 +436,29 @@ void UHandTrackerVR::RemoveHandTrackingVR(TScriptInterface<IHandInteractableVR> 
 
 // HAND TRACKER FUNCTIONS
 
-// Returns the current IHandInteractableVR implementations (as UObjects).
+// Returns the global state of hand tracking input.
+EHandTrackingModeVR UHandTrackerVR::GetHandTrackingState()
+{
+	if (Instance == nullptr)
+	{
+		return EHandTrackingModeVR::NONE;
+	}
+
+	return Instance->State;
+}
+
+// Sets the global state of hand tracking input.
+void UHandTrackerVR::SetHandTrackingState(EHandTrackingModeVR TrackingState)
+{
+	if (Instance == nullptr)
+	{
+		return;
+	}
+
+	Instance->State = TrackingState;
+}
+
+// Returns the current IHandInteractableVR implementations.
 TSet<UObject*> UHandTrackerVR::GetHandTrackingImplementations()
 {
 	return TSet<UObject*>(Implementations);
@@ -432,8 +477,13 @@ UHandTrackerVR* UHandTrackerVR::GetHandTrackerVR()
 }
 
 // Constructs a new HandTrackerVR component.
-UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent)
+UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingModeVR TrackingState)
 {
+	if (Instance != nullptr)
+	{
+		return nullptr;
+	}
+
 	UHandTrackerVR* NewHandTracker = Cast<UHandTrackerVR>(Parent->AddComponentByClass(UHandTrackerVR::StaticClass(), true, FTransform(), true));
 
 	NewHandTracker->RegisterComponent();
@@ -442,9 +492,19 @@ UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UPoseable
 
 	NewHandTracker->PrimaryComponentTick.bCanEverTick = true;
 
+	NewHandTracker->PrimaryComponentTick.TickGroup = ETickingGroup::TG_PrePhysics;
+
+	NewHandTracker->PrimaryComponentTick.bHighPriority = true;
+
 	NewHandTracker->LeftHand = UHandVR::ConstructHandVR(false, _LeftHandComponent);
 
 	NewHandTracker->RightHand = UHandVR::ConstructHandVR(true, _RightHandComponent);
+
+	NewHandTracker->Headset = _Headset;
+
+	NewHandTracker->LeftHandMotionController = nullptr;
+
+	NewHandTracker->RightHandMotionController = nullptr;
 
 	NewHandTracker->LeftGestures = TMap<EHandGestureVR, bool>();
 
@@ -464,6 +524,8 @@ UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UPoseable
 	NewHandTracker->PreviousLeftGestures = TSet<EHandGestureVR>();
 
 	NewHandTracker->PreviousRightGestures = TSet<EHandGestureVR>();
+
+	NewHandTracker->State = TrackingState;
 
 	return NewHandTracker;
 }
@@ -556,6 +618,82 @@ UHandVR* UHandTrackerVR::GetRightHand()
 	}
 
 	return Instance->RightHand;
+}
+
+
+// HEADSET FUNCTIONS
+
+// Returns the headset camera.
+UCameraComponent* UHandTrackerVR::GetHeadset()
+{
+	if (Instance == nullptr)
+	{
+		return nullptr;
+	}
+
+	return Instance->Headset;
+}
+
+// Returns the headset camera's transform data.
+void UHandTrackerVR::GetHeadsetTransform(FVector& WorldPosition, FRotator& WorldRotation)
+{
+	if (Instance == nullptr)
+	{
+		WorldPosition = FVector(0, 0, 0);
+
+		WorldRotation = FRotator(0, 0, 0);
+
+		return;
+	}
+
+	WorldPosition = Instance->Headset->GetComponentLocation();
+
+	WorldRotation = Instance->Headset->GetComponentRotation();
+}
+
+// Returns the player actor.
+AActor* UHandTrackerVR::GetPlayer()
+{
+	if (Instance == nullptr || Instance->Headset == nullptr)
+	{
+		return nullptr;
+	}
+
+	return Instance->Headset->GetAttachParentActor();
+}
+
+// Returns the player's transform data.
+void UHandTrackerVR::GetPlayerTransform(FVector& WorldPosition, FRotator& WorldRotation, FVector& WorldScale)
+{
+	if (Instance == nullptr || Instance->Headset == nullptr)
+	{
+		WorldPosition = FVector(0, 0, 0);
+
+		WorldRotation = FRotator(0, 0, 0);
+
+		WorldScale = FVector(1, 1, 1);
+
+		return;
+	}
+
+	AActor* Parent = Instance->Headset->GetAttachParentActor();
+
+	if (Parent == nullptr)
+	{
+		WorldPosition = FVector(0, 0, 0);
+
+		WorldRotation = FRotator(0, 0, 0);
+
+		WorldScale = FVector(1, 1, 1);
+
+		return;
+	}
+
+	WorldPosition = Parent->GetActorLocation();
+
+	WorldRotation = Parent->GetActorRotation();
+
+	WorldScale = Parent->GetActorScale();
 }
 
 
@@ -876,22 +1014,45 @@ void UHandTrackerVR::OnHandLost_Implementation(bool bIsRight)
 	if (bIsRight)
 	{
 		bTrackingRight = false;
+
+		for (UObject* Object : Implementations)
+		{
+			if (Object == this)
+			{
+				continue;
+			}
+
+			if (IsValid(Object))
+			{
+				Execute_OnHandLost(Object, true);
+
+				for (EHandGestureVR Gesture : PreviousRightGestures)
+				{
+					Execute_OnStopGesture(Object, true, Gesture);
+				}
+			}
+		}
 	}
 	else
 	{
 		bTrackingLeft = false;
-	}
 
-	for (UObject* Object : Implementations)
-	{
-		if (Object == this)
+		for (UObject* Object : Implementations)
 		{
-			continue;
-		}
+			if (Object == this)
+			{
+				continue;
+			}
 
-		if (IsValid(Object))
-		{
-			Execute_OnHandLost(Object, bIsRight);
+			if (IsValid(Object))
+			{
+				Execute_OnHandLost(Object, false);
+
+				for (EHandGestureVR Gesture : PreviousLeftGestures)
+				{
+					Execute_OnStopGesture(Object, false, Gesture);
+				}
+			}
 		}
 	}
 }

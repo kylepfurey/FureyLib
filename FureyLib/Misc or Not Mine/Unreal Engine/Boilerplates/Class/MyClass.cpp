@@ -5,7 +5,7 @@
 // REQUIREMENT: MyClass.h
 
 // Include this heading to use the class
-#include "MyClass.h"
+#include "Boilerplate/MyClass.h"
 
 
 // CONSTRUCTORS AND DESTRUCTOR

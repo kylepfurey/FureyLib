@@ -5,7 +5,7 @@
 // REQUIREMENT: MyHUD.h
 
 // Include this heading to use the class
-#include "MyHUD.h"
+#include "Boilerplate/MyHUD.h"
 
 
 // CONSTRUCTORS

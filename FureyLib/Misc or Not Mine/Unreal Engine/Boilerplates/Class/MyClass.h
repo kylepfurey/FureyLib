@@ -8,7 +8,7 @@
 #include "CoreMinimal.h"
 
 // Include this heading to use the class
-// #include "MyClass.h"
+// #include "Boilerplate/MyClass.h"
 
 /** Template Unreal class script. */
 class MYGAME_API FMyClass

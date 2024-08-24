@@ -9,7 +9,7 @@
 #include "MyStruct.generated.h"
 
 // Include this heading to use the struct
-// #include "MyStruct.h"
+// #include "Boilerplate/MyStruct.h"
 
 /** Template Unreal structure script. */
 USTRUCT(BlueprintType)

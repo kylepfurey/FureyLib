@@ -7,7 +7,7 @@
 #if WITH_EDITOR
 
 // Include this heading to use the class
-#include "MyFactory.h"
+#include "Boilerplate/MyFactory.h"
 
 
 // CONSTRUCTORS

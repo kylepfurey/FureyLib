@@ -10,7 +10,7 @@
 #include "MySceneComponent.generated.h"
 
 // Include this heading to use the class
-// #include "MySceneComponent.h"
+// #include "Boilerplate/MySceneComponent.h"
 
 /** Template Unreal scene component script. */
 UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))

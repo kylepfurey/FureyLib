@@ -10,7 +10,7 @@
 #include "MyGameStateBase.generated.h"
 
 // Include this heading to use the class
-// #include "MyGameStateBase.h"
+// #include "Boilerplate/MyGameStateBase.h"
 
 /** Template Unreal game state base script. */
 UCLASS(Blueprintable, BlueprintType)

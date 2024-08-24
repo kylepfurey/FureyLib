@@ -10,7 +10,7 @@
 #include "HandInteractableVR.generated.h"
 
 // Include this heading to use the interface
-// #include "HandInteractableVR.h"
+// #include "VR/Hand Tracking/HandInteractableVR.h"
 
 // Forward declaration of EGestureVR.
 enum class EHandGestureVR : uint8;
@@ -50,6 +50,9 @@ protected:
 public:
 
 	// IHANDINTERACTABLEVR FUNCTIONS
+
+	/** Returns whether this object is currently receiving hand tracking input. */
+	bool IsHandTrackingImplemented();
 
 	/**
 	* Call this function when this object is created to enable hand tracking.

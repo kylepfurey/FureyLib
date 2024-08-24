@@ -16,7 +16,7 @@
 #include "HandVR.generated.h"
 
 // Include this heading to use the class
-// #include "HandVR.h"
+// #include "VR/Hand Tracking/HandVR.h"
 
 // Returns a percentage relative to a value of a minimum and maximum.
 #define PERCENTAGE(value, min, max) ((value - min) / (max - min))
@@ -35,15 +35,16 @@
 #define PINKY_FINGER_MAX 4.5
 
 /** Each of the five fingers used in accessing VR hand tracking data. */
-UENUM(BlueprintType, Category = "HandVR")
+UENUM(BlueprintType, meta = (Bitflags), Category = "HandVR")
 enum class EFingerVR : uint8
 {
-	THUMB	UMETA(DisplayName = "Thumb"),
-	INDEX   UMETA(DisplayName = "Index"),
-	MIDDLE	UMETA(DisplayName = "Middle"),
-	RING	UMETA(DisplayName = "Ring"),
-	PINKY   UMETA(DisplayName = "Pinky"),
-	MAX		UMETA(Hidden)
+	NONE = 0	UMETA(Hidden),
+	THUMB = 1	UMETA(DisplayName = "Thumb"),
+	INDEX = 2	UMETA(DisplayName = "Index"),
+	MIDDLE = 4	UMETA(DisplayName = "Middle"),
+	RING = 8	UMETA(DisplayName = "Ring"),
+	PINKY = 16	UMETA(DisplayName = "Pinky"),
+	MAX			UMETA(Hidden)
 };
 
 /** Different joints in each finger. */

@@ -5,7 +5,7 @@
 // REQUIREMENT: MyWorldSettings.h
 
 // Include this heading to use the class
-#include "MyWorldSettings.h"
+#include "Boilerplate/MyWorldSettings.h"
 
 
 // CONSTRUCTORS

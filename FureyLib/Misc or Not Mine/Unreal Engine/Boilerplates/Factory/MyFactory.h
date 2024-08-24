@@ -12,7 +12,7 @@
 #include "MyFactory.generated.h"
 
 // Include this heading to use the class
-// #include "MyFactory.h"
+// #include "Boilerplate/MyFactory.h"
 
 /** Template Unreal factory script. */
 UCLASS(Blueprintable, BlueprintType)

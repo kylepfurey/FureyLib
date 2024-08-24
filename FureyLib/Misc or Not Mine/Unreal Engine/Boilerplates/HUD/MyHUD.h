@@ -10,7 +10,7 @@
 #include "MyHUD.generated.h"
 
 // Include this heading to use the class
-// #include "MyHUD.h"
+// #include "Boilerplate/MyHUD.h"
 
 /** Template Unreal HUD script. */
 UCLASS(Blueprintable, BlueprintType)

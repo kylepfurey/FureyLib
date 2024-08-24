@@ -5,7 +5,7 @@
 // REQUIREMENT: MySceneComponent.h
 
 // Include this heading to use the class
-#include "MySceneComponent.h"
+#include "Boilerplate/MySceneComponent.h"
 
 
 // CONSTRUCTORS

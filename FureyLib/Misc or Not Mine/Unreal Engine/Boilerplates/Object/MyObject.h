@@ -10,7 +10,7 @@
 #include "MyObject.generated.h"
 
 // Include this heading to use the class
-// #include "MyObject.h"
+// #include "Boilerplate/MyObject.h"
 
 /** Template Unreal object script. */
 UCLASS(Blueprintable, BlueprintType)

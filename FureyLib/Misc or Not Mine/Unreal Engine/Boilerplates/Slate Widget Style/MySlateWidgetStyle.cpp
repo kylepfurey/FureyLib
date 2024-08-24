@@ -5,7 +5,7 @@
 // REQUIREMENT: MySlateWidgetStyle.h
 
 // Include this heading to use the struct
-#include "MySlateWidgetStyle.h"
+#include "Boilerplate/MySlateWidgetStyle.h"
 
 
 // VARIABLES

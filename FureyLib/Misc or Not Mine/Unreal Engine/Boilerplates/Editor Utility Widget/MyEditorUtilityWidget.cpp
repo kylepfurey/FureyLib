@@ -7,7 +7,7 @@
 #if WITH_EDITOR
 
 // Include this heading to use the class
-#include "MyEditorUtilityWidget.h"
+#include "Boilerplate/MyEditorUtilityWidget.h"
 
 
 // CONSTRUCTORS

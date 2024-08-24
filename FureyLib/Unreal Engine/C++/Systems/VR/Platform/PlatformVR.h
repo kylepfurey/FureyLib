@@ -14,7 +14,7 @@
 #include "PlatformVR.generated.h"
 
 // Include this heading to use the library
-// #include "PlatformVR.h"
+// #include "VR/Platform/PlatformVR.h"
 
 // Whether the platform is a mobile platform.
 #define IS_MOBILE PLATFORM_ANDROID

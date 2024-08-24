@@ -35,6 +35,7 @@ public:
 	/** Description. */
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Category", meta = (Keywords = "Keywords"))
 	void Function(bool Input, bool& Output);
+	virtual void Function_Implementation(bool Input, bool& Output);
 
 	// New functions here
 };

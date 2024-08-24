@@ -33,7 +33,7 @@ impl BaseClass
     // CONSTRUCTORS
 
     // Default constructor:
-    // Returns a newly constructed instance of the given class
+    // Returns a newly constructed instance of the given class.
     pub fn new() -> BaseClass
     {
         let mut target: BaseClass = BaseClass
@@ -58,7 +58,7 @@ impl Drop for BaseClass
     // DESTRUCTOR
 
     // Destructor:
-    // Properly destroys this class
+    // Properly destroys this class.
     fn drop(&mut self)
     {
         // New destructor code here

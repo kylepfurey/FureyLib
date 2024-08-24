@@ -2,6 +2,8 @@
 // Base C Class Structure Script
 // by Kyle Furey
 
+// REQUIREMENT: base_class.c
+
 #pragma once
 #include <stdlib.h>
 #include <stdio.h>
@@ -38,40 +40,3 @@ class(base_class)
 	// Properly destroys this class (call at the end of this object's scope)
 	FUNCTION(void, destruct, base_class*);
 };
-
-
-// BASE CLASS FUNCTIONS
-
-// New function definitions here
-
-
-// BASE CLASS CONSTRUCTORS
-
-void destruct_base(base_class* self);
-
-// Default constructor:
-// Returns a newly constructed instance of the given class
-base_class construct_base()
-{
-	base_class self =
-	{
-		// New constructor code here
-
-		// Set destructor
-		self.destruct = &destruct_base
-	};
-
-	return self;
-}
-
-// New constructors here
-
-
-// BASE CLASS DESTRUCTOR
-
-// Destructor:
-// Properly destroys this class
-void destruct_base(base_class* self)
-{
-	// New destructor code here
-}

@@ -32,7 +32,7 @@ class MYGAME_API IHandInteractableVR
 {
 	GENERATED_BODY()
 
-public:
+protected:
 
 	// IHANDINTERACTABLEVR VARIABLES
 

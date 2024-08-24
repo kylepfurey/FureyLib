@@ -43,6 +43,7 @@ enum class EFingerVR : uint8
 	MIDDLE	UMETA(DisplayName = "Middle"),
 	RING	UMETA(DisplayName = "Ring"),
 	PINKY   UMETA(DisplayName = "Pinky"),
+	MAX		UMETA(Hidden)
 };
 
 /** Different joints in each finger. */
@@ -52,6 +53,7 @@ enum class EFingerJointVR : uint8
 	BASE	UMETA(DisplayName = "Base"),
 	MIDDLE	UMETA(DisplayName = "Middle"),
 	TIP		UMETA(DisplayName = "Tip"),
+	MAX		UMETA(Hidden)
 };
 
 /** Each defined gesture that can be detected in VR (add more if needed). */
@@ -70,7 +72,7 @@ enum class EHandGestureVR : uint8
 
 	// New gestures here
 
-	MAX				UMETA(Hidden),
+	MAX				UMETA(Hidden)
 };
 
 /** Data for an individual hand in VR. */

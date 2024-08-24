@@ -2,6 +2,8 @@
 // Derived C Class Structure Script
 // by Kyle Furey
 
+// REQUIREMENTS: base_class.c, derived_class.c
+
 #pragma once
 #include <stdlib.h>
 #include <stdio.h>
@@ -20,7 +22,7 @@ class(derived_class)
 {
 	// BASE CLASS
 
-	// The base class this class derives from
+	// The base class this class derives from.
 	base_class super;
 
 
@@ -39,46 +41,3 @@ class(derived_class)
 	// Properly destroys this class (call at the end of this object's scope)
 	FUNCTION(void, destruct, derived_class*);
 };
-
-
-// DERIVED CLASS FUNCTIONS
-
-// New function definitions here
-
-
-// DERIVED CLASS CONSTRUCTORS
-
-void destruct_derived(derived_class* self);
-
-// Default constructor:
-// Returns a newly constructed instance of the given class
-derived_class construct_derived()
-{
-	derived_class self =
-	{
-		// Call base constructor
-		self.super = construct_base(),
-
-		// New constructor code here
-
-		// Set destructor
-		self.destruct = &destruct_derived
-	};
-
-	return self;
-}
-
-// New constructors here
-
-
-// DERIVED CLASS DESTRUCTOR
-
-// Destructor:
-// Properly destroys this class
-void destruct_derived(derived_class* self)
-{
-	// New destructor code here
-
-	// Call base destructor
-	destruct_base(&self->super);
-}

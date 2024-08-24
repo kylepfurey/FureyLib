@@ -22,7 +22,7 @@ class!(DerivedClass,
 {
     // BASE CLASS
 
-    // The base class this class derives from
+    // The base class this class derives from.
     pub super: BaseClass,
 
 
@@ -37,7 +37,7 @@ impl DerivedClass
     // CONSTRUCTORS AND DESTRUCTOR
 
     // Default constructor:
-    // Returns a newly constructed instance of the given class
+    // Returns a newly constructed instance of the given class.
     pub fn new() -> DerivedClass
     {
         let mut target: DerivedClass = DerivedClass
@@ -65,7 +65,7 @@ impl Drop for DerivedClass
     // DESTRUCTOR
 
     // Destructor:
-    // Properly destroys this class
+    // Properly destroys this class.
     fn drop(&mut self)
     {
         // New destructor code here

@@ -18,7 +18,7 @@
 
 /** Each possible state for hand tracking. */
 UENUM(BlueprintType, meta = (Bitflags), Category = "HandTrackerVR")
-enum class EHandTrackingModeVR : uint8
+enum class EHandTrackingStateVR : uint8
 {
 	NONE = 0	UMETA(DisplayName = "No Hands Tracked"),
 	LEFT = 1	UMETA(DisplayName = "Left Hand Tracked"),
@@ -80,7 +80,7 @@ protected:
 
 	/** The global state of hand tracking input. */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, BlueprintGetter = "GetHandTrackingState", BlueprintSetter = "SetHandTrackingState", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
-	EHandTrackingModeVR State = EHandTrackingModeVR::BOTH;
+	EHandTrackingStateVR State = EHandTrackingStateVR::BOTH;
 
 	/** Whether the left hand is currently being tracked. */
 	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "IsTrackingLeftHand", Category = "HandTrackerVR")
@@ -121,7 +121,7 @@ protected:
 	* Returns whether this object is currently receiving hand tracking input.
 	* This is the static version used exclusively for blueprint implementations.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "HandInteractableVR")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Is Hand Tracking VR Implemented"), Category = "HandInteractableVR")
 	static bool IsHandTrackingVRImplemented(TScriptInterface<IHandInteractableVR> HandInteractableVR);
 
 	/**
@@ -151,7 +151,7 @@ public:
 	UHandTrackerVR(const FObjectInitializer& ObjectInitializer);
 
 	/** Hand tracker constructor. */
-	UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingModeVR TrackingState = EHandTrackingModeVR::BOTH);
+	UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingStateVR TrackingState = EHandTrackingStateVR::BOTH);
 
 
 	// UNREAL FUNCTIONS
@@ -164,11 +164,23 @@ public:
 
 	/** Returns the global state of hand tracking input. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
-	static EHandTrackingModeVR GetHandTrackingState();
+	static EHandTrackingStateVR GetHandTrackingState();
 
 	/** Sets the global state of hand tracking input. */
 	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
-	static void SetHandTrackingState(EHandTrackingModeVR TrackingState);
+	static void SetHandTrackingState(EHandTrackingStateVR TrackingState);
+
+	/** Returns whether hand tracking is enabled for the given hands. */
+	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
+	static void IsHandTrackingEnabled(bool& Either, bool& Both, bool& Left, bool& Right);
+
+	/** Returns whether hand tracking is enabled for the left hand. */
+	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
+	static bool IsLeftHandTrackingEnabled();
+
+	/** Returns whether hand tracking is enabled for the right hand. */
+	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
+	static bool IsRightHandTrackingEnabled();
 
 	/** Returns the current IHandInteractableVR implementations. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
@@ -184,7 +196,7 @@ public:
 
 	/** Constructs a new HandTrackerVR component. */
 	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
-	static UHandTrackerVR* ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingModeVR TrackingState = EHandTrackingModeVR::BOTH);
+	static UHandTrackerVR* ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingStateVR TrackingState = EHandTrackingStateVR::BOTH);
 
 
 	// TRACKING FUNCTIONS

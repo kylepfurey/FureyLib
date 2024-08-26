@@ -40,7 +40,7 @@ UHandTrackerVR::UHandTrackerVR()
 		RightGestures.Add((EHandGestureVR)Index, false);
 	}
 
-	State = EHandTrackingModeVR::BOTH;
+	State = EHandTrackingStateVR::BOTH;
 
 	bTrackingLeft = false;
 
@@ -83,7 +83,7 @@ UHandTrackerVR::UHandTrackerVR(const FObjectInitializer& ObjectInitializer) : Su
 		RightGestures.Add((EHandGestureVR)Index, false);
 	}
 
-	State = EHandTrackingModeVR::BOTH;
+	State = EHandTrackingStateVR::BOTH;
 
 	bTrackingLeft = false;
 
@@ -97,7 +97,7 @@ UHandTrackerVR::UHandTrackerVR(const FObjectInitializer& ObjectInitializer) : Su
 }
 
 // Hand tracker constructor.
-UHandTrackerVR::UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingModeVR TrackingState)
+UHandTrackerVR::UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingStateVR TrackingState)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
@@ -236,11 +236,11 @@ void UHandTrackerVR::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 	LocateMotionControllers();
 
-	bool bLeft = LeftHandMotionController != nullptr && LeftHandMotionController->IsTracked() && EnumHasAnyFlags(State, EHandTrackingModeVR::LEFT);
+	bool bLeft = LeftHandMotionController != nullptr && LeftHandMotionController->IsTracked() && EnumHasAnyFlags(State, EHandTrackingStateVR::LEFT);
 
-	bool bRight = RightHandMotionController != nullptr && RightHandMotionController->IsTracked() && EnumHasAnyFlags(State, EHandTrackingModeVR::RIGHT);
+	bool bRight = RightHandMotionController != nullptr && RightHandMotionController->IsTracked() && EnumHasAnyFlags(State, EHandTrackingStateVR::RIGHT);
 
-	if (!HandsSet && State != EHandTrackingModeVR::NONE && (bLeft || !EnumHasAnyFlags(State, EHandTrackingModeVR::LEFT)) && (bRight || !EnumHasAnyFlags(State, EHandTrackingModeVR::RIGHT)))
+	if (!HandsSet && State != EHandTrackingStateVR::NONE && (bLeft || !EnumHasAnyFlags(State, EHandTrackingStateVR::LEFT)) && (bRight || !EnumHasAnyFlags(State, EHandTrackingStateVR::RIGHT)))
 	{
 		Execute_OnSetHands(this);
 	}
@@ -437,18 +437,18 @@ void UHandTrackerVR::RemoveHandTrackingVR(TScriptInterface<IHandInteractableVR> 
 // HAND TRACKER FUNCTIONS
 
 // Returns the global state of hand tracking input.
-EHandTrackingModeVR UHandTrackerVR::GetHandTrackingState()
+EHandTrackingStateVR UHandTrackerVR::GetHandTrackingState()
 {
 	if (Instance == nullptr)
 	{
-		return EHandTrackingModeVR::NONE;
+		return EHandTrackingStateVR::NONE;
 	}
 
 	return Instance->State;
 }
 
 // Sets the global state of hand tracking input.
-void UHandTrackerVR::SetHandTrackingState(EHandTrackingModeVR TrackingState)
+void UHandTrackerVR::SetHandTrackingState(EHandTrackingStateVR TrackingState)
 {
 	if (Instance == nullptr)
 	{
@@ -456,6 +456,30 @@ void UHandTrackerVR::SetHandTrackingState(EHandTrackingModeVR TrackingState)
 	}
 
 	Instance->State = TrackingState;
+}
+
+// Returns whether hand tracking is enabled for the given hands.
+void UHandTrackerVR::IsHandTrackingEnabled(bool& Either, bool& Both, bool& Left, bool& Right)
+{
+	Left = Instance != nullptr && EnumHasAnyFlags(Instance->State, EHandTrackingStateVR::LEFT);
+
+	Right = Instance != nullptr && EnumHasAnyFlags(Instance->State, EHandTrackingStateVR::RIGHT);
+
+	Both = Left && Right;
+
+	Either = Left || Right;
+}
+
+// Returns whether hand tracking is enabled for the left hand.
+bool UHandTrackerVR::IsLeftHandTrackingEnabled()
+{
+	return Instance != nullptr && EnumHasAnyFlags(Instance->State, EHandTrackingStateVR::LEFT);
+}
+
+// Returns whether hand tracking is enabled for the right hand.
+bool UHandTrackerVR::IsRightHandTrackingEnabled()
+{
+	return Instance != nullptr && EnumHasAnyFlags(Instance->State, EHandTrackingStateVR::RIGHT);
 }
 
 // Returns the current IHandInteractableVR implementations.
@@ -477,7 +501,7 @@ UHandTrackerVR* UHandTrackerVR::GetHandTrackerVR()
 }
 
 // Constructs a new HandTrackerVR component.
-UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingModeVR TrackingState)
+UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingStateVR TrackingState)
 {
 	if (Instance != nullptr)
 	{

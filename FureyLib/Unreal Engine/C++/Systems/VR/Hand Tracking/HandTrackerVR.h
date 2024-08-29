@@ -53,6 +53,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetRightHand", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
 	UHandVR* RightHand = nullptr;
 
+	/** Whether the dominant hand is the right hand. */
+	UPROPERTY(BlueprintReadWrite, BlueprintGetter = "IsDominantHandRight", BlueprintSetter = "SetDominantHand", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
+	bool bDominantHandIsRight = true;
+
 
 	// MOTION CONTROLLERS
 
@@ -151,7 +155,7 @@ public:
 	UHandTrackerVR(const FObjectInitializer& ObjectInitializer);
 
 	/** Hand tracker constructor. */
-	UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingStateVR TrackingState = EHandTrackingStateVR::BOTH);
+	UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _bDominantHandIsRight = true, EHandTrackingStateVR TrackingState = EHandTrackingStateVR::BOTH);
 
 
 	// UNREAL FUNCTIONS
@@ -196,7 +200,7 @@ public:
 
 	/** Constructs a new HandTrackerVR component. */
 	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
-	static UHandTrackerVR* ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingStateVR TrackingState = EHandTrackingStateVR::BOTH);
+	static UHandTrackerVR* ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _bDominantHandIsRight = true, EHandTrackingStateVR TrackingState = EHandTrackingStateVR::BOTH);
 
 
 	// TRACKING FUNCTIONS
@@ -239,6 +243,29 @@ public:
 	/** Returns the right VR hand. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
 	static UHandVR* GetRightHand();
+
+
+	// DOMINANT HAND FUNCTIONS
+
+	/** Returns whether the dominant hand is currently the right hand. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static bool IsDominantHandRight();
+
+	/** Returns whether the dominant hand is currently the left hand. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static bool IsDominantHandLeft();
+
+	/** Set whether the dominant hand is currently the right hand. */
+	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
+	static void SetDominantHand(bool bIsRight);
+
+	/** Returns the dominant hand. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static void GetDominantHand(UHandVR*& Dominant, UHandVR*& NonDominant);
+
+	/** Returns the non-dominant hand. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static void GetNonDominantHand(UHandVR*& NonDominant, UHandVR*& Dominant);
 
 
 	// HEADSET FUNCTIONS

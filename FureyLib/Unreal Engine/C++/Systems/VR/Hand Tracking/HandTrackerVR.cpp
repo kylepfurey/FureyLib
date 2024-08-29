@@ -23,6 +23,8 @@ UHandTrackerVR::UHandTrackerVR()
 
 	RightHand = nullptr;
 
+	bDominantHandIsRight = true;
+
 	Headset = nullptr;
 
 	LeftHandMotionController = nullptr;
@@ -66,6 +68,8 @@ UHandTrackerVR::UHandTrackerVR(const FObjectInitializer& ObjectInitializer) : Su
 
 	RightHand = nullptr;
 
+	bDominantHandIsRight = true;
+
 	Headset = nullptr;
 
 	LeftHandMotionController = nullptr;
@@ -97,7 +101,7 @@ UHandTrackerVR::UHandTrackerVR(const FObjectInitializer& ObjectInitializer) : Su
 }
 
 // Hand tracker constructor.
-UHandTrackerVR::UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingStateVR TrackingState)
+UHandTrackerVR::UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _bDominantHandIsRight, EHandTrackingStateVR TrackingState)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
@@ -108,6 +112,8 @@ UHandTrackerVR::UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponen
 	LeftHand = UHandVR::ConstructHandVR(false, _LeftHandComponent);
 
 	RightHand = UHandVR::ConstructHandVR(true, _RightHandComponent);
+
+	bDominantHandIsRight = _bDominantHandIsRight;
 
 	Headset = _Headset;
 
@@ -501,7 +507,7 @@ UHandTrackerVR* UHandTrackerVR::GetHandTrackerVR()
 }
 
 // Constructs a new HandTrackerVR component.
-UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, EHandTrackingStateVR TrackingState)
+UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _bDominantHandIsRight, EHandTrackingStateVR TrackingState)
 {
 	if (Instance != nullptr)
 	{
@@ -523,6 +529,8 @@ UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UCameraCo
 	NewHandTracker->LeftHand = UHandVR::ConstructHandVR(false, _LeftHandComponent);
 
 	NewHandTracker->RightHand = UHandVR::ConstructHandVR(true, _RightHandComponent);
+
+	NewHandTracker->bDominantHandIsRight = _bDominantHandIsRight;
 
 	NewHandTracker->Headset = _Headset;
 
@@ -642,6 +650,76 @@ UHandVR* UHandTrackerVR::GetRightHand()
 	}
 
 	return Instance->RightHand;
+}
+
+
+// DOMINANT HAND FUNCTIONS
+
+// Returns whether the dominant hand is currently the right hand.
+bool UHandTrackerVR::IsDominantHandRight()
+{
+	if (Instance == nullptr)
+	{
+		return false;
+	}
+
+	return Instance->bDominantHandIsRight;
+}
+
+// Returns whether the dominant hand is currently the left hand.
+bool UHandTrackerVR::IsDominantHandLeft()
+{
+	if (Instance == nullptr)
+	{
+		return false;
+	}
+
+	return !Instance->bDominantHandIsRight;
+}
+
+// Set whether the dominant hand is currently the right hand.
+void UHandTrackerVR::SetDominantHand(bool bIsRight)
+{
+	if (Instance == nullptr)
+	{
+		return;
+	}
+
+	Instance->bDominantHandIsRight = bIsRight;
+}
+
+// Returns the dominant hand.
+void UHandTrackerVR::GetDominantHand(UHandVR*& Dominant, UHandVR*& NonDominant)
+{
+	if (Instance == nullptr)
+	{
+		Dominant = nullptr;
+
+		NonDominant = nullptr;
+
+		return;
+	}
+
+	Dominant = Instance->bDominantHandIsRight ? Instance->RightHand : Instance->LeftHand;
+
+	NonDominant = Instance->bDominantHandIsRight ? Instance->LeftHand : Instance->RightHand;
+}
+
+// Returns the non-dominant hand.
+void UHandTrackerVR::GetNonDominantHand(UHandVR*& NonDominant, UHandVR*& Dominant)
+{
+	if (Instance == nullptr)
+	{
+		Dominant = nullptr;
+
+		NonDominant = nullptr;
+
+		return;
+	}
+
+	NonDominant = Instance->bDominantHandIsRight ? Instance->LeftHand : Instance->RightHand;
+
+	Dominant = Instance->bDominantHandIsRight ? Instance->RightHand : Instance->LeftHand;
 }
 
 

@@ -10,6 +10,7 @@
 #include "UObject/Interface.h"
 #include "Math/Vector.h"
 #include "Math/Vector2D.h"
+#include "Math/Transform.h"
 #include "Kismet/GameplayStatics.h"
 #include "PartitionManager.generated.h"
 
@@ -61,25 +62,13 @@ protected:
 
 	// PARTITION VARIABLES
 
-	/** Whether or not partition updates each tick. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "Partition Manager")
-	bool bActive = true;
-
-	/** Whether or not to use the Z axis (up) when partitioning actors. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "Partition Manager")
-	bool bUseZ = false;
-
-	/** The maximum distance (either in units or grid spaces) that actors can be from the player before unloading. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "Partition Manager")
-	float MaxDistance = 10000;
-
 	/** The player actor used to compare distances for partitioning other actors. */
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "Partition Manager")
 	AActor* PlayerActor = nullptr;
 
 	/** The current set of partitioned actors. */
 	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn), Category = "Partition Manager")
-	TSet<AActor*> PartitionedActors = TSet<AActor*>();
+	TArray<AActor*> PartitionedActors = TArray<AActor*>();
 
 	/** The current set of partitioned actors never to be unloaded. */
 	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn), Category = "Partition Manager")
@@ -95,6 +84,18 @@ protected:
 	/** The current set of unloaded actors. */
 	TSet<AActor*> CurrentUnloadedActors = TSet<AActor*>();
 
+	/** Whether or not partition updates each tick. */
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "Partition Manager")
+	bool bActive = true;
+
+	/** Whether or not to use the Z axis (up) when partitioning actors. */
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "Partition Manager")
+	bool bUseZ = false;
+
+	/** The maximum distance (either in units or grid spaces) that actors can be from the player before unloading. */
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "Partition Manager")
+	float MaxDistance = 10000;
+
 	/** Whether to load on start. */
 	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn), Category = "Partition Manager")
 	bool bLoadOnStart = true;
@@ -103,8 +104,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn), Category = "Partition Manager")
 	bool bUnloadOnStart = true;
 
-	/** The current instance of the partition manager in this world. */
-	static APartitionManager* Instance;
+	/** The delay in seconds for each updated partition tick. */
+	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn), Category = "Partition Manager")
+	float TickInterval = 0;
 
 
 	// GRID VARIABLES
@@ -126,6 +128,12 @@ protected:
 	float GridSize = 1000;
 
 
+	// STATIC INSTANCE
+
+	/** The current instance of the partition manager in this world. */
+	static APartitionManager* Instance;
+
+
 	// UNREAL FUNCTIONS
 
 	/** Called when the game starts or when spawned. */
@@ -145,7 +153,7 @@ public:
 	APartitionManager(const FObjectInitializer& ObjectInitializer);
 
 	/** Partition manager constructor. */
-	APartitionManager(bool bActive, bool bUseZ = false, float MaxDistance = 10000, AActor* PlayerActor = nullptr, TSet<AActor*> PartitionedActors = TSet<AActor*>(), TSet<AActor*> NeverUnloadedActors = TSet<AActor*>(), TSet<AActor*> NeverLoadedActors = TSet<AActor*>(), bool bLoadOnStart = true, bool bUnloadOnStart = true, float _TickInterval = 0, bool bUseGridDistance = false, bool bIsGridOrigin = false, FVector GridOrigin = FVector(0, 0, 0), float GridSize = 1000);
+	APartitionManager(AActor* _PlayerActor, TArray<AActor*> _PartitionedActors, TSet<AActor*> _NeverUnloadedActors, TSet<AActor*> _NeverLoadedActors, bool Active = true, bool UseZ = false, float _MaxDistance = 10000, bool LoadOnStart = true, bool UnloadOnStart = true, float _TickInterval = 0, bool UseGridDistance = false, bool IsGridOrigin = false, FVector _GridOrigin = FVector(0, 0, 0), float _GridSize = 1000);
 
 
 	// UNREAL FUNCTIONS
@@ -158,7 +166,7 @@ public:
 
 	/** Returns whether this world has a partition manager. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")
-	static bool PartitionExists();
+	static bool PartitionManagerExists();
 
 	/** Returns the current instance of the partition manager. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")
@@ -182,7 +190,7 @@ public:
 
 	/** Returns the actors in partitioning. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")
-	static TSet<AActor*> GetPartitionedActors();
+	static TArray<AActor*> GetPartitionedActors();
 
 	/** Returns actors never to be unloaded in partitioning. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")
@@ -229,11 +237,11 @@ public:
 
 	/** Sets whether the partition manager is active. */
 	UFUNCTION(BlueprintCallable, Category = "Partition Manager")
-	static void SetPartitionActive(bool _bActive);
+	static void SetPartitionActive(bool Active);
 
 	/** Sets whether the Z axis (up) is used in partitioning. */
 	UFUNCTION(BlueprintCallable, Category = "Partition Manager")
-	static void SetPartitionUsesZ(bool _bUseZ);
+	static void SetPartitionUsesZ(bool UseZ);
 
 	/** Sets the distance before actors are partitioned. */
 	UFUNCTION(BlueprintCallable, Category = "Partition Manager")
@@ -262,27 +270,35 @@ public:
 
 	// LOADING AND UNLOADING FUNCTIONS
 
+	/**
+	* Updates the partition's actors' load states.
+	* Automatically called each tick while the partition manager is present and active.
+	* Returns whether the update was successful.
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Partition Manager")
+	static bool UpdatePartition();
+
 	/** Returns if the given actor is loaded. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")
-	static bool IsPartitionLoaded(AActor* Actor);
+	static bool IsActorLoaded(AActor* Actor);
 
 	/**
 	* Loads an actor using the IPartitionable interface.
 	* Returns whether the actor was loaded using the interface (true) or by default (false).
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Partition Manager")
-	static bool LoadPartitionActor(AActor* Actor);
+	static bool LoadActor(AActor* Actor);
 
 	/** Returns if the given actor is unloaded. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")
-	static bool IsPartitionUnloaded(AActor* Actor);
+	static bool IsActorUnloaded(AActor* Actor);
 
 	/**
 	* Unloads an actor using the IPartitionable interface.
 	* Returns whether the actor was unloaded using the interface (true) or by default (false).
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Partition Manager")
-	static bool UnloadPartitionActor(AActor* Actor);
+	static bool UnloadActor(AActor* Actor);
 
 
 	// PARTITION FUNCTIONS
@@ -305,23 +321,27 @@ public:
 
 	/** Returns if the given actor is never unloaded. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")
-	static bool IsPartitionNeverUnloaded(AActor* Actor);
+	static bool IsActorNeverUnloaded(AActor* Actor);
 
 	/** Never unloads the given actor and returns if it was successful. */
 	UFUNCTION(BlueprintCallable, Category = "Partition Manager")
-	static bool NeverUnloadPartition(AActor* Actor);
+	static bool NeverUnloadActor(AActor* Actor);
 
 	/** Returns if the given actor is never loaded. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")
-	static bool IsPartitionNeverLoaded(AActor* Actor);
+	static bool IsActorNeverLoaded(AActor* Actor);
 
 	/** Never loads the given actor and returns if it was successful. */
 	UFUNCTION(BlueprintCallable, Category = "Partition Manager")
-	static bool NeverLoadPartition(AActor* Actor);
+	static bool NeverLoadActor(AActor* Actor);
 
 	/** Partitions the given actor normally and returns if it was successful. */
 	UFUNCTION(BlueprintCallable, Category = "Partition Manager")
-	static bool LoadNormally(AActor* Actor);
+	static bool LoadActorNormally(AActor* Actor);
+
+	/** Spawns a new APartitionManager actor into the world. */
+	UFUNCTION(BlueprintCallable, Category = "Partition Manager")
+	static APartitionManager* SpawnPartitionManager(FTransform SpawnTransform, AActor* _PlayerActor, TArray<AActor*> _PartitionedActors, TSet<AActor*> _NeverUnloadedActors, TSet<AActor*> _NeverLoadedActors, bool Active = true, bool UseZ = false, float _MaxDistance = 10000, bool LoadOnStart = true, bool UnloadOnStart = true, float _TickInterval = 0, bool UseGridDistance = false, bool IsGridOrigin = false, FVector _GridOrigin = FVector(0, 0, 0), float _GridSize = 1000);
 
 
 	// GRID FUNCTIONS
@@ -332,7 +352,7 @@ public:
 
 	/** Sets whether grid space is used as distance in partitioning. */
 	UFUNCTION(BlueprintCallable, Category = "Partition Manager")
-	static void SetPartitionUsesGridDistance(bool _bUseGridDistance);
+	static void SetPartitionUsesGridDistance(bool UseGridDistance);
 
 	/** Calculates a grid space based on the given world position. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")

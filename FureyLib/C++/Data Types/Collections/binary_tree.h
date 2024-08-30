@@ -2,7 +2,7 @@
 // Binary Search Tree Container Script
 // by Kyle Furey
 
-// REFERENCES: https://cplusplus.com/reference/set/set/, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.sortedset-1?view=net-8.0,
+// REFERENCES: https://cplusplus.com/reference/set/set/, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1?view=net-8.0,
 
 #pragma once
 #include <string>

@@ -42,8 +42,8 @@ void UGameManager::OnWorldChanged(UWorld* OldWorld, UWorld* NewWorld)
 	// Calls the base class's function.
 	Super::OnWorldChanged(OldWorld, NewWorld);
 
-	// Call OnWorldChangedEvent().
-	OnWorldChangedEvent(OldWorld, NewWorld);
+	// Call OnCurrentWorldChanged().
+	OnCurrentWorldChanged(OldWorld, NewWorld);
 }
 
 // Called when the game is closed.
@@ -59,7 +59,7 @@ void UGameManager::Shutdown()
 // GAME MANAGER EVENTS
 
 // Automatically called when the game's current world changes.
-void UGameManager::OnWorldChangedEvent_Implementation(UWorld* OldWorld, UWorld* NewWorld)
+void UGameManager::OnCurrentWorldChanged_Implementation(UWorld* OldWorld, UWorld* NewWorld)
 {
 	// New code here
 }
@@ -76,7 +76,7 @@ UGameManager* UGameManager::GetGameManager()
 }
 
 // Retrieves the current world.
-UWorld* UGameManager::GetWorld()
+UWorld* UGameManager::GetCurrentWorld()
 {
 	return GWorld;
 }

@@ -64,8 +64,8 @@ public:
 
 	/** Automatically called when the game's current world changes. */
 	UFUNCTION(BlueprintNativeEvent, Category = "HandInteractableVR")
-	void OnWorldChangedEvent(UWorld* OldWorld, UWorld* NewWorld);
-	virtual void OnWorldChangedEvent_Implementation(UWorld* OldWorld, UWorld* NewWorld);
+	void OnCurrentWorldChanged(UWorld* OldWorld, UWorld* NewWorld);
+	virtual void OnCurrentWorldChanged_Implementation(UWorld* OldWorld, UWorld* NewWorld);
 
 	// New events here
 
@@ -78,7 +78,7 @@ public:
 
 	/** Retrieves the current world. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameManager")
-	static UWorld* GetWorld();
+	static UWorld* GetCurrentWorld();
 
 	/** Retrieves the time in seconds since the last game tick. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameManager")

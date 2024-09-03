@@ -1114,3 +1114,6 @@ public:
 		return log;
 	}
 };
+
+// Class that stores unique elements for fast insertion, access, and removal.
+#define set binary_tree

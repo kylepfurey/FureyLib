@@ -20,7 +20,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// <summary>
     /// The array of the list's data
     /// </summary>
-    private DataType[] listData = new DataType[0];
+    private DataType[] list = new DataType[0];
 
     /// <summary>
     /// The current number of elements in the array holding data
@@ -93,16 +93,16 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = 0; i < listCount; i++)
         {
-            temp[i] = listData[i];
+            temp[i] = list[i];
         }
 
         listCapacity *= 2;
 
-        listData = new DataType[listCapacity];
+        list = new DataType[listCapacity];
 
         for (int i = 0; i < listCount; i++)
         {
-            listData[i] = temp[i];
+            list[i] = temp[i];
         }
 
         return this;
@@ -121,7 +121,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = 0; i < listCount; i++)
         {
-            newArray[i] = listData[i];
+            newArray[i] = list[i];
         }
 
         return newArray;
@@ -135,7 +135,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// </summary>
     public List()
     {
-        listData = new DataType[1];
+        list = new DataType[1];
 
         listCount = 0;
 
@@ -156,11 +156,11 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         listExpansions = 0;
 
-        listData = new DataType[listCapacity];
+        list = new DataType[listCapacity];
 
         for (int i = 0; i < listCount; i++)
         {
-            listData[i] = copiedList.listData[i];
+            list[i] = copiedList.list[i];
         }
     }
 
@@ -170,7 +170,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// <param name="maxCapacity"></param>
     public List(int maxCapacity)
     {
-        listData = new DataType[maxCapacity];
+        list = new DataType[maxCapacity];
 
         listCount = 0;
 
@@ -186,11 +186,11 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// <param name="newData"></param>
     public List(int sizeAndCapacity, DataType newData)
     {
-        listData = new DataType[sizeAndCapacity];
+        list = new DataType[sizeAndCapacity];
 
         for (int i = 0; i < sizeAndCapacity; i++)
         {
-            listData[i] = newData;
+            list[i] = newData;
         }
 
         listCount = sizeAndCapacity;
@@ -207,11 +207,11 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// <param name="array"></param>
     public List(int capacity, DataType[] array)
     {
-        listData = new DataType[capacity];
+        list = new DataType[capacity];
 
         for (int i = 0; i < array.Length; i++)
         {
-            listData[i] = array[i];
+            list[i] = array[i];
         }
 
         listCount = array.Length;
@@ -227,11 +227,11 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// <param name="array"></param>
     public List(params DataType[] array)
     {
-        listData = new DataType[array.Length];
+        list = new DataType[array.Length];
 
         for (int i = 0; i < array.Length; i++)
         {
-            listData[i] = array[i];
+            list[i] = array[i];
         }
 
         listCount = array.Length;
@@ -249,13 +249,13 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     {
         listCount = list.Count();
 
-        listData = new DataType[listCount];
+        this.list = new DataType[listCount];
 
         int i = 0;
 
         foreach (DataType item in list)
         {
-            listData[i] = item;
+            this.list[i] = item;
 
             i++;
         }
@@ -282,7 +282,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = 0; i < listCount; i++)
         {
-            if (!listData[i].Equals(comparedList[i]))
+            if (!list[i].Equals(comparedList[i]))
             {
                 return false;
             }
@@ -361,7 +361,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = 0; i < listCount; i++)
         {
-            temp[i] = listData[i];
+            temp[i] = list[i];
         }
 
         if (newSize > listCapacity)
@@ -369,13 +369,13 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
             Reallocate();
         }
 
-        listData = new DataType[listCapacity];
+        list = new DataType[listCapacity];
 
         listCount = newSize;
 
         for (int i = 0; i < listCount; i++)
         {
-            listData[i] = temp[i];
+            list[i] = temp[i];
         }
 
         return difference;
@@ -408,16 +408,16 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = 0; i < listCount; i++)
         {
-            temp[i] = listData[i];
+            temp[i] = list[i];
         }
 
         listCapacity = newCapacity;
 
-        listData = new DataType[listCapacity];
+        list = new DataType[listCapacity];
 
         for (int i = 0; i < listCount; i++)
         {
-            listData[i] = temp[i];
+            list[i] = temp[i];
         }
 
         return true;
@@ -447,16 +447,16 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = 0; i < listCount; i++)
         {
-            temp[i] = listData[i];
+            temp[i] = list[i];
         }
 
         listCapacity = listCount;
 
-        listData = new DataType[listCapacity];
+        list = new DataType[listCapacity];
 
         for (int i = 0; i < listCount; i++)
         {
-            listData[i] = temp[i];
+            list[i] = temp[i];
         }
 
         listExpansions = 0;
@@ -485,7 +485,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// <returns></returns>
     public DataType Get(int index)
     {
-        return listData[index];
+        return list[index];
     }
 
     /// <summary>
@@ -494,7 +494,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// <returns></returns>
     public DataType Front()
     {
-        return listData[0];
+        return list[0];
     }
 
     /// <summary>
@@ -503,7 +503,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// <returns></returns>
     public DataType Back()
     {
-        return listData[listCount - 1];
+        return list[listCount - 1];
     }
 
     /// <summary>
@@ -513,7 +513,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// <returns></returns>
     public ref DataType Data(int index)
     {
-        return ref listData[index];
+        return ref list[index];
     }
 
 
@@ -528,7 +528,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     {
         for (int i = 0; i < listCount; i++)
         {
-            if (listData[i].Equals(foundData))
+            if (list[i].Equals(foundData))
             {
                 return i;
             }
@@ -546,7 +546,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     {
         for (int i = listCount - 1; i >= 0; i--)
         {
-            if (listData[i].Equals(foundData))
+            if (list[i].Equals(foundData))
             {
                 return i;
             }
@@ -576,7 +576,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = 0; i < listCount; i++)
         {
-            if (listData[i].Equals(foundData))
+            if (list[i].Equals(foundData))
             {
                 count++;
             }
@@ -601,11 +601,11 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         listExpansions = 0;
 
-        listData = new DataType[listCapacity];
+        list = new DataType[listCapacity];
 
         for (int i = 0; i < listCount; i++)
         {
-            listData[i] = newData[i];
+            list[i] = newData[i];
         }
 
         return this;
@@ -625,7 +625,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         listCount++;
 
-        listData[listCount - 1] = newData;
+        list[listCount - 1] = newData;
 
         return this;
     }
@@ -643,7 +643,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         listCount--;
 
-        return listData[listCount];
+        return list[listCount];
     }
 
     /// <summary>
@@ -662,10 +662,10 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = listCount - 1; i >= 1; i--)
         {
-            listData[i] = listData[i - 1];
+            list[i] = list[i - 1];
         }
 
-        listData[0] = newData;
+        list[0] = newData;
 
         return this;
     }
@@ -683,11 +683,11 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         listCount--;
 
-        DataType newData = listData[0];
+        DataType newData = list[0];
 
         for (int i = 1; i <= listCount; i++)
         {
-            listData[i - 1] = listData[i];
+            list[i - 1] = list[i];
         }
 
         return newData;
@@ -710,10 +710,10 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = listCount - 1; i >= index; i--)
         {
-            listData[i] = listData[i - 1];
+            list[i] = list[i - 1];
         }
 
-        listData[index] = newData;
+        list[index] = newData;
 
         return this;
     }
@@ -727,11 +727,11 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     {
         listCount--;
 
-        DataType data = listData[index];
+        DataType data = list[index];
 
         for (int i = index + 1; i <= listCount; i++)
         {
-            listData[i - 1] = listData[i];
+            list[i - 1] = list[i];
         }
 
         return data;
@@ -784,11 +784,11 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
             return this;
         }
 
-        DataType temp = listData[index2];
+        DataType temp = list[index2];
 
-        listData[index2] = listData[index1];
+        list[index2] = list[index1];
 
-        listData[index1] = temp;
+        list[index1] = temp;
 
         return this;
     }
@@ -802,7 +802,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     {
         int total = listCount;
 
-        listData = new DataType[newCapacity];
+        list = new DataType[newCapacity];
 
         listCount = 0;
 
@@ -811,74 +811,6 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
         listExpansions = 0;
 
         return total;
-    }
-
-    /// <summary>
-    /// Adds an existing element in the list at a given index and shift following elements forward
-    /// </summary>
-    /// <param name="index"></param>
-    /// <param name="newData"></param>
-    /// <returns></returns>
-    public List<DataType> Emplace(int index, ref DataType newData)
-    {
-        if (listCount + 1 > listCapacity)
-        {
-            Reallocate();
-        }
-
-        listCount++;
-
-        for (int i = listCount - 1; i >= index; i--)
-        {
-            listData[i] = listData[i - 1];
-        }
-
-        listData[index] = newData;
-
-        return this;
-    }
-
-    /// <summary>
-    /// Adds an existing element at the end of the list
-    /// </summary>
-    /// <param name="newData"></param>
-    /// <returns></returns>
-    public List<DataType> EmplaceBack(ref DataType newData)
-    {
-        if (listCount + 1 > listCapacity)
-        {
-            Reallocate();
-        }
-
-        listCount++;
-
-        listData[listCount - 1] = newData;
-
-        return this;
-    }
-
-    /// <summary>
-    /// Adds an existing element at the front of the list
-    /// </summary>
-    /// <param name="newData"></param>
-    /// <returns></returns>
-    public List<DataType> EmplaceFront(ref DataType newData)
-    {
-        if (listCount + 1 > listCapacity)
-        {
-            Reallocate();
-        }
-
-        listCount++;
-
-        for (int i = listCount - 1; i >= 1; i--)
-        {
-            listData[i] = listData[i - 1];
-        }
-
-        listData[0] = newData;
-
-        return this;
     }
 
 
@@ -892,9 +824,9 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// <returns></returns>
     public DataType Set(int index, DataType newData)
     {
-        DataType data = listData[index];
+        DataType data = list[index];
 
-        listData[index] = newData;
+        list[index] = newData;
 
         return data;
     }
@@ -914,7 +846,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
             return index;
         }
 
-        listData[index] = newData;
+        list[index] = newData;
 
         return index;
     }
@@ -934,7 +866,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
             return index;
         }
 
-        listData[index] = newData;
+        list[index] = newData;
 
         return index;
     }
@@ -951,9 +883,9 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = 0; i < listCount; i++)
         {
-            if (listData[i].Equals(replacedData))
+            if (list[i].Equals(replacedData))
             {
-                listData[i] = newData;
+                list[i] = newData;
 
                 total++;
             }
@@ -976,9 +908,9 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = 0; i < listCount - 1; i++)
         {
-            if (listData[i].Equals(removedData))
+            if (list[i].Equals(removedData))
             {
-                listData[i] = listData[i + 1];
+                list[i] = list[i + 1];
 
                 total++;
 
@@ -986,7 +918,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
             }
         }
 
-        if (listData[listCount - 1].Equals(removedData))
+        if (list[listCount - 1].Equals(removedData))
         {
             total++;
         }
@@ -1064,7 +996,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// <returns></returns>
     public List<DataType> Swap(List<DataType> swappedData)
     {
-        DataType[] data = listData;
+        DataType[] data = list;
 
         int count = listCount;
 
@@ -1072,7 +1004,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         int expansions = listExpansions;
 
-        listData = swappedData.listData;
+        list = swappedData.list;
 
         listCount = swappedData.listCount;
 
@@ -1080,7 +1012,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         listExpansions = swappedData.listExpansions;
 
-        swappedData.listData = data;
+        swappedData.list = data;
 
         swappedData.listCount = count;
 
@@ -1112,7 +1044,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = start; i < start + count || i >= listCount; i++)
         {
-            slice.Add(listData[i]);
+            slice.Add(list[i]);
         }
 
         return slice;
@@ -1139,14 +1071,14 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = 0; i < listCount; i++)
         {
-            temp[i] = listData[i];
+            temp[i] = list[i];
         }
 
-        listData = new DataType[listCapacity];
+        list = new DataType[listCapacity];
 
         for (int i = 0; i < listCount; i++)
         {
-            listData[i] = temp[((i - numberOfShifts) % listCount + listCount) % listCount];
+            list[i] = temp[((i - numberOfShifts) % listCount + listCount) % listCount];
         }
 
         return this;
@@ -1180,7 +1112,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
 
         for (int i = 0; i < listCount; i++)
         {
-            log += (listData[i] + ", ");
+            log += (list[i] + ", ");
         }
 
         log = log.Remove(log.Length - 2, 1);
@@ -1199,7 +1131,7 @@ public class List<DataType> : IEnumerable, IEnumerable<DataType>
     /// <returns></returns>
     public IEnumerator GetEnumerator()
     {
-        return listData.GetEnumerator();
+        return list.GetEnumerator();
     }
 
     /// <summary>

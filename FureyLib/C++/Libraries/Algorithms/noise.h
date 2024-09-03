@@ -2,7 +2,7 @@
 // Static Noise Functions Script
 // by Kyle Furey, Sourced from Adrian Biagioli and Riven
 
-// REQUIRMENT: array_3D.h
+// REQUIREMENT: array_3D.h
 
 // SOURCE: https://adrianb.io/2014/08/09/perlinnoise.html
 

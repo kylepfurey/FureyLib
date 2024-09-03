@@ -2,7 +2,7 @@
 // Binary Search Tree Container Script
 // by Kyle Furey
 
-// REFERENCES: https://cplusplus.com/reference/set/set/, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1?view=net-8.0,
+// REFERENCES: https://cplusplus.com/reference/set/set/, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1?view=net-8.0
 
 #pragma once
 #include <string>
@@ -164,7 +164,10 @@ private:
 	// Deallocates each of the binary tree's node's memory
 	void deallocate()
 	{
-		deallocate_recursively(root);
+		if (root != nullptr)
+		{
+			deallocate_recursively(root);
+		}
 	}
 
 	// Fills an array with this node and all of its children recursively in an array of nodes
@@ -600,6 +603,21 @@ public:
 		return end()->data;
 	}
 
+	// Attempts to retrieve the given matching value from this binary tree
+	bool try_get(data_type value, data_type& result)
+	{
+		if (!count(value))
+		{
+			result = data_type();
+
+			return false;
+		}
+
+		result = find(value)->data;
+
+		return true;
+	}
+
 
 	// MODIFIERS
 
@@ -661,6 +679,8 @@ public:
 		{
 			if (node->data == new_node->data)
 			{
+				node->data = new_node->data;
+
 				return *this;
 			}
 
@@ -702,6 +722,8 @@ public:
 
 		if (node->data == new_node->data)
 		{
+			node->data = new_node->data;
+
 			return *this;
 		}
 

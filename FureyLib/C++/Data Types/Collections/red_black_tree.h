@@ -185,7 +185,10 @@ private:
 	// Deallocates each of the binary tree's node's memory
 	void deallocate()
 	{
-		deallocate_recursively(root);
+		if (root != nullptr)
+		{
+			deallocate_recursively(root);
+		}
 	}
 
 
@@ -958,6 +961,21 @@ public:
 		return end()->data;
 	}
 
+	// Attempts to retrieve the given matching value from this binary tree
+	bool try_get(data_type value, data_type& result)
+	{
+		if (!count(value))
+		{
+			result = data_type();
+
+			return false;
+		}
+
+		result = find(value)->data;
+
+		return true;
+	}
+
 
 	// MODIFIERS
 
@@ -1023,6 +1041,8 @@ public:
 		{
 			if (node->data == new_node->data)
 			{
+				node->data = new_node->data;
+
 				return *this;
 			}
 
@@ -1068,6 +1088,8 @@ public:
 
 		if (node->data == new_node->data)
 		{
+			node->data = new_node->data;
+
 			return *this;
 		}
 

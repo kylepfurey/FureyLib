@@ -2,7 +2,7 @@
 // Binary Search Tree Container Script
 // by Kyle Furey
 
-// REFERENCES: https://cplusplus.com/reference/set/set/, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1?view=net-8.0,
+// REFERENCES: https://cplusplus.com/reference/set/set/, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1?view=net-8.0
 
 using System;
 using System.Collections;
@@ -401,6 +401,26 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
         return End().data;
     }
 
+    /// <summary>
+    /// Attempts to retrieve the given matching value from this binary tree
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="result"></param>
+    /// <returns></returns>
+    public bool TryGetValue(DataType value, out DataType result)
+    {
+        if (!Contains(value))
+        {
+            result = default(DataType);
+
+            return false;
+        }
+
+        result = Find(value).data;
+
+        return true;
+    }
+
 
     // MODIFIERS
 
@@ -468,6 +488,8 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
         {
             if (GenericEquals(node.data, newNode.data))
             {
+                node.data = newNode.data;
+
                 return this;
             }
 
@@ -509,6 +531,8 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
 
         if (GenericEquals(node.data, newNode.data))
         {
+            node.data = newNode.data;
+
             return this;
         }
 
@@ -727,20 +751,6 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
         nodeCount = 0;
 
         return total;
-    }
-
-    /// <summary>
-    /// Inserts an existing node of the given data into the binary tree 
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public BinaryNode<DataType> Emplace(ref DataType data)
-    {
-        BinaryNode<DataType> newNode = new BinaryNode<DataType>(data);
-
-        Add(newNode);
-
-        return newNode;
     }
 
 

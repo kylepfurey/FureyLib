@@ -11,17 +11,17 @@
 
 // Container for two readonly elements of different types.
 template <typename data_type1, typename data_type2>
-struct tuple
+struct tuple2
 {
 public:
 
 	// VARIABLES
 
 	// Element 1
-	const data_type1 item1;
+	data_type1 item1;
 
 	// Element 2
-	const data_type2 item2;
+	data_type2 item2;
 
 	// The total number of elements
 	const int size = 2;
@@ -30,17 +30,21 @@ public:
 	// CONSTRUCTORS
 
 	// Default constructor
-	tuple() { }
+	tuple2()
+	{
+		item1 = data_type1();
+		item2 = data_type2();
+	}
 
 	// Element constructor
-	tuple(data_type1 item1, data_type2 item2)
+	tuple2(data_type1 item1, data_type2 item2)
 	{
 		this->item1 = item1;
 		this->item2 = item2;
 	}
 
 	// Copy constructor
-	tuple(const tuple<data_type1, data_type2>& copied)
+	tuple2(const tuple2<data_type1, data_type2>& copied)
 	{
 		item1 = copied.item1;
 		item2 = copied.item2;
@@ -50,7 +54,7 @@ public:
 	// OPERATORS
 
 	// Copy assignment operator
-	tuple<data_type1, data_type2>& operator=(const tuple<data_type1, data_type2>& copied)
+	tuple2<data_type1, data_type2>& operator=(const tuple2<data_type1, data_type2>& copied)
 	{
 		item1 = copied.item1;
 		item2 = copied.item2;
@@ -59,13 +63,13 @@ public:
 	}
 
 	// Equality operator
-	bool operator==(tuple<data_type1, data_type2> other)
+	bool operator==(tuple2<data_type1, data_type2> other)
 	{
 		return item1 == other.item1 && item2 == other.item2;
 	}
 
 	// Inequality operator
-	bool operator!=(tuple<data_type1, data_type2> other)
+	bool operator!=(tuple2<data_type1, data_type2> other)
 	{
 		return item1 != other.item1 || item2 != other.item2;
 	}
@@ -80,13 +84,13 @@ public:
 	// VARIABLES
 
 	// Element 1
-	const data_type1 item1;
+	data_type1 item1;
 
 	// Element 2
-	const data_type2 item2;
+	data_type2 item2;
 
 	// Element 3
-	const data_type3 item3;
+	data_type3 item3;
 
 	// The total number of elements
 	const int size = 3;
@@ -95,7 +99,12 @@ public:
 	// CONSTRUCTORS
 
 	// Default constructor
-	tuple3() { }
+	tuple3()
+	{
+		item1 = data_type1();
+		item2 = data_type2();
+		item3 = data_type3();
+	}
 
 	// Element constructor
 	tuple3(data_type1 item1, data_type2 item2, data_type3 item3)
@@ -148,16 +157,16 @@ public:
 	// VARIABLES
 
 	// Element 1
-	const data_type1 item1;
+	data_type1 item1;
 
 	// Element 2
-	const data_type2 item2;
+	data_type2 item2;
 
 	// Element 3
-	const data_type3 item3;
+	data_type3 item3;
 
 	// Element 4
-	const data_type4 item4;
+	data_type4 item4;
 
 	// The total number of elements
 	const int size = 4;
@@ -166,7 +175,13 @@ public:
 	// CONSTRUCTORS
 
 	// Default constructor
-	tuple4() { }
+	tuple4()
+	{
+		item1 = data_type1();
+		item2 = data_type2();
+		item3 = data_type3();
+		item4 = data_type4();
+	}
 
 	// Element constructor
 	tuple4(data_type1 item1, data_type2 item2, data_type3 item3, data_type4 item4)
@@ -222,19 +237,19 @@ public:
 	// VARIABLES
 
 	// Element 1
-	const data_type1 item1;
+	data_type1 item1;
 
 	// Element 2
-	const data_type2 item2;
+	data_type2 item2;
 
 	// Element 3
-	const data_type3 item3;
+	data_type3 item3;
 
 	// Element 4
-	const data_type4 item4;
+	data_type4 item4;
 
 	// Element 5
-	const data_type5 item5;
+	data_type5 item5;
 
 	// The total number of elements
 	const int size = 5;
@@ -243,7 +258,14 @@ public:
 	// CONSTRUCTORS
 
 	// Default constructor
-	tuple5() { }
+	tuple5()
+	{
+		item1 = data_type1();
+		item2 = data_type2();
+		item3 = data_type3();
+		item4 = data_type4();
+		item5 = data_type5();
+	}
 
 	// Element constructor
 	tuple5(data_type1 item1, data_type2 item2, data_type3 item3, data_type4 item4, data_type5 item5)
@@ -302,22 +324,22 @@ public:
 	// VARIABLES
 
 	// Element 1
-	const data_type1 item1;
+	data_type1 item1;
 
 	// Element 2
-	const data_type2 item2;
+	data_type2 item2;
 
 	// Element 3
-	const data_type3 item3;
+	data_type3 item3;
 
 	// Element 4
-	const data_type4 item4;
+	data_type4 item4;
 
 	// Element 5
-	const data_type5 item5;
+	data_type5 item5;
 
 	// Element 6
-	const data_type6 item6;
+	data_type6 item6;
 
 	// The total number of elements
 	const int size = 6;
@@ -326,7 +348,15 @@ public:
 	// CONSTRUCTORS
 
 	// Default constructor
-	tuple6() { }
+	tuple6()
+	{
+		item1 = data_type1();
+		item2 = data_type2();
+		item3 = data_type3();
+		item4 = data_type4();
+		item5 = data_type5();
+		item6 = data_type6();
+	}
 
 	// Element constructor
 	tuple6(data_type1 item1, data_type2 item2, data_type3 item3, data_type4 item4, data_type5 item5, data_type6 item6)
@@ -388,25 +418,25 @@ public:
 	// VARIABLES
 
 	// Element 1
-	const data_type1 item1;
+	data_type1 item1;
 
 	// Element 2
-	const data_type2 item2;
+	data_type2 item2;
 
 	// Element 3
-	const data_type3 item3;
+	data_type3 item3;
 
 	// Element 4
-	const data_type4 item4;
+	data_type4 item4;
 
 	// Element 5
-	const data_type5 item5;
+	data_type5 item5;
 
 	// Element 6
-	const data_type6 item6;
+	data_type6 item6;
 
 	// Element 7
-	const data_type7 item7;
+	data_type7 item7;
 
 	// The total number of elements
 	const int size = 7;
@@ -415,7 +445,16 @@ public:
 	// CONSTRUCTORS
 
 	// Default constructor
-	tuple7() { }
+	tuple7()
+	{
+		item1 = data_type1();
+		item2 = data_type2();
+		item3 = data_type3();
+		item4 = data_type4();
+		item5 = data_type5();
+		item6 = data_type6();
+		item7 = data_type7();
+	}
 
 	// Element constructor
 	tuple7(data_type1 item1, data_type2 item2, data_type3 item3, data_type4 item4, data_type5 item5, data_type6 item6, data_type7 item7)
@@ -480,28 +519,28 @@ public:
 	// VARIABLES
 
 	// Element 1
-	const data_type1 item1;
+	data_type1 item1;
 
 	// Element 2
-	const data_type2 item2;
+	data_type2 item2;
 
 	// Element 3
-	const data_type3 item3;
+	data_type3 item3;
 
 	// Element 4
-	const data_type4 item4;
+	data_type4 item4;
 
 	// Element 5
-	const data_type5 item5;
+	data_type5 item5;
 
 	// Element 6
-	const data_type6 item6;
+	data_type6 item6;
 
 	// Element 7
-	const data_type7 item7;
+	data_type7 item7;
 
 	// Element 8
-	const data_type8 item8;
+	data_type8 item8;
 
 	// The total number of elements
 	const int size = 8;
@@ -510,7 +549,17 @@ public:
 	// CONSTRUCTORS
 
 	// Default constructor
-	tuple8() { }
+	tuple8()
+	{
+		item1 = data_type1();
+		item2 = data_type2();
+		item3 = data_type3();
+		item4 = data_type4();
+		item5 = data_type5();
+		item6 = data_type6();
+		item7 = data_type7();
+		item8 = data_type8();
+	}
 
 	// Element constructor
 	tuple8(data_type1 item1, data_type2 item2, data_type3 item3, data_type4 item4, data_type5 item5, data_type6 item6, data_type7 item7, data_type8 item8)
@@ -578,31 +627,31 @@ public:
 	// VARIABLES
 
 	// Element 1
-	const data_type1 item1;
+	data_type1 item1;
 
 	// Element 2
-	const data_type2 item2;
+	data_type2 item2;
 
 	// Element 3
-	const data_type3 item3;
+	data_type3 item3;
 
 	// Element 4
-	const data_type4 item4;
+	data_type4 item4;
 
 	// Element 5
-	const data_type5 item5;
+	data_type5 item5;
 
 	// Element 6
-	const data_type6 item6;
+	data_type6 item6;
 
 	// Element 7
-	const data_type7 item7;
+	data_type7 item7;
 
 	// Element 8
-	const data_type8 item8;
+	data_type8 item8;
 
 	// Element 9
-	const data_type9 item9;
+	data_type9 item9;
 
 	// The total number of elements
 	const int size = 9;
@@ -611,7 +660,18 @@ public:
 	// CONSTRUCTORS
 
 	// Default constructor
-	tuple9() { }
+	tuple9()
+	{
+		item1 = data_type1();
+		item2 = data_type2();
+		item3 = data_type3();
+		item4 = data_type4();
+		item5 = data_type5();
+		item6 = data_type6();
+		item7 = data_type7();
+		item8 = data_type8();
+		item9 = data_type9();
+	}
 
 	// Element constructor
 	tuple9(data_type1 item1, data_type2 item2, data_type3 item3, data_type4 item4, data_type5 item5, data_type6 item6, data_type7 item7, data_type8 item8, data_type9 item9)
@@ -682,34 +742,34 @@ public:
 	// VARIABLES
 
 	// Element 1
-	const data_type1 item1;
+	data_type1 item1;
 
 	// Element 2
-	const data_type2 item2;
+	data_type2 item2;
 
 	// Element 3
-	const data_type3 item3;
+	data_type3 item3;
 
 	// Element 4
-	const data_type4 item4;
+	data_type4 item4;
 
 	// Element 5
-	const data_type5 item5;
+	data_type5 item5;
 
 	// Element 6
-	const data_type6 item6;
+	data_type6 item6;
 
 	// Element 7
-	const data_type7 item7;
+	data_type7 item7;
 
 	// Element 8
-	const data_type8 item8;
+	data_type8 item8;
 
 	// Element 9
-	const data_type9 item9;
+	data_type9 item9;
 
 	// Element 10
-	const data_type10 item10;
+	data_type10 item10;
 
 	// The total number of elements
 	const int size = 10;
@@ -718,7 +778,19 @@ public:
 	// CONSTRUCTORS
 
 	// Default constructor
-	tuple10() { }
+	tuple10()
+	{
+		item1 = data_type1();
+		item2 = data_type2();
+		item3 = data_type3();
+		item4 = data_type4();
+		item5 = data_type5();
+		item6 = data_type6();
+		item7 = data_type7();
+		item8 = data_type8();
+		item9 = data_type9();
+		item10 = data_type10();
+	}
 
 	// Element constructor
 	tuple10(data_type1 item1, data_type2 item2, data_type3 item3, data_type4 item4, data_type5 item5, data_type6 item6, data_type7 item7, data_type8 item8, data_type9 item9, data_type10 item10)

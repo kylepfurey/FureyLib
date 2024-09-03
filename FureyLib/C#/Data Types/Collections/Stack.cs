@@ -256,18 +256,6 @@ public class Stack<DataType> : IEnumerable, IEnumerable<DataType>
     }
 
     /// <summary>
-    /// Inserts an existing element of the given data at the top of the stack
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public Stack<DataType> Emplace(ref DataType data)
-    {
-        stack.AddFirst(data);
-
-        return this;
-    }
-
-    /// <summary>
     /// Remove and return the top element from the stack
     /// </summary>
     /// <returns></returns>

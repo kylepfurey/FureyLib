@@ -9,7 +9,6 @@
 #include <vector>
 #include <list>
 #include <tuple>
-#include <cstdarg>
 #include <initializer_list>
 
 // Include this heading to use the class
@@ -21,34 +20,66 @@
 // Forward declaration of priority_queue
 template<typename data_type, typename priority_type = PRIORITY_TYPE> class priority_queue;
 
-// Class that stores data and its priority value for insertion in a priority queue.
+// Readonly structure that stores data and its priority value for insertion in a priority queue.
 template<typename data_type, typename priority_type = PRIORITY_TYPE> class priority_queue_node
 {
 public:
 
 	// VARIABLES
 
-	// This node's priority queue
-	priority_queue<data_type, priority_type>* my_queue = nullptr;
-
 	// This node's data
-	data_type data = data_type();
+	const data_type data;
 
 	// This node's priority
-	priority_type priority = priority_type();
+	const priority_type priority;
 
 
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 
 	// Default constructor
-	priority_queue_node(priority_queue<data_type, priority_type>* queue = nullptr, data_type data = data_type(), priority_type priority = priority_type())
+	priority_queue_node()
 	{
-		this->my_queue = queue;
+		data = data_type();
 
+		priority = priority_type();
+	}
+
+	// Node constructor
+	priority_queue_node(data_type data = data_type(), priority_type priority = priority_type())
+	{
 		this->data = data;
 
 		this->priority = priority;
 	}
+
+	// Copy constructor
+	priority_queue_node(const priority_queue_node<data_type, priority_type>& copied)
+	{
+		data = copied.data;
+
+		priority = copied.priority;
+	}
+
+
+    // TO STRING
+
+    // Returns a string representation of this node
+    std::string to_string()
+    {
+        return "{ " + data + " : " + priority + " }";
+    }
+
+    // Returns a string representation of this node
+    std::string to_string(std::string(*to_string_function) (data_type))
+    {
+        return "{ " + to_string_function(data) + " : " + priority + " }";
+    }
+
+    // Returns a string representation of this node
+    std::string to_string(std::string(*to_string_function) (data_type), std::string(*priority_to_string_function) (priority_type))
+    {
+        return "{ " + to_string_function(data) + " : " + priority_to_string_function(priority) + " }";
+    }
 };
 
 // •  Wrapper class of a linked list allowing first in first out access of its elements.
@@ -145,17 +176,17 @@ public:
 	}
 
 	// Copy constructor
-	priority_queue(const priority_queue<data_type, priority_queue>& copied_queue)
+	priority_queue(const priority_queue<data_type, priority_type>& copied_queue)
 	{
-		my_queue = std::list<priority_queue<data_type, priority_queue>>(copied_queue.my_queue);
+		my_queue = std::list<priority_queue<data_type, priority_type>>(copied_queue.my_queue);
 	}
 
 	// Move constructor
-	priority_queue(priority_queue<data_type, priority_queue>&& moved_queue) noexcept
+	priority_queue(priority_queue<data_type, priority_type>&& moved_queue) noexcept
 	{
 		my_queue = moved_queue.my_queue;
 
-		moved_queue.my_queue = std::list<priority_queue<data_type, priority_queue>>();
+		moved_queue.my_queue = std::list<priority_queue<data_type, priority_type>>();
 	}
 
 	// Data constructor
@@ -163,7 +194,7 @@ public:
 	{
 		my_queue = std::list<priority_queue_node<data_type, priority_type>>();
 
-		my_queue.push_back(priority_queue_node<data_type, priority_type>(this, data, priority));
+		my_queue.push_back(priority_queue_node<data_type, priority_type>(data, priority));
 	}
 
 	// Node tuple constructor
@@ -173,7 +204,7 @@ public:
 
 		for (int i = 0; i < nodes.size(); i++)
 		{
-			priority_queue_node<data_type, priority_type> node = priority_queue_node<data_type, priority_type>(this, std::get<0>(*(nodes.begin() + i)), std::get<1>(*(nodes.begin() + i)));
+			priority_queue_node<data_type, priority_type> node = priority_queue_node<data_type, priority_type>(std::get<0>(*(nodes.begin() + i)), std::get<1>(*(nodes.begin() + i)));
 
 			push(node);
 		}
@@ -183,19 +214,19 @@ public:
 	// OPERATORS
 
 	// Copy assignment operator
-	priority_queue<data_type, priority_queue>& operator=(const priority_queue<data_type, priority_queue>& copied_queue)
+	priority_queue<data_type, priority_type>& operator=(const priority_queue<data_type, priority_type>& copied_queue)
 	{
-		my_queue = std::list<priority_queue<data_type, priority_queue>>(copied_queue.my_queue);
+		my_queue = std::list<priority_queue<data_type, priority_type>>(copied_queue.my_queue);
 
 		return *this;
 	}
 
 	// Move assignment operator
-	priority_queue<data_type, priority_queue>& operator=(priority_queue<data_type, priority_queue>&& moved_queue) noexcept
+	priority_queue<data_type, priority_type>& operator=(priority_queue<data_type, priority_type>&& moved_queue) noexcept
 	{
 		my_queue = moved_queue.my_queue;
 
-		moved_queue.my_queue = std::list<priority_queue<data_type, priority_queue>>();
+		moved_queue.my_queue = std::list<priority_queue<data_type, priority_type>>();
 
 		return *this;
 	}
@@ -230,7 +261,7 @@ public:
 		return my_queue.size() == 0;
 	}
 
-	// Returns the current number of elements of the queue
+	// Returns the current number of elements in the queue
 	int size()
 	{
 		return my_queue.size();
@@ -308,7 +339,7 @@ public:
 	{
 		if (my_queue.size() == 0)
 		{
-			my_queue.push_back(priority_queue_node<data_type, priority_type>(this, data, priority));
+			my_queue.push_back(priority_queue_node<data_type, priority_type>(data, priority));
 
 			return *this;
 		}
@@ -319,7 +350,7 @@ public:
 		{
 			if (priority > node->priority)
 			{
-				my_queue.insert(node, priority_queue_node<data_type, priority_type>(this, data, priority));
+				my_queue.insert(node, priority_queue_node<data_type, priority_type>(data, priority));
 
 				return *this;
 			}
@@ -327,7 +358,7 @@ public:
 			node++;
 		}
 
-		my_queue.push_back(priority_queue_node<data_type, priority_type>(this, data, priority));
+		my_queue.push_back(priority_queue_node<data_type, priority_type>(data, priority));
 
 		return *this;
 	}
@@ -337,8 +368,6 @@ public:
 	{
 		if (my_queue.size() == 0)
 		{
-			new_node.my_queue = this;
-
 			my_queue.push_back(new_node);
 
 			return *this;
@@ -350,8 +379,6 @@ public:
 		{
 			if (new_node.priority > node->priority)
 			{
-				new_node.my_queue = this;
-
 				my_queue.insert(node, new_node);
 
 				return *this;
@@ -359,8 +386,6 @@ public:
 
 			node++;
 		}
-
-		new_node.my_queue = this;
 
 		my_queue.push_back(new_node);
 
@@ -372,7 +397,7 @@ public:
 	{
 		if (my_queue.size() == 0)
 		{
-			my_queue.push_back(priority_queue_node<data_type, priority_type>(this, data_type(arguments...), priority));
+			my_queue.push_back(priority_queue_node<data_type, priority_type>(data_type(arguments...), priority));
 
 			return *this;
 		}
@@ -383,7 +408,7 @@ public:
 		{
 			if (priority > node->priority)
 			{
-				my_queue.insert(node, priority_queue_node<data_type, priority_type>(this, data_type(arguments...), priority));
+				my_queue.insert(node, priority_queue_node<data_type, priority_type>(data_type(arguments...), priority));
 
 				return *this;
 			}
@@ -391,7 +416,7 @@ public:
 			node++;
 		}
 
-		my_queue.push_back(priority_queue_node<data_type, priority_type>(this, data_type(arguments...), priority));
+		my_queue.push_back(priority_queue_node<data_type, priority_type>(data_type(arguments...), priority));
 
 		return *this;
 	}

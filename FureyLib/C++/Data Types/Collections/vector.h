@@ -23,7 +23,7 @@ private:
 	// VARIABLES
 
 	// The array of the vector's data
-	data_type* vector_data = nullptr;
+	data_type* my_vector = nullptr;
 
 	// The current number of elements in the array holding data
 	int vector_size = 0;
@@ -46,18 +46,18 @@ private:
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			temp[i] = vector_data[i];
+			temp[i] = my_vector[i];
 		}
 
 		vector_capacity *= 2;
 
-		delete[] vector_data;
+		delete[] my_vector;
 
-		vector_data = new data_type[vector_capacity];
+		my_vector = new data_type[vector_capacity];
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			vector_data[i] = temp[i];
+			my_vector[i] = temp[i];
 		}
 
 		delete[] temp;
@@ -83,7 +83,7 @@ public:
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			new_array[i] = vector_data[i];
+			new_array[i] = my_vector[i];
 		}
 
 		return new_array;
@@ -95,7 +95,7 @@ public:
 	// Default constructor
 	vector()
 	{
-		vector_data = new data_type[1];
+		my_vector = new data_type[1];
 
 		vector_size = 0;
 
@@ -113,11 +113,11 @@ public:
 
 		vector_expansions = 0;
 
-		vector_data = new data_type[vector_capacity];
+		my_vector = new data_type[vector_capacity];
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			vector_data[i] = copied_vector.vector_data[i];
+			my_vector[i] = copied_vector.my_vector[i];
 		}
 	}
 
@@ -130,16 +130,16 @@ public:
 
 		vector_expansions = 0;
 
-		vector_data = new data_type[vector_capacity];
+		my_vector = new data_type[vector_capacity];
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			vector_data[i] = moved_vector.vector_data[i];
+			my_vector[i] = moved_vector.my_vector[i];
 		}
 
-		delete[] moved_vector.vector_data;
+		delete[] moved_vector.my_vector;
 
-		moved_vector.vector_data = new data_type[1];
+		moved_vector.my_vector = new data_type[1];
 
 		moved_vector.vector_size = 0;
 
@@ -151,7 +151,7 @@ public:
 	// Capacity constructor
 	vector(int max_capacity)
 	{
-		vector_data = new data_type[max_capacity];
+		my_vector = new data_type[max_capacity];
 
 		vector_size = 0;
 
@@ -163,11 +163,11 @@ public:
 	// Fill constructor
 	vector(int size_and_capacity, data_type new_data)
 	{
-		vector_data = new data_type[size_and_capacity];
+		my_vector = new data_type[size_and_capacity];
 
 		for (int i = 0; i < size_and_capacity; i++)
 		{
-			vector_data[i] = new_data;
+			my_vector[i] = new_data;
 		}
 
 		vector_size = size_and_capacity;
@@ -180,11 +180,11 @@ public:
 	// Array constructor
 	vector(int array_length, data_type array[])
 	{
-		vector_data = new data_type[array_length];
+		my_vector = new data_type[array_length];
 
 		for (int i = 0; i < array_length; i++)
 		{
-			vector_data[i] = array[i];
+			my_vector[i] = array[i];
 		}
 
 		vector_size = array_length;
@@ -212,11 +212,11 @@ public:
 
 		va_end(_va_list);
 
-		vector_data = new data_type[argc];
+		my_vector = new data_type[argc];
 
 		for (int i = 0; i < argc; i++)
 		{
-			vector_data[i] = argv[i];
+			my_vector[i] = argv[i];
 		}
 
 		vector_size = argc;
@@ -233,11 +233,11 @@ public:
 	// List constructor
 	vector(std::initializer_list<data_type> list)
 	{
-		vector_data = new data_type[list.size()];
+		my_vector = new data_type[list.size()];
 
 		for (int i = 0; i < list.size(); i++)
 		{
-			vector_data[i] = *(list.begin() + i);
+			my_vector[i] = *(list.begin() + i);
 		}
 
 		vector_size = list.size();
@@ -250,9 +250,9 @@ public:
 	// Destructor
 	virtual ~vector()
 	{
-		delete[] vector_data;
+		delete[] my_vector;
 
-		vector_data = nullptr;
+		my_vector = nullptr;
 	}
 
 
@@ -267,13 +267,13 @@ public:
 
 		vector_expansions = 0;
 
-		delete[] vector_data;
+		delete[] my_vector;
 
-		vector_data = new data_type[vector_capacity];
+		my_vector = new data_type[vector_capacity];
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			vector_data[i] = copied_vector.vector_data[i];
+			my_vector[i] = copied_vector.my_vector[i];
 		}
 
 		return *this;
@@ -288,18 +288,18 @@ public:
 
 		vector_expansions = 0;
 
-		delete[] vector_data;
+		delete[] my_vector;
 
-		vector_data = new data_type[vector_capacity];
+		my_vector = new data_type[vector_capacity];
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			vector_data[i] = moved_vector.vector_data[i];
+			my_vector[i] = moved_vector.my_vector[i];
 		}
 
-		delete[] moved_vector.vector_data;
+		delete[] moved_vector.my_vector;
 
-		moved_vector.vector_data = new data_type[1];
+		moved_vector.my_vector = new data_type[1];
 
 		moved_vector.vector_size = 0;
 
@@ -323,7 +323,7 @@ public:
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			if (vector_data[i] != compared_vector[i])
+			if (my_vector[i] != compared_vector[i])
 			{
 				return false;
 			}
@@ -350,13 +350,13 @@ public:
 	// Get a pointer to the beginning of the vector's array
 	data_type* begin()
 	{
-		return vector_data;
+		return my_vector;
 	}
 
 	// Get a pointer to the end of the vector's array
 	data_type* end()
 	{
-		return vector_data + vector_size;
+		return my_vector + vector_size;
 	}
 
 
@@ -394,7 +394,7 @@ public:
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			temp[i] = vector_data[i];
+			temp[i] = my_vector[i];
 		}
 
 		if (new_size > vector_capacity)
@@ -402,15 +402,15 @@ public:
 			reallocate();
 		}
 
-		delete[] vector_data;
+		delete[] my_vector;
 
-		vector_data = new data_type[vector_capacity];
+		my_vector = new data_type[vector_capacity];
 
 		vector_size = new_size;
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			vector_data[i] = temp[i];
+			my_vector[i] = temp[i];
 		}
 
 		delete[] temp;
@@ -440,18 +440,18 @@ public:
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			temp[i] = vector_data[i];
+			temp[i] = my_vector[i];
 		}
 
 		vector_capacity = new_capacity;
 
-		delete[] vector_data;
+		delete[] my_vector;
 
-		vector_data = new data_type[vector_capacity];
+		my_vector = new data_type[vector_capacity];
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			vector_data[i] = temp[i];
+			my_vector[i] = temp[i];
 		}
 
 		delete[] temp;
@@ -478,18 +478,18 @@ public:
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			temp[i] = vector_data[i];
+			temp[i] = my_vector[i];
 		}
 
 		vector_capacity = vector_size;
 
-		delete[] vector_data;
+		delete[] my_vector;
 
-		vector_data = new data_type[vector_capacity];
+		my_vector = new data_type[vector_capacity];
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			vector_data[i] = temp[i];
+			my_vector[i] = temp[i];
 		}
 
 		vector_expansions = 0;
@@ -507,31 +507,31 @@ public:
 	// Gets or sets the element at the given index
 	data_type& operator[](int index)
 	{
-		return vector_data[index];
+		return my_vector[index];
 	}
 
 	// Returns the element at the given index
 	data_type at(int index)
 	{
-		return vector_data[index];
+		return my_vector[index];
 	}
 
 	// Returns the first element in the vector
 	data_type front()
 	{
-		return vector_data[0];
+		return my_vector[0];
 	}
 
 	// Returns the last element in the vector
 	data_type back()
 	{
-		return vector_data[vector_size - 1];
+		return my_vector[vector_size - 1];
 	}
 
 	// Returns a reference to the element at the given index
 	data_type& data(int index)
 	{
-		return *(vector_data + index);
+		return *(my_vector + index);
 	}
 
 
@@ -542,7 +542,7 @@ public:
 	{
 		for (int i = 0; i < vector_size; i++)
 		{
-			if (vector_data[i] == found_data)
+			if (my_vector[i] == found_data)
 			{
 				return i;
 			}
@@ -556,7 +556,7 @@ public:
 	{
 		for (int i = vector_size - 1; i >= 0; i--)
 		{
-			if (vector_data[i] == found_data)
+			if (my_vector[i] == found_data)
 			{
 				return i;
 			}
@@ -578,7 +578,7 @@ public:
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			if (vector_data[i] == found_data)
+			if (my_vector[i] == found_data)
 			{
 				count++;
 			}
@@ -599,13 +599,13 @@ public:
 
 		vector_expansions = 0;
 
-		delete[] vector_data;
+		delete[] my_vector;
 
-		vector_data = new data_type[vector_capacity];
+		my_vector = new data_type[vector_capacity];
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			vector_data[i] = new_data[i];
+			my_vector[i] = new_data[i];
 		}
 
 		return *this;
@@ -621,7 +621,7 @@ public:
 
 		vector_size++;
 
-		vector_data[vector_size - 1] = new_data;
+		my_vector[vector_size - 1] = new_data;
 
 		return *this;
 	}
@@ -636,7 +636,7 @@ public:
 
 		vector_size--;
 
-		return vector_data[vector_size];
+		return my_vector[vector_size];
 	}
 
 	// Adds a new element at the front of the vector
@@ -651,10 +651,10 @@ public:
 
 		for (int i = vector_size - 1; i >= 1; i--)
 		{
-			vector_data[i] = vector_data[i - 1];
+			my_vector[i] = my_vector[i - 1];
 		}
 
-		vector_data[0] = new_data;
+		my_vector[0] = new_data;
 
 		return *this;
 	}
@@ -669,11 +669,11 @@ public:
 
 		vector_size--;
 
-		data_type new_data = vector_data[0];
+		data_type new_data = my_vector[0];
 
 		for (int i = 1; i <= vector_size; i++)
 		{
-			vector_data[i - 1] = vector_data[i];
+			my_vector[i - 1] = my_vector[i];
 		}
 
 		return new_data;
@@ -691,10 +691,10 @@ public:
 
 		for (int i = vector_size - 1; i >= index; i--)
 		{
-			vector_data[i] = vector_data[i - 1];
+			my_vector[i] = my_vector[i - 1];
 		}
 
-		vector_data[index] = new_data;
+		my_vector[index] = new_data;
 
 		return *this;
 	}
@@ -704,11 +704,11 @@ public:
 	{
 		vector_size--;
 
-		data_type data = vector_data[index];
+		data_type data = my_vector[index];
 
 		for (int i = index + 1; i <= vector_size; i++)
 		{
-			vector_data[i - 1] = vector_data[i];
+			my_vector[i - 1] = my_vector[i];
 		}
 
 		return data;
@@ -748,11 +748,11 @@ public:
 			return *this;
 		}
 
-		data_type temp = vector_data[index2];
+		data_type temp = my_vector[index2];
 
-		vector_data[index2] = vector_data[index1];
+		my_vector[index2] = my_vector[index1];
 
-		vector_data[index1] = temp;
+		my_vector[index1] = temp;
 
 		return *this;
 	}
@@ -762,9 +762,9 @@ public:
 	{
 		int total = vector_size;
 
-		delete[] vector_data;
+		delete[] my_vector;
 
-		vector_data = new data_type[new_capacity];
+		my_vector = new data_type[new_capacity];
 
 		vector_size = 0;
 
@@ -787,10 +787,10 @@ public:
 
 		for (int i = vector_size - 1; i >= index; i--)
 		{
-			vector_data[i] = vector_data[i - 1];
+			my_vector[i] = my_vector[i - 1];
 		}
 
-		vector_data[index] = data_type(arguments...);
+		my_vector[index] = data_type(arguments...);
 
 		return *this;
 	}
@@ -805,7 +805,7 @@ public:
 
 		vector_size++;
 
-		vector_data[vector_size - 1] = data_type(arguments...);
+		my_vector[vector_size - 1] = data_type(arguments...);
 
 		return *this;
 	}
@@ -822,10 +822,10 @@ public:
 
 		for (int i = vector_size - 1; i >= 1; i--)
 		{
-			vector_data[i] = vector_data[i - 1];
+			my_vector[i] = my_vector[i - 1];
 		}
 
-		vector_data[0] = data_type(arguments...);
+		my_vector[0] = data_type(arguments...);
 
 		return *this;
 	}
@@ -836,9 +836,9 @@ public:
 	// Replaces the data at the given index with the given data
 	data_type set(int index, data_type new_data)
 	{
-		data_type data = vector_data[index];
+		data_type data = my_vector[index];
 
-		vector_data[index] = new_data;
+		my_vector[index] = new_data;
 
 		return data;
 	}
@@ -853,7 +853,7 @@ public:
 			return index;
 		}
 
-		vector_data[index] = new_data;
+		my_vector[index] = new_data;
 
 		return index;
 	}
@@ -868,7 +868,7 @@ public:
 			return index;
 		}
 
-		vector_data[index] = new_data;
+		my_vector[index] = new_data;
 
 		return index;
 	}
@@ -880,9 +880,9 @@ public:
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			if (vector_data[i] == replaced_data)
+			if (my_vector[i] == replaced_data)
 			{
-				vector_data[i] = new_data;
+				my_vector[i] = new_data;
 
 				total++;
 			}
@@ -901,9 +901,9 @@ public:
 
 		for (int i = 0; i < vector_size - 1; i++)
 		{
-			if (vector_data[i] == removed_data)
+			if (my_vector[i] == removed_data)
 			{
-				vector_data[i] = vector_data[i + 1];
+				my_vector[i] = my_vector[i + 1];
 
 				total++;
 
@@ -911,7 +911,7 @@ public:
 			}
 		}
 
-		if (vector_data[vector_size - 1] == removed_data)
+		if (my_vector[vector_size - 1] == removed_data)
 		{
 			total++;
 		}
@@ -1029,7 +1029,7 @@ public:
 	// Swaps the vector's elements and capacity with the elements and capacity of another vector
 	vector<data_type>& swap(vector<data_type>& swapped_data)
 	{
-		data_type* data = vector_data;
+		data_type* data = my_vector;
 
 		int count = vector_size;
 
@@ -1037,7 +1037,7 @@ public:
 
 		int expansions = vector_expansions;
 
-		vector_data = swapped_data.vector_data;
+		my_vector = swapped_data.my_vector;
 
 		vector_size = swapped_data.vector_size;
 
@@ -1045,7 +1045,7 @@ public:
 
 		vector_expansions = swapped_data.vector_expansions;
 
-		swapped_data.vector_data = data;
+		swapped_data.my_vector = data;
 
 		swapped_data.vector_size = count;
 
@@ -1069,7 +1069,7 @@ public:
 
 		for (int i = start; i < start + count || i >= vector_size; i++)
 		{
-			slice.push(vector_data[i]);
+			slice.push(my_vector[i]);
 		}
 
 		return slice;
@@ -1092,16 +1092,16 @@ public:
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			temp[i] = vector_data[i];
+			temp[i] = my_vector[i];
 		}
 
-		delete[] vector_data;
+		delete[] my_vector;
 
-		vector_data = new data_type[vector_capacity];
+		my_vector = new data_type[vector_capacity];
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			vector_data[i] = temp[((i - number_of_shifts) % vector_size + vector_size) % vector_size];
+			my_vector[i] = temp[((i - number_of_shifts) % vector_size + vector_size) % vector_size];
 		}
 
 		delete[] temp;
@@ -1132,7 +1132,7 @@ public:
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			log += (vector_data[i] + ", ");
+			log += (my_vector[i] + ", ");
 		}
 
 		log = log.erase(log.length() - 2, 1);
@@ -1154,7 +1154,7 @@ public:
 
 		for (int i = 0; i < vector_size; i++)
 		{
-			log += (to_string_function(vector_data[i]) + ", ");
+			log += (to_string_function(my_vector[i]) + ", ");
 		}
 
 		log = log.erase(log.length() - 2, 1);

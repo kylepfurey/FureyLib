@@ -9,7 +9,6 @@
 #include <vector>
 #include <list>
 #include <tuple>
-#include <cstdarg>
 #include <initializer_list>
 
 // Include this heading to use the class
@@ -21,34 +20,66 @@
 // Forward declaration of priority_stack
 template<typename data_type, typename priority_type = PRIORITY_TYPE> class priority_stack;
 
-// Class that stores data and its priority value for insertion in a priority stack.
+// Readonly structure that stores data and its priority value for insertion in a priority stack.
 template<typename data_type, typename priority_type = PRIORITY_TYPE> class priority_stack_node
 {
 public:
 
 	// VARIABLES
 
-	// This node's priority stack
-	priority_stack<data_type, priority_type>* my_stack = nullptr;
-
 	// This node's data
-	data_type data = data_type();
+	const data_type data;
 
 	// This node's priority
-	priority_type priority = priority_type();
+	const priority_type priority;
 
 
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 
 	// Default constructor
-	priority_stack_node(priority_stack<data_type, priority_type>* stack = nullptr, data_type data = data_type(), priority_type priority = priority_type())
+	priority_stack_node()
 	{
-		this->my_stack = stack;
+		data = data_type();
 
+		priority = priority_type();
+	}
+
+	// Node constructor
+	priority_stack_node(data_type data = data_type(), priority_type priority = priority_type())
+	{
 		this->data = data;
 
 		this->priority = priority;
 	}
+
+	// Copy constructor
+	priority_stack_node(const priority_stack_node<data_type, priority_type>& copied)
+	{
+		data = copied.data;
+
+		priority = copied.priority;
+	}
+
+
+    // TO STRING
+
+    // Returns a string representation of this node
+    std::string to_string()
+    {
+        return "{ " + data + " : " + priority + " }";
+    }
+
+    // Returns a string representation of this node
+    std::string to_string(std::string(*to_string_function) (data_type))
+    {
+        return "{ " + to_string_function(data) + " : " + priority + " }";
+    }
+
+    // Returns a string representation of this node
+    std::string to_string(std::string(*to_string_function) (data_type), std::string(*priority_to_string_function) (priority_type))
+    {
+        return "{ " + to_string_function(data) + " : " + priority_to_string_function(priority) + " }";
+    }
 };
 
 // •  Wrapper class of a linked list allowing first in last out access of its elements.
@@ -145,17 +176,17 @@ public:
 	}
 
 	// Copy constructor
-	priority_stack(const priority_stack<data_type, priority_stack>& copied_stack)
+	priority_stack(const priority_stack<data_type, priority_type>& copied_stack)
 	{
-		my_stack = std::list<priority_stack<data_type, priority_stack>>(copied_stack.my_stack);
+		my_stack = std::list<priority_stack<data_type, priority_type>>(copied_stack.my_stack);
 	}
 
 	// Move constructor
-	priority_stack(priority_stack<data_type, priority_stack>&& moved_stack) noexcept
+	priority_stack(priority_stack<data_type, priority_type>&& moved_stack) noexcept
 	{
 		my_stack = moved_stack.my_stack;
 
-		moved_stack.my_stack = std::list<priority_stack<data_type, priority_stack>>();
+		moved_stack.my_stack = std::list<priority_stack<data_type, priority_type>>();
 	}
 
 	// Data constructor
@@ -163,7 +194,7 @@ public:
 	{
 		my_stack = std::list<priority_stack_node<data_type, priority_type>>();
 
-		my_stack.push_back(priority_stack_node<data_type, priority_type>(this, data, priority));
+		my_stack.push_back(priority_stack_node<data_type, priority_type>(data, priority));
 	}
 
 	// Node tuple constructor
@@ -173,7 +204,7 @@ public:
 
 		for (int i = 0; i < nodes.size(); i++)
 		{
-			priority_stack_node<data_type, priority_type> node = priority_stack_node<data_type, priority_type>(this, std::get<0>(*(nodes.begin() + i)), std::get<1>(*(nodes.begin() + i)));
+			priority_stack_node<data_type, priority_type> node = priority_stack_node<data_type, priority_type>(std::get<0>(*(nodes.begin() + i)), std::get<1>(*(nodes.begin() + i)));
 
 			push(node);
 		}
@@ -183,19 +214,19 @@ public:
 	// OPERATORS
 
 	// Copy assignment operator
-	priority_stack<data_type, priority_stack>& operator=(const priority_stack<data_type, priority_stack>& copied_stack)
+	priority_stack<data_type, priority_type>& operator=(const priority_stack<data_type, priority_type>& copied_stack)
 	{
-		my_stack = std::list<priority_stack<data_type, priority_stack>>(copied_stack.my_stack);
+		my_stack = std::list<priority_stack<data_type, priority_type>>(copied_stack.my_stack);
 
 		return *this;
 	}
 
 	// Move assignment operator
-	priority_stack<data_type, priority_stack>& operator=(priority_stack<data_type, priority_stack>&& moved_stack) noexcept
+	priority_stack<data_type, priority_type>& operator=(priority_stack<data_type, priority_type>&& moved_stack) noexcept
 	{
 		my_stack = moved_stack.my_stack;
 
-		moved_stack.my_stack = std::list<priority_stack<data_type, priority_stack>>();
+		moved_stack.my_stack = std::list<priority_stack<data_type, priority_type>>();
 
 		return *this;
 	}
@@ -230,7 +261,7 @@ public:
 		return my_stack.size() == 0;
 	}
 
-	// Returns the current number of elements of the stack
+	// Returns the current number of elements in the stack
 	int size()
 	{
 		return my_stack.size();
@@ -308,7 +339,7 @@ public:
 	{
 		if (my_stack.size() == 0)
 		{
-			my_stack.push_back(priority_stack_node<data_type, priority_type>(this, data, priority));
+			my_stack.push_back(priority_stack_node<data_type, priority_type>(data, priority));
 
 			return *this;
 		}
@@ -319,7 +350,7 @@ public:
 		{
 			if (priority >= node->priority)
 			{
-				my_stack.insert(node, priority_stack_node<data_type, priority_type>(this, data, priority));
+				my_stack.insert(node, priority_stack_node<data_type, priority_type>(data, priority));
 
 				return *this;
 			}
@@ -327,7 +358,7 @@ public:
 			node++;
 		}
 
-		my_stack.push_back(priority_stack_node<data_type, priority_type>(this, data, priority));
+		my_stack.push_back(priority_stack_node<data_type, priority_type>(data, priority));
 
 		return *this;
 	}
@@ -337,8 +368,6 @@ public:
 	{
 		if (my_stack.size() == 0)
 		{
-			new_node.my_stack = this;
-
 			my_stack.push_back(new_node);
 
 			return *this;
@@ -350,8 +379,6 @@ public:
 		{
 			if (new_node.priority >= node->priority)
 			{
-				new_node.my_stack = this;
-
 				my_stack.insert(node, new_node);
 
 				return *this;
@@ -359,8 +386,6 @@ public:
 
 			node++;
 		}
-
-		new_node.my_stack = this;
 
 		my_stack.push_back(new_node);
 
@@ -372,7 +397,7 @@ public:
 	{
 		if (my_stack.size() == 0)
 		{
-			my_stack.push_back(priority_stack_node<data_type, priority_type>(this, data_type(arguments...), priority));
+			my_stack.push_back(priority_stack_node<data_type, priority_type>(data_type(arguments...), priority));
 
 			return *this;
 		}
@@ -383,7 +408,7 @@ public:
 		{
 			if (priority >= node->priority)
 			{
-				my_stack.insert(node, priority_stack_node<data_type, priority_type>(this, data_type(arguments...), priority));
+				my_stack.insert(node, priority_stack_node<data_type, priority_type>(data_type(arguments...), priority));
 
 				return *this;
 			}
@@ -391,7 +416,7 @@ public:
 			node++;
 		}
 
-		my_stack.push_back(priority_stack_node<data_type, priority_type>(this, data_type(arguments...), priority));
+		my_stack.push_back(priority_stack_node<data_type, priority_type>(data_type(arguments...), priority));
 
 		return *this;
 	}
@@ -460,7 +485,7 @@ public:
 
 		data_type* data = to_new_array();
 
-		priority_type* data = priority_to_new_array();
+		priority_type* priority = priority_to_new_array();
 
 		std::string log = "{ ";
 
@@ -494,7 +519,7 @@ public:
 
 		data_type* data = to_new_array();
 
-		priority_type* data = priority_to_new_array();
+		priority_type* priority = priority_to_new_array();
 
 		std::string log = "{ ";
 
@@ -528,7 +553,7 @@ public:
 
 		data_type* data = to_new_array();
 
-		priority_type* data = priority_to_new_array();
+		priority_type* priority = priority_to_new_array();
 
 		std::string log = "{ ";
 

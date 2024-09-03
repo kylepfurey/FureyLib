@@ -2,7 +2,7 @@
 // Priority Queue Container Script
 // by Kyle Furey
 
-// REFERENCES: https://en.cppreference.com/w/cpp/container/priority_queue, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.priorityqueue-2?view=net-8.0
+// REFERENCES: https://cplusplus.com/reference/queue/priority_queue/, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.priorityqueue-2?view=net-8.0
 
 using System;
 using System.Collections;
@@ -153,7 +153,7 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
     {
         queue = new LinkedList<PriorityQueueNode<DataType>>();
 
-        queue.AddLast(new PriorityQueueNode<DataType>(this, data, priority));
+        queue.AddLast(new PriorityQueueNode<DataType>(data, priority));
     }
 
 
@@ -172,23 +172,23 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
     /// <summary>
     /// Check if another queue is equal to the queue
     /// </summary>
-    /// <param name="list"></param>
+    /// <param name="queue"></param>
     /// <param name="comparedQueue"></param>
     /// <returns></returns>
-    public static bool operator ==(PriorityQueue<DataType> list, PriorityQueue<DataType> comparedQueue)
+    public static bool operator ==(PriorityQueue<DataType> queue, PriorityQueue<DataType> comparedQueue)
     {
-        return list.Equals(comparedQueue);
+        return queue.Equals(comparedQueue);
     }
 
     /// <summary>
     /// Check if another queue is not equal to the queue
     /// </summary>
-    /// <param name="list"></param>
+    /// <param name="queue"></param>
     /// <param name="comparedQueue"></param>
     /// <returns></returns>
-    public static bool operator !=(PriorityQueue<DataType> list, PriorityQueue<DataType> comparedQueue)
+    public static bool operator !=(PriorityQueue<DataType> queue, PriorityQueue<DataType> comparedQueue)
     {
-        return !list.Equals(comparedQueue);
+        return !queue.Equals(comparedQueue);
     }
 
 
@@ -204,7 +204,7 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
     }
 
     /// <summary>
-    /// Returns the current number of elements of the queue
+    /// Returns the current number of elements in the queue
     /// </summary>
     /// <returns></returns>
     public int Size()
@@ -315,7 +315,7 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
     {
         if (queue.Count == 0)
         {
-            queue.AddLast(new PriorityQueueNode<DataType>(this, data, priority));
+            queue.AddLast(new PriorityQueueNode<DataType>(data, priority));
 
             return this;
         }
@@ -326,7 +326,7 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
         {
             if (priority > node.Value.priority)
             {
-                queue.AddBefore(node, new PriorityQueueNode<DataType>(this, data, priority));
+                queue.AddBefore(node, new PriorityQueueNode<DataType>(data, priority));
 
                 return this;
             }
@@ -334,7 +334,7 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
             node = node.Next;
         }
 
-        queue.AddLast(new PriorityQueueNode<DataType>(this, data, priority));
+        queue.AddLast(new PriorityQueueNode<DataType>(data, priority));
 
         return this;
     }
@@ -342,14 +342,12 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
     /// <summary>
     /// Inserts a priority queue node into the queue based on its priority value
     /// </summary>
-    /// <param name="node"></param>
+    /// <param name="newNode"></param>
     /// <returns></returns>
     public PriorityQueue<DataType> Enqueue(PriorityQueueNode<DataType> newNode)
     {
         if (queue.Count == 0)
         {
-            newNode.queue = this;
-
             queue.AddLast(newNode);
 
             return this;
@@ -361,8 +359,6 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
         {
             if (newNode.priority > node.Value.priority)
             {
-                newNode.queue = this;
-
                 queue.AddBefore(node, newNode);
 
                 return this;
@@ -371,43 +367,7 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
             node = node.Next;
         }
 
-        newNode.queue = this;
-
         queue.AddLast(newNode);
-
-        return this;
-    }
-
-    /// <summary>
-    /// Inserts an existing element of the given data into the queue based on its priority value
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="priority"></param>
-    /// <returns></returns>
-    public PriorityQueue<DataType> Emplace(ref DataType data, PriorityType priority)
-    {
-        if (queue.Count == 0)
-        {
-            queue.AddLast(new PriorityQueueNode<DataType>(this, data, priority));
-
-            return this;
-        }
-
-        LinkedListNode<PriorityQueueNode<DataType>> node = queue.First;
-
-        for (int i = 0; i < queue.Count; i++)
-        {
-            if (priority > node.Value.priority)
-            {
-                queue.AddBefore(node, new PriorityQueueNode<DataType>(this, data, priority));
-
-                return this;
-            }
-
-            node = node.Next;
-        }
-
-        queue.AddLast(new PriorityQueueNode<DataType>(this, data, priority));
 
         return this;
     }
@@ -545,41 +505,25 @@ public class PriorityQueue<DataType> : IEnumerable, IEnumerable<DataType>
 }
 
 /// <summary>
-/// Class that stores data and its priority value for insertion in a priority queue.
+/// Readonly structure that stores data and its priority value for insertion in a priority queue.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class PriorityQueueNode<DataType>
+public readonly struct PriorityQueueNode<DataType>
 {
     // VARIABLES
 
     /// <summary>
-    /// This node's priority queue
-    /// </summary>
-    public PriorityQueue<DataType> queue = null;
-
-    /// <summary>
     /// This node's data
     /// </summary>
-    public DataType data = default(DataType);
+    public readonly DataType data;
 
     /// <summary>
     /// This node's priority
     /// </summary>
-    public PriorityType priority = default(PriorityType);
+    public readonly PriorityType priority;
 
 
     // PROPERTIES
-
-    /// <summary>
-    /// Readonly queue variable
-    /// </summary>
-    public PriorityQueue<DataType> Queue
-    {
-        get
-        {
-            return queue;
-        }
-    }
 
     /// <summary>
     /// Readonly data variable
@@ -604,21 +548,51 @@ public class PriorityQueueNode<DataType>
     }
 
 
-    // CONSTRUCTOR
+    // CONSTRUCTORS
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    /// <param name="queue"></param>
+    public PriorityQueueNode()
+    {
+        data = default(DataType);
+
+        priority = default(PriorityType);
+    }
+
+    /// <summary>
+    /// Node constructor
+    /// </summary>
     /// <param name="data"></param>
     /// <param name="priority"></param>
-    public PriorityQueueNode(PriorityQueue<DataType> queue = null, DataType data = default(DataType), PriorityType priority = default(PriorityType))
+    public PriorityQueueNode(DataType data, PriorityType priority)
     {
-        this.queue = queue;
-
         this.data = data;
 
         this.priority = priority;
+    }
+
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    /// <param name="copied"></param>
+    public PriorityQueueNode(PriorityQueueNode<DataType> copied)
+    {
+        data = copied.data;
+
+        priority = copied.priority;
+    }
+
+
+    // TO STRING
+
+    /// <summary>
+    /// Returns a string representation of this node
+    /// </summary>
+    /// <returns></returns>
+    public string ToString()
+    {
+        return "{ " + data + " : " + priority + " }";
     }
 }
 
@@ -763,7 +737,7 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     {
         queue = new LinkedList<PriorityQueueNode<DataType, PriorityType>>();
 
-        queue.AddLast(new PriorityQueueNode<DataType, PriorityType>(this, data, priority));
+        queue.AddLast(new PriorityQueueNode<DataType, PriorityType>(data, priority));
     }
 
     /// <summary>
@@ -774,12 +748,9 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     {
         queue = new LinkedList<PriorityQueueNode<DataType, PriorityType>>();
 
-        node.queue = this;
-
         queue.AddLast(node);
     }
 
-    /// <summary>
     /// <summary>
     /// Node array constructor
     /// </summary>
@@ -824,23 +795,23 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     /// <summary>
     /// Check if another queue is equal to the queue
     /// </summary>
-    /// <param name="list"></param>
+    /// <param name="queue"></param>
     /// <param name="comparedQueue"></param>
     /// <returns></returns>
-    public static bool operator ==(PriorityQueue<DataType, PriorityType> list, PriorityQueue<DataType, PriorityType> comparedQueue)
+    public static bool operator ==(PriorityQueue<DataType, PriorityType> queue, PriorityQueue<DataType, PriorityType> comparedQueue)
     {
-        return list.Equals(comparedQueue);
+        return queue.Equals(comparedQueue);
     }
 
     /// <summary>
     /// Check if another queue is not equal to the queue
     /// </summary>
-    /// <param name="list"></param>
+    /// <param name="queue"></param>
     /// <param name="comparedQueue"></param>
     /// <returns></returns>
-    public static bool operator !=(PriorityQueue<DataType, PriorityType> list, PriorityQueue<DataType, PriorityType> comparedQueue)
+    public static bool operator !=(PriorityQueue<DataType, PriorityType> queue, PriorityQueue<DataType, PriorityType> comparedQueue)
     {
-        return !list.Equals(comparedQueue);
+        return !queue.Equals(comparedQueue);
     }
 
 
@@ -856,7 +827,7 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     }
 
     /// <summary>
-    /// Returns the current number of elements of the queue
+    /// Returns the current number of elements in the queue
     /// </summary>
     /// <returns></returns>
     public int Size()
@@ -967,7 +938,7 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     {
         if (queue.Count == 0)
         {
-            queue.AddLast(new PriorityQueueNode<DataType, PriorityType>(this, data, priority));
+            queue.AddLast(new PriorityQueueNode<DataType, PriorityType>(data, priority));
 
             return this;
         }
@@ -978,7 +949,7 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
         {
             if (priority.CompareTo(node.Value.priority) > 0)
             {
-                queue.AddBefore(node, new PriorityQueueNode<DataType, PriorityType>(this, data, priority));
+                queue.AddBefore(node, new PriorityQueueNode<DataType, PriorityType>(data, priority));
 
                 return this;
             }
@@ -986,7 +957,7 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
             node = node.Next;
         }
 
-        queue.AddLast(new PriorityQueueNode<DataType, PriorityType>(this, data, priority));
+        queue.AddLast(new PriorityQueueNode<DataType, PriorityType>(data, priority));
 
         return this;
     }
@@ -994,14 +965,12 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     /// <summary>
     /// Inserts a priority queue node into the queue based on its priority value
     /// </summary>
-    /// <param name="node"></param>
+    /// <param name="newNode"></param>
     /// <returns></returns>
     public PriorityQueue<DataType, PriorityType> Enqueue(PriorityQueueNode<DataType, PriorityType> newNode)
     {
         if (queue.Count == 0)
         {
-            newNode.queue = this;
-
             queue.AddLast(newNode);
 
             return this;
@@ -1013,8 +982,6 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
         {
             if (newNode.priority.CompareTo(node.Value.priority) > 0)
             {
-                newNode.queue = this;
-
                 queue.AddBefore(node, newNode);
 
                 return this;
@@ -1023,43 +990,7 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
             node = node.Next;
         }
 
-        newNode.queue = this;
-
         queue.AddLast(newNode);
-
-        return this;
-    }
-
-    /// <summary>
-    /// Inserts an existing element of the given data into the queue based on its priority value
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="priority"></param>
-    /// <returns></returns>
-    public PriorityQueue<DataType, PriorityType> Emplace(ref DataType data, PriorityType priority)
-    {
-        if (queue.Count == 0)
-        {
-            queue.AddLast(new PriorityQueueNode<DataType, PriorityType>(this, data, priority));
-
-            return this;
-        }
-
-        LinkedListNode<PriorityQueueNode<DataType, PriorityType>> node = queue.First;
-
-        for (int i = 0; i < queue.Count; i++)
-        {
-            if (priority.CompareTo(node.Value.priority) > 0)
-            {
-                queue.AddBefore(node, new PriorityQueueNode<DataType, PriorityType>(this, data, priority));
-
-                return this;
-            }
-
-            node = node.Next;
-        }
-
-        queue.AddLast(new PriorityQueueNode<DataType, PriorityType>(this, data, priority));
 
         return this;
     }
@@ -1197,41 +1128,25 @@ public class PriorityQueue<DataType, PriorityType> : IEnumerable, IEnumerable<Da
 }
 
 /// <summary>
-/// Class that stores data and its priority value for insertion in a priority queue.
+/// Readonly structure that stores data and its priority value for insertion in a priority queue.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class PriorityQueueNode<DataType, PriorityType> where PriorityType : IComparable, IComparable<DataType>
+public readonly struct PriorityQueueNode<DataType, PriorityType> where PriorityType : IComparable, IComparable<DataType>
 {
     // VARIABLES
 
     /// <summary>
-    /// This node's priority queue
-    /// </summary>
-    public PriorityQueue<DataType, PriorityType> queue = null;
-
-    /// <summary>
     /// This node's data
     /// </summary>
-    public DataType data = default(DataType);
+    public readonly DataType data;
 
     /// <summary>
     /// This node's priority
     /// </summary>
-    public PriorityType priority = default(PriorityType);
+    public readonly PriorityType priority;
 
 
     // PROPERTIES
-
-    /// <summary>
-    /// Readonly queue variable
-    /// </summary>
-    public PriorityQueue<DataType, PriorityType> Queue
-    {
-        get
-        {
-            return queue;
-        }
-    }
 
     /// <summary>
     /// Readonly data variable
@@ -1256,20 +1171,50 @@ public class PriorityQueueNode<DataType, PriorityType> where PriorityType : ICom
     }
 
 
-    // CONSTRUCTOR
+    // CONSTRUCTORS
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    /// <param name="queue"></param>
+    public PriorityQueueNode()
+    {
+        data = default(DataType);
+
+        priority = default(PriorityType);
+    }
+
+    /// <summary>
+    /// Node constructor
+    /// </summary>
     /// <param name="data"></param>
     /// <param name="priority"></param>
-    public PriorityQueueNode(PriorityQueue<DataType, PriorityType> queue = null, DataType data = default(DataType), PriorityType priority = default(PriorityType))
+    public PriorityQueueNode(DataType data, PriorityType priority)
     {
-        this.queue = queue;
-
         this.data = data;
 
         this.priority = priority;
+    }
+
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    /// <param name="copied"></param>
+    public PriorityQueueNode(PriorityQueueNode<DataType, PriorityType> copied)
+    {
+        data = copied.data;
+
+        priority = copied.priority;
+    }
+
+
+    // TO STRING
+
+    /// <summary>
+    /// Returns a string representation of this node
+    /// </summary>
+    /// <returns></returns>
+    public string ToString()
+    {
+        return "{ " + data + " : " + priority + " }";
     }
 }

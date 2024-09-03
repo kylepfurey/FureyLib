@@ -2,7 +2,7 @@
 // Priority Stack Container Script
 // by Kyle Furey
 
-// REFERENCES: https://en.cppreference.com/w/cpp/container/priority_queue, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.priorityqueue-2?view=net-8.0
+// REFERENCES: https://cplusplus.com/reference/queue/priority_queue/, https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.priorityqueue-2?view=net-8.0
 
 using System;
 using System.Collections;
@@ -153,7 +153,7 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
     {
         stack = new LinkedList<PriorityStackNode<DataType>>();
 
-        stack.AddLast(new PriorityStackNode<DataType>(this, data, priority));
+        stack.AddLast(new PriorityStackNode<DataType>(data, priority));
     }
 
 
@@ -172,23 +172,23 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
     /// <summary>
     /// Check if another stack is equal to the stack
     /// </summary>
-    /// <param name="list"></param>
+    /// <param name="stack"></param>
     /// <param name="comparedStack"></param>
     /// <returns></returns>
-    public static bool operator ==(PriorityStack<DataType> list, PriorityStack<DataType> comparedStack)
+    public static bool operator ==(PriorityStack<DataType> stack, PriorityStack<DataType> comparedStack)
     {
-        return list.Equals(comparedStack);
+        return stack.Equals(comparedStack);
     }
 
     /// <summary>
     /// Check if another stack is not equal to the stack
     /// </summary>
-    /// <param name="list"></param>
+    /// <param name="stack"></param>
     /// <param name="comparedStack"></param>
     /// <returns></returns>
-    public static bool operator !=(PriorityStack<DataType> list, PriorityStack<DataType> comparedStack)
+    public static bool operator !=(PriorityStack<DataType> stack, PriorityStack<DataType> comparedStack)
     {
-        return !list.Equals(comparedStack);
+        return !stack.Equals(comparedStack);
     }
 
 
@@ -204,7 +204,7 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
     }
 
     /// <summary>
-    /// Returns the current number of elements of the stack
+    /// Returns the current number of elements in the stack
     /// </summary>
     /// <returns></returns>
     public int Size()
@@ -315,7 +315,7 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
     {
         if (stack.Count == 0)
         {
-            stack.AddLast(new PriorityStackNode<DataType>(this, data, priority));
+            stack.AddLast(new PriorityStackNode<DataType>(data, priority));
 
             return this;
         }
@@ -326,7 +326,7 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
         {
             if (priority >= node.Value.priority)
             {
-                stack.AddBefore(node, new PriorityStackNode<DataType>(this, data, priority));
+                stack.AddBefore(node, new PriorityStackNode<DataType>(data, priority));
 
                 return this;
             }
@@ -334,7 +334,7 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
             node = node.Next;
         }
 
-        stack.AddLast(new PriorityStackNode<DataType>(this, data, priority));
+        stack.AddLast(new PriorityStackNode<DataType>(data, priority));
 
         return this;
     }
@@ -342,14 +342,12 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
     /// <summary>
     /// Inserts a priority stack node into the stack based on its priority value
     /// </summary>
-    /// <param name="node"></param>
+    /// <param name="newNode"></param>
     /// <returns></returns>
     public PriorityStack<DataType> Push(PriorityStackNode<DataType> newNode)
     {
         if (stack.Count == 0)
         {
-            newNode.stack = this;
-
             stack.AddLast(newNode);
 
             return this;
@@ -361,8 +359,6 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
         {
             if (newNode.priority >= node.Value.priority)
             {
-                newNode.stack = this;
-
                 stack.AddBefore(node, newNode);
 
                 return this;
@@ -371,43 +367,7 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
             node = node.Next;
         }
 
-        newNode.stack = this;
-
         stack.AddLast(newNode);
-
-        return this;
-    }
-
-    /// <summary>
-    /// Inserts an existing element of the given data into the stack based on its priority value
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="priority"></param>
-    /// <returns></returns>
-    public PriorityStack<DataType> Emplace(ref DataType data, PriorityType priority)
-    {
-        if (stack.Count == 0)
-        {
-            stack.AddLast(new PriorityStackNode<DataType>(this, data, priority));
-
-            return this;
-        }
-
-        LinkedListNode<PriorityStackNode<DataType>> node = stack.First;
-
-        for (int i = 0; i < stack.Count; i++)
-        {
-            if (priority >= node.Value.priority)
-            {
-                stack.AddBefore(node, new PriorityStackNode<DataType>(this, data, priority));
-
-                return this;
-            }
-
-            node = node.Next;
-        }
-
-        stack.AddLast(new PriorityStackNode<DataType>(this, data, priority));
 
         return this;
     }
@@ -545,41 +505,25 @@ public class PriorityStack<DataType> : IEnumerable, IEnumerable<DataType>
 }
 
 /// <summary>
-/// Class that stores data and its priority value for insertion in a priority stack.
+/// Readonly structure that stores data and its priority value for insertion in a priority stack.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class PriorityStackNode<DataType>
+public readonly struct PriorityStackNode<DataType>
 {
     // VARIABLES
 
     /// <summary>
-    /// This node's priority stack
-    /// </summary>
-    public PriorityStack<DataType> stack = null;
-
-    /// <summary>
     /// This node's data
     /// </summary>
-    public DataType data = default(DataType);
+    public readonly DataType data;
 
     /// <summary>
     /// This node's priority
     /// </summary>
-    public PriorityType priority = default(PriorityType);
+    public readonly PriorityType priority;
 
 
     // PROPERTIES
-
-    /// <summary>
-    /// Readonly stack variable
-    /// </summary>
-    public PriorityStack<DataType> Stack
-    {
-        get
-        {
-            return stack;
-        }
-    }
 
     /// <summary>
     /// Readonly data variable
@@ -604,21 +548,51 @@ public class PriorityStackNode<DataType>
     }
 
 
-    // CONSTRUCTOR
+    // CONSTRUCTORS
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    /// <param name="stack"></param>
+    public PriorityStackNode()
+    {
+        data = default(DataType);
+
+        priority = default(PriorityType);
+    }
+
+    /// <summary>
+    /// Node constructor
+    /// </summary>
     /// <param name="data"></param>
     /// <param name="priority"></param>
-    public PriorityStackNode(PriorityStack<DataType> stack = null, DataType data = default(DataType), PriorityType priority = default(PriorityType))
+    public PriorityStackNode(DataType data, PriorityType priority)
     {
-        this.stack = stack;
-
         this.data = data;
 
         this.priority = priority;
+    }
+
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    /// <param name="copied"></param>
+    public PriorityStackNode(PriorityStackNode<DataType> copied)
+    {
+        data = copied.data;
+
+        priority = copied.priority;
+    }
+
+
+    // TO STRING
+
+    /// <summary>
+    /// Returns a string representation of this node
+    /// </summary>
+    /// <returns></returns>
+    public string ToString()
+    {
+        return "{ " + data + " : " + priority + " }";
     }
 }
 
@@ -763,19 +737,16 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     {
         stack = new LinkedList<PriorityStackNode<DataType, PriorityType>>();
 
-        stack.AddLast(new PriorityStackNode<DataType, PriorityType>(this, data, priority));
+        stack.AddLast(new PriorityStackNode<DataType, PriorityType>(data, priority));
     }
 
     /// <summary>
     /// Node constructor
     /// </summary>
-    /// <param name="data"></param>
-    /// <param name="priority"></param>
+    /// <param name="node"></param>
     public PriorityStack(PriorityStackNode<DataType, PriorityType> node)
     {
         stack = new LinkedList<PriorityStackNode<DataType, PriorityType>>();
-
-        node.stack = this;
 
         stack.AddLast(node);
     }
@@ -824,23 +795,23 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     /// <summary>
     /// Check if another stack is equal to the stack
     /// </summary>
-    /// <param name="list"></param>
+    /// <param name="stack"></param>
     /// <param name="comparedStack"></param>
     /// <returns></returns>
-    public static bool operator ==(PriorityStack<DataType, PriorityType> list, PriorityStack<DataType, PriorityType> comparedStack)
+    public static bool operator ==(PriorityStack<DataType, PriorityType> stack, PriorityStack<DataType, PriorityType> comparedStack)
     {
-        return list.Equals(comparedStack);
+        return stack.Equals(comparedStack);
     }
 
     /// <summary>
     /// Check if another stack is not equal to the stack
     /// </summary>
-    /// <param name="list"></param>
+    /// <param name="stack"></param>
     /// <param name="comparedStack"></param>
     /// <returns></returns>
-    public static bool operator !=(PriorityStack<DataType, PriorityType> list, PriorityStack<DataType, PriorityType> comparedStack)
+    public static bool operator !=(PriorityStack<DataType, PriorityType> stack, PriorityStack<DataType, PriorityType> comparedStack)
     {
-        return !list.Equals(comparedStack);
+        return !stack.Equals(comparedStack);
     }
 
 
@@ -856,7 +827,7 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     }
 
     /// <summary>
-    /// Returns the current number of elements of the stack
+    /// Returns the current number of elements in the stack
     /// </summary>
     /// <returns></returns>
     public int Size()
@@ -967,7 +938,7 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     {
         if (stack.Count == 0)
         {
-            stack.AddLast(new PriorityStackNode<DataType, PriorityType>(this, data, priority));
+            stack.AddLast(new PriorityStackNode<DataType, PriorityType>(data, priority));
 
             return this;
         }
@@ -978,7 +949,7 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
         {
             if (priority.CompareTo(node.Value.priority) >= 0)
             {
-                stack.AddBefore(node, new PriorityStackNode<DataType, PriorityType>(this, data, priority));
+                stack.AddBefore(node, new PriorityStackNode<DataType, PriorityType>(data, priority));
 
                 return this;
             }
@@ -986,7 +957,7 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
             node = node.Next;
         }
 
-        stack.AddLast(new PriorityStackNode<DataType, PriorityType>(this, data, priority));
+        stack.AddLast(new PriorityStackNode<DataType, PriorityType>(data, priority));
 
         return this;
     }
@@ -994,14 +965,12 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
     /// <summary>
     /// Inserts a priority stack node into the stack based on its priority value
     /// </summary>
-    /// <param name="node"></param>
+    /// <param name="newNode"></param>
     /// <returns></returns>
     public PriorityStack<DataType, PriorityType> Push(PriorityStackNode<DataType, PriorityType> newNode)
     {
         if (stack.Count == 0)
         {
-            newNode.stack = this;
-
             stack.AddLast(newNode);
 
             return this;
@@ -1013,8 +982,6 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
         {
             if (newNode.priority.CompareTo(node.Value.priority) >= 0)
             {
-                newNode.stack = this;
-
                 stack.AddBefore(node, newNode);
 
                 return this;
@@ -1023,43 +990,7 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
             node = node.Next;
         }
 
-        newNode.stack = this;
-
         stack.AddLast(newNode);
-
-        return this;
-    }
-
-    /// <summary>
-    /// Inserts an existing element of the given data into the stack based on its priority value
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="priority"></param>
-    /// <returns></returns>
-    public PriorityStack<DataType, PriorityType> Emplace(ref DataType data, PriorityType priority)
-    {
-        if (stack.Count == 0)
-        {
-            stack.AddLast(new PriorityStackNode<DataType, PriorityType>(this, data, priority));
-
-            return this;
-        }
-
-        LinkedListNode<PriorityStackNode<DataType, PriorityType>> node = stack.First;
-
-        for (int i = 0; i < stack.Count; i++)
-        {
-            if (priority.CompareTo(node.Value.priority) >= 0)
-            {
-                stack.AddBefore(node, new PriorityStackNode<DataType, PriorityType>(this, data, priority));
-
-                return this;
-            }
-
-            node = node.Next;
-        }
-
-        stack.AddLast(new PriorityStackNode<DataType, PriorityType>(this, data, priority));
 
         return this;
     }
@@ -1197,41 +1128,25 @@ public class PriorityStack<DataType, PriorityType> : IEnumerable, IEnumerable<Da
 }
 
 /// <summary>
-/// Class that stores data and its priority value for insertion in a priority stack.
+/// Readonly structure that stores data and its priority value for insertion in a priority stack.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
-public class PriorityStackNode<DataType, PriorityType> where PriorityType : IComparable, IComparable<DataType>
+public readonly struct PriorityStackNode<DataType, PriorityType> where PriorityType : IComparable, IComparable<DataType>
 {
     // VARIABLES
 
     /// <summary>
-    /// This node's priority stack
-    /// </summary>
-    public PriorityStack<DataType, PriorityType> stack = null;
-
-    /// <summary>
     /// This node's data
     /// </summary>
-    public DataType data = default(DataType);
+    public readonly DataType data;
 
     /// <summary>
     /// This node's priority
     /// </summary>
-    public PriorityType priority = default(PriorityType);
+    public readonly PriorityType priority;
 
 
     // PROPERTIES
-
-    /// <summary>
-    /// Readonly stack variable
-    /// </summary>
-    public PriorityStack<DataType, PriorityType> Stack
-    {
-        get
-        {
-            return stack;
-        }
-    }
 
     /// <summary>
     /// Readonly data variable
@@ -1256,20 +1171,50 @@ public class PriorityStackNode<DataType, PriorityType> where PriorityType : ICom
     }
 
 
-    // CONSTRUCTOR
+    // CONSTRUCTORS
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    /// <param name="stack"></param>
+    public PriorityStackNode()
+    {
+        data = default(DataType);
+
+        priority = default(PriorityType);
+    }
+
+    /// <summary>
+    /// Node constructor
+    /// </summary>
     /// <param name="data"></param>
     /// <param name="priority"></param>
-    public PriorityStackNode(PriorityStack<DataType, PriorityType> stack = null, DataType data = default(DataType), PriorityType priority = default(PriorityType))
+    public PriorityStackNode(DataType data, PriorityType priority)
     {
-        this.stack = stack;
-
         this.data = data;
 
         this.priority = priority;
+    }
+
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    /// <param name="copied"></param>
+    public PriorityStackNode(PriorityStackNode<DataType, PriorityType> copied)
+    {
+        data = copied.data;
+
+        priority = copied.priority;
+    }
+
+
+    // TO STRING
+
+    /// <summary>
+    /// Returns a string representation of this node
+    /// </summary>
+    /// <returns></returns>
+    public string ToString()
+    {
+        return "{ " + data + " : " + priority + " }";
     }
 }

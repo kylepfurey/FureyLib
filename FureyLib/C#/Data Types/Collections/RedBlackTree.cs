@@ -745,6 +745,26 @@ public class RedBlackTree<DataType> : IEnumerable, IEnumerable<DataType> // wher
         return End().data;
     }
 
+    /// <summary>
+    /// Attempts to retrieve the given matching value from this binary tree
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="result"></param>
+    /// <returns></returns>
+    public bool TryGetValue(DataType value, out DataType result)
+    {
+        if (!Contains(value))
+        {
+            result = default(DataType);
+
+            return false;
+        }
+
+        result = Find(value).data;
+
+        return true;
+    }
+
 
     // MODIFIERS
 
@@ -816,6 +836,8 @@ public class RedBlackTree<DataType> : IEnumerable, IEnumerable<DataType> // wher
         {
             if (GenericEquals(node.data, newNode.data))
             {
+                node.data = newNode.data;
+
                 return this;
             }
 
@@ -861,6 +883,8 @@ public class RedBlackTree<DataType> : IEnumerable, IEnumerable<DataType> // wher
 
         if (GenericEquals(node.data, newNode.data))
         {
+            node.data = newNode.data;
+
             return this;
         }
 
@@ -1117,20 +1141,6 @@ public class RedBlackTree<DataType> : IEnumerable, IEnumerable<DataType> // wher
         nodeCount = 0;
 
         return total;
-    }
-
-    /// <summary>
-    /// Inserts an existing node of the given data into the binary tree 
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public RedBlackNode<DataType> Emplace(ref DataType data)
-    {
-        RedBlackNode<DataType> newNode = new RedBlackNode<DataType>(data);
-
-        Add(newNode);
-
-        return newNode;
     }
 
 

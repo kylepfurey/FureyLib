@@ -603,43 +603,6 @@ public class LinkedList<DataType> : IEnumerable, IEnumerable<DataType>
     }
 
     /// <summary>
-    /// Inserts existing data at the front of the linked list
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public LinkedListNode<DataType> EmplaceFront(ref DataType data)
-    {
-        LinkedListNode<DataType> newNode = new LinkedListNode<DataType>(data);
-
-        if (nodeCount == 0)
-        {
-            head = newNode;
-
-            head.next = head;
-
-            head.previous = head;
-
-            nodeCount++;
-
-            return newNode;
-        }
-
-        newNode.previous = head.previous;
-
-        newNode.next = head;
-
-        head.previous.next = newNode;
-
-        head.previous = newNode;
-
-        head = newNode;
-
-        nodeCount++;
-
-        return newNode;
-    }
-
-    /// <summary>
     /// Inserts a new node of the given data at the front of the linked list
     /// </summary>
     /// <param name="data"></param>
@@ -742,41 +705,6 @@ public class LinkedList<DataType> : IEnumerable, IEnumerable<DataType>
         head = head.next;
 
         return node;
-    }
-
-    /// <summary>
-    /// Inserts an existing node of the given data at the end of the linked list
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public LinkedListNode<DataType> EmplaceBack(ref DataType data)
-    {
-        LinkedListNode<DataType> newNode = new LinkedListNode<DataType>(data);
-
-        if (nodeCount == 0)
-        {
-            head = newNode;
-
-            head.next = head;
-
-            head.previous = head;
-
-            nodeCount++;
-
-            return newNode;
-        }
-
-        newNode.previous = head.previous;
-
-        newNode.next = head;
-
-        head.previous.next = newNode;
-
-        head.previous = newNode;
-
-        nodeCount++;
-
-        return newNode;
     }
 
     /// <summary>

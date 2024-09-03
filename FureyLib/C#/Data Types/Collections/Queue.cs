@@ -256,18 +256,6 @@ public class Queue<DataType> : IEnumerable, IEnumerable<DataType>
     }
 
     /// <summary>
-    /// Inserts an existing element of the given data at the end of the queue
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public Queue<DataType> Emplace(ref DataType data)
-    {
-        queue.AddLast(data);
-
-        return this;
-    }
-
-    /// <summary>
     /// Remove and return the last element from the queue
     /// </summary>
     /// <returns></returns>

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// Class used to store a sorted binary search tree for fast retrieval of nodes with unique data.
+/// Class used to store a binary search tree for fast storage and retrieval of nodes with unique data.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
 public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where DataType : IComparable, IComparable<DataType>
@@ -102,7 +102,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     }
 
     /// <summary>
-    /// Returns a sorted array of the current binary tree
+    /// Returns a array of the current binary tree
     /// </summary>
     /// <returns></returns>
     public DataType[] ToArray()
@@ -143,7 +143,7 @@ public class BinaryTree<DataType> : IEnumerable, IEnumerable<DataType> // where 
     }
 
     /// <summary>
-    /// Returns a sorted list of the current binary tree
+    /// Returns a list of the current binary tree
     /// </summary>
     /// <returns></returns>
     public List<DataType> ToList()
@@ -1247,3 +1247,9 @@ public class BinaryNode<DataType> // where DataType : IComparable, IComparable<D
         return left.GetHashCode() > right.GetHashCode();
     }
 }
+
+/// <summary>
+/// Class that stores unique elements for fast insertion, access, and removal.
+/// </summary>
+/// <typeparam name="DataType"></typeparam>
+public class HashSet<DataType> : BinaryTree<DataType> /* where DataType : IComparable, IComparable<DataType> */ { }

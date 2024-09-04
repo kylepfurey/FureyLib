@@ -7,14 +7,14 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <list>
 #include <set>
 #include <initializer_list>
+#include <stdexcept>
 
 // Include this heading to use the class
 #include "map.h"
 
-// Structure that represents a readonly pair of objects with one acting as the key to lookup the corresponding value object.
+// Structure that represents a pair of objects with one acting as the key to lookup the corresponding value object.
 template<typename key_type, typename value_type> struct key_value_pair
 {
 public:
@@ -128,7 +128,7 @@ public:
 		return new_array;
 	}
 
-	// Returns a list of the current map
+	// Returns a vector of the current map
 	std::vector<key_value_pair<key_type, value_type>> to_vector()
 	{
 		std::vector<key_value_pair<key_type, value_type>> new_vector = std::vector<key_value_pair<key_type, value_type>>();
@@ -158,7 +158,7 @@ public:
 		return new_array;
 	}
 
-	// Returns a list of the current map's keys
+	// Returns a vector of the current map's keys
 	std::vector<key_type> keys_to_vector()
 	{
 		std::vector<key_type> new_vector = std::vector<key_type>();
@@ -188,7 +188,7 @@ public:
 		return new_array;
 	}
 
-	// Returns a list of the current map's values
+	// Returns a vector of the current map's values
 	std::vector<value_type> values_to_vector()
 	{
 		std::vector<value_type> new_vector = std::vector<value_type>();
@@ -235,7 +235,7 @@ public:
 	// Key value tuple constructor
 	map(std::initializer_list<std::tuple<key_type, value_type>> pairs)
 	{
-		my_map = std::list<key_value_pair<key_type, value_type>>();
+		my_map = std::set<key_value_pair<key_type, value_type>>();
 
 		for (int i = 0; i < pairs.size(); i++)
 		{
@@ -337,7 +337,7 @@ public:
 		}
 		else
 		{
-			throw std::exception();
+			throw std::out_of_range("ERROR: The given key was not found in the map!");
 		}
 	}
 

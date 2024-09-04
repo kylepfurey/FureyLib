@@ -127,7 +127,7 @@ public:
 	}
 };
 
-// Class used to store a sorted binary search tree for fast retrieval of nodes with unique data.
+// Class used to store a binary search tree for fast storage and retrieval of nodes with unique data.
 template<typename data_type> class binary_tree
 {
 private:
@@ -224,7 +224,7 @@ public:
 
 	// TO ARRAY AND VECTOR
 
-	// Returns a sorted array of the current binary tree (MUST BE DEALLOCATED)
+	// Returns a array of the current binary tree (MUST BE DEALLOCATED)
 	data_type* to_new_array()
 	{
 		if (node_size == 0)
@@ -241,7 +241,7 @@ public:
 		return new_array;
 	}
 
-	// Returns a sorted vector of the current binary tree
+	// Returns a vector of the current binary tree
 	std::vector<data_type> to_vector()
 	{
 		if (node_size == 0)

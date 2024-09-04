@@ -7,7 +7,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 /// <summary>
@@ -519,11 +518,11 @@ public class Dictionary<KeyType, ValueType> : IEnumerable, IEnumerable<KeyValueP
 }
 
 /// <summary>
-/// Structure that represents a readonly pair of objects with one acting as the key to lookup the corresponding value object.
+/// Structure that represents a pair of objects with one acting as the key to lookup the corresponding value object.
 /// </summary>
 /// <typeparam name="KeyType"></typeparam>
 /// <typeparam name="ValueType"></typeparam>
-public readonly struct KeyValuePair<KeyType, ValueType> // where KeyType : IComparable, IComparable<KeyType>
+public struct KeyValuePair<KeyType, ValueType> // where KeyType : IComparable, IComparable<KeyType>
 {
     // VARIABLES
 
@@ -535,7 +534,7 @@ public readonly struct KeyValuePair<KeyType, ValueType> // where KeyType : IComp
     /// <summary>
     /// The value object (located using the key object)
     /// </summary>
-    public readonly ValueType value;
+    public ValueType value;
 
 
     // PROPERTIES

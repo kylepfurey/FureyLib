@@ -4,8 +4,6 @@
 
 using System;
 
-// Inherit from this interface to implement it.
-
 /// <summary>
 /// Provides two functions used for easy instantiation of derived objects.
 /// </summary>

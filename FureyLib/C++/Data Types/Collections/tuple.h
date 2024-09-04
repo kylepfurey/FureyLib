@@ -9,9 +9,9 @@
 // Include this heading to use the struct
 #include "tuple.h"
 
-// Container for two readonly elements of different types.
+// Container for two elements of different types.
 template <typename data_type1, typename data_type2>
-struct tuple2
+struct tuple
 {
 public:
 
@@ -30,21 +30,21 @@ public:
 	// CONSTRUCTORS
 
 	// Default constructor
-	tuple2()
+	tuple()
 	{
 		item1 = data_type1();
 		item2 = data_type2();
 	}
 
 	// Element constructor
-	tuple2(data_type1 item1, data_type2 item2)
+	tuple(data_type1 item1, data_type2 item2)
 	{
 		this->item1 = item1;
 		this->item2 = item2;
 	}
 
 	// Copy constructor
-	tuple2(const tuple2<data_type1, data_type2>& copied)
+	tuple(const tuple<data_type1, data_type2>& copied)
 	{
 		item1 = copied.item1;
 		item2 = copied.item2;
@@ -54,7 +54,7 @@ public:
 	// OPERATORS
 
 	// Copy assignment operator
-	tuple2<data_type1, data_type2>& operator=(const tuple2<data_type1, data_type2>& copied)
+	tuple<data_type1, data_type2>& operator=(const tuple<data_type1, data_type2>& copied)
 	{
 		item1 = copied.item1;
 		item2 = copied.item2;
@@ -63,19 +63,19 @@ public:
 	}
 
 	// Equality operator
-	bool operator==(tuple2<data_type1, data_type2> other)
+	bool operator==(tuple<data_type1, data_type2> other)
 	{
 		return item1 == other.item1 && item2 == other.item2;
 	}
 
 	// Inequality operator
-	bool operator!=(tuple2<data_type1, data_type2> other)
+	bool operator!=(tuple<data_type1, data_type2> other)
 	{
 		return item1 != other.item1 || item2 != other.item2;
 	}
 };
 
-// Container for three readonly elements of different types.
+// Container for three elements of different types.
 template <typename data_type1, typename data_type2, typename data_type3>
 struct tuple3
 {
@@ -148,7 +148,7 @@ public:
 	}
 };
 
-// Container for four readonly elements of different types.
+// Container for four elements of different types.
 template <typename data_type1, typename data_type2, typename data_type3, typename data_type4>
 struct tuple4
 {
@@ -228,7 +228,7 @@ public:
 	}
 };
 
-// Container for five readonly elements of different types.
+// Container for five elements of different types.
 template <typename data_type1, typename data_type2, typename data_type3, typename data_type4, typename data_type5>
 struct tuple5
 {
@@ -315,7 +315,7 @@ public:
 	}
 };
 
-// Container for six readonly elements of different types.
+// Container for six elements of different types.
 template <typename data_type1, typename data_type2, typename data_type3, typename data_type4, typename data_type5, typename data_type6>
 struct tuple6
 {
@@ -409,7 +409,7 @@ public:
 	}
 };
 
-// Container for seven readonly elements of different types.
+// Container for seven elements of different types.
 template <typename data_type1, typename data_type2, typename data_type3, typename data_type4, typename data_type5, typename data_type6, typename data_type7>
 struct tuple7
 {
@@ -510,7 +510,7 @@ public:
 	}
 };
 
-// Container for eight readonly elements of different types.
+// Container for eight elements of different types.
 template <typename data_type1, typename data_type2, typename data_type3, typename data_type4, typename data_type5, typename data_type6, typename data_type7, typename data_type8>
 struct tuple8
 {
@@ -618,7 +618,7 @@ public:
 	}
 };
 
-// Container for nine readonly elements of different types.
+// Container for nine elements of different types.
 template <typename data_type1, typename data_type2, typename data_type3, typename data_type4, typename data_type5, typename data_type6, typename data_type7, typename data_type8, typename data_type9>
 struct tuple9
 {
@@ -733,7 +733,7 @@ public:
 	}
 };
 
-// Container for ten readonly elements of different types.
+// Container for ten elements of different types.
 template <typename data_type1, typename data_type2, typename data_type3, typename data_type4, typename data_type5, typename data_type6, typename data_type7, typename data_type8, typename data_type9, typename data_type10>
 struct tuple10
 {

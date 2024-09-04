@@ -2,7 +2,7 @@
 // Smart Pointer Classes
 // by Kyle Furey
 
-// REFERENCES: https://blog.devgenius.io/unique-pointer-and-implementation-in-c-ec6599a518e5, https://www.geeksforgeeks.org/smart-pointers-cpp/
+// REFERENCE: https://blog.devgenius.io/unique-pointer-and-implementation-in-c-ec6599a518e5, https://www.geeksforgeeks.org/smart-pointers-cpp/
 
 #pragma once
 #include <map>

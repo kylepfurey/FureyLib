@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// Class used to store a sorted red-black binary search tree for fast retrieval of nodes with unique data.
+/// Class used to store a red-black binary search tree for fast storage and retrieval of nodes with unique data.
 /// </summary>
 /// <typeparam name="DataType"></typeparam>
 public class RedBlackTree<DataType> : IEnumerable, IEnumerable<DataType> // where DataType : IComparable, IComparable<DataType>
@@ -103,7 +103,7 @@ public class RedBlackTree<DataType> : IEnumerable, IEnumerable<DataType> // wher
     }
 
     /// <summary>
-    /// Returns a sorted array of the current binary tree
+    /// Returns a array of the current binary tree
     /// </summary>
     /// <returns></returns>
     public DataType[] ToArray()
@@ -144,7 +144,7 @@ public class RedBlackTree<DataType> : IEnumerable, IEnumerable<DataType> // wher
     }
 
     /// <summary>
-    /// Returns a sorted list of the current binary tree
+    /// Returns a list of the current binary tree
     /// </summary>
     /// <returns></returns>
     public List<DataType> ToList()
@@ -1679,3 +1679,9 @@ public class RedBlackNode<DataType> // where DataType : IComparable, IComparable
         return left.GetHashCode() > right.GetHashCode();
     }
 }
+
+/// <summary>
+/// Class that stores unique elements for fast insertion, access, and removal.
+/// </summary>
+/// <typeparam name="DataType"></typeparam>
+public class HashSet<DataType> : RedBlackTree<DataType> /* where DataType : IComparable, IComparable<DataType> */ { }

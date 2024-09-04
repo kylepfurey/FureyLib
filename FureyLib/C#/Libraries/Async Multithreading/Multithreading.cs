@@ -316,7 +316,7 @@ public static class Multithreading
     /// <param name="condition"></param>
     public static void Block(ref bool condition)
     {
-        while (!condition) { }
+        while (!condition) { Thread.Sleep(1); }
     }
 
     /// <summary>
@@ -326,7 +326,7 @@ public static class Multithreading
     {
         lockedThreads[current] = null;
 
-        while (lockedThreads.ContainsKey(current)) { }
+        while (lockedThreads.ContainsKey(current)) { Thread.Sleep(1); }
 
         lockedThreads.Remove(current);
     }
@@ -344,7 +344,7 @@ public static class Multithreading
 
         lockedThreads[current] = thread;
 
-        while (lockedThreads.ContainsKey(current) && threads.Contains(lockedThreads[current])) { }
+        while (lockedThreads.ContainsKey(current) && threads.Contains(lockedThreads[current])) { Thread.Sleep(1); }
 
         lockedThreads.Remove(current);
     }
@@ -1239,7 +1239,7 @@ public static class Multithreading
     {
         if (current == main)
         {
-            while (!cancellationTokens[main]) { }
+            while (!cancellationTokens[main]) { Thread.Sleep(1); }
         }
     }
 

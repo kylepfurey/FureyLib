@@ -345,7 +345,7 @@ public static class Async
     /// <param name="condition"></param>
     public static void Await(ref bool condition)
     {
-        while (!condition) { }
+        while (!condition) { Thread.Sleep(1); }
     }
 
     /// <summary>
@@ -354,7 +354,7 @@ public static class Async
     /// <param name="task"></param>
     public static void Await(Task task)
     {
-        while (!task.IsCompleted) { }
+        while (!task.IsCompleted) { Thread.Sleep(1); }
     }
 
     /// <summary>
@@ -363,7 +363,7 @@ public static class Async
     /// <param name="task"></param>
     public static ReturnType Await<ReturnType>(Task<ReturnType> task)
     {
-        while (!task.IsCompleted) { }
+        while (!task.IsCompleted) { Thread.Sleep(1); }
 
         return task.Result;
     }

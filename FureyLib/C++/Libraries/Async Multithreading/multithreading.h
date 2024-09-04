@@ -324,7 +324,7 @@ public:
 	// Delays the current thread until the given condition is met
 	static void block(bool& condition)
 	{
-		while (!condition) {}
+		while (!condition) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); }
 	}
 
 	// Delays the current thread until it is is unlocked
@@ -332,7 +332,7 @@ public:
 	{
 		locked_threads[std::this_thread::get_id()] = std::thread::id();
 
-		while (CONTAINS_KEY(locked_threads, std::this_thread::get_id())) {}
+		while (CONTAINS_KEY(locked_threads, std::this_thread::get_id())) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); }
 
 		locked_threads.erase(std::this_thread::get_id());
 	}
@@ -347,7 +347,7 @@ public:
 
 		locked_threads[std::this_thread::get_id()] = thread_ids[find(thread)];
 
-		while (CONTAINS_KEY(locked_threads, std::this_thread::get_id()) && is_active(locked_threads[std::this_thread::get_id()])) {}
+		while (CONTAINS_KEY(locked_threads, std::this_thread::get_id()) && is_active(locked_threads[std::this_thread::get_id()])) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); }
 
 		locked_threads.erase(std::this_thread::get_id());
 	}
@@ -362,7 +362,7 @@ public:
 
 		locked_threads[std::this_thread::get_id()] = id;
 
-		while (CONTAINS_KEY(locked_threads, std::this_thread::get_id()) && is_active(locked_threads[std::this_thread::get_id()])) {}
+		while (CONTAINS_KEY(locked_threads, std::this_thread::get_id()) && is_active(locked_threads[std::this_thread::get_id()])) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); }
 
 		locked_threads.erase(std::this_thread::get_id());
 	}
@@ -492,7 +492,7 @@ public:
 
 	// •  Creates a new thread that can run code independently of other threads.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Use a lambda expression "[] () void { }" or the LAMBDA() { } macro to add code.
 	// •  Returns a pointer to the newly created thread.
 	static std::thread* new_thread(std::function<void()> method)
 	{
@@ -500,27 +500,27 @@ public:
 
 		threads.emplace_back
 		(
-			LAMBDA(=)
+			LAMBDA(= )
+		{
+			if (CONTAINS_KEY(locked_threads, std::this_thread::get_id()))
 			{
-				if (CONTAINS_KEY(locked_threads, std::this_thread::get_id()))
-				{
-					lock(std::this_thread::get_id());
-				}
-
-				running_threads.push_back(std::this_thread::get_id());
-
-				method();
-
-				threads.erase(threads.begin() + find(std::this_thread::get_id()));
-
-				thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
-
-				thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
-
-				running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
-
-				cancellation_tokens.erase(std::this_thread::get_id());
+				lock(std::this_thread::get_id());
 			}
+
+			running_threads.push_back(std::this_thread::get_id());
+
+			method();
+
+			threads.erase(threads.begin() + find(std::this_thread::get_id()));
+
+			thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
+
+			thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
+
+			running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
+
+			cancellation_tokens.erase(std::this_thread::get_id());
+		}
 		);
 
 		new_thread = &threads.back();
@@ -539,7 +539,7 @@ public:
 	// •  Creates a new thread that can run code independently of other threads.
 	// •  start_behaviour = When to start the new thread.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Use a lambda expression "[] () void { }" or the LAMBDA() { } macro to add code.
 	// •  Returns a pointer to the newly created thread.
 	static std::thread* new_thread(thread_start start_behaviour, std::function<void()> method)
 	{
@@ -547,27 +547,27 @@ public:
 
 		threads.emplace_back
 		(
-			LAMBDA(=)
+			LAMBDA(= )
+		{
+			if (CONTAINS_KEY(locked_threads, std::this_thread::get_id()))
 			{
-				if (CONTAINS_KEY(locked_threads, std::this_thread::get_id()))
-				{
-					lock(std::this_thread::get_id());
-				}
-
-				running_threads.push_back(std::this_thread::get_id());
-
-				method();
-
-				threads.erase(threads.begin() + find(std::this_thread::get_id()));
-
-				thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
-
-				thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
-
-				running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
-
-				cancellation_tokens.erase(std::this_thread::get_id());
+				lock(std::this_thread::get_id());
 			}
+
+			running_threads.push_back(std::this_thread::get_id());
+
+			method();
+
+			threads.erase(threads.begin() + find(std::this_thread::get_id()));
+
+			thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
+
+			thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
+
+			running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
+
+			cancellation_tokens.erase(std::this_thread::get_id());
+		}
 		);
 
 		new_thread = &threads.back();
@@ -606,7 +606,7 @@ public:
 	// •  start_behaviour = When to start the new thread.
 	// •  name = The name of this thread.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Use a lambda expression "[] () void { }" or the LAMBDA() { } macro to add code.
 	// •  Returns a pointer to the newly created thread.
 	static std::thread* new_thread(thread_start start_behaviour, std::string name, std::function<void()> method)
 	{
@@ -614,27 +614,27 @@ public:
 
 		threads.emplace_back
 		(
-			LAMBDA(=)
+			LAMBDA(= )
+		{
+			if (CONTAINS_KEY(locked_threads, std::this_thread::get_id()))
 			{
-				if (CONTAINS_KEY(locked_threads, std::this_thread::get_id()))
-				{
-					lock(std::this_thread::get_id());
-				}
-
-				running_threads.push_back(std::this_thread::get_id());
-
-				method();
-
-				threads.erase(threads.begin() + find(std::this_thread::get_id()));
-
-				thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
-
-				thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
-
-				running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
-
-				cancellation_tokens.erase(std::this_thread::get_id());
+				lock(std::this_thread::get_id());
 			}
+
+			running_threads.push_back(std::this_thread::get_id());
+
+			method();
+
+			threads.erase(threads.begin() + find(std::this_thread::get_id()));
+
+			thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
+
+			thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
+
+			running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
+
+			cancellation_tokens.erase(std::this_thread::get_id());
+		}
 		);
 
 		new_thread = &threads.back();
@@ -672,7 +672,7 @@ public:
 	// •  Creates a new thread that can run code independently of other threads.
 	// •  followed_thread = The thread to follow this new thread after.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Use a lambda expression "[] () void { }" or the LAMBDA() { } macro to add code.
 	// •  Returns a pointer to the newly created thread.
 	static std::thread* new_thread(std::thread& followed_thread, std::function<void()> method)
 	{
@@ -682,24 +682,24 @@ public:
 
 		threads.emplace_back
 		(
-			LAMBDA(=)
-			{
-				lock(followed_id);
+			LAMBDA(= )
+		{
+			lock(followed_id);
 
-				running_threads.push_back(std::this_thread::get_id());
+			running_threads.push_back(std::this_thread::get_id());
 
-				method();
+			method();
 
-				threads.erase(threads.begin() + find(std::this_thread::get_id()));
+			threads.erase(threads.begin() + find(std::this_thread::get_id()));
 
-				thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
+			thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
 
-				thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
+			thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
 
-				running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
+			running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
 
-				cancellation_tokens.erase(std::this_thread::get_id());
-			}
+			cancellation_tokens.erase(std::this_thread::get_id());
+		}
 		);
 
 		new_thread = &threads.back();
@@ -719,7 +719,7 @@ public:
 	// •  followed_thread = The thread to follow this new thread after.
 	// •  name = The name of this thread.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Use a lambda expression "[] () void { }" or the LAMBDA() { } macro to add code.
 	// •  Returns a pointer to the newly created thread.
 	static std::thread* new_thread(std::thread& followed_thread, std::string name, std::function<void()> method)
 	{
@@ -729,24 +729,24 @@ public:
 
 		threads.emplace_back
 		(
-			LAMBDA(=)
-			{
-				lock(followed_id);
+			LAMBDA(= )
+		{
+			lock(followed_id);
 
-				running_threads.push_back(std::this_thread::get_id());
+			running_threads.push_back(std::this_thread::get_id());
 
-				method();
+			method();
 
-				threads.erase(threads.begin() + find(std::this_thread::get_id()));
+			threads.erase(threads.begin() + find(std::this_thread::get_id()));
 
-				thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
+			thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
 
-				thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
+			thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
 
-				running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
+			running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
 
-				cancellation_tokens.erase(std::this_thread::get_id());
-			}
+			cancellation_tokens.erase(std::this_thread::get_id());
+		}
 		);
 
 		new_thread = &threads.back();
@@ -765,7 +765,7 @@ public:
 	// •  Creates a new thread that can run code independently of other threads.
 	// •  followed_id = The id of the thread to follow this new thread after.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Use a lambda expression "[] () void { }" or the LAMBDA() { } macro to add code.
 	// •  Returns a pointer to the newly created thread.
 	static std::thread* new_thread(std::thread::id followed_id, std::function<void()> method)
 	{
@@ -773,24 +773,24 @@ public:
 
 		threads.emplace_back
 		(
-			LAMBDA(=)
-			{
-				lock(followed_id);
+			LAMBDA(= )
+		{
+			lock(followed_id);
 
-				running_threads.push_back(std::this_thread::get_id());
+			running_threads.push_back(std::this_thread::get_id());
 
-				method();
+			method();
 
-				threads.erase(threads.begin() + find(std::this_thread::get_id()));
+			threads.erase(threads.begin() + find(std::this_thread::get_id()));
 
-				thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
+			thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
 
-				thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
+			thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
 
-				running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
+			running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
 
-				cancellation_tokens.erase(std::this_thread::get_id());
-			}
+			cancellation_tokens.erase(std::this_thread::get_id());
+		}
 		);
 
 		new_thread = &threads.back();
@@ -810,7 +810,7 @@ public:
 	// •  followed_id = The id of the thread to follow this new thread after.
 	// •  name = The name of this thread.
 	// •  method = The code this thread will execute.
-	// •  Use a lambda expression "[] () . void { }" or the LAMBDA() { } macro to add code.
+	// •  Use a lambda expression "[] () void { }" or the LAMBDA() { } macro to add code.
 	// •  Returns a pointer to the newly created thread.
 	static std::thread* new_thread(std::thread::id followed_id, std::string name, std::function<void()> method)
 	{
@@ -818,24 +818,24 @@ public:
 
 		threads.emplace_back
 		(
-			LAMBDA(=)
-			{
-				lock(followed_id);
+			LAMBDA(= )
+		{
+			lock(followed_id);
 
-				running_threads.push_back(std::this_thread::get_id());
+			running_threads.push_back(std::this_thread::get_id());
 
-				method();
+			method();
 
-				threads.erase(threads.begin() + find(std::this_thread::get_id()));
+			threads.erase(threads.begin() + find(std::this_thread::get_id()));
 
-				thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
+			thread_ids.erase(FIND(thread_ids, std::this_thread::get_id()));
 
-				thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
+			thread_names.erase(thread_names.begin() + find(std::this_thread::get_id()));
 
-				running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
+			running_threads.erase(FIND(running_threads, std::this_thread::get_id()));
 
-				cancellation_tokens.erase(std::this_thread::get_id());
-			}
+			cancellation_tokens.erase(std::this_thread::get_id());
+		}
 		);
 
 		new_thread = &threads.back();
@@ -1211,7 +1211,7 @@ public:
 	{
 		if (std::this_thread::get_id() == main_thread_id)
 		{
-			while (!cancellation_tokens[main_thread_id]) {}
+			while (!cancellation_tokens[main_thread_id]) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); }
 		}
 	}
 
@@ -1233,11 +1233,11 @@ public:
 		{
 			cancel_all();
 
-			while (threads.size() > 0) {}
+			while (threads.size() > 0) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); }
 		}
 		else if (std::this_thread::get_id() == main_thread_id)
 		{
-			while (threads.size() > 0) {}
+			while (threads.size() > 0) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); }
 		}
 	}
 };

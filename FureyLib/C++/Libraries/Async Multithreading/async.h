@@ -32,20 +32,16 @@ public:
 	// Runs the given function asynchronously
 	template <typename ... parameter_types> static std::future<bool> run(METHOD(function), parameter_types... parameters)
 	{
-		std::promise<bool>* complete = new std::promise<bool>();
+		std::shared_ptr<std::promise<bool>> complete = std::shared_ptr<std::promise<bool>>(new std::promise<bool>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &complete)
-			{
-				function(parameters...);
+			LAMBDA(= )
+		{
+			function(parameters...);
 
-				complete->set_value(true);
-
-				delete complete;
-
-				complete = nullptr;
-			}
+			complete->set_value(true);
+		}
 		);
 
 		delay.detach();
@@ -56,18 +52,14 @@ public:
 	// Runs the given function asynchronously and returns a future with its result
 	template <typename return_type, typename ... parameter_types> static std::future<return_type> run(FUNCTION(function), parameter_types... parameters)
 	{
-		std::promise<return_type>* promise = new std::promise<return_type>();
+		std::shared_ptr<std::promise<return_type>> promise = std::shared_ptr<std::promise<return_type>>(new std::promise<return_type>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &promise)
-			{
-				promise->set_value(function(parameters...));
-
-				delete promise;
-
-				promise = nullptr;
-			}
+			LAMBDA(= )
+		{
+			promise->set_value(function(parameters...));
+		}
 		);
 
 		delay.detach();
@@ -96,20 +88,16 @@ public:
 	// Delays the current thread by one tick when awaited
 	static std::future<bool> delay_for_tick()
 	{
-		std::promise<bool>* complete = new std::promise<bool>();
+		std::shared_ptr<std::promise<bool>> complete = std::shared_ptr<std::promise<bool>>(new std::promise<bool>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &complete)
-			{
-				std::this_thread::yield();
+			LAMBDA(= )
+		{
+			std::this_thread::yield();
 
-				complete->set_value(true);
-
-				delete complete;
-
-				complete = nullptr;
-			}
+			complete->set_value(true);
+		}
 		);
 
 		delay.detach();
@@ -120,22 +108,18 @@ public:
 	// Invokes the given void function after one tick
 	template <typename ... parameter_types> static std::future<bool> invoke_after_tick(METHOD(function), parameter_types... parameters)
 	{
-		std::promise<bool>* complete = new std::promise<bool>();
+		std::shared_ptr<std::promise<bool>> complete = std::shared_ptr<std::promise<bool>>(new std::promise<bool>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &complete)
-			{
-				std::this_thread::yield();
+			LAMBDA(= )
+		{
+			std::this_thread::yield();
 
-				function(parameters...);
+			function(parameters...);
 
-				complete->set_value(true);
-
-				delete complete;
-
-				complete = nullptr;
-			}
+			complete->set_value(true);
+		}
 		);
 
 		delay.detach();
@@ -146,20 +130,16 @@ public:
 	// Invokes the given function after one tick and returns the result
 	template <typename return_type, typename ... parameter_types> static std::future<return_type> invoke_after_tick(FUNCTION(function), parameter_types... parameters)
 	{
-		std::promise<return_type>* promise = new std::promise<return_type>();
+		std::shared_ptr<std::promise<return_type>> promise = std::shared_ptr<std::promise<return_type>>(new std::promise<return_type>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &promise)
-			{
-				std::this_thread::yield();
+			LAMBDA(= )
+		{
+			std::this_thread::yield();
 
-				promise->set_value(function(parameters...));
-
-				delete promise;
-
-				promise = nullptr;
-			}
+			promise->set_value(function(parameters...));
+		}
 		);
 
 		delay.detach();
@@ -173,23 +153,19 @@ public:
 	// Delays the current thread by the given number of ticks when awaited
 	static std::future<bool> delay_for_ticks(int number_of_ticks)
 	{
-		std::promise<bool>* complete = new std::promise<bool>();
+		std::shared_ptr<std::promise<bool>> complete = std::shared_ptr<std::promise<bool>>(new std::promise<bool>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &complete)
+			LAMBDA(= )
+		{
+			for (int i = 0; i < number_of_ticks; i++)
 			{
-				for (int i = 0; i < number_of_ticks; i++)
-				{
-					std::this_thread::yield();
-				}
-
-				complete->set_value(true);
-
-				delete complete;
-
-				complete = nullptr;
+				std::this_thread::yield();
 			}
+
+			complete->set_value(true);
+		}
 		);
 
 		delay.detach();
@@ -200,25 +176,21 @@ public:
 	// Invokes the given void function after the given number of ticks
 	template <typename ... parameter_types> static std::future<bool> invoke_after_ticks(int number_of_ticks, METHOD(function), parameter_types... parameters)
 	{
-		std::promise<bool>* complete = new std::promise<bool>();
+		std::shared_ptr<std::promise<bool>> complete = std::shared_ptr<std::promise<bool>>(new std::promise<bool>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &complete)
+			LAMBDA(= )
+		{
+			for (int i = 0; i < number_of_ticks; i++)
 			{
-				for (int i = 0; i < number_of_ticks; i++)
-				{
-					std::this_thread::yield();
-				}
-
-				function(parameters...);
-
-				complete->set_value(true);
-
-				delete complete;
-
-				complete = nullptr;
+				std::this_thread::yield();
 			}
+
+			function(parameters...);
+
+			complete->set_value(true);
+		}
 		);
 
 		delay.detach();
@@ -229,23 +201,19 @@ public:
 	// Invokes the given function after the given number of ticks and returns the result
 	template <typename return_type, typename ... parameter_types> static std::future<return_type> invoke_after_ticks(int number_of_ticks, FUNCTION(function), parameter_types... parameters)
 	{
-		std::promise<return_type>* promise = new std::promise<return_type>();
+		std::shared_ptr<std::promise<return_type>> promise = std::shared_ptr<std::promise<return_type>>(new std::promise<return_type>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &promise)
+			LAMBDA(= )
+		{
+			for (int i = 0; i < number_of_ticks; i++)
 			{
-				for (int i = 0; i < number_of_ticks; i++)
-				{
-					std::this_thread::yield();
-				}
-
-				promise->set_value(function(parameters...));
-
-				delete promise;
-
-				promise = nullptr;
+				std::this_thread::yield();
 			}
+
+			promise->set_value(function(parameters...));
+		}
 		);
 
 		delay.detach();
@@ -259,20 +227,16 @@ public:
 	// Delays the current thread by the given number of milliseconds when awaited
 	static std::future<bool> delay_for_milliseconds(int milliseconds)
 	{
-		std::promise<bool>* complete = new std::promise<bool>();
+		std::shared_ptr<std::promise<bool>> complete = std::shared_ptr<std::promise<bool>>(new std::promise<bool>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &complete)
-			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+			LAMBDA(= )
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 
-				complete->set_value(true);
-
-				delete complete;
-
-				complete = nullptr;
-			}
+			complete->set_value(true);
+		}
 		);
 
 		delay.detach();
@@ -283,22 +247,18 @@ public:
 	// Invokes the given void function after the given number of milliseconds
 	template <typename ... parameter_types> static std::future<bool> invoke_after_milliseconds(int milliseconds, METHOD(function), parameter_types... parameters)
 	{
-		std::promise<bool>* complete = new std::promise<bool>();
+		std::shared_ptr<std::promise<bool>> complete = std::shared_ptr<std::promise<bool>>(new std::promise<bool>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &complete)
-			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+			LAMBDA(= )
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 
-				function(parameters...);
+			function(parameters...);
 
-				complete->set_value(true);
-
-				delete complete;
-
-				complete = nullptr;
-			}
+			complete->set_value(true);
+		}
 		);
 
 		delay.detach();
@@ -309,20 +269,16 @@ public:
 	// Invokes the given function after the given number of milliseconds and returns the result
 	template <typename return_type, typename ... parameter_types> static std::future<return_type> invoke_after_milliseconds(int milliseconds, FUNCTION(function), parameter_types... parameters)
 	{
-		std::promise<return_type>* promise = new std::promise<return_type>();
+		std::shared_ptr<std::promise<return_type>> promise = std::shared_ptr<std::promise<return_type>>(new std::promise<return_type>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &promise)
-			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+			LAMBDA(= )
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 
-				promise->set_value(function(parameters...));
-
-				delete promise;
-
-				promise = nullptr;
-			}
+			promise->set_value(function(parameters...));
+		}
 		);
 
 		delay.detach();
@@ -336,20 +292,16 @@ public:
 	// Delays the current thread by the given number of seconds when awaited
 	static std::future<bool> delay_for_seconds(float seconds)
 	{
-		std::promise<bool>* complete = new std::promise<bool>();
+		std::shared_ptr<std::promise<bool>> complete = std::shared_ptr<std::promise<bool>>(new std::promise<bool>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &complete)
-			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(to_milliseconds(seconds)));
+			LAMBDA(= )
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(to_milliseconds(seconds)));
 
-				complete->set_value(true);
-
-				delete complete;
-
-				complete = nullptr;
-			}
+			complete->set_value(true);
+		}
 		);
 
 		delay.detach();
@@ -360,22 +312,18 @@ public:
 	// Invokes the given void function after the given number of seconds
 	template <typename ... parameter_types> static std::future<bool> invoke_after_seconds(float seconds, METHOD(function), parameter_types... parameters)
 	{
-		std::promise<bool>* complete = new std::promise<bool>();
+		std::shared_ptr<std::promise<bool>> complete = std::shared_ptr<std::promise<bool>>(new std::promise<bool>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &complete)
-			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(to_milliseconds(seconds)));
+			LAMBDA(= )
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(to_milliseconds(seconds)));
 
-				function(parameters...);
+			function(parameters...);
 
-				complete->set_value(true);
-
-				delete complete;
-
-				complete = nullptr;
-			}
+			complete->set_value(true);
+		}
 		);
 
 		delay.detach();
@@ -386,20 +334,16 @@ public:
 	// Invokes the given function after the given number of seconds and returns the result
 	template <typename return_type, typename ... parameter_types> static std::future<return_type> invoke_after_seconds(float seconds, FUNCTION(function), parameter_types... parameters)
 	{
-		std::promise<return_type>* promise = new std::promise<return_type>();
+		std::shared_ptr<std::promise<return_type>> promise = std::shared_ptr<std::promise<return_type>>(new std::promise<return_type>);
 
 		std::thread delay
 		(
-			LAMBDA(=, &promise)
-			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(to_milliseconds(seconds)));;
+			LAMBDA(= )
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(to_milliseconds(seconds)));;
 
-				promise->set_value(function(parameters...));
-
-				delete promise;
-
-				promise = nullptr;
-			}
+			promise->set_value(function(parameters...));
+		}
 		);
 
 		delay.detach();
@@ -413,7 +357,7 @@ public:
 	// Delays the current thread until the given condition is met
 	static void await(bool& condition)
 	{
-		while (!condition) { }
+		while (!condition) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); }
 	}
 
 	// Delays the current thread until the given future is ready and returns the future's result

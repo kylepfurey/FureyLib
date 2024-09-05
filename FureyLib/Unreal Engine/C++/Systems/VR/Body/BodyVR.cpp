@@ -27,6 +27,8 @@ UBodyVR::UBodyVR()
 
 	TorsoRotateSpeed = 10;
 
+	MaxHeadHeight = 250;
+
 	LeftShoulder = nullptr;
 
 	RightShoulder = nullptr;
@@ -57,6 +59,8 @@ UBodyVR::UBodyVR(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 
 	TorsoRotateSpeed = 10;
 
+	MaxHeadHeight = 250;
+
 	LeftShoulder = nullptr;
 
 	RightShoulder = nullptr;
@@ -71,7 +75,7 @@ UBodyVR::UBodyVR(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 }
 
 // Body constructor
-UBodyVR::UBodyVR(bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset)
+UBodyVR::UBodyVR(bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, float _MaxHeadHeight, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
@@ -86,6 +90,8 @@ UBodyVR::UBodyVR(bool Active, bool HandTracking, USceneComponent* _Torso, float 
 	TorsoOffset = _TorsoOffset;
 
 	TorsoRotateSpeed = _TorsoRotateSpeed;
+
+	MaxHeadHeight = _MaxHeadHeight;
 
 	LeftShoulder = _LeftShoulder;
 
@@ -326,6 +332,17 @@ float UBodyVR::GetTorsoRotation()
 	return Instance->Torso->GetComponentRotation().Euler().Z;
 }
 
+// Returns the average head height while standing.
+float UBodyVR::GetMaxHeadHeight()
+{
+	if (Instance == nullptr)
+	{
+		return 0;
+	}
+
+	return Instance->MaxHeadHeight;
+}
+
 
 // SETTERS
 
@@ -503,6 +520,17 @@ bool UBodyVR::AddTorsoRotation(float DeltaRotation)
 	Instance->Torso->SetWorldRotation(FRotator::MakeFromEuler(FVector(Rotation.X, Rotation.Y, Rotation.Z + DeltaRotation)));
 
 	return true;
+}
+
+// Sets the average head height while standing.
+void UBodyVR::SetMaxHeadHeight(float Height)
+{
+	if (Instance == nullptr)
+	{
+		return;
+	}
+
+	Instance->MaxHeadHeight = Height;
 }
 
 
@@ -690,8 +718,30 @@ void UBodyVR::HideBody(bool Hide)
 	}
 }
 
+// Returns the percentage of the maximum height the player's headset is currently at.
+float UBodyVR::GetBodyHeightPercentage()
+{
+	if (Instance == nullptr)
+	{
+		return 0;
+	}
+
+	float Percent = ((Instance->bHandTracking ? UHandTrackerVR::GetHeadset()->GetComponentLocation().Z : UControllerInputVR::GetHeadset()->GetComponentLocation().Z) - Instance->GetOwner()->GetActorLocation().Z) / Instance->MaxHeadHeight;
+
+	if (Percent > 1)
+	{
+		Percent = 1;
+	}
+	else if (Percent < 0)
+	{
+		Percent = 0;
+	}
+
+	return Percent;
+}
+
 // Constructs a new BodyVR component.
-UBodyVR* UBodyVR::ConstructBodyVR(AActor* Parent, bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset)
+UBodyVR* UBodyVR::ConstructBodyVR(AActor* Parent, bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, float _MaxHeadHeight, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset)
 {
 	if (Instance != nullptr)
 	{
@@ -717,6 +767,8 @@ UBodyVR* UBodyVR::ConstructBodyVR(AActor* Parent, bool Active, bool HandTracking
 	NewBody->TorsoOffset = _TorsoOffset;
 
 	NewBody->TorsoRotateSpeed = _TorsoRotateSpeed;
+
+	NewBody->MaxHeadHeight = _MaxHeadHeight;
 
 	NewBody->LeftShoulder = _LeftShoulder;
 

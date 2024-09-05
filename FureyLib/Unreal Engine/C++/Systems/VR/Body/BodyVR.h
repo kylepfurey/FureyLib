@@ -31,47 +31,51 @@ protected:
 	// VARIABLES
 
 	/** Whether to update the VR body. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "BodyVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
 	bool bActive = true;
 
 	/** Whether to update the VR body relative to VR hand tracking (true) or VR controllers (false). */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "BodyVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
 	bool bHandTracking = true;
 
 	/** The VR torso object. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "BodyVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
 	USceneComponent* Torso = nullptr;
 
 	/** The offset of the torso relative to the headset. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "BodyVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
 	float TorsoOffset = -50;
 
 	/** The speed to rotate the VR torso towards the headset's direction. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "BodyVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
 	float TorsoRotateSpeed = 10;
 
+	/** The average standing height of the player's head. */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
+	float MaxHeadHeight = 240;
+
 	/** The left VR shoulder object. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "BodyVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
 	USceneComponent* LeftShoulder = nullptr;
 
 	/** The right VR shoulder object. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "BodyVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
 	USceneComponent* RightShoulder = nullptr;
 
 	/** The offset of the shoulders relative to the torso. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "BodyVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
 	FVector ShoulderOffset = FVector(0, 15, 35);
 
 	/** The left VR elbow object. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "BodyVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
 	USceneComponent* LeftElbow = nullptr;
 
 	/** The right VR elbow object. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "BodyVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
 	USceneComponent* RightElbow = nullptr;
 
 	/** The offset of the elbows relative to the hands / controllers. */
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), Category = "BodyVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
 	FVector ElbowOffset = FVector(-5, 25, 0);
 
 	/** The global instance of the player's body. */
@@ -97,7 +101,7 @@ public:
 	UBodyVR(const FObjectInitializer& ObjectInitializer);
 
 	/** Body constructor. */
-	UBodyVR(bool Active, bool HandTracking = true, USceneComponent* _Torso = nullptr, float _TorsoOffset = -50, float _TorsoRotateSpeed = 10, USceneComponent* _LeftShoulder = nullptr, USceneComponent* _RightShoulder = nullptr, FVector _ShoulderOffset = FVector(0, 15, 35), USceneComponent* _LeftElbow = nullptr, USceneComponent* _RightElbow = nullptr, FVector _ElbowOffset = FVector(-5, 25, 0));
+	UBodyVR(bool Active, bool HandTracking = true, USceneComponent* _Torso = nullptr, float _TorsoOffset = -50, float _TorsoRotateSpeed = 10, float _MaxHeadHeight, USceneComponent* _LeftShoulder = nullptr, USceneComponent* _RightShoulder = nullptr, FVector _ShoulderOffset = FVector(0, 15, 35), USceneComponent* _LeftElbow = nullptr, USceneComponent* _RightElbow = nullptr, FVector _ElbowOffset = FVector(-5, 25, 0));
 
 
 	// UNREAL FUNCTIONS
@@ -172,6 +176,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "BodyVR")
 	static float GetTorsoRotation();
 
+	/** Returns the average head height while standing. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "BodyVR")
+	static float GetMaxHeadHeight();
+
 
 	// SETTERS
 
@@ -240,6 +248,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "BodyVR")
 	static bool AddTorsoRotation(float DeltaRotation);
 
+	/** Sets the average head height while standing. */
+	UFUNCTION(BlueprintCallable, Category = "BodyVR")
+	static void SetMaxHeadHeight(float Height);
+
 
 	// BODY FUNCTIONS
 
@@ -251,15 +263,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "BodyVR")
 	static bool UpdateBodyVR(float DeltaSeconds = 0.001f);
 
-	// Shows the player's VR body.
+	/** Shows the player's VR body. */
 	UFUNCTION(BlueprintCallable, Category = "BodyVR")
 	static void ShowBody(bool Show = true);
 
-	// Hides the player's VR body.
+	/** Hides the player's VR body. */
 	UFUNCTION(BlueprintCallable, Category = "BodyVR")
 	static void HideBody(bool Hide = true);
 
+	/** Returns the percentage of the maximum height the player's headset is currently at. */
+	UFUNCTION(BlueprintCallable, Category = "BodyVR")
+	static float GetBodyHeightPercentage();
+
 	/** Constructs a new BodyVR component. */
 	UFUNCTION(BlueprintCallable, Category = "BodyVR")
-	static UBodyVR* ConstructBodyVR(AActor* Parent, bool Active = true, bool HandTracking = true, USceneComponent* _Torso = nullptr, float _TorsoOffset = -50, float _TorsoRotateSpeed = 10, USceneComponent* _LeftShoulder = nullptr, USceneComponent* _RightShoulder = nullptr, FVector _ShoulderOffset = FVector(0, 15, 35), USceneComponent* _LeftElbow = nullptr, USceneComponent* _RightElbow = nullptr, FVector _ElbowOffset = FVector(-5, 25, 0));
+	static UBodyVR* ConstructBodyVR(AActor* Parent, bool Active = true, bool HandTracking = true, USceneComponent* _Torso = nullptr, float _TorsoOffset = -50, float _TorsoRotateSpeed = 10, float _MaxHeadHeight, USceneComponent* _LeftShoulder = nullptr, USceneComponent* _RightShoulder = nullptr, FVector _ShoulderOffset = FVector(0, 15, 35), USceneComponent* _LeftElbow = nullptr, USceneComponent* _RightElbow = nullptr, FVector _ElbowOffset = FVector(-5, 25, 0));
 };

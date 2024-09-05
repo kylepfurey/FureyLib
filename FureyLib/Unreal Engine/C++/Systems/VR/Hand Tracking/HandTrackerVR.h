@@ -42,30 +42,30 @@ protected:
 	// HAND OBJECTS
 
 	/** The headset camera object. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetHeadset", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, BlueprintGetter = "GetHeadset", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
 	UCameraComponent* Headset = nullptr;
 
 	/** The left hand object. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetLeftHand", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, BlueprintGetter = "GetLeftHand", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
 	UHandVR* LeftHand = nullptr;
 
 	/** The right hand object. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetRightHand", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, BlueprintGetter = "GetRightHand", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
 	UHandVR* RightHand = nullptr;
 
 	/** Whether the dominant hand is the right hand. */
-	UPROPERTY(BlueprintReadWrite, BlueprintGetter = "IsDominantHandRight", BlueprintSetter = "SetDominantHand", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, BlueprintGetter = "IsDominantHandRight", BlueprintSetter = "SetDominantHand", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
 	bool bDominantHandIsRight = true;
 
 
 	// MOTION CONTROLLERS
 
 	/** The motion controller component being used to represent the left hand. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetLeftMotionController", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, BlueprintGetter = "GetLeftMotionController", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
 	UMotionControllerComponent* LeftHandMotionController = nullptr;
 
 	/** The motion controller component being used to represent the right hand. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetRightMotionController", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, BlueprintGetter = "GetRightMotionController", meta = (ExposeOnSpawn), Category = "HandTrackerVR")
 	UMotionControllerComponent* RightHandMotionController = nullptr;
 
 

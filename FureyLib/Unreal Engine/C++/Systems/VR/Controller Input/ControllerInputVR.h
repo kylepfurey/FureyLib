@@ -58,15 +58,15 @@ protected:
 	// CONTROLLER OBJECTS
 
 	/** The headset camera object. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetHeadset", meta = (ExposeOnSpawn), Category = "ControllerInputVR")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, BlueprintGetter = "GetHeadset", meta = (ExposeOnSpawn), Category = "ControllerInputVR")
 	UCameraComponent* Headset = nullptr;
 
 	/** The left controller object. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetLeftController", meta = (ExposeOnSpawn), Category = "ControllerInputVR")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, BlueprintGetter = "GetLeftController", meta = (ExposeOnSpawn), Category = "ControllerInputVR")
 	UMotionControllerComponent* LeftController = nullptr;
 
 	/** The right controller object. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetRightController", meta = (ExposeOnSpawn), Category = "ControllerInputVR")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, BlueprintGetter = "GetRightController", meta = (ExposeOnSpawn), Category = "ControllerInputVR")
 	UMotionControllerComponent* RightController = nullptr;
 
 
@@ -77,7 +77,7 @@ protected:
 	bool bInputEnabled = false;
 
 	/** The mapping context of global VR input. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetMappingContext", meta = (ExposeOnSpawn), Category = "ControllerInputVR")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, BlueprintGetter = "GetMappingContext", meta = (ExposeOnSpawn), Category = "ControllerInputVR")
 	UInputMappingContext* MappingContext = nullptr;
 
 	/** Whether the left controller is currently being tracked (used for blueprint support). */

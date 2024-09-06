@@ -48,7 +48,7 @@ enum class EControllerInputVR : uint8
 * Singleton controller input component class.
 * Provides static functions for easy access to VR controller input.
 */
-UCLASS(Blueprintable, BlueprintType, ClassGroup = (ControllerInputVR))
+UCLASS(Blueprintable, BlueprintType, ClassGroup = (ControllerInputVR), meta = (BlueprintSpawnableComponent))
 class MYGAME_API UControllerInputVR : public UActorComponent
 {
 	GENERATED_BODY()

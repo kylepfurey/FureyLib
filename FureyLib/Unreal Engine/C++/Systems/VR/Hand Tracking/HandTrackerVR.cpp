@@ -51,8 +51,6 @@ UHandTrackerVR::UHandTrackerVR()
 	PreviousLeftGestures = TSet<EHandGestureVR>();
 
 	PreviousRightGestures = TSet<EHandGestureVR>();
-
-	// Hand tracker construction should be done in blueprints through the ConstructHandTrackerVR() function.
 }
 
 // Object initializer constructor.
@@ -96,12 +94,10 @@ UHandTrackerVR::UHandTrackerVR(const FObjectInitializer& ObjectInitializer) : Su
 	PreviousLeftGestures = TSet<EHandGestureVR>();
 
 	PreviousRightGestures = TSet<EHandGestureVR>();
-
-	// Hand tracker construction should be done in blueprints through the ConstructHandTrackerVR() function.
 }
 
 // Hand tracker constructor.
-UHandTrackerVR::UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _bDominantHandIsRight, EHandTrackingStateVR TrackingState)
+UHandTrackerVR::UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _DominantHandIsRight, EHandTrackingStateVR TrackingState)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
@@ -113,7 +109,7 @@ UHandTrackerVR::UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponen
 
 	RightHand = UHandVR::ConstructHandVR(true, _RightHandComponent);
 
-	bDominantHandIsRight = _bDominantHandIsRight;
+	bDominantHandIsRight = _DominantHandIsRight;
 
 	Headset = _Headset;
 
@@ -141,8 +137,6 @@ UHandTrackerVR::UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponen
 	PreviousLeftGestures = TSet<EHandGestureVR>();
 
 	PreviousRightGestures = TSet<EHandGestureVR>();
-
-	// Hand tracker construction should be done in blueprints through the ConstructHandTrackerVR() function.
 }
 
 
@@ -507,7 +501,7 @@ UHandTrackerVR* UHandTrackerVR::GetHandTrackerVR()
 }
 
 // Constructs a new HandTrackerVR component.
-UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _bDominantHandIsRight, EHandTrackingStateVR TrackingState)
+UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _DominantHandIsRight, EHandTrackingStateVR TrackingState)
 {
 	if (Instance != nullptr)
 	{
@@ -530,7 +524,7 @@ UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UCameraCo
 
 	NewHandTracker->RightHand = UHandVR::ConstructHandVR(true, _RightHandComponent);
 
-	NewHandTracker->bDominantHandIsRight = _bDominantHandIsRight;
+	NewHandTracker->bDominantHandIsRight = _DominantHandIsRight;
 
 	NewHandTracker->Headset = _Headset;
 

@@ -52,7 +52,7 @@ protected:
 
 	/** The average standing height of the player's head. */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
-	float MaxHeadHeight = 240;
+	float MaxHeadsetHeight = 160;
 
 	/** The left VR shoulder object. */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "BodyVR")
@@ -101,7 +101,7 @@ public:
 	UBodyVR(const FObjectInitializer& ObjectInitializer);
 
 	/** Body constructor. */
-	UBodyVR(bool Active, bool HandTracking = true, USceneComponent* _Torso = nullptr, float _TorsoOffset = -50, float _TorsoRotateSpeed = 10, float _MaxHeadHeight, USceneComponent* _LeftShoulder = nullptr, USceneComponent* _RightShoulder = nullptr, FVector _ShoulderOffset = FVector(0, 15, 35), USceneComponent* _LeftElbow = nullptr, USceneComponent* _RightElbow = nullptr, FVector _ElbowOffset = FVector(-5, 25, 0));
+	UBodyVR(bool Active, bool HandTracking = true, USceneComponent* _Torso = nullptr, float _TorsoOffset = -50, float _TorsoRotateSpeed = 10, float _MaxHeadsetHeight = 160, USceneComponent* _LeftShoulder = nullptr, USceneComponent* _RightShoulder = nullptr, FVector _ShoulderOffset = FVector(0, 15, 35), USceneComponent* _LeftElbow = nullptr, USceneComponent* _RightElbow = nullptr, FVector _ElbowOffset = FVector(-5, 25, 0));
 
 
 	// UNREAL FUNCTIONS
@@ -178,7 +178,7 @@ public:
 
 	/** Returns the average head height while standing. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "BodyVR")
-	static float GetMaxHeadHeight();
+	static float GetMaxHeadsetHeight();
 
 
 	// SETTERS
@@ -250,7 +250,7 @@ public:
 
 	/** Sets the average head height while standing. */
 	UFUNCTION(BlueprintCallable, Category = "BodyVR")
-	static void SetMaxHeadHeight(float Height);
+	static void SetMaxHeadsetHeight(float Height);
 
 
 	// BODY FUNCTIONS
@@ -272,10 +272,10 @@ public:
 	static void HideBody(bool Hide = true);
 
 	/** Returns the percentage of the maximum height the player's headset is currently at. */
-	UFUNCTION(BlueprintCallable, Category = "BodyVR")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "BodyVR")
 	static float GetBodyHeightPercentage();
 
 	/** Constructs a new BodyVR component. */
 	UFUNCTION(BlueprintCallable, Category = "BodyVR")
-	static UBodyVR* ConstructBodyVR(AActor* Parent, bool Active = true, bool HandTracking = true, USceneComponent* _Torso = nullptr, float _TorsoOffset = -50, float _TorsoRotateSpeed = 10, float _MaxHeadHeight, USceneComponent* _LeftShoulder = nullptr, USceneComponent* _RightShoulder = nullptr, FVector _ShoulderOffset = FVector(0, 15, 35), USceneComponent* _LeftElbow = nullptr, USceneComponent* _RightElbow = nullptr, FVector _ElbowOffset = FVector(-5, 25, 0));
+	static UBodyVR* ConstructBodyVR(AActor* Parent, bool Active = true, bool HandTracking = true, USceneComponent* _Torso = nullptr, float _TorsoOffset = -50, float _TorsoRotateSpeed = 10, float _MaxHeadsetHeight = 160, USceneComponent* _LeftShoulder = nullptr, USceneComponent* _RightShoulder = nullptr, FVector _ShoulderOffset = FVector(0, 15, 35), USceneComponent* _LeftElbow = nullptr, USceneComponent* _RightElbow = nullptr, FVector _ElbowOffset = FVector(-5, 25, 0));
 };

@@ -32,8 +32,6 @@ UControllerInputVR::UControllerInputVR()
 	bTrackingRight = false;
 
 	bInputEnabled = false;
-
-	// Controller input construction should be done in blueprints through the ConstructControllerInputVR() function.
 }
 
 // Object initializer constructor.
@@ -58,8 +56,6 @@ UControllerInputVR::UControllerInputVR(const FObjectInitializer& ObjectInitializ
 	bTrackingRight = false;
 
 	bInputEnabled = false;
-
-	// Controller input construction should be done in blueprints through the ConstructControllerInputVR() function.
 }
 
 // Controller input constructor.
@@ -89,8 +85,6 @@ UControllerInputVR::UControllerInputVR(UInputMappingContext* _MappingContext, UC
 	{
 		ReceiveControllerInput(GetOwner(), DEFAULT_INPUT_PRIORITY);
 	}
-
-	// Controller input construction should be done in blueprints through the ConstructControllerInputVR() function.
 }
 
 

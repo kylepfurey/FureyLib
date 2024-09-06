@@ -32,7 +32,7 @@ enum class EHandTrackingStateVR : uint8
 * Tracks a player's hands in VR through the hand's joints.
 * Provides static functions for easy access and validation of data from the player's hands.
 */
-UCLASS(Blueprintable, BlueprintType, ClassGroup = (HandTrackerVR))
+UCLASS(Blueprintable, BlueprintType, ClassGroup = (HandTrackerVR), meta = (BlueprintSpawnableComponent))
 class MYGAME_API UHandTrackerVR : public UActorComponent, public IHandInteractableVR
 {
 	GENERATED_BODY()
@@ -155,7 +155,7 @@ public:
 	UHandTrackerVR(const FObjectInitializer& ObjectInitializer);
 
 	/** Hand tracker constructor. */
-	UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _bDominantHandIsRight = true, EHandTrackingStateVR TrackingState = EHandTrackingStateVR::BOTH);
+	UHandTrackerVR(UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _DominantHandIsRight = true, EHandTrackingStateVR TrackingState = EHandTrackingStateVR::BOTH);
 
 
 	// UNREAL FUNCTIONS
@@ -200,7 +200,7 @@ public:
 
 	/** Constructs a new HandTrackerVR component. */
 	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
-	static UHandTrackerVR* ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _bDominantHandIsRight = true, EHandTrackingStateVR TrackingState = EHandTrackingStateVR::BOTH);
+	static UHandTrackerVR* ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _DominantHandIsRight = true, EHandTrackingStateVR TrackingState = EHandTrackingStateVR::BOTH);
 
 
 	// TRACKING FUNCTIONS

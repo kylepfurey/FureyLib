@@ -12,9 +12,9 @@ using System.Text.Json; // Serializer
 /// <summary>
 /// •  Base class for all objects in a program.<br/>
 /// •  Inherit from object to share common methods and generic storage across any type.<br/>
-/// •  All new types should inherit from this class and at least provide a ToString() implementation.
+/// •  All new types should inherit from this class and provide a ToString() implementation.
 /// </summary>
-public abstract class Object : IDisposable, ICloneable, IEquatable<Object>
+public class Object : IDisposable, ICloneable, IEquatable<Object>
 {
     // DESTRUCTOR
 
@@ -297,6 +297,8 @@ public abstract class Object : IDisposable, ICloneable, IEquatable<Object>
         {
             return false;
         }
+
+        // New code here
 
         return true;
         */

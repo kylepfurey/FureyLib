@@ -13,7 +13,7 @@
 
 // •  Base class for all objects in a program.
 // •  Inherit from object to share common methods and generic storage across any type.
-// •  All new types should inherit from this class and at least provide a to_string() implementation.
+// •  All new types should inherit from this class and provide a to_string() implementation.
 class object
 {
 public:
@@ -97,6 +97,7 @@ public:
 		return other == nullptr;
 	}
 
+
 	// EQUALITY BY VALUE
 
 	// Returns whether the given object is equal to this by value.
@@ -173,11 +174,13 @@ public:
 	// •  Returns whether the Json string was successfully parsed.
 	virtual bool read_json(std::string json)
 	{
+		// New code here
+
 		return false;
 	}
 };
 
 // •  Base class for all objects in a program.
 // •  Inherit from object to share common methods and generic storage across any type.
-// •  All new types should inherit from this and provide a to_string() implementation.
+// •  All new types should inherit from this class and provide a to_string() implementation.
 #define object object

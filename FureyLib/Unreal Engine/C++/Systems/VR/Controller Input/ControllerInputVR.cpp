@@ -83,7 +83,7 @@ UControllerInputVR::UControllerInputVR(UInputMappingContext* _MappingContext, UC
 
 	if (bAutoEnable)
 	{
-		ReceiveControllerInput(GetOwner(), DEFAULT_INPUT_PRIORITY);
+		ReceiveControllerInput(GetOwner(), 0);
 	}
 }
 
@@ -371,7 +371,7 @@ UControllerInputVR* UControllerInputVR::ConstructControllerInputVR(AActor* Paren
 
 	if (bAutoEnable)
 	{
-		ReceiveControllerInput(NewControllerInput->GetOwner(), DEFAULT_INPUT_PRIORITY);
+		ReceiveControllerInput(NewControllerInput->GetOwner(), 0);
 	}
 
 	return NewControllerInput;
@@ -522,6 +522,66 @@ void UControllerInputVR::GetRightControllerTransform(FVector& WorldPosition, FRo
 	LocalPosition = Instance->RightController->GetRelativeLocation();
 
 	LocalRotation = Instance->RightController->GetRelativeRotation();
+}
+
+// Calculates the objects both controllers are currently aiming at.
+void UControllerInputVR::GetBothAimedAtObjects(bool& LeftHit, FHitResult& LeftResult, bool& RightHit, FHitResult& RightResult, float MaxDistance, bool HitComplex)
+{
+	LeftHit = GetLeftAimedAtObject(LeftResult, MaxDistance, HitComplex);
+
+	RightHit = GetRightAimedAtObject(RightResult, MaxDistance, HitComplex);
+}
+
+// Calculates the object the given index finger is currently pointing at.
+bool UControllerInputVR::GetAimedAtObject(bool bIsRight, FHitResult& Result, float MaxDistance, bool HitComplex)
+{
+	return bIsRight ? GetRightAimedAtObject(Result, MaxDistance, HitComplex) : GetLeftAimedAtObject(Result, MaxDistance, HitComplex);
+}
+
+// Calculates the object the left controller is currently aiming at.
+bool UControllerInputVR::GetLeftAimedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
+{
+	if (Instance == nullptr)
+	{
+		Result = FHitResult();
+
+		return false;
+	}
+
+	FVector WorldPosition;
+
+	FRotator WorldRotation;
+
+	FVector LocalPosition;
+
+	FRotator LocalRotation;
+
+	GetLeftControllerTransform(WorldPosition, WorldRotation, LocalPosition, LocalRotation);
+
+	return UKismetSystemLibrary::LineTraceSingle(Instance, WorldPosition, WorldPosition + WorldRotation.Vector() * MaxDistance, ETraceTypeQuery::TraceTypeQuery1, HitComplex, TArray<AActor*>(), EDrawDebugTrace::None, Result, true);
+}
+
+// Calculates the object the right controller is currently aiming at.
+bool UControllerInputVR::GetRightAimedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
+{
+	if (Instance == nullptr)
+	{
+		Result = FHitResult();
+
+		return false;
+	}
+
+	FVector WorldPosition;
+
+	FRotator WorldRotation;
+
+	FVector LocalPosition;
+
+	FRotator LocalRotation;
+
+	GetRightControllerTransform(WorldPosition, WorldRotation, LocalPosition, LocalRotation);
+
+	return UKismetSystemLibrary::LineTraceSingle(Instance, WorldPosition, WorldPosition + WorldRotation.Vector() * MaxDistance, ETraceTypeQuery::TraceTypeQuery1, HitComplex, TArray<AActor*>(), EDrawDebugTrace::None, Result, true);
 }
 
 

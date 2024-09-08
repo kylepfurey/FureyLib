@@ -45,11 +45,17 @@ bool UHandVR::IsRight()
 	return bIsRight;
 }
 
+// Fixes the given rotation relative to a right hand.
+FRotator UHandVR::FixRightHandRotation(FRotator RightHandRotation)
+{
+	return FRotationMatrix::MakeFromX(RightHandRotation.Vector() * -1).Rotator();
+}
+
 
 // HAND OBJECT FUNCTIONS
 
 // Gets the hand component.
-UPoseableMeshComponent* UHandVR::GetHand()
+UPoseableMeshComponent* UHandVR::GetHandComponent()
 {
 	return Hand;
 }
@@ -80,6 +86,11 @@ void UHandVR::GetHandBone(FName Bone, FVector& WorldPosition, FRotator& WorldRot
 
 		WorldRotation = Transform.Rotator();
 
+		if (bIsRight)
+		{
+			WorldRotation = FixRightHandRotation(WorldRotation);
+		}
+
 		BoneIndex = Hand->GetBoneIndex(Hand->GetParentBone(Bone));
 
 		if (BoneIndex == INDEX_NONE)
@@ -107,6 +118,22 @@ void UHandVR::GetHandBone(FName Bone, FVector& WorldPosition, FRotator& WorldRot
 	LocalPosition = FVector(0, 0, 0);
 
 	LocalRotation = FRotator(0, 0, 0);
+}
+
+// Calculates the object the index finger is currently pointing at.
+bool UHandVR::GetPointedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
+{
+	FVector WorldPosition;
+
+	FRotator WorldRotation;
+
+	FVector LocalPosition;
+
+	FRotator LocalRotation;
+
+	GetIndexFingerTip(WorldPosition, WorldRotation, LocalPosition, LocalRotation);
+
+	return UKismetSystemLibrary::LineTraceSingle(Hand, WorldPosition, WorldPosition + WorldRotation.Vector() * MaxDistance, ETraceTypeQuery::TraceTypeQuery1, HitComplex, TArray<AActor*>(), EDrawDebugTrace::None, Result, true);
 }
 
 // Constructs a new HandVR object.

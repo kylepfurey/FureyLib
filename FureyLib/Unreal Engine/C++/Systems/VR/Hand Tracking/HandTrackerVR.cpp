@@ -367,7 +367,7 @@ void UHandTrackerVR::LocateMotionControllers()
 	{
 		if (LeftHand != nullptr)
 		{
-			Component = LeftHand->GetHand();
+			Component = LeftHand->GetHandComponent();
 
 			if (Component != nullptr)
 			{
@@ -385,7 +385,7 @@ void UHandTrackerVR::LocateMotionControllers()
 	{
 		if (RightHand != nullptr)
 		{
-			Component = RightHand->GetHand();
+			Component = RightHand->GetHandComponent();
 
 			if (Component != nullptr)
 			{
@@ -646,6 +646,46 @@ UHandVR* UHandTrackerVR::GetRightHand()
 	return Instance->RightHand;
 }
 
+// Calculates the objects both index fingers are currently pointing at.
+void UHandTrackerVR::GetBothPointedAtObjects(bool& LeftHit, FHitResult& LeftResult, bool& RightHit, FHitResult& RightResult, float MaxDistance, bool HitComplex)
+{
+	LeftHit = GetLeftPointedAtObject(LeftResult, MaxDistance, HitComplex);
+
+	RightHit = GetRightPointedAtObject(RightResult, MaxDistance, HitComplex);
+}
+
+// Calculates the object the given index finger is currently pointing at.
+bool UHandTrackerVR::GetPointedAtObject(bool bIsRight, FHitResult& Result, float MaxDistance, bool HitComplex)
+{
+	return bIsRight ? GetRightPointedAtObject(Result, MaxDistance, HitComplex) : GetLeftPointedAtObject(Result, MaxDistance, HitComplex);
+}
+
+// Calculates the object the left index finger is currently pointing at.
+bool UHandTrackerVR::GetLeftPointedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
+{
+	if (Instance == nullptr)
+	{
+		Result = FHitResult();
+
+		return false;
+	}
+
+	return Instance->LeftHand->GetPointedAtObject(Result, MaxDistance, HitComplex);
+}
+
+// Calculates the object the right index finger is currently pointing at.
+bool UHandTrackerVR::GetRightPointedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
+{
+	if (Instance == nullptr)
+	{
+		Result = FHitResult();
+
+		return false;
+	}
+
+	return Instance->RightHand->GetPointedAtObject(Result, MaxDistance, HitComplex);
+}
+
 
 // DOMINANT HAND FUNCTIONS
 
@@ -714,6 +754,32 @@ void UHandTrackerVR::GetNonDominantHand(UHandVR*& NonDominant, UHandVR*& Dominan
 	NonDominant = Instance->bDominantHandIsRight ? Instance->LeftHand : Instance->RightHand;
 
 	Dominant = Instance->bDominantHandIsRight ? Instance->RightHand : Instance->LeftHand;
+}
+
+// Calculates the object the dominant index finger is currently pointing at.
+bool UHandTrackerVR::GetDominantPointedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
+{
+	if (Instance == nullptr)
+	{
+		Result = FHitResult();
+
+		return false;
+	}
+
+	return Instance->bDominantHandIsRight ? GetRightPointedAtObject(Result, MaxDistance, HitComplex) : GetLeftPointedAtObject(Result, MaxDistance, HitComplex);
+}
+
+// Calculates the object the non dominant index finger is currently pointing at.
+bool UHandTrackerVR::GetNonDominantPointedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
+{
+	if (Instance == nullptr)
+	{
+		Result = FHitResult();
+
+		return false;
+	}
+
+	return Instance->bDominantHandIsRight ? GetLeftPointedAtObject(Result, MaxDistance, HitComplex) : GetRightPointedAtObject(Result, MaxDistance, HitComplex);
 }
 
 

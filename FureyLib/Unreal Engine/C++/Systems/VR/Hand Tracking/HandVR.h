@@ -13,6 +13,7 @@
 #include "Math/Vector.h"
 #include "Math/Rotator.h"
 #include "Math/Transform.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "HandVR.generated.h"
 
 // Include this heading to use the class
@@ -87,14 +88,14 @@ protected:
 	// TYPE OF HAND
 
 	/** Whether this hand is a right hand. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "IsRight", meta = (ExposeOnSpawn), Category = "HandVR")
+	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn), Category = "HandVR")
 	bool bIsRight = false;
 
 
 	// HAND OBJECT
 
 	/** The hand object. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetHand", meta = (ExposeOnSpawn), Category = "HandVR")
+	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn), Category = "HandVR")
 	UPoseableMeshComponent* Hand = nullptr;
 
 public:
@@ -117,16 +118,24 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandVR")
 	virtual bool IsRight();
 
+	/** Fixes the given rotation relative to a right hand. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandVR")
+	static FRotator FixRightHandRotation(FRotator RightHandRotation);
+
 
 	// HAND OBJECT FUNCTIONS
 
 	/** Gets the hand component. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandVR")
-	virtual UPoseableMeshComponent* GetHand();
+	virtual UPoseableMeshComponent* GetHandComponent();
 
 	/** Gets the given bone's transform data. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandVR")
 	virtual void GetHandBone(FName Bone, FVector& WorldPosition, FRotator& WorldRotation, FVector& LocalPosition, FRotator& LocalRotation);
+
+	/** Calculates the object the index finger is currently pointing at. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandVR")
+	virtual bool GetPointedAtObject(FHitResult& Result, float MaxDistance = 10000, bool HitComplex = true);
 
 	/** Constructs a new HandVR object. */
 	UFUNCTION(BlueprintCallable, Category = "HandVR")

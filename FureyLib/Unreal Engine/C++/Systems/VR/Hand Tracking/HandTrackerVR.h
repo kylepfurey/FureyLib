@@ -244,6 +244,22 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
 	static UHandVR* GetRightHand();
 
+	/** Calculates the objects both index fingers are currently pointing at. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static void GetBothPointedAtObjects(bool& LeftHit, FHitResult& LeftResult, bool& RightHit, FHitResult& RightResult, float MaxDistance = 10000, bool HitComplex = true);
+
+	/** Calculates the object the given index finger is currently pointing at. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static bool GetPointedAtObject(bool bIsRight, FHitResult& Result, float MaxDistance = 10000, bool HitComplex = true);
+
+	/** Calculates the object the left index finger is currently pointing at. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static bool GetLeftPointedAtObject(FHitResult& Result, float MaxDistance = 10000, bool HitComplex = true);
+
+	/** Calculates the object the right index finger is currently pointing at. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static bool GetRightPointedAtObject(FHitResult& Result, float MaxDistance = 10000, bool HitComplex = true);
+
 
 	// DOMINANT HAND FUNCTIONS
 
@@ -266,6 +282,14 @@ public:
 	/** Returns the non-dominant hand. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
 	static void GetNonDominantHand(UHandVR*& NonDominant, UHandVR*& Dominant);
+
+	/** Calculates the object the dominant index finger is currently pointing at. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static bool GetDominantPointedAtObject(FHitResult& Result, float MaxDistance = 10000, bool HitComplex = true);
+
+	/** Calculates the object the non dominant index finger is currently pointing at. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
+	static bool GetNonDominantPointedAtObject(FHitResult& Result, float MaxDistance = 10000, bool HitComplex = true);
 
 
 	// HEADSET FUNCTIONS

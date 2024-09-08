@@ -2,7 +2,7 @@
 // Static VR Controller Input Component Script
 // by Kyle Furey
 
-// REQUIREMENTS: ControllerInputVR.cpp
+// REQUIREMENT: ControllerInputVR.cpp
 
 #pragma once
 #include "CoreMinimal.h"
@@ -15,6 +15,7 @@
 #include "Math/Vector.h"
 #include "Math/Rotator.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "ControllerInputVR.generated.h"
 
 // Include this heading to use the class
@@ -231,6 +232,22 @@ public:
 	/** Gets the left motion controller component's transform data. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "ControllerInputVR")
 	static void GetRightControllerTransform(FVector& WorldPosition, FRotator& WorldRotation, FVector& LocalPosition, FRotator& LocalRotation);
+
+	/** Calculates the objects both controllers are currently aiming at. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "ControllerInputVR")
+	static void GetBothAimedAtObjects(bool& LeftHit, FHitResult& LeftResult, bool& RightHit, FHitResult& RightResult, float MaxDistance = 10000, bool HitComplex = true);
+
+	/** Calculates the object the given controller is currently aiming at. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "ControllerInputVR")
+	static bool GetAimedAtObject(bool bIsRight, FHitResult& Result, float MaxDistance = 10000, bool HitComplex = true);
+
+	/** Calculates the object the left controller is currently aiming at. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "ControllerInputVR")
+	static bool GetLeftAimedAtObject(FHitResult& Result, float MaxDistance = 10000, bool HitComplex = true);
+
+	/** Calculates the object the right controller is currently aiming at. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "ControllerInputVR")
+	static bool GetRightAimedAtObject(FHitResult& Result, float MaxDistance = 10000, bool HitComplex = true);
 
 
 	// HEADSET FUNCTIONS

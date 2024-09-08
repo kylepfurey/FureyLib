@@ -97,7 +97,7 @@ void UControllerInputVR::BeginPlay()
 	Super::BeginPlay();
 
 	// Check for existing controller inputs.
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		// Store the current instance of the controller input.
 		Instance = this;
@@ -151,21 +151,21 @@ void UControllerInputVR::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 // Returns whether the given mapping context is being broadcast for the given player.
 bool UControllerInputVR::IsInputEnabled(int32 PlayerIndex, UInputMappingContext* _MappingContext)
 {
-	if (PlayerIndex < 0 || _MappingContext == nullptr)
+	if (PlayerIndex < 0 || !IsValid(_MappingContext))
 	{
 		return false;
 	}
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GWorld, PlayerIndex);
 
-	if (PlayerController == nullptr)
+	if (!IsValid(PlayerController))
 	{
 		return false;
 	}
 
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 
-	if (InputSubsystem == nullptr)
+	if (!IsValid(InputSubsystem))
 	{
 		return false;
 	}
@@ -176,21 +176,21 @@ bool UControllerInputVR::IsInputEnabled(int32 PlayerIndex, UInputMappingContext*
 // Begins broadcasting the given mapping context to the given player and returns if it was successful.
 bool UControllerInputVR::EnableInput(int32 PlayerIndex, UInputMappingContext* _MappingContext, int32 Priority)
 {
-	if (PlayerIndex < 0 || _MappingContext == nullptr)
+	if (PlayerIndex < 0 || !IsValid(_MappingContext))
 	{
 		return false;
 	}
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GWorld, PlayerIndex);
 
-	if (PlayerController == nullptr)
+	if (!IsValid(PlayerController))
 	{
 		return false;
 	}
 
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 
-	if (InputSubsystem == nullptr)
+	if (!IsValid(InputSubsystem))
 	{
 		return false;
 	}
@@ -208,21 +208,21 @@ bool UControllerInputVR::EnableInput(int32 PlayerIndex, UInputMappingContext* _M
 // Stops broadcasting the given mapping context to the given player and returns if it was successful.
 bool UControllerInputVR::DisableInput(int32 PlayerIndex, UInputMappingContext* _MappingContext)
 {
-	if (PlayerIndex < 0 || _MappingContext == nullptr)
+	if (PlayerIndex < 0 || !IsValid(_MappingContext))
 	{
 		return false;
 	}
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GWorld, PlayerIndex);
 
-	if (PlayerController == nullptr)
+	if (!IsValid(PlayerController))
 	{
 		return false;
 	}
 
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 
-	if (InputSubsystem == nullptr)
+	if (!IsValid(InputSubsystem))
 	{
 		return false;
 	}
@@ -243,7 +243,7 @@ bool UControllerInputVR::DisableInput(int32 PlayerIndex, UInputMappingContext* _
 // Returns whether global input has been enabled.
 bool UControllerInputVR::IsControllerInputEnabled()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -254,7 +254,7 @@ bool UControllerInputVR::IsControllerInputEnabled()
 // Sets the global inputs status and returns if it was successful.
 bool UControllerInputVR::SetControllerInput(bool bEnabled)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -267,7 +267,7 @@ bool UControllerInputVR::SetControllerInput(bool bEnabled)
 // Enables global input and returns if it was successful.
 bool UControllerInputVR::EnableControllerInput()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -280,7 +280,7 @@ bool UControllerInputVR::EnableControllerInput()
 // Disables global input and returns if it was successful.
 bool UControllerInputVR::DisableControllerInput()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -294,7 +294,7 @@ bool UControllerInputVR::DisableControllerInput()
 // EnableControllerInput() must have been called somewhere for the given player index for this actor to receive input.
 bool UControllerInputVR::ReceiveControllerInput(AActor* Actor, int32 PlayerIndex)
 {
-	if (Actor == nullptr)
+	if (!IsValid(Actor))
 	{
 		return false;
 	}
@@ -308,7 +308,7 @@ bool UControllerInputVR::ReceiveControllerInput(AActor* Actor, int32 PlayerIndex
 // EnableControllerInput() must have been called somewhere for the given player index for this actor to receive input.
 bool UControllerInputVR::StopReceivingControllerInput(AActor* Actor, int32 PlayerIndex)
 {
-	if (Actor == nullptr)
+	if (!IsValid(Actor))
 	{
 		return false;
 	}
@@ -321,7 +321,7 @@ bool UControllerInputVR::StopReceivingControllerInput(AActor* Actor, int32 Playe
 // Returns the global input mapping context.
 UInputMappingContext* UControllerInputVR::GetMappingContext()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -338,7 +338,7 @@ UControllerInputVR* UControllerInputVR::GetControllerInputVR()
 // Constructs a new ControllerInputVR component.
 UControllerInputVR* UControllerInputVR::ConstructControllerInputVR(AActor* Parent, UInputMappingContext* _MappingContext, UCameraComponent* _Headset, UMotionControllerComponent* _LeftControllerComponent, UMotionControllerComponent* _RightControllerComponent, bool bAutoEnable)
 {
-	if (Instance != nullptr)
+	if (IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -383,15 +383,15 @@ UControllerInputVR* UControllerInputVR::ConstructControllerInputVR(AActor* Paren
 // Returns whether the given VR controller is currently found and being tracked.
 bool UControllerInputVR::IsTrackingController(bool bIsRight)
 {
-	return Instance != nullptr && (bIsRight ? Instance->RightController->IsTracked() : Instance->LeftController->IsTracked());
+	return IsValid(Instance) && (bIsRight ? Instance->RightController->IsTracked() : Instance->LeftController->IsTracked());
 }
 
 // Returns whether both VR controllers are currently found and being tracked.
 void UControllerInputVR::IsTrackingBothControllers(bool& Both, bool& Left, bool& Right)
 {
-	Left = Instance != nullptr && Instance->LeftController->IsTracked();
+	Left = IsValid(Instance) && Instance->LeftController->IsTracked();
 
-	Right = Instance != nullptr && Instance->RightController->IsTracked();
+	Right = IsValid(Instance) && Instance->RightController->IsTracked();
 
 	Both = Left && Right;
 }
@@ -399,13 +399,13 @@ void UControllerInputVR::IsTrackingBothControllers(bool& Both, bool& Left, bool&
 // Returns whether the left VR controller is currently found and being tracked.
 bool UControllerInputVR::IsTrackingLeftController()
 {
-	return Instance != nullptr && Instance->LeftController->IsTracked();
+	return IsValid(Instance) && Instance->LeftController->IsTracked();
 }
 
 // Returns whether the right VR controller is currently found and being tracked.
 bool UControllerInputVR::IsTrackingRightController()
 {
-	return Instance != nullptr && Instance->RightController->IsTracked();
+	return IsValid(Instance) && Instance->RightController->IsTracked();
 }
 
 
@@ -414,7 +414,7 @@ bool UControllerInputVR::IsTrackingRightController()
 // Returns the given motion controller.
 UMotionControllerComponent* UControllerInputVR::GetController(bool bIsRight)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -425,7 +425,7 @@ UMotionControllerComponent* UControllerInputVR::GetController(bool bIsRight)
 // Returns both motion controllers.
 void UControllerInputVR::GetBothControllers(UMotionControllerComponent*& Left, UMotionControllerComponent*& Right)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Left = nullptr;
 
@@ -442,7 +442,7 @@ void UControllerInputVR::GetBothControllers(UMotionControllerComponent*& Left, U
 // Returns the left motion controller.
 UMotionControllerComponent* UControllerInputVR::GetLeftController()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -453,7 +453,7 @@ UMotionControllerComponent* UControllerInputVR::GetLeftController()
 // Returns the right motion controller.
 UMotionControllerComponent* UControllerInputVR::GetRightController()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -477,7 +477,7 @@ void UControllerInputVR::GetControllerTransform(bool bIsRight, FVector& WorldPos
 // Gets the left motion controller component's transform data.
 void UControllerInputVR::GetLeftControllerTransform(FVector& WorldPosition, FRotator& WorldRotation, FVector& LocalPosition, FRotator& LocalRotation)
 {
-	if (Instance == nullptr || Instance->LeftController == nullptr)
+	if (!IsValid(Instance) || !IsValid(Instance->LeftController))
 	{
 		WorldPosition = FVector(0, 0, 0);
 
@@ -502,7 +502,7 @@ void UControllerInputVR::GetLeftControllerTransform(FVector& WorldPosition, FRot
 // Gets the right motion controller component's transform data.
 void UControllerInputVR::GetRightControllerTransform(FVector& WorldPosition, FRotator& WorldRotation, FVector& LocalPosition, FRotator& LocalRotation)
 {
-	if (Instance == nullptr || Instance->RightController == nullptr)
+	if (!IsValid(Instance) || !IsValid(Instance->RightController))
 	{
 		WorldPosition = FVector(0, 0, 0);
 
@@ -541,7 +541,7 @@ bool UControllerInputVR::GetAimedAtObject(bool bIsRight, FHitResult& Result, flo
 // Calculates the object the left controller is currently aiming at.
 bool UControllerInputVR::GetLeftAimedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Result = FHitResult();
 
@@ -564,7 +564,7 @@ bool UControllerInputVR::GetLeftAimedAtObject(FHitResult& Result, float MaxDista
 // Calculates the object the right controller is currently aiming at.
 bool UControllerInputVR::GetRightAimedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Result = FHitResult();
 
@@ -590,7 +590,7 @@ bool UControllerInputVR::GetRightAimedAtObject(FHitResult& Result, float MaxDist
 // Returns the headset camera.
 UCameraComponent* UControllerInputVR::GetHeadset()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -601,7 +601,7 @@ UCameraComponent* UControllerInputVR::GetHeadset()
 // Returns the headset camera's transform data.
 void UControllerInputVR::GetHeadsetTransform(FVector& WorldPosition, FRotator& WorldRotation, FVector& LocalPosition, FRotator& LocalRotation)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		WorldPosition = FVector(0, 0, 0);
 
@@ -626,7 +626,7 @@ void UControllerInputVR::GetHeadsetTransform(FVector& WorldPosition, FRotator& W
 // Returns the player actor.
 AActor* UControllerInputVR::GetPlayer()
 {
-	if (Instance == nullptr || Instance->Headset == nullptr)
+	if (!IsValid(Instance) || !IsValid(Instance->Headset))
 	{
 		return nullptr;
 	}
@@ -637,7 +637,7 @@ AActor* UControllerInputVR::GetPlayer()
 // Returns the player's transform data.
 void UControllerInputVR::GetPlayerTransform(FVector& WorldPosition, FRotator& WorldRotation, FVector& WorldScale)
 {
-	if (Instance == nullptr || Instance->Headset == nullptr)
+	if (!IsValid(Instance) || !IsValid(Instance->Headset))
 	{
 		WorldPosition = FVector(0, 0, 0);
 
@@ -650,7 +650,7 @@ void UControllerInputVR::GetPlayerTransform(FVector& WorldPosition, FRotator& Wo
 
 	AActor* Parent = Instance->Headset->GetAttachParentActor();
 
-	if (Parent == nullptr)
+	if (!IsValid(Parent))
 	{
 		WorldPosition = FVector(0, 0, 0);
 

@@ -95,7 +95,7 @@ UThread* UThread::NewThread(const FThreadDelegate& Event, FName Name, bool bStar
 
 	NewThread->Thread = FAsyncThread(LAMBDA(= )
 	{
-		if (NewThread != nullptr)
+		if (IsValid(NewThread))
 		{
 			NewThread->Delegate.ExecuteIfBound();
 		}

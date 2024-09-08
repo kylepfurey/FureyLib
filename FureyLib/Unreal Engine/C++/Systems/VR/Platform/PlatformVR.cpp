@@ -115,7 +115,7 @@ TArray<ALight*> UPlatformVR::NormalizeLights(TArray<ALight*> Lights)
 // Returns whether the lights were successfully normalized and all of the lights in the world.
 void UPlatformVR::NormalizeLighting(bool& Success, TArray<ALight*>& Lights)
 {
-	if (!GIsEditor && GWorld != nullptr)
+	if (!GIsEditor && IsValid(GWorld))
 	{
 		TArray<AActor*> Actors;
 

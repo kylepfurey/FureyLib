@@ -16,7 +16,7 @@ void IPartitionable::OnLoad_Implementation()
 {
 	AActor* Actor = Cast<AActor>(_getUObject());
 
-	if (Actor != nullptr)
+	if (IsValid(Actor))
 	{
 		if (Actor->PrimaryActorTick.bCanEverTick)
 		{
@@ -33,7 +33,7 @@ void IPartitionable::OnUnload_Implementation()
 {
 	AActor* Actor = Cast<AActor>(_getUObject());
 
-	if (Actor != nullptr)
+	if (IsValid(Actor))
 	{
 		Actor->SetActorTickEnabled(false);
 
@@ -170,7 +170,7 @@ void APartitionManager::BeginPlay()
 	Super::BeginPlay();
 
 	// Check for an existing partition manager.
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		// Store the current instance of the partition manager.
 		Instance = this;
@@ -242,7 +242,7 @@ void APartitionManager::Tick(float DeltaTime)
 // Returns whether this world has a partition manager.
 bool APartitionManager::PartitionManagerExists()
 {
-	return Instance != nullptr;
+	return IsValid(Instance);
 }
 
 // Returns the current instance of the partition manager.
@@ -254,7 +254,7 @@ APartitionManager* APartitionManager::GetPartitionManager()
 // Returns whether the partition manager is active.
 bool APartitionManager::IsPartitionActive()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -265,7 +265,7 @@ bool APartitionManager::IsPartitionActive()
 // Returns whether the Z axis (up) is used in partitioning.
 bool APartitionManager::DoesPartitionUseZ()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -276,7 +276,7 @@ bool APartitionManager::DoesPartitionUseZ()
 // Returns the distance before actors are partitioned.
 float APartitionManager::GetPartitionMaxDistance()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return 0;
 	}
@@ -287,7 +287,7 @@ float APartitionManager::GetPartitionMaxDistance()
 // Returns the player actor used for distance calculations in partitioning.
 AActor* APartitionManager::GetPlayer()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -298,7 +298,7 @@ AActor* APartitionManager::GetPlayer()
 // Returns the current actors in partitioning.
 TArray<AActor*> APartitionManager::GetPartitionedActors()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return TArray<AActor*>();
 	}
@@ -309,7 +309,7 @@ TArray<AActor*> APartitionManager::GetPartitionedActors()
 // Returns actors never to be unloaded in partitioning.
 TSet<AActor*> APartitionManager::GetNeverUnloadedActors()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return TSet<AActor*>();
 	}
@@ -320,7 +320,7 @@ TSet<AActor*> APartitionManager::GetNeverUnloadedActors()
 // Returns actors never to be loaded in partitioning.
 TSet<AActor*> APartitionManager::GetNeverLoadedActors()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return TSet<AActor*>();
 	}
@@ -331,7 +331,7 @@ TSet<AActor*> APartitionManager::GetNeverLoadedActors()
 // Returns actors currently unloaded in partitioning.
 TSet<AActor*> APartitionManager::GetUnloadedActors()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return TSet<AActor*>();
 	}
@@ -342,7 +342,7 @@ TSet<AActor*> APartitionManager::GetUnloadedActors()
 // Returns actors currently loaded in partitioning.
 TSet<AActor*> APartitionManager::GetLoadedActors()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return TSet<AActor*>();
 	}
@@ -353,7 +353,7 @@ TSet<AActor*> APartitionManager::GetLoadedActors()
 // Returns the origin point used in grid space.
 FVector APartitionManager::GetGridOrigin()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return FVector(0, 0, 0);
 	}
@@ -364,7 +364,7 @@ FVector APartitionManager::GetGridOrigin()
 // Returns whether objects were loaded on start.
 float APartitionManager::GetGridSize()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return 0;
 	}
@@ -375,7 +375,7 @@ float APartitionManager::GetGridSize()
 // Returns whether objects were loaded on start.
 bool APartitionManager::WereActorsLoadedOnStart()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -386,7 +386,7 @@ bool APartitionManager::WereActorsLoadedOnStart()
 // Returns whether objects were unloaded on start.
 bool APartitionManager::WereActorsUnloadedOnStart()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -397,7 +397,7 @@ bool APartitionManager::WereActorsUnloadedOnStart()
 // Returns whether the partition manager is the origin of the grid.
 bool APartitionManager::IsPartitionManagerGridOrigin()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -408,7 +408,7 @@ bool APartitionManager::IsPartitionManagerGridOrigin()
 // Returns the tick interval of the partition manager.
 float APartitionManager::GetPartitionTickInterval()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return 0;
 	}
@@ -422,7 +422,7 @@ float APartitionManager::GetPartitionTickInterval()
 // Sets whether the partition manager is active.
 void APartitionManager::SetPartitionActive(bool Active)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -433,7 +433,7 @@ void APartitionManager::SetPartitionActive(bool Active)
 // Sets whether the Z axis (up) is used in partitioning.
 void APartitionManager::SetPartitionUsesZ(bool UseZ)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -444,7 +444,7 @@ void APartitionManager::SetPartitionUsesZ(bool UseZ)
 // Sets the distance before actors are partitioned.
 void APartitionManager::SetPartitionMaxDistance(float _MaxDistance)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -455,7 +455,7 @@ void APartitionManager::SetPartitionMaxDistance(float _MaxDistance)
 // Sets the player actor used for distance calculations in partitioning.
 void APartitionManager::SetPartitionPlayer(AActor* _PlayerActor)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -466,7 +466,7 @@ void APartitionManager::SetPartitionPlayer(AActor* _PlayerActor)
 // Sets the origin point used in grid space.
 void APartitionManager::SetGridOrigin(FVector _GridOrigin)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -479,7 +479,7 @@ void APartitionManager::SetGridOrigin(FVector _GridOrigin)
 // Sets the grid size used in grid space.
 void APartitionManager::SetGridSize(float _GridSize)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -490,7 +490,7 @@ void APartitionManager::SetGridSize(float _GridSize)
 // Sets the partition manager's location as the grid origin.
 void APartitionManager::SetPartitionManagerAsGridOrigin()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -503,7 +503,7 @@ void APartitionManager::SetPartitionManagerAsGridOrigin()
 // Sets the tick interval of the partition manager.
 void APartitionManager::SetPartitionTickInterval(float _TickInterval)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -521,7 +521,7 @@ void APartitionManager::SetPartitionTickInterval(float _TickInterval)
 // Returns whether the update was successful.
 bool APartitionManager::UpdatePartition()
 {
-	if (Instance == nullptr || Instance->PlayerActor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Instance->PlayerActor))
 	{
 		return false;
 	}
@@ -580,7 +580,7 @@ bool APartitionManager::UpdatePartition()
 // Returns if the given actor is loaded.
 bool APartitionManager::IsActorLoaded(AActor* Actor)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -592,7 +592,7 @@ bool APartitionManager::IsActorLoaded(AActor* Actor)
 // Returns whether the actor was loaded using the interface (true) or by default (false).
 bool APartitionManager::LoadActor(AActor* Actor)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -623,7 +623,7 @@ bool APartitionManager::LoadActor(AActor* Actor)
 // Returns if the given actor is unloaded.
 bool APartitionManager::IsActorUnloaded(AActor* Actor)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -635,7 +635,7 @@ bool APartitionManager::IsActorUnloaded(AActor* Actor)
 // Returns whether the actor was unloaded using the interface (true) or by default (false).
 bool APartitionManager::UnloadActor(AActor* Actor)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -666,7 +666,7 @@ bool APartitionManager::UnloadActor(AActor* Actor)
 // Returns whether the given actor is within the maximum distance of the player actor.
 bool APartitionManager::IsWithinDistanceOfPlayer(AActor* Actor)
 {
-	if (Instance == nullptr || Instance->PlayerActor == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Instance->PlayerActor) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -701,7 +701,7 @@ bool APartitionManager::IsWithinDistanceOfPlayer(AActor* Actor)
 // Returns if the given actor is partitioned.
 bool APartitionManager::IsPartitioned(AActor* Actor)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -712,7 +712,7 @@ bool APartitionManager::IsPartitioned(AActor* Actor)
 // Marks the actor for partitioning and returns if it was successful.
 bool APartitionManager::MarkPartitioned(AActor* Actor)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -732,7 +732,7 @@ bool APartitionManager::MarkPartitioned(AActor* Actor)
 // Unmarks the actor for partitioning and returns if it was successful.
 bool APartitionManager::UnmarkPartitioned(AActor* Actor)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -756,7 +756,7 @@ bool APartitionManager::UnmarkPartitioned(AActor* Actor)
 // Returns if the given actor is never unloaded.
 bool APartitionManager::IsActorNeverUnloaded(AActor* Actor)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -767,7 +767,7 @@ bool APartitionManager::IsActorNeverUnloaded(AActor* Actor)
 // Never unloads the given actor and returns if it was successful.
 bool APartitionManager::NeverUnloadActor(AActor* Actor)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -789,7 +789,7 @@ bool APartitionManager::NeverUnloadActor(AActor* Actor)
 // Returns if the given actor is never loaded.
 bool APartitionManager::IsActorNeverLoaded(AActor* Actor)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -800,7 +800,7 @@ bool APartitionManager::IsActorNeverLoaded(AActor* Actor)
 // Never loads the given actor and returns if it was successful.
 bool APartitionManager::NeverLoadActor(AActor* Actor)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -822,7 +822,7 @@ bool APartitionManager::NeverLoadActor(AActor* Actor)
 // Partitions the given actor normally and returns if it was successful.
 bool APartitionManager::LoadActorNormally(AActor* Actor)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return false;
 	}
@@ -849,7 +849,7 @@ bool APartitionManager::LoadActorNormally(AActor* Actor)
 // Spawns a new APartitionManager actor into the world.
 APartitionManager* APartitionManager::SpawnPartitionManager(FTransform SpawnTransform, AActor* _PlayerActor, TArray<AActor*> _PartitionedActors, TSet<AActor*> _NeverUnloadedActors, TSet<AActor*> _NeverLoadedActors, bool Active, bool UseZ, float _MaxDistance, bool LoadOnStart, bool UnloadOnStart, float _TickInterval, bool UseGridDistance, bool IsGridOrigin, FVector _GridOrigin, float _GridSize)
 {
-	if (Instance != nullptr || GWorld == nullptr)
+	if (IsValid(Instance) || !IsValid(GWorld))
 	{
 		return nullptr;
 	}
@@ -901,7 +901,7 @@ APartitionManager* APartitionManager::SpawnPartitionManager(FTransform SpawnTran
 // Returns whether grid space is used as distance in partitioning.
 bool APartitionManager::DoesPartitionUseGridDistance()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -912,7 +912,7 @@ bool APartitionManager::DoesPartitionUseGridDistance()
 // Sets whether grid space is used as distance in partitioning.
 void APartitionManager::SetPartitionUsesGridDistance(bool UseGridDistance)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -923,7 +923,7 @@ void APartitionManager::SetPartitionUsesGridDistance(bool UseGridDistance)
 // Calculates a grid space based on the given world position.
 void APartitionManager::CalculateGridSpace(FVector WorldPosition, FVector& GridSpace, FVector2D& GridSpace2D)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		GridSpace = FVector(0, 0, 0);
 
@@ -944,7 +944,7 @@ void APartitionManager::CalculateGridSpace(FVector WorldPosition, FVector& GridS
 // Calculates a world position based on the given grid space.
 FVector APartitionManager::CalculateWorldPosition(FVector GridSpace)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return FVector();
 	}
@@ -955,7 +955,7 @@ FVector APartitionManager::CalculateWorldPosition(FVector GridSpace)
 // Returns the current grid space of the given actor.
 void APartitionManager::GetGridSpace(AActor* Actor, FVector& GridSpace, FVector2D& GridSpace2D)
 {
-	if (Instance == nullptr || Actor == nullptr)
+	if (!IsValid(Instance) || !IsValid(Actor))
 	{
 		return;
 	}
@@ -966,7 +966,7 @@ void APartitionManager::GetGridSpace(AActor* Actor, FVector& GridSpace, FVector2
 // Returns the current grid space of the player.
 void APartitionManager::GetPlayerGridSpace(FVector& GridSpace, FVector2D& GridSpace2D)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}

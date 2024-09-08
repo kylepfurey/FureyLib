@@ -63,7 +63,7 @@ UPoseableMeshComponent* UHandVR::GetHandComponent()
 // Gets the given bone's transform data.
 void UHandVR::GetHandBone(FName Bone, FVector& WorldPosition, FRotator& WorldRotation, FVector& LocalPosition, FRotator& LocalRotation)
 {
-	if (Hand != nullptr)
+	if (IsValid(Hand))
 	{
 		int32 BoneIndex = Hand->GetBoneIndex(Bone);
 
@@ -160,7 +160,7 @@ void UHandVR::GetWrist(FVector& WorldPosition, FRotator& WorldRotation, FVector&
 // Gets the palm transform data.
 void UHandVR::GetPalm(FVector& WorldPosition, FRotator& WorldRotation, FVector& LocalPosition, FRotator& LocalRotation)
 {
-	if (Hand != nullptr)
+	if (IsValid(Hand))
 	{
 		int32 BoneIndex = Hand->GetBoneIndex(TEXT("Wrist Root"));
 

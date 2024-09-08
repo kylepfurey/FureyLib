@@ -149,7 +149,7 @@ void UHandTrackerVR::BeginPlay()
 	Super::BeginPlay();
 
 	// Check for existing hand trackers.
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		// Store the current instance of the hand tracker.
 		Instance = this;
@@ -236,9 +236,9 @@ void UHandTrackerVR::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 	LocateMotionControllers();
 
-	bool bLeft = LeftHandMotionController != nullptr && LeftHandMotionController->IsTracked() && EnumHasAnyFlags(State, EHandTrackingStateVR::LEFT);
+	bool bLeft = IsValid(LeftHandMotionController) && LeftHandMotionController->IsTracked() && EnumHasAnyFlags(State, EHandTrackingStateVR::LEFT);
 
-	bool bRight = RightHandMotionController != nullptr && RightHandMotionController->IsTracked() && EnumHasAnyFlags(State, EHandTrackingStateVR::RIGHT);
+	bool bRight = IsValid(RightHandMotionController) && RightHandMotionController->IsTracked() && EnumHasAnyFlags(State, EHandTrackingStateVR::RIGHT);
 
 	if (!HandsSet && State != EHandTrackingStateVR::NONE && (bLeft || !EnumHasAnyFlags(State, EHandTrackingStateVR::LEFT)) && (bRight || !EnumHasAnyFlags(State, EHandTrackingStateVR::RIGHT)))
 	{
@@ -363,17 +363,17 @@ void UHandTrackerVR::LocateMotionControllers()
 
 	USceneComponent* ParentComponent;
 
-	if (LeftHandMotionController == nullptr)
+	if (!IsValid(LeftHandMotionController))
 	{
-		if (LeftHand != nullptr)
+		if (IsValid(LeftHand))
 		{
 			Component = LeftHand->GetHandComponent();
 
-			if (Component != nullptr)
+			if (IsValid(Component))
 			{
 				ParentComponent = Component->GetAttachParent();
 
-				if (ParentComponent != nullptr)
+				if (IsValid(ParentComponent))
 				{
 					LeftHandMotionController = Cast<UMotionControllerComponent>(ParentComponent);
 				}
@@ -381,17 +381,17 @@ void UHandTrackerVR::LocateMotionControllers()
 		}
 	}
 
-	if (RightHandMotionController == nullptr)
+	if (!IsValid(RightHandMotionController))
 	{
-		if (RightHand != nullptr)
+		if (IsValid(RightHand))
 		{
 			Component = RightHand->GetHandComponent();
 
-			if (Component != nullptr)
+			if (IsValid(Component))
 			{
 				ParentComponent = Component->GetAttachParent();
 
-				if (ParentComponent != nullptr)
+				if (IsValid(ParentComponent))
 				{
 					RightHandMotionController = Cast<UMotionControllerComponent>(ParentComponent);
 				}
@@ -439,7 +439,7 @@ void UHandTrackerVR::RemoveHandTrackingVR(TScriptInterface<IHandInteractableVR> 
 // Returns the global state of hand tracking input.
 EHandTrackingStateVR UHandTrackerVR::GetHandTrackingState()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return EHandTrackingStateVR::NONE;
 	}
@@ -450,7 +450,7 @@ EHandTrackingStateVR UHandTrackerVR::GetHandTrackingState()
 // Sets the global state of hand tracking input.
 void UHandTrackerVR::SetHandTrackingState(EHandTrackingStateVR TrackingState)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -461,9 +461,9 @@ void UHandTrackerVR::SetHandTrackingState(EHandTrackingStateVR TrackingState)
 // Returns whether hand tracking is enabled for the given hands.
 void UHandTrackerVR::IsHandTrackingEnabled(bool& Either, bool& Both, bool& Left, bool& Right)
 {
-	Left = Instance != nullptr && EnumHasAnyFlags(Instance->State, EHandTrackingStateVR::LEFT);
+	Left = IsValid(Instance) && EnumHasAnyFlags(Instance->State, EHandTrackingStateVR::LEFT);
 
-	Right = Instance != nullptr && EnumHasAnyFlags(Instance->State, EHandTrackingStateVR::RIGHT);
+	Right = IsValid(Instance) && EnumHasAnyFlags(Instance->State, EHandTrackingStateVR::RIGHT);
 
 	Both = Left && Right;
 
@@ -473,13 +473,13 @@ void UHandTrackerVR::IsHandTrackingEnabled(bool& Either, bool& Both, bool& Left,
 // Returns whether hand tracking is enabled for the left hand.
 bool UHandTrackerVR::IsLeftHandTrackingEnabled()
 {
-	return Instance != nullptr && EnumHasAnyFlags(Instance->State, EHandTrackingStateVR::LEFT);
+	return IsValid(Instance) && EnumHasAnyFlags(Instance->State, EHandTrackingStateVR::LEFT);
 }
 
 // Returns whether hand tracking is enabled for the right hand.
 bool UHandTrackerVR::IsRightHandTrackingEnabled()
 {
-	return Instance != nullptr && EnumHasAnyFlags(Instance->State, EHandTrackingStateVR::RIGHT);
+	return IsValid(Instance) && EnumHasAnyFlags(Instance->State, EHandTrackingStateVR::RIGHT);
 }
 
 // Returns the current IHandInteractableVR implementations.
@@ -503,7 +503,7 @@ UHandTrackerVR* UHandTrackerVR::GetHandTrackerVR()
 // Constructs a new HandTrackerVR component.
 UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _DominantHandIsRight, EHandTrackingStateVR TrackingState)
 {
-	if (Instance != nullptr)
+	if (IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -568,15 +568,15 @@ bool UHandTrackerVR::AreHandsSet()
 // Returns whether the given VR hand is currently set and being tracked.
 bool UHandTrackerVR::IsTrackingHand(bool bIsRight)
 {
-	return HandsSet && Instance != nullptr && (bIsRight ? Instance->bTrackingRight : Instance->bTrackingLeft);
+	return HandsSet && IsValid(Instance) && (bIsRight ? Instance->bTrackingRight : Instance->bTrackingLeft);
 }
 
 // Returns whether both VR hands are currently set and being tracked.
 void UHandTrackerVR::IsTrackingBothHands(bool& Both, bool& Left, bool& Right)
 {
-	Left = HandsSet && Instance != nullptr && Instance->bTrackingLeft;
+	Left = HandsSet && IsValid(Instance) && Instance->bTrackingLeft;
 
-	Right = HandsSet && Instance != nullptr && Instance->bTrackingRight;
+	Right = HandsSet && IsValid(Instance) && Instance->bTrackingRight;
 
 	Both = Left && Right;
 }
@@ -584,13 +584,13 @@ void UHandTrackerVR::IsTrackingBothHands(bool& Both, bool& Left, bool& Right)
 // Returns whether the left VR hand is currently set and being tracked.
 bool UHandTrackerVR::IsTrackingLeftHand()
 {
-	return HandsSet && Instance != nullptr && Instance->bTrackingLeft;
+	return HandsSet && IsValid(Instance) && Instance->bTrackingLeft;
 }
 
 // Returns whether the right VR hand is currently set and being tracked.
 bool UHandTrackerVR::IsTrackingRightHand()
 {
-	return HandsSet && Instance != nullptr && Instance->bTrackingRight;
+	return HandsSet && IsValid(Instance) && Instance->bTrackingRight;
 }
 
 
@@ -599,7 +599,7 @@ bool UHandTrackerVR::IsTrackingRightHand()
 // Returns the given VR hand.
 UHandVR* UHandTrackerVR::GetHand(bool bIsRight)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -610,7 +610,7 @@ UHandVR* UHandTrackerVR::GetHand(bool bIsRight)
 // Returns both VR hands.
 void UHandTrackerVR::GetBothHands(UHandVR*& Left, UHandVR*& Right)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Left = nullptr;
 
@@ -627,7 +627,7 @@ void UHandTrackerVR::GetBothHands(UHandVR*& Left, UHandVR*& Right)
 // Returns the left VR hand.
 UHandVR* UHandTrackerVR::GetLeftHand()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -638,7 +638,7 @@ UHandVR* UHandTrackerVR::GetLeftHand()
 // Returns the right VR hand.
 UHandVR* UHandTrackerVR::GetRightHand()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -663,7 +663,7 @@ bool UHandTrackerVR::GetPointedAtObject(bool bIsRight, FHitResult& Result, float
 // Calculates the object the left index finger is currently pointing at.
 bool UHandTrackerVR::GetLeftPointedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Result = FHitResult();
 
@@ -676,7 +676,7 @@ bool UHandTrackerVR::GetLeftPointedAtObject(FHitResult& Result, float MaxDistanc
 // Calculates the object the right index finger is currently pointing at.
 bool UHandTrackerVR::GetRightPointedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Result = FHitResult();
 
@@ -692,7 +692,7 @@ bool UHandTrackerVR::GetRightPointedAtObject(FHitResult& Result, float MaxDistan
 // Returns whether the dominant hand is currently the right hand.
 bool UHandTrackerVR::IsDominantHandRight()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -703,7 +703,7 @@ bool UHandTrackerVR::IsDominantHandRight()
 // Returns whether the dominant hand is currently the left hand.
 bool UHandTrackerVR::IsDominantHandLeft()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -714,7 +714,7 @@ bool UHandTrackerVR::IsDominantHandLeft()
 // Set whether the dominant hand is currently the right hand.
 void UHandTrackerVR::SetDominantHand(bool bIsRight)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -725,7 +725,7 @@ void UHandTrackerVR::SetDominantHand(bool bIsRight)
 // Returns the dominant hand.
 void UHandTrackerVR::GetDominantHand(UHandVR*& Dominant, UHandVR*& NonDominant)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Dominant = nullptr;
 
@@ -742,7 +742,7 @@ void UHandTrackerVR::GetDominantHand(UHandVR*& Dominant, UHandVR*& NonDominant)
 // Returns the non-dominant hand.
 void UHandTrackerVR::GetNonDominantHand(UHandVR*& NonDominant, UHandVR*& Dominant)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Dominant = nullptr;
 
@@ -759,7 +759,7 @@ void UHandTrackerVR::GetNonDominantHand(UHandVR*& NonDominant, UHandVR*& Dominan
 // Calculates the object the dominant index finger is currently pointing at.
 bool UHandTrackerVR::GetDominantPointedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Result = FHitResult();
 
@@ -772,7 +772,7 @@ bool UHandTrackerVR::GetDominantPointedAtObject(FHitResult& Result, float MaxDis
 // Calculates the object the non dominant index finger is currently pointing at.
 bool UHandTrackerVR::GetNonDominantPointedAtObject(FHitResult& Result, float MaxDistance, bool HitComplex)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Result = FHitResult();
 
@@ -788,7 +788,7 @@ bool UHandTrackerVR::GetNonDominantPointedAtObject(FHitResult& Result, float Max
 // Returns the headset camera.
 UCameraComponent* UHandTrackerVR::GetHeadset()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -799,7 +799,7 @@ UCameraComponent* UHandTrackerVR::GetHeadset()
 // Returns the headset camera's transform data.
 void UHandTrackerVR::GetHeadsetTransform(FVector& WorldPosition, FRotator& WorldRotation)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		WorldPosition = FVector(0, 0, 0);
 
@@ -816,7 +816,7 @@ void UHandTrackerVR::GetHeadsetTransform(FVector& WorldPosition, FRotator& World
 // Returns the player actor.
 AActor* UHandTrackerVR::GetPlayer()
 {
-	if (Instance == nullptr || Instance->Headset == nullptr)
+	if (!IsValid(Instance) || !IsValid(Instance->Headset))
 	{
 		return nullptr;
 	}
@@ -827,7 +827,7 @@ AActor* UHandTrackerVR::GetPlayer()
 // Returns the player's transform data.
 void UHandTrackerVR::GetPlayerTransform(FVector& WorldPosition, FRotator& WorldRotation, FVector& WorldScale)
 {
-	if (Instance == nullptr || Instance->Headset == nullptr)
+	if (!IsValid(Instance) || !IsValid(Instance->Headset))
 	{
 		WorldPosition = FVector(0, 0, 0);
 
@@ -840,7 +840,7 @@ void UHandTrackerVR::GetPlayerTransform(FVector& WorldPosition, FRotator& WorldR
 
 	AActor* Parent = Instance->Headset->GetAttachParentActor();
 
-	if (Parent == nullptr)
+	if (!IsValid(Parent))
 	{
 		WorldPosition = FVector(0, 0, 0);
 
@@ -864,7 +864,7 @@ void UHandTrackerVR::GetPlayerTransform(FVector& WorldPosition, FRotator& WorldR
 // Returns the given motion controller.
 UMotionControllerComponent* UHandTrackerVR::GetMotionController(bool bIsRight)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -875,7 +875,7 @@ UMotionControllerComponent* UHandTrackerVR::GetMotionController(bool bIsRight)
 // Returns both motion controllers.
 void UHandTrackerVR::GetBothMotionControllers(UMotionControllerComponent*& Left, UMotionControllerComponent*& Right)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Left = nullptr;
 
@@ -892,7 +892,7 @@ void UHandTrackerVR::GetBothMotionControllers(UMotionControllerComponent*& Left,
 // Returns the left motion controller.
 UMotionControllerComponent* UHandTrackerVR::GetLeftMotionController()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -903,7 +903,7 @@ UMotionControllerComponent* UHandTrackerVR::GetLeftMotionController()
 // Returns the right motion controller.
 UMotionControllerComponent* UHandTrackerVR::GetRightMotionController()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -917,7 +917,7 @@ UMotionControllerComponent* UHandTrackerVR::GetRightMotionController()
 // Returns whether the given VR hand is making the given gesture.
 bool UHandTrackerVR::GetGesture(bool bIsRight, EHandGestureVR Gesture)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -928,7 +928,7 @@ bool UHandTrackerVR::GetGesture(bool bIsRight, EHandGestureVR Gesture)
 // Returns whether the both VR hands are making the given gestures.
 void UHandTrackerVR::GetBothGestures(EHandGestureVR LeftGesture, EHandGestureVR RightGesture, bool& Left, bool& Right)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Left = false;
 
@@ -941,7 +941,7 @@ void UHandTrackerVR::GetBothGestures(EHandGestureVR LeftGesture, EHandGestureVR 
 // Returns whether the left VR hand is making the given gesture.
 bool UHandTrackerVR::GetLeftGesture(EHandGestureVR Gesture)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -952,7 +952,7 @@ bool UHandTrackerVR::GetLeftGesture(EHandGestureVR Gesture)
 // Returns whether the right VR hand is making the given gesture.
 bool UHandTrackerVR::GetRightGesture(EHandGestureVR Gesture)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -966,7 +966,7 @@ bool UHandTrackerVR::GetRightGesture(EHandGestureVR Gesture)
 // Returns all of the gestures of the given VR hand.
 TMap<EHandGestureVR, bool> UHandTrackerVR::GetGestureMap(bool bIsRight)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return TMap<EHandGestureVR, bool>();
 	}
@@ -977,7 +977,7 @@ TMap<EHandGestureVR, bool> UHandTrackerVR::GetGestureMap(bool bIsRight)
 // Returns all of the gestures of both VR hands.
 void UHandTrackerVR::GetBothGestureMaps(TMap<EHandGestureVR, bool>& Left, TMap<EHandGestureVR, bool>& Right)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Left = TMap<EHandGestureVR, bool>();
 
@@ -994,7 +994,7 @@ void UHandTrackerVR::GetBothGestureMaps(TMap<EHandGestureVR, bool>& Left, TMap<E
 // Returns all of the gestures of the left VR hand.
 TMap<EHandGestureVR, bool> UHandTrackerVR::GetLeftGestureMap()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return TMap<EHandGestureVR, bool>();
 	}
@@ -1005,7 +1005,7 @@ TMap<EHandGestureVR, bool> UHandTrackerVR::GetLeftGestureMap()
 // Returns all of the gestures of the right VR hand.
 TMap<EHandGestureVR, bool> UHandTrackerVR::GetRightGestureMap()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return TMap<EHandGestureVR, bool>();
 	}
@@ -1019,7 +1019,7 @@ TMap<EHandGestureVR, bool> UHandTrackerVR::GetRightGestureMap()
 // Returns all of the active gestures of the given VR hand.
 TSet<EHandGestureVR> UHandTrackerVR::GetActiveGestures(bool bIsRight)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return TSet<EHandGestureVR>();
 	}
@@ -1053,7 +1053,7 @@ TSet<EHandGestureVR> UHandTrackerVR::GetActiveGestures(bool bIsRight)
 // Returns all of the active gestures of both VR hands.
 void UHandTrackerVR::GetBothActiveGestures(TSet<EHandGestureVR>& Left, TSet<EHandGestureVR>& Right)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Left = TSet<EHandGestureVR>();
 
@@ -1083,7 +1083,7 @@ void UHandTrackerVR::GetBothActiveGestures(TSet<EHandGestureVR>& Left, TSet<EHan
 // Returns all of the active gestures of the left VR hand.
 TSet<EHandGestureVR> UHandTrackerVR::GetActiveLeftGestures()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return TSet<EHandGestureVR>();
 	}
@@ -1104,7 +1104,7 @@ TSet<EHandGestureVR> UHandTrackerVR::GetActiveLeftGestures()
 // Returns all of the active gestures of the right VR hand.
 TSet<EHandGestureVR> UHandTrackerVR::GetActiveRightGestures()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return TSet<EHandGestureVR>();
 	}

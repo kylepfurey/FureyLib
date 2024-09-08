@@ -27,8 +27,6 @@ UBodyVR::UBodyVR()
 
 	TorsoRotateSpeed = 10;
 
-	MaxHeadsetHeight = 160;
-
 	LeftShoulder = nullptr;
 
 	RightShoulder = nullptr;
@@ -59,8 +57,6 @@ UBodyVR::UBodyVR(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 
 	TorsoRotateSpeed = 10;
 
-	MaxHeadsetHeight = 160;
-
 	LeftShoulder = nullptr;
 
 	RightShoulder = nullptr;
@@ -75,7 +71,7 @@ UBodyVR::UBodyVR(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 }
 
 // Body constructor
-UBodyVR::UBodyVR(bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, float _MaxHeadsetHeight, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset)
+UBodyVR::UBodyVR(bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
@@ -90,8 +86,6 @@ UBodyVR::UBodyVR(bool Active, bool HandTracking, USceneComponent* _Torso, float 
 	TorsoOffset = _TorsoOffset;
 
 	TorsoRotateSpeed = _TorsoRotateSpeed;
-
-	MaxHeadsetHeight = _MaxHeadsetHeight;
 
 	LeftShoulder = _LeftShoulder;
 
@@ -115,7 +109,7 @@ void UBodyVR::BeginPlay()
 	// Calls the base class's function.
 	Super::BeginPlay();
 
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Instance = this;
 
@@ -157,7 +151,7 @@ void UBodyVR::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 // Returns whether a VR body is present with the player.
 bool UBodyVR::VRBodyExist()
 {
-	return Instance != nullptr;
+	return IsValid(Instance);
 }
 
 // Returns the current instance of the player's VR body.
@@ -169,7 +163,7 @@ UBodyVR* UBodyVR::GetBodyVR()
 // Returns whether the VR body is currently active.
 bool UBodyVR::IsBodyActive()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -180,7 +174,7 @@ bool UBodyVR::IsBodyActive()
 // Returns whether the VR body is tracking hands (true) or controllers (false).
 bool UBodyVR::DoesBodyUseHandTracking()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
@@ -191,7 +185,7 @@ bool UBodyVR::DoesBodyUseHandTracking()
 // Returns the VR torso object.
 USceneComponent* UBodyVR::GetTorso()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -202,7 +196,7 @@ USceneComponent* UBodyVR::GetTorso()
 // Returns the VR torso offset.
 float UBodyVR::GetTorsoOffset()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return 0;
 	}
@@ -213,7 +207,7 @@ float UBodyVR::GetTorsoOffset()
 // Returns the speed the VR body's torso will automatically rotate to face the camera.
 float UBodyVR::GetTorsoRotateSpeed()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return 0;
 	}
@@ -224,7 +218,7 @@ float UBodyVR::GetTorsoRotateSpeed()
 // Returns the VR shoulder objects.
 void UBodyVR::GetShoulders(USceneComponent*& Left, USceneComponent*& Right)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Left = nullptr;
 
@@ -241,7 +235,7 @@ void UBodyVR::GetShoulders(USceneComponent*& Left, USceneComponent*& Right)
 // Returns the left VR shoulder object.
 USceneComponent* UBodyVR::GetLeftShoulder()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -252,7 +246,7 @@ USceneComponent* UBodyVR::GetLeftShoulder()
 // Returns the right VR shoulder object.
 USceneComponent* UBodyVR::GetRightShoulder()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -263,7 +257,7 @@ USceneComponent* UBodyVR::GetRightShoulder()
 // Returns the VR shoulder offset.
 FVector UBodyVR::GetShoulderOffset()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return FVector();
 	}
@@ -274,7 +268,7 @@ FVector UBodyVR::GetShoulderOffset()
 // Returns the VR elbow objects.
 void UBodyVR::GetElbows(USceneComponent*& Left, USceneComponent*& Right)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		Left = nullptr;
 
@@ -291,7 +285,7 @@ void UBodyVR::GetElbows(USceneComponent*& Left, USceneComponent*& Right)
 // Returns the left VR elbow object.
 USceneComponent* UBodyVR::GetLeftElbow()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -302,7 +296,7 @@ USceneComponent* UBodyVR::GetLeftElbow()
 // Returns the right VR elbow object.
 USceneComponent* UBodyVR::GetRightElbow()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -313,7 +307,7 @@ USceneComponent* UBodyVR::GetRightElbow()
 // Returns the VR elbow offset.
 FVector UBodyVR::GetElbowOffset()
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return FVector();
 	}
@@ -324,23 +318,12 @@ FVector UBodyVR::GetElbowOffset()
 // Returns the torso's Z rotation.
 float UBodyVR::GetTorsoRotation()
 {
-	if (Instance == nullptr || Instance->Torso == nullptr)
+	if (!IsValid(Instance) || !IsValid(Instance->Torso))
 	{
 		return 0;
 	}
 
 	return Instance->Torso->GetComponentRotation().Euler().Z;
-}
-
-// Returns the average head height while standing.
-float UBodyVR::GetMaxHeadsetHeight()
-{
-	if (Instance == nullptr)
-	{
-		return 0;
-	}
-
-	return Instance->MaxHeadsetHeight;
 }
 
 
@@ -349,7 +332,7 @@ float UBodyVR::GetMaxHeadsetHeight()
 // Sets whether the VR body is currently active.
 void UBodyVR::SetBodyActive(bool Active)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -360,7 +343,7 @@ void UBodyVR::SetBodyActive(bool Active)
 // Sets whether the VR body is tracking hands (true) or controllers (false).
 void UBodyVR::SetBodyUsesHandTracking(bool HandTracking)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -371,7 +354,7 @@ void UBodyVR::SetBodyUsesHandTracking(bool HandTracking)
 // Sets the VR torso object.
 void UBodyVR::SetTorso(USceneComponent* _Torso)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -382,7 +365,7 @@ void UBodyVR::SetTorso(USceneComponent* _Torso)
 // Sets the VR torso offset.
 void UBodyVR::SetTorsoOffset(float Offset)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -393,7 +376,7 @@ void UBodyVR::SetTorsoOffset(float Offset)
 // Sets the speed the VR body's torso will automatically rotate to face the camera.
 void UBodyVR::SetTorsoRotateSpeed(float Speed)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -404,7 +387,7 @@ void UBodyVR::SetTorsoRotateSpeed(float Speed)
 // Sets the left VR shoulder object.
 void UBodyVR::SetLeftShoulder(USceneComponent* Shoulder)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -415,7 +398,7 @@ void UBodyVR::SetLeftShoulder(USceneComponent* Shoulder)
 // Sets the right VR shoulder object.
 void UBodyVR::SetRightShoulder(USceneComponent* Shoulder)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -426,7 +409,7 @@ void UBodyVR::SetRightShoulder(USceneComponent* Shoulder)
 // Sets the VR shoulder offset.
 void UBodyVR::SetShoulderOffset(FVector Offset)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -437,7 +420,7 @@ void UBodyVR::SetShoulderOffset(FVector Offset)
 // Sets the left VR elbow object.
 void UBodyVR::SetLeftElbow(USceneComponent* Elbow)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -448,7 +431,7 @@ void UBodyVR::SetLeftElbow(USceneComponent* Elbow)
 // Sets the right VR elbow object.
 void UBodyVR::SetRightElbow(USceneComponent* Elbow)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -459,7 +442,7 @@ void UBodyVR::SetRightElbow(USceneComponent* Elbow)
 // Sets the VR elbow offset.
 void UBodyVR::SetElbowOffset(FVector Offset)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
@@ -471,14 +454,14 @@ void UBodyVR::SetElbowOffset(FVector Offset)
 // Returns whether the rotation was successful.
 bool UBodyVR::MakeTorsoFaceHeadset()
 {
-	if (Instance == nullptr || Instance->Torso == nullptr)
+	if (!IsValid(Instance) || !IsValid(Instance->Torso))
 	{
 		return false;
 	}
 
 	UCameraComponent* Headset = Instance->bHandTracking ? UHandTrackerVR::GetHeadset() : UControllerInputVR::GetHeadset();
 
-	if (Headset != nullptr)
+	if (IsValid(Headset))
 	{
 		FVector Rotation = Instance->Torso->GetComponentRotation().Euler();
 
@@ -494,7 +477,7 @@ bool UBodyVR::MakeTorsoFaceHeadset()
 // Returns whether the rotation was successful.
 bool UBodyVR::SetTorsoRotation(float NewRotation)
 {
-	if (Instance == nullptr || Instance->Torso == nullptr)
+	if (!IsValid(Instance) || !IsValid(Instance->Torso))
 	{
 		return false;
 	}
@@ -510,7 +493,7 @@ bool UBodyVR::SetTorsoRotation(float NewRotation)
 // Returns whether the rotation was successful.
 bool UBodyVR::AddTorsoRotation(float DeltaRotation)
 {
-	if (Instance == nullptr || Instance->Torso == nullptr)
+	if (!IsValid(Instance) || !IsValid(Instance->Torso))
 	{
 		return false;
 	}
@@ -522,17 +505,6 @@ bool UBodyVR::AddTorsoRotation(float DeltaRotation)
 	return true;
 }
 
-// Sets the average head height while standing.
-void UBodyVR::SetMaxHeadsetHeight(float Height)
-{
-	if (Instance == nullptr)
-	{
-		return;
-	}
-
-	Instance->MaxHeadsetHeight = Height;
-}
-
 
 // BODY FUNCTIONS
 
@@ -541,14 +513,14 @@ void UBodyVR::SetMaxHeadsetHeight(float Height)
 // Returns if the update was successful.
 bool UBodyVR::UpdateBodyVR(float DeltaTime)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return false;
 	}
 
 	UCameraComponent* Headset = Instance->bHandTracking ? UHandTrackerVR::GetHeadset() : UControllerInputVR::GetHeadset();
 
-	if (Instance->Torso != nullptr && Headset != nullptr)
+	if (IsValid(Instance->Torso) && IsValid(Headset))
 	{
 		Instance->Torso->SetWorldLocation(Headset->GetComponentLocation() + (FVector(0, 0, Instance->TorsoOffset)));
 
@@ -556,7 +528,7 @@ bool UBodyVR::UpdateBodyVR(float DeltaTime)
 
 		Instance->Torso->SetWorldRotation(FMath::QInterpTo(Instance->Torso->GetComponentQuat(), FQuat::MakeFromEuler(FVector(Rotation.X, Rotation.Y, Headset->GetComponentRotation().Euler().Z)), DeltaTime, Instance->TorsoRotateSpeed));
 
-		if (Instance->LeftShoulder != nullptr && Instance->RightShoulder != nullptr)
+		if (IsValid(Instance->LeftShoulder) && IsValid(Instance->RightShoulder))
 		{
 			FVector LeftOffset = FVector(Instance->ShoulderOffset.X, -Instance->ShoulderOffset.Y, Instance->ShoulderOffset.Z);
 
@@ -566,7 +538,7 @@ bool UBodyVR::UpdateBodyVR(float DeltaTime)
 
 			Instance->RightShoulder->SetWorldLocation(Instance->Torso->GetComponentLocation() + Instance->Torso->GetComponentQuat() * RightOffset);
 
-			if (Instance->LeftElbow != nullptr && Instance->RightElbow != nullptr)
+			if (IsValid(Instance->LeftElbow) && IsValid(Instance->RightElbow))
 			{
 				USceneComponent* LeftHand;
 
@@ -585,7 +557,7 @@ bool UBodyVR::UpdateBodyVR(float DeltaTime)
 					RightHand = UControllerInputVR::GetRightController();
 				}
 
-				if (LeftHand != nullptr && RightHand != nullptr)
+				if (IsValid(LeftHand) && IsValid(RightHand))
 				{
 					if (Instance->bHandTracking)
 					{
@@ -653,32 +625,32 @@ bool UBodyVR::UpdateBodyVR(float DeltaTime)
 // Shows the player's VR body.
 void UBodyVR::ShowBody(bool Show)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
 
-	if (Instance->Torso != nullptr)
+	if (IsValid(Instance->Torso))
 	{
 		Instance->Torso->SetVisibility(Show, true);
 	}
 
-	if (Instance->LeftShoulder != nullptr)
+	if (IsValid(Instance->LeftShoulder))
 	{
 		Instance->LeftShoulder->SetVisibility(Show, true);
 	}
 
-	if (Instance->RightShoulder != nullptr)
+	if (IsValid(Instance->RightShoulder))
 	{
 		Instance->RightShoulder->SetVisibility(Show, true);
 	}
 
-	if (Instance->LeftElbow != nullptr)
+	if (IsValid(Instance->LeftElbow))
 	{
 		Instance->LeftElbow->SetVisibility(Show, true);
 	}
 
-	if (Instance->RightElbow != nullptr)
+	if (IsValid(Instance->RightElbow))
 	{
 		Instance->RightElbow->SetVisibility(Show, true);
 	}
@@ -687,63 +659,41 @@ void UBodyVR::ShowBody(bool Show)
 // Hides the player's VR body.
 void UBodyVR::HideBody(bool Hide)
 {
-	if (Instance == nullptr)
+	if (!IsValid(Instance))
 	{
 		return;
 	}
 
-	if (Instance->Torso != nullptr)
+	if (IsValid(Instance->Torso))
 	{
 		Instance->Torso->SetVisibility(!Hide, true);
 	}
 
-	if (Instance->LeftShoulder != nullptr)
+	if (IsValid(Instance->LeftShoulder))
 	{
 		Instance->LeftShoulder->SetVisibility(!Hide, true);
 	}
 
-	if (Instance->RightShoulder != nullptr)
+	if (IsValid(Instance->RightShoulder))
 	{
 		Instance->RightShoulder->SetVisibility(!Hide, true);
 	}
 
-	if (Instance->LeftElbow != nullptr)
+	if (IsValid(Instance->LeftElbow))
 	{
 		Instance->LeftElbow->SetVisibility(!Hide, true);
 	}
 
-	if (Instance->RightElbow != nullptr)
+	if (IsValid(Instance->RightElbow))
 	{
 		Instance->RightElbow->SetVisibility(!Hide, true);
 	}
 }
 
-// Returns the percentage of the maximum height the player's headset is currently at.
-float UBodyVR::GetBodyHeightPercentage()
-{
-	if (Instance == nullptr)
-	{
-		return 0;
-	}
-
-	float Percent = ((Instance->bHandTracking ? UHandTrackerVR::GetHeadset()->GetComponentLocation().Z : UControllerInputVR::GetHeadset()->GetComponentLocation().Z) - Instance->GetOwner()->GetActorLocation().Z) / Instance->MaxHeadsetHeight;
-
-	if (Percent > 1)
-	{
-		Percent = 1;
-	}
-	else if (Percent < 0)
-	{
-		Percent = 0;
-	}
-
-	return Percent;
-}
-
 // Constructs a new BodyVR component.
-UBodyVR* UBodyVR::ConstructBodyVR(AActor* Parent, bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, float _MaxHeadsetHeight, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset)
+UBodyVR* UBodyVR::ConstructBodyVR(AActor* Parent, bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset)
 {
-	if (Instance != nullptr)
+	if (IsValid(Instance))
 	{
 		return nullptr;
 	}
@@ -767,8 +717,6 @@ UBodyVR* UBodyVR::ConstructBodyVR(AActor* Parent, bool Active, bool HandTracking
 	NewBody->TorsoOffset = _TorsoOffset;
 
 	NewBody->TorsoRotateSpeed = _TorsoRotateSpeed;
-
-	NewBody->MaxHeadsetHeight = _MaxHeadsetHeight;
 
 	NewBody->LeftShoulder = _LeftShoulder;
 

@@ -518,15 +518,15 @@ bool UHandVR::GetGesture(EHandGestureVR Gesture)
 
 	case EHandGestureVR::OPEN:
 
-		return (Thumb >= 0.7f) && (Index >= 0.7f) && (Middle >= 0.7f) && (Ring >= 0.7f) && (Pinky >= 0.7f);
+		return (Thumb >= 0.65) && (Index >= 0.65) && (Middle >= 0.65) && (Ring >= 0.65) && (Pinky >= 0.65);
 
 	case EHandGestureVR::FIST:
 
-		return (Thumb < 0.5f) && (Index < 0.4f) && (Middle < 0.4f) && (Ring < 0.4f) && (Pinky < 0.4f);
+		return (Thumb < 0.65) && (Index < 0.25) && (Middle < 0.25) && (Ring < 0.25) && (Pinky < 0.25);
 
 	case EHandGestureVR::POINT:
 
-		return (Index >= 0.7f) && (Middle < 0.4f) && (Ring < 0.4f) && (Pinky < 0.4f);
+		return (Index >= 0.65) && (Middle < 0.25) && (Ring < 0.25) && (Pinky < 0.25);
 
 	case EHandGestureVR::PINCH:
 
@@ -546,19 +546,19 @@ bool UHandVR::GetGesture(EHandGestureVR Gesture)
 
 	case EHandGestureVR::GRIP:
 
-		return (Middle < 0.4f) && (Ring < 0.4f) && (Pinky < 0.4f);
+		return (Middle < 0.25) && (Ring < 0.25) && (Pinky < 0.25);
 
 	case EHandGestureVR::THUMBS_UP:
 
-		return (Thumb >= 0.7f) && (Index < 0.4f) && (Middle < 0.4f) && (Ring < 0.4f) && (Pinky < 0.4f);
+		return (Thumb >= 0.65) && (Index < 0.25) && (Middle < 0.25) && (Ring < 0.25) && (Pinky < 0.25);
 
 	case EHandGestureVR::FINGER_GUN:
 
-		return (Thumb >= 0.7f) && (Index >= 0.7f) && (Middle < 0.4f) && (Ring < 0.4f) && (Pinky < 0.4f);
+		return (Thumb >= 0.65) && (Index >= 0.65) && (Middle < 0.25) && (Ring < 0.25) && (Pinky < 0.25);
 
 	case EHandGestureVR::FLIP_OFF:
 
-		return (Index < 0.4f) && (Middle >= 0.7f) && (Ring < 0.4f) && (Pinky < 0.4f);
+		return (Index < 0.25) && (Middle >= 0.65) && (Ring < 0.25) && (Pinky < 0.25);
 
 		// New gestures here
 	}

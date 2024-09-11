@@ -26,13 +26,13 @@
 
 #define THUMB_MIN -2.0
 #define THUMB_MAX 7.0
-#define INDEX_FINGER_MIN -2.5
+#define INDEX_FINGER_MIN -3
 #define INDEX_FINGER_MAX 0.5
 #define MIDDLE_FINGER_MIN -1.5
 #define MIDDLE_FINGER_MAX 0.5
 #define RING_FINGER_MIN -5.0
 #define RING_FINGER_MAX 0.3
-#define PINKY_FINGER_MIN -5.5
+#define PINKY_FINGER_MIN -6
 #define PINKY_FINGER_MAX 4.5
 
 /** Each of the five fingers used in accessing VR hand tracking data. */

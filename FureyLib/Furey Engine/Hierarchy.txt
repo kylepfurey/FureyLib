@@ -55,13 +55,5 @@ Type Hierarchy
 ———World
 ———Actor
 ————Player
-————StaticActor
 ———Component
 ————WorldComponent
-————PhysicsComponent
-————LightComponent
-————CameraComponent
-————InputComponent
-————MeshComponent
-————BillboardComponent
-————AIComponent

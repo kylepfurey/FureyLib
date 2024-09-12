@@ -125,7 +125,7 @@ protected:
 	* Returns whether this object is currently receiving hand tracking input.
 	* This is the static version used exclusively for blueprint implementations.
 	*/
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Is Hand Tracking VR Implemented"), Category = "HandInteractableVR")
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (DisplayName = "Is Hand Tracking VR Implemented"), Category = "HandInteractableVR")
 	static bool IsHandTrackingVRImplemented(TScriptInterface<IHandInteractableVR> HandInteractableVR);
 
 	/**
@@ -175,15 +175,15 @@ public:
 	static void SetHandTrackingState(EHandTrackingStateVR TrackingState);
 
 	/** Returns whether hand tracking is enabled for the given hands. */
-	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
 	static void IsHandTrackingEnabled(bool& Either, bool& Both, bool& Left, bool& Right);
 
 	/** Returns whether hand tracking is enabled for the left hand. */
-	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
 	static bool IsLeftHandTrackingEnabled();
 
 	/** Returns whether hand tracking is enabled for the right hand. */
-	UFUNCTION(BlueprintCallable, Category = "HandTrackerVR")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HandTrackerVR")
 	static bool IsRightHandTrackingEnabled();
 
 	/** Returns the current IHandInteractableVR implementations. */

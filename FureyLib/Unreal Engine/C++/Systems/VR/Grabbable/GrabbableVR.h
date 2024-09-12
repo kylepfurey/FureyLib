@@ -96,7 +96,7 @@ enum class EGrabModeVR : uint8
 	LEFT_ONLY = 1		UMETA(DisplayName = "Left Hand Only"),
 	RIGHT_ONLY = 2		UMETA(DisplayName = "Right Hand Only"),
 	DOMINANT = 3		UMETA(DisplayName = "Dominant Hand Only"),
-	NON_DOMINANT = 4	UMETA(DisplayName = "Non-dominant Hand Only"),
+	NON_DOMINANT = 4	UMETA(DisplayName = "Non-Dominant Hand Only"),
 	BOTH = 5			UMETA(DisplayName = "Both Hands"),
 	MAX					UMETA(Hidden)
 };

@@ -229,7 +229,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "ControllerInputVR")
 	static void GetLeftControllerTransform(FVector& WorldPosition, FRotator& WorldRotation, FVector& LocalPosition, FRotator& LocalRotation);
 
-	/** Gets the left motion controller component's transform data. */
+	/** Gets the right motion controller component's transform data. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "ControllerInputVR")
 	static void GetRightControllerTransform(FVector& WorldPosition, FRotator& WorldRotation, FVector& LocalPosition, FRotator& LocalRotation);
 

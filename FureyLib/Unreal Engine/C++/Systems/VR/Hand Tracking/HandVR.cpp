@@ -560,6 +560,10 @@ bool UHandVR::GetGesture(EHandGestureVR Gesture)
 
 		return (Index < 0.25) && (Middle >= 0.65) && (Ring < 0.25) && (Pinky < 0.25);
 
+	case EHandGestureVR::PEACE:
+
+		return (Thumb < 0.65) && (Index >= 0.65) && (Middle >= 0.65) && (Ring < 0.25) && (Pinky < 0.25);
+
 		// New gestures here
 	}
 }

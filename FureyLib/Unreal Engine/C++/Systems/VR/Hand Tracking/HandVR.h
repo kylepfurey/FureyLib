@@ -71,6 +71,7 @@ enum class EHandGestureVR : uint8
 	THUMBS_UP		UMETA(DisplayName = "Thumbs Up"),
 	FINGER_GUN		UMETA(DisplayName = "Finger Gun"),
 	FLIP_OFF		UMETA(DisplayName = "Flip Off"),
+	PEACE			UMETA(DisplayName = "Peace Sign"),
 
 	// New gestures here
 

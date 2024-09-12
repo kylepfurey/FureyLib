@@ -102,6 +102,8 @@ UGrabbableVR::UGrabbableVR()
 
 	bPreviousGravitySetting = false;
 
+	PreviousPosition = FVector(0, 0, 0);
+
 	GrabbedRotation = FRotator(0, 0, 0);
 
 	PreviousPawnCollision = ECollisionResponse::ECR_Block;
@@ -179,6 +181,8 @@ UGrabbableVR::UGrabbableVR(const FObjectInitializer& ObjectInitializer) : Super(
 	RightGrabTime = 0;
 
 	bPreviousGravitySetting = false;
+
+	PreviousPosition = FVector(0, 0, 0);
 
 	GrabbedRotation = FRotator(0, 0, 0);
 
@@ -258,6 +262,8 @@ UGrabbableVR::UGrabbableVR(TArray<FGrabPointVR> _GrabPoints, bool Active, bool H
 
 	bPreviousGravitySetting = false;
 
+	PreviousPosition = FVector(0, 0, 0);
+
 	GrabbedRotation = FRotator(0, 0, 0);
 
 	PreviousPawnCollision = ECollisionResponse::ECR_Block;
@@ -318,6 +324,15 @@ void UGrabbableVR::BeginPlay()
 void UGrabbableVR::BeginDestroy()
 {
 	Super::BeginDestroy();
+
+	if (IsGrabbedRight())
+	{
+		RightGrabbedObject = nullptr;
+	}
+	else if (IsGrabbedLeft())
+	{
+		LeftGrabbedObject = nullptr;
+	}
 
 	if (bActive)
 	{
@@ -915,8 +930,12 @@ void UGrabbableVR::CompleteThrow()
 {
 	if (IsValid(GrabbedHand))
 	{
-		Throw(GetOwner()->GetActorLocation() - GrabbedHand->GetComponentQuat() * GetOffset(), GrabbedHand->GetComponentLocation(), GetWorld()->GetDeltaSeconds());
+		GetOwner()->SetActorLocation(GrabbedHand->GetComponentLocation() + GrabbedHand->GetComponentQuat() * GetOffset(), bGrabPhysics, nullptr, bGrabPhysics ? ETeleportType::TeleportPhysics : ETeleportType::ResetPhysics);
+
+		Throw(PreviousPosition, GetOwner()->GetActorLocation(), GetWorld()->GetDeltaSeconds());
 	}
+
+	PreviousPosition = FVector(0, 0, 0);
 }
 
 // Gets the proper offset vector.
@@ -1045,6 +1064,8 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 			if (bThrowable && IsValid(GrabbedHand) && FVector::DistSquared(GetOwner()->GetActorLocation() - GrabbedHand->GetComponentQuat() * GetOffset(), GrabbedHand->GetComponentLocation()) >= MinimumThrowDistance)
 			{
 				FTimerHandle Timer;
+
+				PreviousPosition = GetOwner()->GetActorLocation();
 
 				GetWorld()->GetTimerManager().SetTimer(Timer, this, &UGrabbableVR::CompleteThrow, THROW_DELAY, false);
 			}

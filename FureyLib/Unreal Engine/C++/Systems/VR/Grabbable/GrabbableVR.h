@@ -48,11 +48,11 @@ public:
 	// GRAB VARIABLES
 
 	/** The allowed gestures for this grab point. */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GrabbableVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GrabPointVR")
 	TArray<EHandGestureVR> Gestures = { EHandGestureVR::FIST };
 
 	/** The name of this grab point. */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GrabbableVR")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GrabPointVR")
 	FName GrabPointName = TEXT("New Grab Point");
 
 	/**
@@ -232,6 +232,9 @@ protected:
 
 	/** The previous gravity setting when an object is grabbed. */
 	bool bPreviousGravitySetting = false;
+
+	/** The location of this object before it is about to be thrown. */
+	FVector PreviousPosition = FVector(0, 0, 0);
 
 	/** The rotation of this object when it was grabbed. */
 	FRotator GrabbedRotation = FRotator(0, 0, 0);

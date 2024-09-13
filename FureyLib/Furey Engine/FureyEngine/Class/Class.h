@@ -54,7 +54,7 @@ public:
     virtual const char *ToString();
 
     /** String conversion operator. */
-    explicit operator const char *();
+    explicit virtual operator const char *();
 
     // EQUALITY
 
@@ -68,10 +68,10 @@ public:
     virtual bool Equals(Class &EqualTo);
 
     /** Returns whether this instance is equal to the given instance. */
-    bool operator==(Class &EqualTo);
+    virtual bool operator==(Class &EqualTo);
 
     /** Returns whether this instance is not equal to the given instance. */
-    bool operator!=(Class &NotEqualTo);
+    virtual bool operator!=(Class &NotEqualTo);
 
     // FACTORY METHOD
 

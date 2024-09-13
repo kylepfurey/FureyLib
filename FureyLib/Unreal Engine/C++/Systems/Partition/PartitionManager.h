@@ -190,15 +190,15 @@ public:
 
 	/** Returns the actors in partitioning. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")
-	static TArray<AActor*> GetPartitionedActors();
+	static bool GetPartitionedActors(TArray<AActor*>& Actors);
 
 	/** Returns actors never to be unloaded in partitioning. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")
-	static TSet<AActor*> GetNeverUnloadedActors();
+	static bool GetNeverUnloadedActors(TSet<AActor*>& Actors);
 
 	/** Returns actors never to be loaded in partitioning. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")
-	static TSet<AActor*> GetNeverLoadedActors();
+	static bool GetNeverLoadedActors(TSet<AActor*>& Actors);
 
 	/** Returns actors currently unloaded in partitioning. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Partition Manager")

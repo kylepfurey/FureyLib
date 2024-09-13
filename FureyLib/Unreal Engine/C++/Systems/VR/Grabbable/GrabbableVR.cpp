@@ -391,7 +391,7 @@ void UGrabbableVR::OnRightGrabButtonReleased()
 // GETTERS
 
 // Returns this grabbable component's grab points.
-TArray<FGrabPointVR> UGrabbableVR::GetGrabPoints()
+TArray<FGrabPointVR>& UGrabbableVR::GetGrabPoints()
 {
 	return GrabPoints;
 }

@@ -296,36 +296,48 @@ AActor* APartitionManager::GetPlayer()
 }
 
 // Returns the current actors in partitioning.
-TArray<AActor*> APartitionManager::GetPartitionedActors()
+bool APartitionManager::GetPartitionedActors(TArray<AActor*>& Actors)
 {
 	if (!IsValid(Instance))
 	{
-		return TArray<AActor*>();
+		Actors = TArray<AActor*>();
+
+		return false;
 	}
 
-	return Instance->PartitionedActors;
+	Actors = Instance->PartitionedActors;
+
+	return true;
 }
 
 // Returns actors never to be unloaded in partitioning.
-TSet<AActor*> APartitionManager::GetNeverUnloadedActors()
+bool APartitionManager::GetNeverUnloadedActors(TSet<AActor*>& Actors)
 {
 	if (!IsValid(Instance))
 	{
-		return TSet<AActor*>();
+		Actors = TSet<AActor*>();
+
+		return false;
 	}
 
-	return Instance->NeverUnloadedActors;
+	Actors = Instance->NeverUnloadedActors;
+
+	return true;
 }
 
 // Returns actors never to be loaded in partitioning.
-TSet<AActor*> APartitionManager::GetNeverLoadedActors()
+bool APartitionManager::GetNeverLoadedActors(TSet<AActor*>& Actors)
 {
 	if (!IsValid(Instance))
 	{
-		return TSet<AActor*>();
+		Actors = TSet<AActor*>();
+
+		return false;
 	}
 
-	return Instance->NeverLoadedActors;
+	Actors = Instance->NeverLoadedActors;
+
+	return true;
 }
 
 // Returns actors currently unloaded in partitioning.

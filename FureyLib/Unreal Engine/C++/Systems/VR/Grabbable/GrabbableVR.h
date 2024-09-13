@@ -344,7 +344,7 @@ public:
 
 	/** Returns this grabbable component's grab points. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")
-	virtual TArray<FGrabPointVR> GetGrabPoints();
+	virtual TArray<FGrabPointVR>& GetGrabPoints();
 
 	/** Returns whether the grabbable component is active. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")

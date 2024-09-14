@@ -2,7 +2,7 @@
 // VR Pressable Button Script
 // by Kyle Furey
 
-// REQUIREMENTS: HandTrackerVR.cs
+// REQUIREMENT: HandTrackerVR.cs
 
 using UnityEngine;
 using UnityEngine.Events;

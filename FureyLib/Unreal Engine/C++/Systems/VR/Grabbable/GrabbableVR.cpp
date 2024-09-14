@@ -323,6 +323,7 @@ void UGrabbableVR::BeginPlay()
 // Called when this component is destroyed.
 void UGrabbableVR::BeginDestroy()
 {
+	// Calls the base class's function.
 	Super::BeginDestroy();
 
 	if (IsGrabbedRight())
@@ -1312,7 +1313,7 @@ bool UGrabbableVR::Grab(bool bIsRight, FGrabPointVR GrabPoint, bool InvokeEvent)
 
 					PrimaryCollider->SetEnableGravity(false);
 
-					PrimaryCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+					PrimaryCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 				}
 				else
 				{
@@ -1364,7 +1365,7 @@ bool UGrabbableVR::Grab(bool bIsRight, FGrabPointVR GrabPoint, bool InvokeEvent)
 
 					PrimaryCollider->SetEnableGravity(false);
 
-					PrimaryCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+					PrimaryCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 				}
 				else
 				{

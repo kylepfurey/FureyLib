@@ -34,27 +34,13 @@ public:
     template<typename NewType>
     NewType *Cast() { return dynamic_cast<NewType *>(this); }
 
-    /**
-     * Casts the given instance into the given type.
-     * Returns null if the cast fails.
-     */
-    template<typename Type, typename NewType>
-    NewType static *Cast(Type &Instance) { return dynamic_cast<Type *>(&Instance); }
-
-    /**
-     * Casts the given instance into the given type.
-     * Returns null if the cast fails.
-     */
-    template<typename Type, typename NewType>
-    NewType static *Cast(Type *Instance) { return dynamic_cast<NewType *>(Instance); }
-
     // TO STRING
 
     /** Returns a string interpretation of this object. */
     virtual const char *ToString();
 
     /** String conversion operator. */
-    explicit virtual operator const char *();
+    virtual operator const char *();
 
     // EQUALITY
 
@@ -90,3 +76,9 @@ public:
      */
     virtual bool Deserialize(const char *Json);
 };
+
+// Returns a unique hash code for this object's type.
+#define typeof(Type) typeid(Type).hash_code()
+
+// Returns the name of this object's type.
+#define nameof(Type) typeid(Type).name()

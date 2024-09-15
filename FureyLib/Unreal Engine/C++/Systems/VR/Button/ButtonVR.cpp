@@ -15,7 +15,7 @@ UButtonVR::UButtonVR()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	PrimaryComponentTick.TickGroup = ETickingGroup::TG_StartPhysics;
+	PrimaryComponentTick.TickGroup = ETickingGroup::TG_DuringPhysics;
 
 	ButtonModel = nullptr;
 
@@ -51,7 +51,7 @@ UButtonVR::UButtonVR(const FObjectInitializer& ObjectInitializer) : Super(Object
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	PrimaryComponentTick.TickGroup = ETickingGroup::TG_StartPhysics;
+	PrimaryComponentTick.TickGroup = ETickingGroup::TG_DuringPhysics;
 
 	ButtonModel = nullptr;
 
@@ -87,7 +87,7 @@ UButtonVR::UButtonVR(UStaticMeshComponent* _ButtonModel, UPrimitiveComponent* _B
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	PrimaryComponentTick.TickGroup = ETickingGroup::TG_StartPhysics;
+	PrimaryComponentTick.TickGroup = ETickingGroup::TG_DuringPhysics;
 
 	ButtonModel = _ButtonModel;
 
@@ -140,7 +140,10 @@ void UButtonVR::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	}
 	else
 	{
-		bClicked = false;
+		if (!bSticky)
+		{
+			bClicked = false;
+		}
 
 		bHeld = false;
 	}
@@ -458,7 +461,7 @@ UButtonVR* UButtonVR::ConstructButtonVR(USceneComponent* Parent, UStaticMeshComp
 
 	ButtonVR->PrimaryComponentTick.bCanEverTick = true;
 
-	ButtonVR->PrimaryComponentTick.TickGroup = ETickingGroup::TG_StartPhysics;
+	ButtonVR->PrimaryComponentTick.TickGroup = ETickingGroup::TG_DuringPhysics;
 
 	ButtonVR->ButtonModel = nullptr;
 

@@ -29,6 +29,7 @@ Type Hierarchy
 ———————Matrix4x4
 ———————Quaternion
 ———Tuple
+————KeyValuePair
 ——Interface
 ——Library
 ——Thread
@@ -37,6 +38,11 @@ Type Hierarchy
 ————WeakPointer
 ———UniquePointer
 ——Node
+———LinkedListNode
+————PriorityNode
+———BinaryNode
+————RedBlackNode
+———GraphNode
 ——Collection
 ———Array
 ————List
@@ -52,8 +58,8 @@ Type Hierarchy
 —————Map
 ———Graph
 ——GameObject
-———World
+———Scene
 ———Actor
-————Player
+————Pawn
 ———Component
-————WorldComponent
+————SceneComponent

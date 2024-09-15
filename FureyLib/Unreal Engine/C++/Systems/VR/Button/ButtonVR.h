@@ -30,11 +30,11 @@ protected:
 	// BUTTON VARIABLES
 
 	/** The model moved with the button. */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ButtonVR")
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), EditAnywhere, Category = "ButtonVR")
 	UStaticMeshComponent* ButtonModel = nullptr;
 
 	/** The collider used to check for player input. */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ButtonVR")
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn), EditAnywhere, Category = "ButtonVR")
 	UPrimitiveComponent* ButtonCollider = nullptr;
 
 	/** Whether this button is currently active. */

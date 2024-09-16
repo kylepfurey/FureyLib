@@ -63,7 +63,7 @@ public:
 	// GAME MANAGER EVENTS
 
 	/** Automatically called when the game's current world changes. */
-	UFUNCTION(BlueprintNativeEvent, Category = "HandInteractableVR")
+	UFUNCTION(BlueprintNativeEvent, Category = "Game Manager")
 	void OnCurrentWorldChanged(UWorld* OldWorld, UWorld* NewWorld);
 	virtual void OnCurrentWorldChanged_Implementation(UWorld* OldWorld, UWorld* NewWorld);
 
@@ -73,15 +73,15 @@ public:
 	// GAME MANAGER FUNCTIONS
 
 	/** Retrieves the global instance of the game manager. */
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameManager")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Game Manager")
 	static UGameManager* GetGameManager();
 
 	/** Retrieves the current world. */
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameManager")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Game Manager")
 	static UWorld* GetCurrentWorld();
 
 	/** Retrieves the time in seconds since the last game tick. */
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameManager")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Game Manager")
 	static float GetDeltaTime();
 
 	// New functions here

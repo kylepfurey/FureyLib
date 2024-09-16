@@ -11,7 +11,7 @@
 // ISHOOTABLEVR FUNCTIONS
 
 // Automatically called when this actor is hit with a GunVR projectile.
-void IShootableVR::OnHit_Implementation(AActor* Shooter, AGunVR* Gun, FHitResult Hit) { }
+void IShootableVR::OnHit_Implementation(AActor* Shooter, AGunVR* Gun, float Damage, FHitResult Hit) { }
 
 
 // CONSTRUCTORS
@@ -55,6 +55,8 @@ AGunVR::AGunVR()
 
 	BulletMaxDistance = 10000;
 
+	Damage = 100;
+
 	bAutomatic = false;
 
 	TapFireRate = 0;
@@ -94,6 +96,8 @@ AGunVR::AGunVR()
 	EjectSound = nullptr;
 
 	ReloadSound = nullptr;
+
+	SafetySound = nullptr;
 
 	OnFire = FGunDelegateVR();
 
@@ -185,6 +189,8 @@ AGunVR::AGunVR(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitia
 
 	BulletMaxDistance = 10000;
 
+	Damage = 100;
+
 	bAutomatic = false;
 
 	TapFireRate = 0;
@@ -224,6 +230,8 @@ AGunVR::AGunVR(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitia
 	EjectSound = nullptr;
 
 	ReloadSound = nullptr;
+
+	SafetySound = nullptr;
 
 	OnFire = FGunDelegateVR();
 
@@ -273,7 +281,14 @@ AGunVR::AGunVR(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitia
 }
 
 // GunVR constructor.
-AGunVR::AGunVR(FVector2D _TriggerRotations, UClass* _AmmoClass, UGrabbableVR* _CurrentMagazine, UClass* _EmptyMagazineClass, UInputAction* LeftShootButton, UInputAction* RightShootButton, bool Safety, float _TriggerFirePercentage, bool FireProjectiles, UClass* _ProjectileClass, bool Penetrate, float _BulletMaxDistance, bool Automatic, float _TapFireRate, float _FireRate, int32 _ShotsFired, bool FirstShotAccuracy, float _FirstShotDelay, bool RandomSpread, FVector2D _Spread, bool BurstFire, int32 _BurstsFired, float _BurstRate, bool InfiniteAmmo, int32 _CurrentAmmo, int32 _MaxAmmo, bool AutoEjectMagazine, USoundBase* _FiringSound, USoundBase* _EmptySound, USoundBase* _EjectSound, USoundBase* _ReloadSound, float _FireLingerTime, UClass* _BeamClass, UClass* _MuzzleFlashClass, FTransform _MuzzleFlashTransform, FLinearColor _GunColor)
+AGunVR::AGunVR(
+	FVector2D _TriggerRotations, UClass* _AmmoClass, UGrabbableVR* _CurrentMagazine, UClass* _EmptyMagazineClass, UInputAction* LeftShootButton,
+	UInputAction* RightShootButton, bool Safety, float _TriggerFirePercentage, bool FireProjectiles, UClass* _ProjectileClass, bool Penetrate,
+	float _BulletMaxDistance, float _Damage, bool Automatic, float _TapFireRate, float _FireRate, int32 _ShotsFired, bool FirstShotAccuracy,
+	float _FirstShotDelay, bool RandomSpread, FVector2D _Spread, bool BurstFire, int32 _BurstsFired, float _BurstRate, bool InfiniteAmmo,
+	int32 _CurrentAmmo, int32 _MaxAmmo, bool AutoEjectMagazine, USoundBase* _FiringSound, USoundBase* _EmptySound, USoundBase* _EjectSound,
+	USoundBase* _ReloadSound, USoundBase* _SafetySound, float _FireLingerTime, UClass* _BeamClass, UClass* _MuzzleFlashClass,
+	FTransform _MuzzleFlashTransform, UClass* _DecalClass, FLinearColor _GunColor)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -315,6 +330,8 @@ AGunVR::AGunVR(FVector2D _TriggerRotations, UClass* _AmmoClass, UGrabbableVR* _C
 
 	BulletMaxDistance = _BulletMaxDistance;
 
+	Damage = _Damage;
+
 	bAutomatic = Automatic;
 
 	TapFireRate = _TapFireRate;
@@ -355,6 +372,8 @@ AGunVR::AGunVR(FVector2D _TriggerRotations, UClass* _AmmoClass, UGrabbableVR* _C
 
 	ReloadSound = _ReloadSound;
 
+	SafetySound = _SafetySound;
+
 	OnFire = FGunDelegateVR();
 
 	OnShoot = FGunDelegateVR();
@@ -368,6 +387,8 @@ AGunVR::AGunVR(FVector2D _TriggerRotations, UClass* _AmmoClass, UGrabbableVR* _C
 	MuzzleFlashClass = _MuzzleFlashClass;
 
 	MuzzleFlashTransform = _MuzzleFlashTransform;
+
+	DecalClass = _DecalClass;
 
 	LaserSight = nullptr;
 
@@ -603,6 +624,12 @@ float AGunVR::GetBulletMaxDistance()
 	return BulletMaxDistance;
 }
 
+// Returns the damage this gun does when its bullets and projectiles make contact.
+float AGunVR::GetDamage()
+{
+	return Damage;
+}
+
 // Returns whether the gun is automatic.
 bool AGunVR::IsAutomatic()
 {
@@ -687,6 +714,12 @@ int32 AGunVR::GetCurrentAmmo()
 	return CurrentAmmo;
 }
 
+// Returns if the ammo count is empty.
+bool AGunVR::IsEmpty()
+{
+	return CurrentAmmo <= 0;
+}
+
 // Returns the gun's maximum ammo count.
 int32 AGunVR::GetMaxAmmo()
 {
@@ -721,6 +754,12 @@ USoundBase* AGunVR::GetEjectSound()
 USoundBase* AGunVR::GetReloadSound()
 {
 	return ReloadSound;
+}
+
+// Returns the gun's safety click sound.
+USoundBase* AGunVR::GetSafetySound()
+{
+	return SafetySound;
 }
 
 // Returns the event that is triggered for each bullet and projectile of the gun that is fired.
@@ -763,6 +802,12 @@ UClass* AGunVR::GetMuzzleFlashClass()
 FTransform AGunVR::GetMuzzleFlashTransform()
 {
 	return MuzzleFlashTransform;
+}
+
+// Returns the gun's wall decal class.
+UClass* AGunVR::GetDecalClass()
+{
+	return DecalClass;
 }
 
 // Returns the gun's laser sight.
@@ -982,6 +1027,12 @@ void AGunVR::SetBulletMaxDistance(float _BulletMaxDistance)
 	BulletMaxDistance = _BulletMaxDistance;
 }
 
+// Sets the damage this gun does when its bullets and projectiles make contact.
+void AGunVR::SetDamage(float _Damage)
+{
+	Damage = _Damage;
+}
+
 // Sets whether the gun is automatic.
 void AGunVR::SetAutomatic(bool Automatic)
 {
@@ -1144,6 +1195,12 @@ void AGunVR::SetReloadSound(USoundBase* _ReloadSound)
 	ReloadSound = _ReloadSound;
 }
 
+// Sets the gun's safety click sound.
+void AGunVR::SetSafetySound(USoundBase* _SafetySound)
+{
+	SafetySound = _SafetySound;
+}
+
 // Sets the event that is triggered for each bullet and projectile of the gun that is fired.
 void AGunVR::BindOnFireEvent(const FGunDelegateVR& Event)
 {
@@ -1184,6 +1241,12 @@ void AGunVR::SetMuzzleFlashClass(UClass* _MuzzleFlashClass)
 void AGunVR::SetMuzzleFlashTransform(FTransform _MuzzleFlashTransform)
 {
 	MuzzleFlashTransform = _MuzzleFlashTransform;
+}
+
+// Sets the gun's wall decal class.
+void AGunVR::SetDecalClass(UClass* _DecalClass)
+{
+	DecalClass = _DecalClass;
 }
 
 // Sets the gun's laser sight.
@@ -1367,7 +1430,7 @@ bool AGunVR::Fire(FHitResult& Hit)
 		{
 			FVector Direction = Muzzle->GetForwardVector();
 
-			if (!bFirstShot || bFirstShotAccuracy || ShotsFired > 1 || Delay > -FMath::Abs(FirstShotDelay))
+			if (!bFirstShot || !bFirstShotAccuracy || ShotsFired > 1 || Delay > -FMath::Abs(FirstShotDelay))
 			{
 				if (bRandomSpread)
 				{
@@ -1404,8 +1467,6 @@ bool AGunVR::Fire(FHitResult& Hit)
 
 			if (bPenetrate)
 			{
-				TArray<FHitResult> Hits;
-
 				if (IsValid(BeamClass))
 				{
 					AActor* Beam = GetWorld()->SpawnActor<AActor>(BeamClass, FTransform(Direction.Rotation(), Muzzle->GetComponentLocation(), FVector(1, 1, 1)));
@@ -1421,28 +1482,25 @@ bool AGunVR::Fire(FHitResult& Hit)
 					DestroyActorAfterSeconds(Beam, FireLingerTime);
 				}
 
-				if (UKismetSystemLibrary::LineTraceMulti(this, Muzzle->GetComponentLocation(), Muzzle->GetComponentLocation() + Muzzle->GetForwardVector() * BulletMaxDistance, ETraceTypeQuery::TraceTypeQuery1, true, { this, GetOwner() }, EDrawDebugTrace::None, Hits, true))
+				TArray<FHitResult> Hits;
+
+				if (UKismetSystemLibrary::LineTraceMulti(this, Muzzle->GetComponentLocation(), Muzzle->GetComponentLocation() + Direction * BulletMaxDistance, ETraceTypeQuery::TraceTypeQuery1, true, { this, GetOwner() }, EDrawDebugTrace::None, Hits, true))
 				{
-					int32 Index = 0;
+					Hit = Hits[0];
 
 					for (const FHitResult& Contact : Hits)
 					{
-						if (!Hit.bBlockingHit && Contact.bBlockingHit)
-						{
-							Hit = Contact;
-						}
-
 						if (IsValid(Contact.GetComponent()) && Contact.GetComponent()->Implements<UShootableVR>())
 						{
-							IShootableVR::Execute_OnHit(Contact.GetComponent(), Owner, this, Contact);
+							IShootableVR::Execute_OnHit(Contact.GetComponent(), Owner, this, Damage, Contact);
 						}
 
 						if (IsValid(Contact.GetActor()) && Contact.GetActor()->Implements<UShootableVR>())
 						{
-							IShootableVR::Execute_OnHit(Contact.GetActor(), Owner, this, Contact);
+							IShootableVR::Execute_OnHit(Contact.GetActor(), Owner, this, Damage, Contact);
 						}
 
-						Index++;
+						SpawnDecal(Contact);
 					}
 				}
 				else
@@ -1471,13 +1529,15 @@ bool AGunVR::Fire(FHitResult& Hit)
 
 					if (IsValid(Hit.GetComponent()) && Hit.GetComponent()->Implements<UShootableVR>())
 					{
-						IShootableVR::Execute_OnHit(Hit.GetComponent(), Owner, this, Hit);
+						IShootableVR::Execute_OnHit(Hit.GetComponent(), Owner, this, Damage, Hit);
 					}
 
 					if (IsValid(Hit.GetActor()) && Hit.GetActor()->Implements<UShootableVR>())
 					{
-						IShootableVR::Execute_OnHit(Hit.GetActor(), Owner, this, Hit);
+						IShootableVR::Execute_OnHit(Hit.GetActor(), Owner, this, Damage, Hit);
 					}
+
+					SpawnDecal(Hit);
 				}
 				else
 				{
@@ -1516,7 +1576,11 @@ bool AGunVR::Fire(FHitResult& Hit)
 		{
 			bFirstShot = false;
 
-			if (IsValid(EmptySound))
+			if (bSafety && IsValid(SafetySound))
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), SafetySound, Muzzle->GetComponentLocation());
+			}
+			else if (IsValid(EmptySound))
 			{
 				UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptySound, Muzzle->GetComponentLocation());
 			}
@@ -1538,7 +1602,7 @@ bool AGunVR::Launch(AActor*& Projectile)
 		{
 			FVector Direction = Muzzle->GetForwardVector();
 
-			if (!bFirstShot || bFirstShotAccuracy || ShotsFired > 1 || Delay > -FMath::Abs(FirstShotDelay))
+			if (!bFirstShot || !bFirstShotAccuracy || ShotsFired > 1 || Delay > -FMath::Abs(FirstShotDelay))
 			{
 				if (bRandomSpread)
 				{
@@ -1575,6 +1639,11 @@ bool AGunVR::Launch(AActor*& Projectile)
 
 			Projectile = GetWorld()->SpawnActor<AActor>(ProjectileClass, FTransform(Direction.Rotation(), Muzzle->GetComponentLocation(), FVector(1, 1, 1)));
 
+			if (IsValid(Projectile) && Projectile->Implements<UProjectileVR>())
+			{
+				IProjectileVR::Execute_InitializeProjectile(Projectile, this);
+			}
+
 			if (!bInfiniteAmmo)
 			{
 				CurrentAmmo--;
@@ -1593,7 +1662,11 @@ bool AGunVR::Launch(AActor*& Projectile)
 		{
 			bFirstShot = false;
 
-			if (IsValid(EmptySound))
+			if (bSafety && IsValid(SafetySound))
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), SafetySound, Muzzle->GetComponentLocation());
+			}
+			else if (IsValid(EmptySound))
 			{
 				UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptySound, Muzzle->GetComponentLocation());
 			}
@@ -1805,14 +1878,12 @@ bool AGunVR::Shoot(TArray<FHitResult>& Hits, TArray<AActor*>& Projectiles)
 
 		if (bBurstFire)
 		{
-			Delay = BurstRate * BurstsFired + FireRate;
-
 			Burst(BurstsFired);
+
+			Delay = BurstRate * BurstsFired + FireRate;
 		}
 		else
 		{
-			Delay = FireRate;
-
 			int32 Count = bInfiniteAmmo ? ShotsFired : FMath::Min(ShotsFired, CurrentAmmo);
 
 			if (bFireProjectiles)
@@ -1821,15 +1892,19 @@ bool AGunVR::Shoot(TArray<FHitResult>& Hits, TArray<AActor*>& Projectiles)
 
 				for (int i = 0; i < Count; i++)
 				{
-					Launch(Projectile);
+					if (Launch(Projectile))
+					{
+						Projectiles.Add(Projectile);
+					}
 				}
 
 				if (Count == 0)
 				{
-					Launch(Projectile);
+					if (Launch(Projectile))
+					{
+						Projectiles.Add(Projectile);
+					}
 				}
-
-				Projectiles.Add(Projectile);
 			}
 			else
 			{
@@ -1837,16 +1912,22 @@ bool AGunVR::Shoot(TArray<FHitResult>& Hits, TArray<AActor*>& Projectiles)
 
 				for (int i = 0; i < Count; i++)
 				{
-					Fire(Hit);
+					if (Fire(Hit))
+					{
+						Hits.Add(Hit);
+					}
 				}
 
 				if (Count == 0)
 				{
-					Fire(Hit);
+					if (Fire(Hit))
+					{
+						Hits.Add(Hit);
+					}
 				}
-
-				Hits.Add(Hit);
 			}
+
+			Delay = FireRate;
 		}
 
 		if (HasAmmo)
@@ -2001,8 +2082,39 @@ void AGunVR::UpdateGun(float DeltaSeconds)
 	Delay -= DeltaSeconds;
 }
 
+// Spawns a decal at the given hit point.
+AActor* AGunVR::SpawnDecal(FHitResult Hit)
+{
+	if (IsValid(DecalClass))
+	{
+		AActor* Decal = GetWorld()->SpawnActor<AActor>(DecalClass, FTransform(Hit.ImpactNormal.Rotation(), Hit.ImpactPoint, FVector(1, 1, 1)));
+
+		if (IsValid(Hit.GetComponent()))
+		{
+			Decal->AttachToComponent(Hit.GetComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		}
+		else if (IsValid(Hit.GetActor()))
+		{
+			Decal->AttachToActor(Hit.GetActor(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		}
+
+		Decal->SetActorLocationAndRotation(Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
+
+		return Decal;
+	}
+
+	return nullptr;
+}
+
 // Spawns a new AGunVR actor into the world.
-AGunVR* AGunVR::SpawnGunVR(UClass* GunClass, FTransform SpawnTransform, FVector2D _TriggerRotations, UClass* _AmmoClass, UGrabbableVR* _CurrentMagazine, UClass* _EmptyMagazineClass, UInputAction* LeftShootButton, UInputAction* RightShootButton, bool Safety, float _TriggerFirePercentage, bool FireProjectiles, UClass* _ProjectileClass, bool Penetrate, float _BulletMaxDistance, bool Automatic, float _TapFireRate, float _FireRate, int32 _ShotsFired, bool FirstShotAccuracy, float _FirstShotDelay, bool RandomSpread, FVector2D _Spread, bool BurstFire, int32 _BurstsFired, float _BurstRate, bool InfiniteAmmo, int32 _CurrentAmmo, int32 _MaxAmmo, bool AutoEjectMagazine, USoundBase* _FiringSound, USoundBase* _EmptySound, USoundBase* _EjectSound, USoundBase* _ReloadSound, float _FireLingerTime, UClass* _BeamClass, UClass* _MuzzleFlashClass, FTransform _MuzzleFlashTransform, FLinearColor _GunColor)
+AGunVR* AGunVR::SpawnGunVR(UClass* GunClass, FTransform SpawnTransform,
+	FVector2D _TriggerRotations, UClass* _AmmoClass, UGrabbableVR* _CurrentMagazine, UClass* _EmptyMagazineClass, UInputAction* LeftShootButton,
+	UInputAction* RightShootButton, bool Safety, float _TriggerFirePercentage, bool FireProjectiles, UClass* _ProjectileClass, bool Penetrate,
+	float _BulletMaxDistance, float _Damage, bool Automatic, float _TapFireRate, float _FireRate, int32 _ShotsFired, bool FirstShotAccuracy,
+	float _FirstShotDelay, bool RandomSpread, FVector2D _Spread, bool BurstFire, int32 _BurstsFired, float _BurstRate, bool InfiniteAmmo,
+	int32 _CurrentAmmo, int32 _MaxAmmo, bool AutoEjectMagazine, USoundBase* _FiringSound, USoundBase* _EmptySound, USoundBase* _EjectSound,
+	USoundBase* _ReloadSound, USoundBase* _SafetySound, float _FireLingerTime, UClass* _BeamClass, UClass* _MuzzleFlashClass,
+	FTransform _MuzzleFlashTransform, UClass* _DecalClass, FLinearColor _GunColor)
 {
 	if (!IsValid(GWorld))
 	{
@@ -2051,6 +2163,8 @@ AGunVR* AGunVR::SpawnGunVR(UClass* GunClass, FTransform SpawnTransform, FVector2
 
 	NewGunVR->BulletMaxDistance = _BulletMaxDistance;
 
+	NewGunVR->Damage = 100;
+
 	NewGunVR->bAutomatic = Automatic;
 
 	NewGunVR->TapFireRate = _TapFireRate;
@@ -2091,6 +2205,8 @@ AGunVR* AGunVR::SpawnGunVR(UClass* GunClass, FTransform SpawnTransform, FVector2
 
 	NewGunVR->ReloadSound = _ReloadSound;
 
+	NewGunVR->SafetySound = _SafetySound;
+
 	NewGunVR->OnFire = FGunDelegateVR();
 
 	NewGunVR->OnShoot = FGunDelegateVR();
@@ -2104,6 +2220,8 @@ AGunVR* AGunVR::SpawnGunVR(UClass* GunClass, FTransform SpawnTransform, FVector2
 	NewGunVR->MuzzleFlashClass = _MuzzleFlashClass;
 
 	NewGunVR->MuzzleFlashTransform = _MuzzleFlashTransform;
+
+	NewGunVR->DecalClass = _DecalClass;
 
 	NewGunVR->LaserSight = nullptr;
 
@@ -2139,3 +2257,6 @@ AGunVR* AGunVR::SpawnGunVR(UClass* GunClass, FTransform SpawnTransform, FVector2
 
 	return NewGunVR;
 }
+
+// Automatically called when this actor is spawned from a GunVR class.
+void IProjectileVR::InitializeProjectile_Implementation(AGunVR* FiredFrom) { }

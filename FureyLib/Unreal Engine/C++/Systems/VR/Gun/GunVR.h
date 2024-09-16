@@ -46,16 +46,14 @@ class MYGAME_API IShootableVR
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
-
 public:
 
 	// ISHOOTABLEVR FUNCTIONS
 
 	/** Automatically called when this actor is hit with a GunVR projectile. */
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ShootableVR")
-	void OnHit(AActor* Shooter, AGunVR* Gun, FHitResult Hit);
-	virtual void OnHit_Implementation(AActor* Shooter, AGunVR* Gun, FHitResult Hit);
+	void OnHit(AActor* Shooter, AGunVR* Gun, float Damage, FHitResult Hit);
+	virtual void OnHit_Implementation(AActor* Shooter, AGunVR* Gun, float Damage, FHitResult Hit);
 };
 
 // Delegate declaration.
@@ -139,6 +137,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "GunVR")
 	float BulletMaxDistance = 10000;
 
+	/** The damage this gun does per hit. */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "GunVR")
+	float Damage = 100;
+
 	/** Whether this gun can be fired continuously. */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "GunVR")
 	bool bAutomatic = false;
@@ -219,6 +221,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "GunVR")
 	USoundBase* ReloadSound = nullptr;
 
+	/** The sound to play when the gun is fired while safety is on. */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "GunVR")
+	USoundBase* SafetySound = nullptr;
+
 	/** An event to trigger for each bullet or projectile of the gun that is fired. */
 	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn), Category = "GunVR")
 	FGunDelegateVR OnFire = FGunDelegateVR();
@@ -246,6 +252,10 @@ protected:
 	/** The transform applied to the muzzle flash when it is spawned. After this transform is applied, the X rotation is randomized. */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "GunVR")
 	FTransform MuzzleFlashTransform = FTransform();
+
+	/** The class this gun uses to spawn decals on a contacted wall. */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn), Category = "GunVR")
+	UClass* DecalClass = nullptr;
 
 	/** The object used as this gun's laser sight. The X scale is used to trace the beam's length. */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GunVR")
@@ -375,7 +385,14 @@ public:
 	AGunVR(const FObjectInitializer& ObjectInitializer);
 
 	/** GunVR constructor. */
-	AGunVR(FVector2D _TriggerRotations, UClass* _AmmoClass = nullptr, UGrabbableVR* _CurrentMagazine = nullptr, UClass* _EmptyMagazineClass = nullptr, UInputAction* LeftShootButton = nullptr, UInputAction* RightShootButton = nullptr, bool Safety = false, float _TriggerFirePercentage = 0.75, bool FireProjectiles = false, UClass* _ProjectileClass = nullptr, bool Penetrate = false, float _BulletMaxDistance = 10000, bool Automatic = false, float _TapFireRate = 0, float _FireRate = 0, int32 _ShotsFired = 1, bool FirstShotAccuracy = true, float _FirstShotDelay = 1, bool RandomSpread = true, FVector2D _Spread = FVector2D(2.5, 2.5), bool BurstFire = false, int32 _BurstsFired = 3, float _BurstRate = 0.1, bool InfiniteAmmo = false, int32 _CurrentAmmo = 12, int32 _MaxAmmo = 12, bool AutoEjectMagazine = true, USoundBase* _FiringSound = nullptr, USoundBase* _EmptySound = nullptr, USoundBase* _EjectSound = nullptr, USoundBase* _ReloadSound = nullptr, float _FireLingerTime = 0.05, UClass* _BeamClass = nullptr, UClass* _MuzzleFlashClass = nullptr, FTransform _MuzzleFlashTransform = FTransform(), FLinearColor _GunColor = FLinearColor::Red);
+	AGunVR(
+		FVector2D _TriggerRotations, UClass* _AmmoClass = nullptr, UGrabbableVR* _CurrentMagazine = nullptr, UClass* _EmptyMagazineClass = nullptr, UInputAction* LeftShootButton = nullptr,
+		UInputAction* RightShootButton = nullptr, bool Safety = false, float _TriggerFirePercentage = 0.75, bool FireProjectiles = false, UClass* _ProjectileClass = nullptr, bool Penetrate = false,
+		float _BulletMaxDistance = 10000, float _Damage = 100, bool Automatic = false, float _TapFireRate = 0, float _FireRate = 0.3, int32 _ShotsFired = 1, bool FirstShotAccuracy = true,
+		float _FirstShotDelay = 1, bool RandomSpread = true, FVector2D _Spread = FVector2D(2.5, 2.5), bool BurstFire = false, int32 _BurstsFired = 3, float _BurstRate = 0.1, bool InfiniteAmmo = false,
+		int32 _CurrentAmmo = 12, int32 _MaxAmmo = 12, bool AutoEjectMagazine = true, USoundBase* _FiringSound = nullptr, USoundBase* _EmptySound = nullptr, USoundBase* _EjectSound = nullptr,
+		USoundBase* _ReloadSound = nullptr, USoundBase* _SafetySound = nullptr, float _FireLingerTime = 0, UClass* _BeamClass = nullptr, UClass* _MuzzleFlashClass = nullptr,
+		FTransform _MuzzleFlashTransform = FTransform(), UClass* _DecalClass = nullptr, FLinearColor _GunColor = FLinearColor::Red);
 
 
 	// UNREAL FUNCTIONS
@@ -477,6 +494,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GunVR")
 	virtual float GetBulletMaxDistance();
 
+	/** Returns the damage this gun does when its bullets and projectiles make contact. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GunVR")
+	virtual float GetDamage();
+
 	/** Returns whether the gun is automatic. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GunVR")
 	virtual bool IsAutomatic();
@@ -533,6 +554,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GunVR")
 	virtual int32 GetCurrentAmmo();
 
+	/** Returns if the ammo count is empty. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GunVR")
+	virtual bool IsEmpty();
+
 	/** Returns the gun's maximum ammo count. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GunVR")
 	virtual int32 GetMaxAmmo();
@@ -556,6 +581,10 @@ public:
 	/** Returns the gun's reloading sound. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GunVR")
 	virtual USoundBase* GetReloadSound();
+
+	/** Returns the gun's safety click sound. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GunVR")
+	virtual USoundBase* GetSafetySound();
 
 	/** Returns the event that is triggered for each bullet and projectile of the gun that is fired. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GunVR")
@@ -584,6 +613,10 @@ public:
 	/** Returns the gun's muzzle flash transform. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GunVR")
 	virtual FTransform GetMuzzleFlashTransform();
+
+	/** Returns the gun's wall decal class. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GunVR")
+	virtual UClass* GetDecalClass();
 
 	/** Returns the gun's laser sight. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GunVR")
@@ -707,6 +740,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GunVR")
 	virtual void SetBulletMaxDistance(float _BulletMaxDistance);
 
+	/** Sets the damage this gun does when its bullets and projectiles make contact. */
+	UFUNCTION(BlueprintCallable, Category = "GunVR")
+	virtual void SetDamage(float _Damage);
+
 	/** Sets whether the gun is automatic. */
 	UFUNCTION(BlueprintCallable, Category = "GunVR")
 	virtual void SetAutomatic(bool Automatic);
@@ -807,6 +844,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GunVR")
 	virtual void SetReloadSound(USoundBase* _ReloadSound);
 
+	/** Sets the gun's safety click sound. */
+	UFUNCTION(BlueprintCallable, Category = "GunVR")
+	virtual void SetSafetySound(USoundBase* _SafetySound);
+
 	/** Sets the event that is triggered for each bullet and projectile of the gun that is fired. */
 	UFUNCTION(BlueprintCallable, meta = (AutoCreateRefTerm = "Event"), Category = "GunVR")
 	virtual void BindOnFireEvent(const FGunDelegateVR& Event);
@@ -834,6 +875,10 @@ public:
 	/** Sets the gun's muzzle flash transform. */
 	UFUNCTION(BlueprintCallable, Category = "GunVR")
 	virtual void SetMuzzleFlashTransform(FTransform _MuzzleFlashTransform);
+
+	/** Sets the gun's wall decal class. */
+	UFUNCTION(BlueprintCallable, Category = "GunVR")
+	virtual void SetDecalClass(UClass* _DecalClass);
 
 	/** Sets the gun's laser sight. */
 	UFUNCTION(BlueprintCallable, Category = "GunVR")
@@ -910,7 +955,42 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GunVR")
 	virtual void UpdateGun(float DeltaSeconds = 0.001);
 
+	/** Spawns a decal at the given hit point. */
+	UFUNCTION(BlueprintCallable, Category = "GunVR")
+	virtual AActor* SpawnDecal(FHitResult Hit);
+
 	/** Spawns a new AGunVR actor into the world. */
 	UFUNCTION(BlueprintCallable, Category = "GunVR")
-	static AGunVR* SpawnGunVR(UClass* GunClass, FTransform SpawnTransform, FVector2D _TriggerRotations = FVector2D(-45, 45), UClass* _AmmoClass = nullptr, UGrabbableVR* _CurrentMagazine = nullptr, UClass* _EmptyMagazineClass = nullptr, UInputAction* LeftShootButton = nullptr, UInputAction* RightShootButton = nullptr, bool Safety = false, float _TriggerFirePercentage = 0.75, bool FireProjectiles = false, UClass* _ProjectileClass = nullptr, bool Penetrate = false, float _BulletMaxDistance = 10000, bool Automatic = false, float _TapFireRate = 0, float _FireRate = 0.3, int32 _ShotsFired = 1, bool FirstShotAccuracy = true, float _FirstShotDelay = 1, bool RandomSpread = true, FVector2D _Spread = FVector2D(2.5, 2.5), bool BurstFire = false, int32 _BurstsFired = 3, float _BurstRate = 0.1, bool InfiniteAmmo = false, int32 _CurrentAmmo = 12, int32 _MaxAmmo = 12, bool AutoEjectMagazine = true, USoundBase* _FiringSound = nullptr, USoundBase* _EmptySound = nullptr, USoundBase* _EjectSound = nullptr, USoundBase* _ReloadSound = nullptr, float _FireLingerTime = 0, UClass* _BeamClass = nullptr, UClass* _MuzzleFlashClass = nullptr, FTransform _MuzzleFlashTransform = FTransform(), FLinearColor _GunColor = FLinearColor::Red);
+	static AGunVR* SpawnGunVR(UClass* GunClass, FTransform SpawnTransform,
+		FVector2D _TriggerRotations = FVector2D(-45, 45), UClass* _AmmoClass = nullptr, UGrabbableVR* _CurrentMagazine = nullptr, UClass* _EmptyMagazineClass = nullptr, UInputAction* LeftShootButton = nullptr,
+		UInputAction* RightShootButton = nullptr, bool Safety = false, float _TriggerFirePercentage = 0.75, bool FireProjectiles = false, UClass* _ProjectileClass = nullptr, bool Penetrate = false,
+		float _BulletMaxDistance = 10000, float _Damage = 100, bool Automatic = false, float _TapFireRate = 0, float _FireRate = 0.3, int32 _ShotsFired = 1, bool FirstShotAccuracy = true,
+		float _FirstShotDelay = 1, bool RandomSpread = true, FVector2D _Spread = FVector2D(2.5, 2.5), bool BurstFire = false, int32 _BurstsFired = 3, float _BurstRate = 0.1, bool InfiniteAmmo = false,
+		int32 _CurrentAmmo = 12, int32 _MaxAmmo = 12, bool AutoEjectMagazine = true, USoundBase* _FiringSound = nullptr, USoundBase* _EmptySound = nullptr, USoundBase* _EjectSound = nullptr,
+		USoundBase* _ReloadSound = nullptr, USoundBase* _SafetySound = nullptr, float _FireLingerTime = 0, UClass* _BeamClass = nullptr, UClass* _MuzzleFlashClass = nullptr,
+		FTransform _MuzzleFlashTransform = FTransform(), UClass* _DecalClass = nullptr, FLinearColor _GunColor = FLinearColor::Red);
+};
+
+// This class does not need to be modified. Do not inherit from this class.
+UINTERFACE(Blueprintable, BlueprintType, MinimalAPI)
+class UProjectileVR : public UInterface
+{
+	GENERATED_BODY()
+};
+
+// Inherit from the following interface to implement it.
+
+/** Indicates an object is a projectile fired by a GunVR actor. */
+class CHUNK_IT_API IProjectileVR
+{
+	GENERATED_BODY()
+
+public:
+
+	// IPROJECTILEVR FUNCTIONS
+
+	/** Automatically called when this actor is spawned from a GunVR class. */
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ProjectileVR")
+	void InitializeProjectile(AGunVR* FiredFrom);
+	virtual void InitializeProjectile_Implementation(AGunVR* FiredFrom);
 };

@@ -393,11 +393,11 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
             if (burstFire)
             {
                 Burst(burstsFired);
+
+                timer = burstRate * numberOfBursts + fireRate;
             }
             else
             {
-                timer = fireRate;
-
                 int count = infiniteAmmo ? shotsFired : Mathf.Min(shotsFired, currentAmmo);
 
                 for (int i = 0; i < count; i++)
@@ -409,6 +409,8 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
                 {
                     Fire();
                 }
+
+                timer = fireRate;
             }
         }
 
@@ -422,8 +424,6 @@ public class RaygunVR : MonoBehaviour, IHandInteractableVR
     private async Task Burst(int numberOfBursts)
     {
         burstFiring = true;
-
-        timer = burstRate * numberOfBursts + fireRate;
 
         for (int i = 0; i < numberOfBursts; i++)
         {

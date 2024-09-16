@@ -151,7 +151,7 @@ void UControllerInputVR::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 // Returns whether the given mapping context is being broadcast for the given player.
 bool UControllerInputVR::IsInputEnabled(int32 PlayerIndex, UInputMappingContext* _MappingContext)
 {
-	if (PlayerIndex < 0 || !IsValid(_MappingContext))
+	if (PlayerIndex < 0 || !IsValid(_MappingContext) || !IsValid(GWorld))
 	{
 		return false;
 	}
@@ -176,7 +176,7 @@ bool UControllerInputVR::IsInputEnabled(int32 PlayerIndex, UInputMappingContext*
 // Begins broadcasting the given mapping context to the given player and returns if it was successful.
 bool UControllerInputVR::EnableInput(int32 PlayerIndex, UInputMappingContext* _MappingContext, int32 Priority)
 {
-	if (PlayerIndex < 0 || !IsValid(_MappingContext))
+	if (PlayerIndex < 0 || !IsValid(_MappingContext) || !IsValid(GWorld))
 	{
 		return false;
 	}
@@ -208,7 +208,7 @@ bool UControllerInputVR::EnableInput(int32 PlayerIndex, UInputMappingContext* _M
 // Stops broadcasting the given mapping context to the given player and returns if it was successful.
 bool UControllerInputVR::DisableInput(int32 PlayerIndex, UInputMappingContext* _MappingContext)
 {
-	if (PlayerIndex < 0 || !IsValid(_MappingContext))
+	if (PlayerIndex < 0 || !IsValid(_MappingContext) || !IsValid(GWorld))
 	{
 		return false;
 	}
@@ -294,7 +294,7 @@ bool UControllerInputVR::DisableControllerInput()
 // EnableControllerInput() must have been called somewhere for the given player index for this actor to receive input.
 bool UControllerInputVR::ReceiveControllerInput(AActor* Actor, int32 PlayerIndex)
 {
-	if (!IsValid(Actor))
+	if (!IsValid(Actor) || !IsValid(GWorld))
 	{
 		return false;
 	}
@@ -308,7 +308,7 @@ bool UControllerInputVR::ReceiveControllerInput(AActor* Actor, int32 PlayerIndex
 // EnableControllerInput() must have been called somewhere for the given player index for this actor to receive input.
 bool UControllerInputVR::StopReceivingControllerInput(AActor* Actor, int32 PlayerIndex)
 {
-	if (!IsValid(Actor))
+	if (!IsValid(Actor) || !IsValid(GWorld))
 	{
 		return false;
 	}

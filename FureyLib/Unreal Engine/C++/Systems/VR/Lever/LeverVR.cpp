@@ -565,7 +565,7 @@ ALeverVR* ALeverVR::SpawnLeverVR(UClass* LeverClass, FTransform SpawnTransform, 
 		return nullptr;
 	}
 
-	ALeverVR* LeverVR = GWorld->SpawnActor<ALeverVR>(LeverClass->StaticClass(), SpawnTransform);
+	ALeverVR* LeverVR = GWorld->SpawnActor<ALeverVR>(LeverClass, SpawnTransform);
 
 	LeverVR->PrimaryActorTick.bCanEverTick = true;
 

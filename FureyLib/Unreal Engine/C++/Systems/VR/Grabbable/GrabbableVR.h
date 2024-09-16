@@ -344,7 +344,18 @@ public:
 
 	/** Returns this grabbable component's grab points. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")
-	virtual TArray<FGrabPointVR>& GetGrabPoints();
+	virtual void GetGrabPoints(TArray<FGrabPointVR>& _GrabPoints);
+
+	/**
+	* Gets the index of the given grab point by name.
+	* Returns -1 if the grab point does not exist.
+	*/
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")
+	virtual int FindGrabPoint(FName Name, FGrabPointVR& GrabPoint);
+
+	/** Returns the first grab point of this object. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")
+	virtual bool GetPrimaryGrabPoint(FGrabPointVR& GrabPoint);
 
 	/** Returns whether the grabbable component is active. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")
@@ -366,7 +377,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")
 	virtual UInputAction* GetLeftGrabButton();
 
-	/** Returns this grabbable component's left grab button. */
+	/** Returns this grabbable component's right grab button. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")
 	virtual UInputAction* GetRightGrabButton();
 
@@ -473,7 +484,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GrabbableVR")
 	virtual void SetLeftGrabButton(UInputAction* Button);
 
-	/** Sets this grabbable component's left grab button. */
+	/** Sets this grabbable component's right grab button. */
 	UFUNCTION(BlueprintCallable, Category = "GrabbableVR")
 	virtual void SetRightGrabButton(UInputAction* Button);
 
@@ -611,6 +622,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")
 	virtual bool IsGrabbed();
 
+	/** Returns whether this object is currently grabbed with the given hand. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")
+	virtual bool IsGrabbedWith(bool bIsRight);
+
 	/** Returns whether this object is currently grabbed with the left hand. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")
 	virtual bool IsGrabbedLeft();
@@ -654,13 +669,6 @@ public:
 	/** Returns the right hand's grabbed object. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")
 	static UGrabbableVR* GetRightGrabbedObject();
-
-	/**
-	* Gets the index of the given grab point by name.
-	* Returns -1 if the grab point does not exist.
-	*/
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")
-	virtual int GetGrabPoint(FName Name, FGrabPointVR& GrabPoint);
 
 	/** Returns the elapsed grab time for this object. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GrabbableVR")

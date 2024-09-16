@@ -392,9 +392,47 @@ void UGrabbableVR::OnRightGrabButtonReleased()
 // GETTERS
 
 // Returns this grabbable component's grab points.
-TArray<FGrabPointVR>& UGrabbableVR::GetGrabPoints()
+void UGrabbableVR::GetGrabPoints(TArray<FGrabPointVR>& _GrabPoints)
 {
-	return GrabPoints;
+	_GrabPoints = GrabPoints;
+}
+
+// Gets the index of the given grab point by name.
+// Returns -1 if the grab point does not exist.
+int UGrabbableVR::FindGrabPoint(FName Name, FGrabPointVR& GrabPoint)
+{
+	int Index = 0;
+
+	for (FGrabPointVR Current : GrabPoints)
+	{
+		if (Current.GrabPointName == Name)
+		{
+			GrabPoint = Current;
+
+			return Index;
+		}
+
+		Index++;
+	}
+
+	GrabPoint = FGrabPointVR();
+
+	return -1;
+}
+
+// Returns the first grab point of this object.
+bool UGrabbableVR::GetPrimaryGrabPoint(FGrabPointVR& GrabPoint)
+{
+	if (GrabPoints.IsEmpty())
+	{
+		GrabPoint = FGrabPointVR();
+
+		return false;
+	}
+
+	GrabPoint = GrabPoints[0];
+
+	return true;
 }
 
 // Returns whether the grabbable component is active.
@@ -429,7 +467,7 @@ UInputAction* UGrabbableVR::GetLeftGrabButton()
 	return IA_Grab_Button_Left;
 }
 
-// Returns this grabbable component's grab mode setting.
+// Returns this grabbable component's right grab button.
 UInputAction* UGrabbableVR::GetRightGrabButton()
 {
 	return IA_Grab_Button_Right;
@@ -674,7 +712,7 @@ void UGrabbableVR::SetLeftGrabButton(UInputAction* Button)
 	}
 }
 
-// Sets this grabbable component's left grab button.
+// Sets this grabbable component's right grab button.
 void UGrabbableVR::SetRightGrabButton(UInputAction* Button)
 {
 	UnbindInput(true);
@@ -839,35 +877,30 @@ void UGrabbableVR::UpdatePawnCollision(ECollisionResponse NewResponse)
 // Returns whether the bind was successful.
 bool UGrabbableVR::BindInput(bool bIsRight)
 {
-	APlayerController* Player = Cast<APlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(GetOwner()->InputComponent);
 
-	if (IsValid(Player))
+	if (IsValid(Input))
 	{
-		UEnhancedInputComponent* InputComponent = Cast<UEnhancedInputComponent>(Player->InputComponent);
-
-		if (IsValid(InputComponent))
+		if (bIsRight)
 		{
-			if (bIsRight)
+			if (IsValid(IA_Grab_Button_Right))
 			{
-				if (IsValid(IA_Grab_Button_Right))
-				{
-					RightPress = &InputComponent->BindAction(IA_Grab_Button_Right, ETriggerEvent::Started, this, &UGrabbableVR::OnRightGrabButtonPressed);
+				RightPress = &Input->BindAction(IA_Grab_Button_Right, ETriggerEvent::Started, this, &UGrabbableVR::OnRightGrabButtonPressed);
 
-					RightRelease = &InputComponent->BindAction(IA_Grab_Button_Right, ETriggerEvent::Completed, this, &UGrabbableVR::OnRightGrabButtonReleased);
-				}
+				RightRelease = &Input->BindAction(IA_Grab_Button_Right, ETriggerEvent::Completed, this, &UGrabbableVR::OnRightGrabButtonReleased);
 			}
-			else
-			{
-				if (IsValid(IA_Grab_Button_Left))
-				{
-					LeftPress = &InputComponent->BindAction(IA_Grab_Button_Left, ETriggerEvent::Started, this, &UGrabbableVR::OnLeftGrabButtonPressed);
-
-					LeftRelease = &InputComponent->BindAction(IA_Grab_Button_Left, ETriggerEvent::Completed, this, &UGrabbableVR::OnLeftGrabButtonReleased);
-				}
-			}
-
-			return bIsRight ? IsValid(IA_Grab_Button_Right) : IsValid(IA_Grab_Button_Left);
 		}
+		else
+		{
+			if (IsValid(IA_Grab_Button_Left))
+			{
+				LeftPress = &Input->BindAction(IA_Grab_Button_Left, ETriggerEvent::Started, this, &UGrabbableVR::OnLeftGrabButtonPressed);
+
+				LeftRelease = &Input->BindAction(IA_Grab_Button_Left, ETriggerEvent::Completed, this, &UGrabbableVR::OnLeftGrabButtonReleased);
+			}
+		}
+
+		return bIsRight ? IsValid(IA_Grab_Button_Right) : IsValid(IA_Grab_Button_Left);
 	}
 
 	return false;
@@ -877,41 +910,36 @@ bool UGrabbableVR::BindInput(bool bIsRight)
 // Returns whether the unbind was successful.
 bool UGrabbableVR::UnbindInput(bool bIsRight)
 {
-	APlayerController* Player = Cast<APlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(GetOwner()->InputComponent);
 
-	if (IsValid(Player))
+	if (IsValid(Input))
 	{
-		UEnhancedInputComponent* InputComponent = Cast<UEnhancedInputComponent>(Player->InputComponent);
-
-		if (IsValid(InputComponent))
+		if (bIsRight)
 		{
-			if (bIsRight)
+			if (RightPress != nullptr)
 			{
-				if (RightPress != nullptr)
-				{
-					InputComponent->RemoveBinding(*RightPress);
-				}
-
-				if (RightRelease != nullptr)
-				{
-					InputComponent->RemoveBinding(*RightRelease);
-				}
-			}
-			else
-			{
-				if (LeftPress != nullptr)
-				{
-					InputComponent->RemoveBinding(*LeftPress);
-				}
-
-				if (LeftRelease != nullptr)
-				{
-					InputComponent->RemoveBinding(*LeftRelease);
-				}
+				Input->RemoveBinding(*RightPress);
 			}
 
-			return true;
+			if (RightRelease != nullptr)
+			{
+				Input->RemoveBinding(*RightRelease);
+			}
 		}
+		else
+		{
+			if (LeftPress != nullptr)
+			{
+				Input->RemoveBinding(*LeftPress);
+			}
+
+			if (LeftRelease != nullptr)
+			{
+				Input->RemoveBinding(*LeftRelease);
+			}
+		}
+
+		return true;
 	}
 
 	return false;
@@ -1534,6 +1562,12 @@ bool UGrabbableVR::IsGrabbed()
 	return LeftGrabbedObject == this || RightGrabbedObject == this;
 }
 
+// Returns whether this object is currently grabbed with the given hand.
+bool UGrabbableVR::IsGrabbedWith(bool bIsRight)
+{
+	return bIsRight ? RightGrabbedObject == this : LeftGrabbedObject == this;
+}
+
 // Returns whether this object is currently grabbed with the left hand.
 bool UGrabbableVR::IsGrabbedLeft()
 {
@@ -1610,29 +1644,6 @@ UGrabbableVR* UGrabbableVR::GetLeftGrabbedObject()
 UGrabbableVR* UGrabbableVR::GetRightGrabbedObject()
 {
 	return RightGrabbedObject;
-}
-
-// Gets the index of the given grab point by name.
-// Returns -1 if the grab point does not exist.
-int UGrabbableVR::GetGrabPoint(FName Name, FGrabPointVR& GrabPoint)
-{
-	int Index = 0;
-
-	for (FGrabPointVR Current : GrabPoints)
-	{
-		if (Current.GrabPointName == Name)
-		{
-			GrabPoint = Current;
-
-			return Index;
-		}
-
-		Index++;
-	}
-
-	GrabPoint = FGrabPointVR();
-
-	return -1;
 }
 
 // Returns the elapsed grab time for this object.

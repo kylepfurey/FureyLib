@@ -7,24 +7,24 @@
 // TYPE INFORMATION
 
 // Returns a unique hash code for this object's type.
-unsigned long long Class::GetTypeID() {
+[[nodiscard]] unsigned long long Class::GetTypeID() const {
     return typeid(*this).hash_code();
 }
 
 // Returns the name of this object's type.
-const char *Class::GetTypeName() {
+[[nodiscard]] const char *Class::GetTypeName() const {
     return typeid(*this).name();
 }
 
 // TO STRING
 
 // Returns a string interpretation of this object.
-const char *Class::ToString() {
-    return "Instance";
+[[nodiscard]] const char *Class::ToString() const {
+    return "Class";
 }
 
 // String conversion operator.
-Class::operator const char *() {
+Class::operator const char *() const {
     return ToString();
 }
 
@@ -32,7 +32,7 @@ Class::operator const char *() {
 
 // Returns a unique hash code of this object's current value.
 // The default implementation uses the Fowler-Noll-Vo hash function on the ToString() value.
-unsigned long long Class::GetHashCode() {
+[[nodiscard]] unsigned long long Class::GetHashCode() const {
     const char *String = ToString();
     const size_t Length = strlen(String);
     unsigned long long Code = 14695981039346656037;
@@ -44,29 +44,29 @@ unsigned long long Class::GetHashCode() {
 }
 
 // Returns whether this instance is equal to the given instance.
-bool Class::Equals(Class &EqualTo) {
+[[nodiscard]] bool Class::Equals(const Class &EqualTo) const {
     return this == &EqualTo;
 }
 
 // Returns whether this instance is equal to the given instance.
-bool Class::operator==(Class &EqualTo) {
+bool Class::operator==(const Class &EqualTo) const {
     return Equals(EqualTo);
 }
 
 // Returns whether this instance is not equal to the given instance.
-bool Class::operator!=(Class &NotEqualTo) {
+bool Class::operator!=(const Class &NotEqualTo) const {
     return !Equals(NotEqualTo);
 }
 
 // SERIALIZATION
 
 // Converts this instance into a portable .json format.
-const char *Class::Serialize() {
+[[nodiscard]] const char *Class::Serialize() const {
     return "{}";
 }
 
 // Reads the given .json formatted string into this instance.
 // Returns whether the deserialization was successful.
-bool Class::Deserialize(const char *Json) {
+bool Class::Deserialize(const char *Json) const {
     return false;
 }

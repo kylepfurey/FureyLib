@@ -20,10 +20,14 @@ public:
     // TYPE INFORMATION
 
     /** Returns a unique hash code for this object's type. */
-    unsigned long long GetTypeID();
+    [[nodiscard]] unsigned long long GetTypeID() const;
 
     /** Returns the name of this object's type. */
-    const char *GetTypeName();
+    [[nodiscard]] const char *GetTypeName() const;
+
+    /** Returns whether this instance is the given type. */
+    template<typename NewType>
+    [[nodiscard]] bool Is() const { return GetTypeID() == typeid(NewType).hash_code(); }
 
     // CASTING
 
@@ -37,10 +41,10 @@ public:
     // TO STRING
 
     /** Returns a string interpretation of this object. */
-    virtual const char *ToString();
+    [[nodiscard]] virtual const char *ToString() const;
 
     /** String conversion operator. */
-    virtual operator const char *();
+    virtual operator const char *() const;
 
     // EQUALITY
 
@@ -48,16 +52,16 @@ public:
      * Returns a unique hash code of this object's current value.
      * The default implementation uses the Fowler-Noll-Vo hash function on the ToString() value.
      */
-    virtual unsigned long long GetHashCode();
+    [[nodiscard]] virtual unsigned long long GetHashCode() const;
 
     /** Returns whether this instance is equal to the given instance. */
-    virtual bool Equals(Class &EqualTo);
+    [[nodiscard]] virtual bool Equals(const Class &EqualTo) const;
 
     /** Returns whether this instance is equal to the given instance. */
-    virtual bool operator==(Class &EqualTo);
+    virtual bool operator==(const Class &EqualTo) const;
 
     /** Returns whether this instance is not equal to the given instance. */
-    virtual bool operator!=(Class &NotEqualTo);
+    virtual bool operator!=(const Class &NotEqualTo) const;
 
     // FACTORY METHOD
 
@@ -68,13 +72,13 @@ public:
     // SERIALIZATION
 
     /** Converts this instance into a portable .json format. */
-    virtual const char *Serialize();
+    [[nodiscard]] virtual const char *Serialize() const;
 
     /**
      * Reads the given .json formatted string into this instance.
      * Returns whether the deserialization was successful.
      */
-    virtual bool Deserialize(const char *Json);
+    virtual bool Deserialize(const char *Json) const;
 };
 
 // Returns a unique hash code for this object's type.

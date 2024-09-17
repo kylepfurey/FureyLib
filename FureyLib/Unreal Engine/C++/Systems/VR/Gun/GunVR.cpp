@@ -451,7 +451,10 @@ void AGunVR::BeginPlay()
 
 	ResetLaserSight();
 
-	AmmoDisplayText->SetText(FText::FromString(bInfiniteAmmo ? "" : FString::FromInt(CurrentAmmo)));
+	if (IsValid(AmmoDisplayText))
+	{
+		AmmoDisplayText->SetText(FText::FromString(bInfiniteAmmo ? "" : FString::FromInt(CurrentAmmo)));
+	}
 }
 
 // Called when this component is destroyed.

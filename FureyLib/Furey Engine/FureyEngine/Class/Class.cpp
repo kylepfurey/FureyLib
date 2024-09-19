@@ -6,7 +6,7 @@
 
 // TYPE INFORMATION
 
-// Returns a unique hash code for this object's type.
+// Returns a unique 64-bit hash code for this object's type.
 [[nodiscard]] unsigned long long Class::GetTypeID() const {
     return typeid(*this).hash_code();
 }
@@ -30,15 +30,16 @@ Class::operator const char *() const {
 
 // EQUALITY
 
-// Returns a unique hash code of this object's current value.
+// Returns a unique 64-bit hash code of this object's current value.
 // The default implementation uses the Fowler-Noll-Vo hash function on the ToString() value.
 [[nodiscard]] unsigned long long Class::GetHashCode() const {
     const char *String = ToString();
-    const size_t Length = strlen(String);
     unsigned long long Code = 14695981039346656037;
-    for (int i = 0; i < Length; ++i) {
-        Code ^= String[i];
+    char Character = 0;
+    while (String[Character] != '\0') {
+        Code ^= String[Character];
         Code *= 1099511628211; // FNV Prime
+        ++Character;
     }
     return Code;
 }

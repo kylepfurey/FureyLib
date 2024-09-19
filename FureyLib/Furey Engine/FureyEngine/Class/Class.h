@@ -4,10 +4,9 @@
 
 #pragma once
 #include <typeinfo>
-#include <cstring>
 
 /**
- * The root class of all objects in Furey Engine.
+ * The root class of all objects in Furey Engine.<br/>
  * All new classes should inherit from this class or its descendants.
  */
 class Class {
@@ -19,7 +18,7 @@ public:
 
     // TYPE INFORMATION
 
-    /** Returns a unique hash code for this object's type. */
+    /** Returns a unique 64-bit hash code for this object's type. */
     [[nodiscard]] unsigned long long GetTypeID() const;
 
     /** Returns the name of this object's type. */
@@ -32,7 +31,7 @@ public:
     // CASTING
 
     /**
-     * Casts this instance into the given type.
+     * Casts this instance into the given type.<br/>
      * Returns null if the cast fails.
      */
     template<typename NewType>
@@ -49,7 +48,7 @@ public:
     // EQUALITY
 
     /**
-     * Returns a unique hash code of this object's current value.
+     * Returns a unique 64-bit hash code of this object's current value.<br/>
      * The default implementation uses the Fowler-Noll-Vo hash function on the ToString() value.
      */
     [[nodiscard]] virtual unsigned long long GetHashCode() const;
@@ -75,7 +74,7 @@ public:
     [[nodiscard]] virtual const char *Serialize() const;
 
     /**
-     * Reads the given .json formatted string into this instance.
+     * Reads the given .json formatted string into this instance.<br/>
      * Returns whether the deserialization was successful.
      */
     virtual bool Deserialize(const char *Json) const;

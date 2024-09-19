@@ -6,7 +6,7 @@
 #include "../Class.h"
 
 /**
- * The base struct for all structures in Furey Engine.
+ * The base structure for all structures in Furey Engine.<br/>
  * Structures are typically lightweight containers of data able to be passed by value.
  */
 struct Structure : Class {

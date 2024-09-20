@@ -254,11 +254,11 @@ protected:
 	/** The current grabbed point. */
 	FGrabPointVR GrabbedPoint = FGrabPointVR();
 
-	/** Whether the left grab button is currently down. */
-	bool bLeftDown = false;
+	/** The percentage of how much the left grab button is currently down. */
+	float LeftDown = 0;
 
-	/** Whether the right grab button is currently down.*/
-	bool bRightDown = false;
+	/** The percentage of how much the right grab button is currently down.*/
+	float RightDown = 0;
 
 	/** The event binding for the left grab button being pressed. */
 	FEnhancedInputActionEventBinding* LeftPress = nullptr;
@@ -328,16 +328,16 @@ public:
 	// CONTROLLERINPUTVR FUNCTIONS
 
 	/** Called when the left grab button is pressed down. */
-	virtual void OnLeftGrabButtonPressed();
+	virtual void OnLeftGrabButtonPressed(const FInputActionValue& Value);
 
 	/** Called when the right grab button is pressed down. */
-	virtual void OnRightGrabButtonPressed();
+	virtual void OnRightGrabButtonPressed(const FInputActionValue& Value);
 
 	/** Called when the left grab button is released. */
-	virtual void OnLeftGrabButtonReleased();
+	virtual void OnLeftGrabButtonReleased(const FInputActionValue& Value);
 
 	/** Called when the right grab button is released. */
-	virtual void OnRightGrabButtonReleased();
+	virtual void OnRightGrabButtonReleased(const FInputActionValue& Value);
 
 
 	// GETTERS

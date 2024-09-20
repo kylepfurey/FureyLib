@@ -15,9 +15,6 @@ UState::UState()
 {
 	StateMachine = nullptr;
 
-	// Change the state type enum here!
-	StateType = EStateType::STATE;
-
 	// Initialize new variables here
 }
 
@@ -26,9 +23,6 @@ UState::UState(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitia
 {
 	StateMachine = nullptr;
 
-	// Change the state type enum here!
-	StateType = EStateType::STATE;
-
 	// Initialize new variables here
 }
 
@@ -36,9 +30,6 @@ UState::UState(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitia
 UState::UState(UStateMachine* _StateMachine)
 {
 	StateMachine = _StateMachine;
-
-	// Change the state type enum here!
-	StateType = EStateType::STATE;
 
 	// Initialize new variables here
 }

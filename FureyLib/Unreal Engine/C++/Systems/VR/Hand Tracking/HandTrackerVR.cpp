@@ -503,57 +503,57 @@ UHandTrackerVR* UHandTrackerVR::GetHandTrackerVR()
 // Constructs a new HandTrackerVR component.
 UHandTrackerVR* UHandTrackerVR::ConstructHandTrackerVR(AActor* Parent, UCameraComponent* _Headset, UPoseableMeshComponent* _LeftHandComponent, UPoseableMeshComponent* _RightHandComponent, bool _DominantHandIsRight, EHandTrackingStateVR TrackingState)
 {
-	if (IsValid(Instance))
+	if (IsValid(Instance) || !IsValid(Parent))
 	{
 		return nullptr;
 	}
 
-	UHandTrackerVR* NewHandTracker = Cast<UHandTrackerVR>(Parent->AddComponentByClass(UHandTrackerVR::StaticClass(), true, FTransform(), true));
+	UHandTrackerVR* NewHandTrackerVR = Cast<UHandTrackerVR>(Parent->AddComponentByClass(UHandTrackerVR::StaticClass(), true, FTransform(), true));
 
-	NewHandTracker->RegisterComponent();
+	NewHandTrackerVR->RegisterComponent();
 
-	Parent->AddInstanceComponent(NewHandTracker);
+	Parent->AddInstanceComponent(NewHandTrackerVR);
 
-	NewHandTracker->PrimaryComponentTick.bCanEverTick = true;
+	NewHandTrackerVR->PrimaryComponentTick.bCanEverTick = true;
 
-	NewHandTracker->PrimaryComponentTick.TickGroup = ETickingGroup::TG_PrePhysics;
+	NewHandTrackerVR->PrimaryComponentTick.TickGroup = ETickingGroup::TG_PrePhysics;
 
-	NewHandTracker->PrimaryComponentTick.bHighPriority = true;
+	NewHandTrackerVR->PrimaryComponentTick.bHighPriority = true;
 
-	NewHandTracker->LeftHand = UHandVR::ConstructHandVR(false, _LeftHandComponent);
+	NewHandTrackerVR->LeftHand = UHandVR::ConstructHandVR(false, _LeftHandComponent);
 
-	NewHandTracker->RightHand = UHandVR::ConstructHandVR(true, _RightHandComponent);
+	NewHandTrackerVR->RightHand = UHandVR::ConstructHandVR(true, _RightHandComponent);
 
-	NewHandTracker->bDominantHandIsRight = _DominantHandIsRight;
+	NewHandTrackerVR->bDominantHandIsRight = _DominantHandIsRight;
 
-	NewHandTracker->Headset = _Headset;
+	NewHandTrackerVR->Headset = _Headset;
 
-	NewHandTracker->LeftHandMotionController = nullptr;
+	NewHandTrackerVR->LeftHandMotionController = nullptr;
 
-	NewHandTracker->RightHandMotionController = nullptr;
+	NewHandTrackerVR->RightHandMotionController = nullptr;
 
-	NewHandTracker->LeftGestures = TMap<EHandGestureVR, bool>();
+	NewHandTrackerVR->LeftGestures = TMap<EHandGestureVR, bool>();
 
-	NewHandTracker->RightGestures = TMap<EHandGestureVR, bool>();
+	NewHandTrackerVR->RightGestures = TMap<EHandGestureVR, bool>();
 
 	for (int32 Index = 0; Index < (int32)EHandGestureVR::MAX; Index++)
 	{
-		NewHandTracker->LeftGestures.Add((EHandGestureVR)Index, false);
+		NewHandTrackerVR->LeftGestures.Add((EHandGestureVR)Index, false);
 
-		NewHandTracker->RightGestures.Add((EHandGestureVR)Index, false);
+		NewHandTrackerVR->RightGestures.Add((EHandGestureVR)Index, false);
 	}
 
-	NewHandTracker->bTrackingLeft = false;
+	NewHandTrackerVR->bTrackingLeft = false;
 
-	NewHandTracker->bTrackingRight = false;
+	NewHandTrackerVR->bTrackingRight = false;
 
-	NewHandTracker->PreviousLeftGestures = TSet<EHandGestureVR>();
+	NewHandTrackerVR->PreviousLeftGestures = TSet<EHandGestureVR>();
 
-	NewHandTracker->PreviousRightGestures = TSet<EHandGestureVR>();
+	NewHandTrackerVR->PreviousRightGestures = TSet<EHandGestureVR>();
 
-	NewHandTracker->State = TrackingState;
+	NewHandTrackerVR->State = TrackingState;
 
-	return NewHandTracker;
+	return NewHandTrackerVR;
 }
 
 

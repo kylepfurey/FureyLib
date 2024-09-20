@@ -338,43 +338,43 @@ UControllerInputVR* UControllerInputVR::GetControllerInputVR()
 // Constructs a new ControllerInputVR component.
 UControllerInputVR* UControllerInputVR::ConstructControllerInputVR(AActor* Parent, UInputMappingContext* _MappingContext, UCameraComponent* _Headset, UMotionControllerComponent* _LeftControllerComponent, UMotionControllerComponent* _RightControllerComponent, bool bAutoEnable)
 {
-	if (IsValid(Instance))
+	if (IsValid(Instance) || !IsValid(Parent))
 	{
 		return nullptr;
 	}
 
-	UControllerInputVR* NewControllerInput = Cast<UControllerInputVR>(Parent->AddComponentByClass(UControllerInputVR::StaticClass(), true, FTransform(), true));
+	UControllerInputVR* NewControllerInputVR = Cast<UControllerInputVR>(Parent->AddComponentByClass(UControllerInputVR::StaticClass(), true, FTransform(), true));
 
-	NewControllerInput->RegisterComponent();
+	NewControllerInputVR->RegisterComponent();
 
-	Parent->AddInstanceComponent(NewControllerInput);
+	Parent->AddInstanceComponent(NewControllerInputVR);
 
-	NewControllerInput->PrimaryComponentTick.bCanEverTick = true;
+	NewControllerInputVR->PrimaryComponentTick.bCanEverTick = true;
 
-	NewControllerInput->PrimaryComponentTick.TickGroup = ETickingGroup::TG_PrePhysics;
+	NewControllerInputVR->PrimaryComponentTick.TickGroup = ETickingGroup::TG_PrePhysics;
 
-	NewControllerInput->PrimaryComponentTick.bHighPriority = true;
+	NewControllerInputVR->PrimaryComponentTick.bHighPriority = true;
 
-	NewControllerInput->LeftController = _LeftControllerComponent;
+	NewControllerInputVR->LeftController = _LeftControllerComponent;
 
-	NewControllerInput->RightController = _RightControllerComponent;
+	NewControllerInputVR->RightController = _RightControllerComponent;
 
-	NewControllerInput->Headset = _Headset;
+	NewControllerInputVR->Headset = _Headset;
 
-	NewControllerInput->MappingContext = _MappingContext;
+	NewControllerInputVR->MappingContext = _MappingContext;
 
-	NewControllerInput->bTrackingLeft = false;
+	NewControllerInputVR->bTrackingLeft = false;
 
-	NewControllerInput->bTrackingRight = false;
+	NewControllerInputVR->bTrackingRight = false;
 
-	NewControllerInput->bInputEnabled = !bAutoEnable;
+	NewControllerInputVR->bInputEnabled = !bAutoEnable;
 
 	if (bAutoEnable)
 	{
-		ReceiveControllerInput(NewControllerInput->GetOwner(), 0);
+		ReceiveControllerInput(NewControllerInputVR->GetOwner(), 0);
 	}
 
-	return NewControllerInput;
+	return NewControllerInputVR;
 }
 
 

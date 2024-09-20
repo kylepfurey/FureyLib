@@ -693,44 +693,44 @@ void UBodyVR::HideBody(bool Hide)
 // Constructs a new BodyVR component.
 UBodyVR* UBodyVR::ConstructBodyVR(AActor* Parent, bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset)
 {
-	if (IsValid(Instance))
+	if (IsValid(Instance) || !IsValid(Parent))
 	{
 		return nullptr;
 	}
 
-	UBodyVR* NewBody = Cast<UBodyVR>(Parent->AddComponentByClass(UBodyVR::StaticClass(), true, FTransform(), true));
+	UBodyVR* NewBodyVR = Cast<UBodyVR>(Parent->AddComponentByClass(UBodyVR::StaticClass(), true, FTransform(), true));
 
-	NewBody->RegisterComponent();
+	NewBodyVR->RegisterComponent();
 
-	Parent->AddInstanceComponent(NewBody);
+	Parent->AddInstanceComponent(NewBodyVR);
 
-	NewBody->PrimaryComponentTick.bCanEverTick = true;
+	NewBodyVR->PrimaryComponentTick.bCanEverTick = true;
 
-	NewBody->PrimaryComponentTick.TickGroup = ETickingGroup::TG_PrePhysics;
+	NewBodyVR->PrimaryComponentTick.TickGroup = ETickingGroup::TG_PrePhysics;
 
-	NewBody->bActive = Active;
+	NewBodyVR->bActive = Active;
 
-	NewBody->bHandTracking = HandTracking;
+	NewBodyVR->bHandTracking = HandTracking;
 
-	NewBody->Torso = _Torso;
+	NewBodyVR->Torso = _Torso;
 
-	NewBody->TorsoOffset = _TorsoOffset;
+	NewBodyVR->TorsoOffset = _TorsoOffset;
 
-	NewBody->TorsoRotateSpeed = _TorsoRotateSpeed;
+	NewBodyVR->TorsoRotateSpeed = _TorsoRotateSpeed;
 
-	NewBody->LeftShoulder = _LeftShoulder;
+	NewBodyVR->LeftShoulder = _LeftShoulder;
 
-	NewBody->RightShoulder = _RightShoulder;
+	NewBodyVR->RightShoulder = _RightShoulder;
 
-	NewBody->ShoulderOffset = _ShoulderOffset;
+	NewBodyVR->ShoulderOffset = _ShoulderOffset;
 
-	NewBody->LeftElbow = _LeftElbow;
+	NewBodyVR->LeftElbow = _LeftElbow;
 
-	NewBody->RightElbow = _RightElbow;
+	NewBodyVR->RightElbow = _RightElbow;
 
-	NewBody->ElbowOffset = _ElbowOffset;
+	NewBodyVR->ElbowOffset = _ElbowOffset;
 
-	return NewBody;
+	return NewBodyVR;
 }
 
 

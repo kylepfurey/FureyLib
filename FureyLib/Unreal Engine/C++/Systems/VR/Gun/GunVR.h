@@ -291,11 +291,11 @@ protected:
 	/** The starting relative location of the laser sight. */
 	FVector LaserSightStart = FVector();
 
-	/** Whether the left shoot button is currently down. */
-	float bLeftDown = 0;
+	/** The percentage of how much the left shoot button is currently down. */
+	float LeftDown = 0;
 
-	/** Whether the right shoot button is currently down.*/
-	float bRightDown = 0;
+	/** The percentage of how much the right shoot button is currently down. */
+	float RightDown = 0;
 
 	/** The event binding for the left shoot button being pressed. */
 	FEnhancedInputActionEventBinding* LeftPress = nullptr;
@@ -981,7 +981,7 @@ class UProjectileVR : public UInterface
 // Inherit from the following interface to implement it.
 
 /** Indicates an object is a projectile fired by a GunVR actor. */
-class CHUNK_IT_API IProjectileVR
+class MYGAME_API IProjectileVR
 {
 	GENERATED_BODY()
 

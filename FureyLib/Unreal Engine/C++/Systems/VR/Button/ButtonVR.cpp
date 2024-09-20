@@ -451,45 +451,45 @@ UButtonVR* UButtonVR::ConstructButtonVR(USceneComponent* Parent, UStaticMeshComp
 		return nullptr;
 	}
 
-	UButtonVR* ButtonVR = NewObject<UButtonVR>();
+	UButtonVR* NewButtonVR = NewObject<UButtonVR>();
 
-	ButtonVR->RegisterComponent();
+	NewButtonVR->RegisterComponent();
 
-	Parent->GetOwner()->AddInstanceComponent(ButtonVR);
+	Parent->GetOwner()->AddInstanceComponent(NewButtonVR);
 
-	ButtonVR->AttachToComponent(Parent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	NewButtonVR->AttachToComponent(Parent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 
-	ButtonVR->PrimaryComponentTick.bCanEverTick = true;
+	NewButtonVR->PrimaryComponentTick.bCanEverTick = true;
 
-	ButtonVR->PrimaryComponentTick.TickGroup = ETickingGroup::TG_DuringPhysics;
+	NewButtonVR->PrimaryComponentTick.TickGroup = ETickingGroup::TG_DuringPhysics;
 
-	ButtonVR->ButtonModel = nullptr;
+	NewButtonVR->ButtonModel = nullptr;
 
-	ButtonVR->ButtonCollider = nullptr;
+	NewButtonVR->ButtonCollider = nullptr;
 
-	ButtonVR->bActive = Active;
+	NewButtonVR->bActive = Active;
 
-	ButtonVR->bSticky = Sticky;
+	NewButtonVR->bSticky = Sticky;
 
-	ButtonVR->bClicked = Clicked;
+	NewButtonVR->bClicked = Clicked;
 
-	ButtonVR->UnclickedHeight = _UnclickedHeight;
+	NewButtonVR->UnclickedHeight = _UnclickedHeight;
 
-	ButtonVR->ClickedHeight = _ClickedHeight;
+	NewButtonVR->ClickedHeight = _ClickedHeight;
 
-	ButtonVR->ButtonSpeed = _ButtonSpeed;
+	NewButtonVR->ButtonSpeed = _ButtonSpeed;
 
-	ButtonVR->ClickedSound = _ClickedSound;
+	NewButtonVR->ClickedSound = _ClickedSound;
 
-	ButtonVR->UnclickedSound = _UnclickedSound;
+	NewButtonVR->UnclickedSound = _UnclickedSound;
 
-	ButtonVR->OnClick = FButtonDelegateVR();
+	NewButtonVR->OnClick = FButtonDelegateVR();
 
-	ButtonVR->OnUnclick = FButtonDelegateVR();
+	NewButtonVR->OnUnclick = FButtonDelegateVR();
 
-	ButtonVR->WhileClicked = FButtonDelegateVR();
+	NewButtonVR->WhileClicked = FButtonDelegateVR();
 
-	ButtonVR->bHeld = false;
+	NewButtonVR->bHeld = false;
 
-	return ButtonVR;
+	return NewButtonVR;
 }

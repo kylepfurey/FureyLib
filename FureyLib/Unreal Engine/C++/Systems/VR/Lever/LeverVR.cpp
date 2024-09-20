@@ -148,6 +148,8 @@ void ALeverVR::Tick(float DeltaTime)
 
 		GrabComponent->SetThrowable(false);
 
+		GrabComponent->SetPrimaryCollider(nullptr);
+
 		if (GrabComponent->IsGrabbed())
 		{
 			FVector Position = GetActorLocation();
@@ -346,102 +348,85 @@ float ALeverVR::GetDegreesRotation(FVector2D Start, FVector2D End)
 // Updates the state of this lever.
 void ALeverVR::UpdateLever(float DeltaTime)
 {
-	if (IsValid(GrabComponent) && GrabComponent->IsGrabbed())
+	if (bActive)
 	{
-		if (IsValid(LeverPivot))
+		FVector2D Axes;
+
+		if (IsValid(GrabComponent) && GrabComponent->IsGrabbed())
 		{
-			FVector Start = LeverPivot->GetComponentLocation();
-
-			FVector End = UGrabbableVR::GetHandCollider(GrabComponent->IsGrabbedRight())->GetComponentLocation();
-
-			float Pitch = GetDegreesRotation(FVector2D(Start.X, Start.Z), FVector2D(End.X, End.Z)) - 90;
-
-			Pitch -= GetActorRotation().Pitch;
-
-			float Roll = -GetDegreesRotation(FVector2D(Start.Y, Start.Z), FVector2D(End.Y, End.Z)) + 90;
-
-			Roll -= GetActorRotation().Roll;
-
-			FVector2D Axes;
-
-			FVector2D Direction;
-
-			switch (LeverMode)
+			if (IsValid(LeverPivot))
 			{
-			case ELeverModeVR::BACKWARD_FORWARD:
+				FVector Start = LeverPivot->GetComponentLocation();
 
-				Roll = 0;
+				FVector End = UGrabbableVR::GetHandCollider(GrabComponent->IsGrabbedRight())->GetComponentLocation();
 
-				break;
+				float Pitch = GetDegreesRotation(FVector2D(Start.X, Start.Z), FVector2D(End.X, End.Z)) - 90;
 
-			case ELeverModeVR::LEFT_RIGHT:
+				Pitch -= GetActorRotation().Pitch;
 
-				Pitch = 0;
+				float Roll = -GetDegreesRotation(FVector2D(Start.Y, Start.Z), FVector2D(End.Y, End.Z)) + 90;
 
-				break;
+				Roll -= GetActorRotation().Roll;
 
-			case ELeverModeVR::BIDIRECTIONAL:
+				FVector2D Direction;
 
-				LeverPivot->SetRelativeRotation(FRotator(Pitch, LeverPivot->GetRelativeRotation().Yaw, Roll));
-
-				Axes = GetLeverAxes();
-
-				if (FMath::Abs(Axes.X) > FMath::Abs(Axes.Y))
+				switch (LeverMode)
 				{
-					Pitch = 0;
-				}
-				else
-				{
+				case ELeverModeVR::BACKWARD_FORWARD:
+
 					Roll = 0;
+
+					break;
+
+				case ELeverModeVR::LEFT_RIGHT:
+
+					Pitch = 0;
+
+					break;
+
+				case ELeverModeVR::BIDIRECTIONAL:
+
+					LeverPivot->SetRelativeRotation(FRotator(Pitch, LeverPivot->GetRelativeRotation().Yaw, Roll));
+
+					Axes = GetLeverAxes();
+
+					if (FMath::Abs(Axes.X) > FMath::Abs(Axes.Y))
+					{
+						Pitch = 0;
+					}
+					else
+					{
+						Roll = 0;
+					}
+
+					break;
+
+				case ELeverModeVR::JOYSTICK:
+
+					LeverPivot->SetRelativeRotation(FRotator(Pitch, LeverPivot->GetRelativeRotation().Yaw, Roll));
+
+					Direction = FVector2D(LeverPivot->GetRelativeRotation().Roll, LeverPivot->GetRelativeRotation().Pitch);
+
+					Direction = Direction.GetSafeNormal() * FMath::Min(Direction.Length(), (FMath::Abs(BackwardForwardClamp.X) + FMath::Abs(BackwardForwardClamp.Y) + FMath::Abs(LeftRightClamp.X) + FMath::Abs(LeftRightClamp.Y)) / 4);
+
+					Roll = Direction.X;
+
+					Pitch = Direction.Y;
+
+					break;
 				}
-
-				break;
-
-			case ELeverModeVR::JOYSTICK:
 
 				LeverPivot->SetRelativeRotation(FRotator(Pitch, LeverPivot->GetRelativeRotation().Yaw, Roll));
 
-				Direction = FVector2D(LeverPivot->GetRelativeRotation().Roll, LeverPivot->GetRelativeRotation().Pitch);
-
-				Direction = Direction.GetSafeNormal() * FMath::Min(Direction.Length(), (FMath::Abs(BackwardForwardClamp.X) + FMath::Abs(BackwardForwardClamp.Y) + FMath::Abs(LeftRightClamp.X) + FMath::Abs(LeftRightClamp.Y)) / 4);
-
-				Roll = Direction.X;
-
-				Pitch = Direction.Y;
-
-				break;
-			}
-
-			LeverPivot->SetRelativeRotation(FRotator(Pitch, LeverPivot->GetRelativeRotation().Yaw, Roll));
-
-			LeverPivot->SetRelativeRotation(FRotator(FMath::Clamp(LeverPivot->GetRelativeRotation().Pitch, -FMath::Abs(BackwardForwardClamp.X), FMath::Abs(BackwardForwardClamp.Y)), LeverPivot->GetRelativeRotation().Yaw, FMath::Clamp(LeverPivot->GetRelativeRotation().Roll, -FMath::Abs(LeftRightClamp.X), FMath::Abs(LeftRightClamp.Y))));
-
-			Axes = GetLeverAxes();
-
-			if (Axes.X > FMath::Abs(LeverDownPercent))
-			{
-				OnLeverRight.ExecuteIfBound();
-			}
-			else
-			{
-				OnLeverLeft.ExecuteIfBound();
-			}
-
-			if (Axes.Y > FMath::Abs(LeverDownPercent))
-			{
-				OnLeverForward.ExecuteIfBound();
-			}
-			else
-			{
-				OnLeverBackward.ExecuteIfBound();
+				LeverPivot->SetRelativeRotation(FRotator(FMath::Clamp(LeverPivot->GetRelativeRotation().Pitch, -FMath::Abs(BackwardForwardClamp.X), FMath::Abs(BackwardForwardClamp.Y)), LeverPivot->GetRelativeRotation().Yaw, FMath::Clamp(LeverPivot->GetRelativeRotation().Roll, -FMath::Abs(LeftRightClamp.X), FMath::Abs(LeftRightClamp.Y))));
 			}
 		}
-	}
-	else if (bResetLever && IsValid(LeverPivot))
-	{
-		LeverPivot->SetRelativeRotation(FQuat::FastLerp(LeverPivot->GetRelativeRotation().Quaternion(), FQuat::Identity, DeltaTime * ResetSpeed));
+		else if (bResetLever && IsValid(LeverPivot))
+		{
+			LeverPivot->SetRelativeRotation(FQuat::FastLerp(LeverPivot->GetRelativeRotation().Quaternion(), FQuat::Identity, DeltaTime * ResetSpeed));
+		}
 
-		FVector2D Axes = GetLeverAxes();
+		Axes = GetLeverAxes();
 
 		if (Axes.X > FMath::Abs(LeverDownPercent))
 		{
@@ -560,46 +545,46 @@ FVector2D ALeverVR::GetLeverDirection()
 // Spawns a new ALeverVR into the world.
 ALeverVR* ALeverVR::SpawnLeverVR(UClass* LeverClass, FTransform SpawnTransform, bool Active, ELeverModeVR _LeverMode, FVector2D _BackwardForwardClamp, FVector2D _LeftRightClamp, bool ResetLever, float _ResetSpeed, float _LeverDownPercent)
 {
-	if (!IsValid(GWorld))
+	if (!IsValid(GWorld) || !IsValid(LeverClass) || !LeverClass->IsChildOf<ALeverVR>())
 	{
 		return nullptr;
 	}
 
-	ALeverVR* LeverVR = GWorld->SpawnActor<ALeverVR>(LeverClass, SpawnTransform);
+	ALeverVR* NewLeverVR = GWorld->SpawnActor<ALeverVR>(LeverClass, SpawnTransform);
 
-	LeverVR->PrimaryActorTick.bCanEverTick = true;
+	NewLeverVR->PrimaryActorTick.bCanEverTick = true;
 
-	LeverVR->PrimaryActorTick.TickGroup = ETickingGroup::TG_DuringPhysics;
+	NewLeverVR->PrimaryActorTick.TickGroup = ETickingGroup::TG_DuringPhysics;
 
-	LeverVR->GrabComponent = nullptr;
+	NewLeverVR->GrabComponent = nullptr;
 
-	LeverVR->LeverPivot = nullptr;
+	NewLeverVR->LeverPivot = nullptr;
 
-	LeverVR->bActive = Active;
+	NewLeverVR->bActive = Active;
 
-	LeverVR->LeverMode = _LeverMode;
+	NewLeverVR->LeverMode = _LeverMode;
 
-	LeverVR->BackwardForwardClamp = _BackwardForwardClamp;
+	NewLeverVR->BackwardForwardClamp = _BackwardForwardClamp;
 
-	LeverVR->LeftRightClamp = _LeftRightClamp;
+	NewLeverVR->LeftRightClamp = _LeftRightClamp;
 
-	LeverVR->bResetLever = ResetLever;
+	NewLeverVR->bResetLever = ResetLever;
 
-	LeverVR->ResetSpeed = _ResetSpeed;
+	NewLeverVR->ResetSpeed = _ResetSpeed;
 
-	LeverVR->LeverDownPercent = _LeverDownPercent;
+	NewLeverVR->LeverDownPercent = _LeverDownPercent;
 
-	LeverVR->OnLeverForward = FLeverDelegateVR();
+	NewLeverVR->OnLeverForward = FLeverDelegateVR();
 
-	LeverVR->OnLeverBackward = FLeverDelegateVR();
+	NewLeverVR->OnLeverBackward = FLeverDelegateVR();
 
-	LeverVR->OnLeverLeft = FLeverDelegateVR();
+	NewLeverVR->OnLeverLeft = FLeverDelegateVR();
 
-	LeverVR->OnLeverRight = FLeverDelegateVR();
+	NewLeverVR->OnLeverRight = FLeverDelegateVR();
 
-	LeverVR->GrabbedPosition = FVector();
+	NewLeverVR->GrabbedPosition = FVector();
 
-	LeverVR->GrabbedRotation = FRotator();
+	NewLeverVR->GrabbedRotation = FRotator();
 
-	return LeverVR;
+	return NewLeverVR;
 }

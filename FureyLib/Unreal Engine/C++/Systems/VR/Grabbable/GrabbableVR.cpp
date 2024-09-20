@@ -116,9 +116,9 @@ UGrabbableVR::UGrabbableVR()
 
 	GrabbedPoint = FGrabPointVR();
 
-	bLeftDown = false;
+	LeftDown = 0;
 
-	bRightDown = false;
+	RightDown = 0;
 
 	LeftPress = nullptr;
 
@@ -196,9 +196,9 @@ UGrabbableVR::UGrabbableVR(const FObjectInitializer& ObjectInitializer) : Super(
 
 	GrabbedPoint = FGrabPointVR();
 
-	bLeftDown = false;
+	LeftDown = 0;
 
-	bRightDown = false;
+	RightDown = 0;
 
 	LeftPress = nullptr;
 
@@ -276,9 +276,9 @@ UGrabbableVR::UGrabbableVR(TArray<FGrabPointVR> _GrabPoints, bool Active, bool H
 
 	GrabbedPoint = FGrabPointVR();
 
-	bLeftDown = false;
+	LeftDown = 0;
 
-	bRightDown = false;
+	RightDown = 0;
 
 	LeftPress = nullptr;
 
@@ -365,27 +365,27 @@ void UGrabbableVR::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 // CONTROLLERINPUTVR FUNCTIONS
 
 // Called when the left grab button is pressed down.
-void UGrabbableVR::OnLeftGrabButtonPressed()
+void UGrabbableVR::OnLeftGrabButtonPressed(const FInputActionValue& Value)
 {
-	bLeftDown = true;
+	LeftDown = Value.Get<float>();
 }
 
 // Called when the right grab button is pressed down.
-void UGrabbableVR::OnRightGrabButtonPressed()
+void UGrabbableVR::OnRightGrabButtonPressed(const FInputActionValue& Value)
 {
-	bRightDown = true;
+	RightDown = Value.Get<float>();
 }
 
 // Called when the left grab button is released.
-void UGrabbableVR::OnLeftGrabButtonReleased()
+void UGrabbableVR::OnLeftGrabButtonReleased(const FInputActionValue& Value)
 {
-	bLeftDown = false;
+	LeftDown = 0;
 }
 
 // Called when the right grab button is released.
-void UGrabbableVR::OnRightGrabButtonReleased()
+void UGrabbableVR::OnRightGrabButtonReleased(const FInputActionValue& Value)
 {
-	bRightDown = false;
+	RightDown = 0;
 }
 
 
@@ -885,7 +885,7 @@ bool UGrabbableVR::BindInput(bool bIsRight)
 		{
 			if (IsValid(IA_Grab_Button_Right))
 			{
-				RightPress = &Input->BindAction(IA_Grab_Button_Right, ETriggerEvent::Started, this, &UGrabbableVR::OnRightGrabButtonPressed);
+				RightPress = &Input->BindAction(IA_Grab_Button_Right, ETriggerEvent::Triggered, this, &UGrabbableVR::OnRightGrabButtonPressed);
 
 				RightRelease = &Input->BindAction(IA_Grab_Button_Right, ETriggerEvent::Completed, this, &UGrabbableVR::OnRightGrabButtonReleased);
 			}
@@ -894,7 +894,7 @@ bool UGrabbableVR::BindInput(bool bIsRight)
 		{
 			if (IsValid(IA_Grab_Button_Left))
 			{
-				LeftPress = &Input->BindAction(IA_Grab_Button_Left, ETriggerEvent::Started, this, &UGrabbableVR::OnLeftGrabButtonPressed);
+				LeftPress = &Input->BindAction(IA_Grab_Button_Left, ETriggerEvent::Triggered, this, &UGrabbableVR::OnLeftGrabButtonPressed);
 
 				LeftRelease = &Input->BindAction(IA_Grab_Button_Left, ETriggerEvent::Completed, this, &UGrabbableVR::OnLeftGrabButtonReleased);
 			}
@@ -1044,7 +1044,7 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 			}
 			else
 			{
-				KeepGrabbing = bLocked || (bIsGrabbedRight ? bRightDown : bLeftDown);
+				KeepGrabbing = bLocked || ((bIsGrabbedRight ? RightDown : LeftDown) > 0.5);
 			}
 		}
 		else
@@ -1227,7 +1227,7 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 			{
 				if (IsValid(GrabPoint.Collider))
 				{
-					if (IsValid(LeftHandCollider) && bLeftDown)
+					if (IsValid(LeftHandCollider) && LeftDown > 0.5)
 					{
 						if (LeftGrabTime <= GrabBuffer && GrabPoint.Collider->IsOverlappingComponent(LeftHandCollider))
 						{
@@ -1242,7 +1242,7 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 						}
 					}
 
-					if (IsValid(RightHandCollider) && bRightDown)
+					if (IsValid(RightHandCollider) && RightDown > 0.5)
 					{
 						if (RightGrabTime <= GrabBuffer && GrabPoint.Collider->IsOverlappingComponent(RightHandCollider))
 						{
@@ -1660,6 +1660,11 @@ float UGrabbableVR::GetElapsedGrabTime()
 // Constructs a new GrabbableVR component.
 UGrabbableVR* UGrabbableVR::ConstructGrabbableVR(AActor* Parent, TArray<FGrabPointVR> _GrabPoints, bool Active, bool HandTracking, UInputAction* LeftGrabButton, UInputAction* RightGrabButton, EGrabModeVR _GrabMode, float _GrabBuffer, UPrimitiveComponent* _Collider, bool GrabPhysics, EGravitySettingVR _GravitySetting, bool Locked, bool Throwable, float _ThrowScale, float _MinimumThrowDistance, EThrowCalculationVR _ThrowCalculation, FRotator _ThrowRotationOffset, float _CollisionDelay)
 {
+	if (!IsValid(Parent))
+	{
+		return nullptr;
+	}
+
 	UGrabbableVR* NewGrabbableVR = Cast<UGrabbableVR>(Parent->AddComponentByClass(UGrabbableVR::StaticClass(), true, FTransform(), true));
 
 	NewGrabbableVR->RegisterComponent();
@@ -1728,9 +1733,9 @@ UGrabbableVR* UGrabbableVR::ConstructGrabbableVR(AActor* Parent, TArray<FGrabPoi
 
 	NewGrabbableVR->GrabbedPoint = FGrabPointVR();
 
-	NewGrabbableVR->bLeftDown = false;
+	NewGrabbableVR->LeftDown = 0;
 
-	NewGrabbableVR->bRightDown = false;
+	NewGrabbableVR->RightDown = 0;
 
 	NewGrabbableVR->LeftPress = nullptr;
 

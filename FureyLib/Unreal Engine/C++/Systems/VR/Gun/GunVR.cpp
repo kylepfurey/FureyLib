@@ -133,9 +133,9 @@ AGunVR::AGunVR()
 
 	LaserSightStart = FVector();
 
-	bLeftDown = 0;
+	LeftDown = 0;
 
-	bRightDown = 0;
+	RightDown = 0;
 
 	LeftPress = nullptr;
 
@@ -267,9 +267,9 @@ AGunVR::AGunVR(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitia
 
 	LaserSightStart = FVector();
 
-	bLeftDown = 0;
+	LeftDown = 0;
 
-	bRightDown = 0;
+	RightDown = 0;
 
 	LeftPress = nullptr;
 
@@ -410,9 +410,9 @@ AGunVR::AGunVR(
 
 	LaserSightStart = FVector();
 
-	bLeftDown = 0;
+	LeftDown = 0;
 
-	bRightDown = 0;
+	RightDown = 0;
 
 	LeftPress = nullptr;
 
@@ -487,25 +487,25 @@ void AGunVR::Tick(float DeltaTime)
 // Called when the left shoot button is pressed down.
 void AGunVR::OnLeftShootButtonPressed(const FInputActionValue& Value)
 {
-	bLeftDown = Value.Get<float>();
+	LeftDown = Value.Get<float>();
 }
 
 // Called when the right shoot button is pressed down.
 void AGunVR::OnRightShootButtonPressed(const FInputActionValue& Value)
 {
-	bRightDown = Value.Get<float>();
+	RightDown = Value.Get<float>();
 }
 
 // Called when the left shoot button is released.
 void AGunVR::OnLeftShootButtonReleased(const FInputActionValue& Value)
 {
-	bLeftDown = 0;
+	LeftDown = 0;
 }
 
 // Called when the right shoot button is released.
 void AGunVR::OnRightShootButtonReleased(const FInputActionValue& Value)
 {
-	bRightDown = 0;
+	RightDown = 0;
 }
 
 
@@ -1826,7 +1826,7 @@ float AGunVR::GetTriggerPercentage()
 			}
 			else
 			{
-				TriggerPercent = bRightDown;
+				TriggerPercent = RightDown;
 			}
 		}
 		else
@@ -1837,7 +1837,7 @@ float AGunVR::GetTriggerPercentage()
 			}
 			else
 			{
-				TriggerPercent = bLeftDown;
+				TriggerPercent = LeftDown;
 			}
 		}
 	}
@@ -2119,7 +2119,7 @@ AGunVR* AGunVR::SpawnGunVR(UClass* GunClass, FTransform SpawnTransform,
 	USoundBase* _ReloadSound, USoundBase* _SafetySound, float _FireLingerTime, UClass* _BeamClass, UClass* _MuzzleFlashClass,
 	FTransform _MuzzleFlashTransform, UClass* _DecalClass, FLinearColor _GunColor)
 {
-	if (!IsValid(GWorld))
+	if (!IsValid(GWorld) || !IsValid(GunClass) || !GunClass->IsChildOf<AGunVR>())
 	{
 		return nullptr;
 	}
@@ -2246,9 +2246,9 @@ AGunVR* AGunVR::SpawnGunVR(UClass* GunClass, FTransform SpawnTransform,
 
 	NewGunVR->LaserSightStart = FVector();
 
-	NewGunVR->bLeftDown = 0;
+	NewGunVR->LeftDown = 0;
 
-	NewGunVR->bRightDown = 0;
+	NewGunVR->RightDown = 0;
 
 	NewGunVR->LeftPress = nullptr;
 

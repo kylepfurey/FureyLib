@@ -12,18 +12,6 @@
 // Include this heading to use the class
 // #include "State Machine/StateMachine.h"
 
-/** Each possible state in a state machine. */
-UENUM(BlueprintType, Category = "State Machine")
-enum class EStateType : uint8
-{
-	NONE = 0    UMETA(DisplayName = "No State Selected"),
-	STATE = 1   UMETA(DisplayName = "Example State"),
-
-	// New states here
-
-	MAX         UMETA(Hidden)
-};
-
 // Forward declaration of UStateMachine.
 class UStateMachine;
 
@@ -40,13 +28,6 @@ protected:
 	/** The inherited state machine from the owner. */
 	UPROPERTY(BlueprintReadOnly, meta = (ExposeOnSpawn), Category = "State Machine")
 	UStateMachine* StateMachine = nullptr;
-
-	/**
-	* The state type associated with this state class.
-	* Blueprints should set this in the default settings.
-	*/
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "State Machine")
-	EStateType StateType = EStateType::STATE;
 
 public:
 
@@ -67,10 +48,6 @@ public:
 	/** Returns this state's state machine. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "State Machine")
 	virtual UStateMachine* GetStateMachine();
-
-	/** Returns this state's type. */
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "State Machine")
-	virtual EStateType GetStateType();
 
 	/** Returns this state's class. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "State Machine")
@@ -113,10 +90,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State Machine")
 	UStateBase* CurrentState = nullptr;
 
-	/** The current state type of this state machine. */
-	UPROPERTY(BlueprintReadOnly, Category = "State Machine")
-	EStateType CurrentStateType = EStateType::NONE;
-
 	/**
 	* The state to start this state machine in.
 	* Blueprints should set this in the default settings.
@@ -156,10 +129,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "State Machine")
 	virtual UStateBase* GetCurrentState();
 
-	/** Returns the type of the current state of this state machine. */
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "State Machine")
-	virtual EStateType GetCurrentStateType();
-
 	/** Returns the class of the current state of this state machine. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "State Machine")
 	virtual UClass* GetCurrentStateClass();
@@ -174,7 +143,7 @@ public:
 
 	/** Returns a new state machine component starting with the given state class. */
 	UFUNCTION(BlueprintCallable, Category = "State Machine")
-	static UStateMachine* ConstructStateMachine(AActor* Parent, UClass* _StartingStateClass);
+	static UStateMachine* ConstructStateMachine(AActor* Parent, UClass* _StartingStateClass = nullptr);
 
 
 	// STATE MACHINE FUNCTIONS

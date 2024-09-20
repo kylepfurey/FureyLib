@@ -14,24 +14,18 @@
 UStateBase::UStateBase()
 {
 	StateMachine = nullptr;
-
-	StateType = EStateType::NONE;
 }
 
 // Object initializer constructor.
 UStateBase::UStateBase(const FObjectInitializer& ObjectInitializer)
 {
 	StateMachine = nullptr;
-
-	StateType = EStateType::NONE;
 }
 
 // State machine constructor.
 UStateBase::UStateBase(UStateMachine* _StateMachine)
 {
 	StateMachine = _StateMachine;
-
-	StateType = EStateType::NONE;
 }
 
 
@@ -41,12 +35,6 @@ UStateBase::UStateBase(UStateMachine* _StateMachine)
 UStateMachine* UStateBase::GetStateMachine()
 {
 	return StateMachine;
-}
-
-// Returns this state's type.
-EStateType UStateBase::GetStateType()
-{
-	return StateType;
 }
 
 // Returns this state's class.
@@ -107,8 +95,6 @@ UStateMachine::UStateMachine()
 
 	CurrentState = nullptr;
 
-	CurrentStateType = EStateType::NONE;
-
 	StartingStateClass = nullptr;
 }
 
@@ -119,8 +105,6 @@ UStateMachine::UStateMachine(const FObjectInitializer& ObjectInitializer) : Supe
 
 	CurrentState = nullptr;
 
-	CurrentStateType = EStateType::NONE;
-
 	StartingStateClass = nullptr;
 }
 
@@ -130,8 +114,6 @@ UStateMachine::UStateMachine(UClass* _StartingStateClass)
 	PrimaryComponentTick.bCanEverTick = true;
 
 	CurrentState = nullptr;
-
-	CurrentStateType = EStateType::NONE;
 
 	if (IsValid(_StartingStateClass) && _StartingStateClass->IsChildOf(UStateBase::StaticClass()))
 	{
@@ -174,12 +156,6 @@ UStateBase* UStateMachine::GetCurrentState()
 	return CurrentState;
 }
 
-// Returns the type of the current state of this state machine.
-EStateType UStateMachine::GetCurrentStateType()
-{
-	return CurrentStateType;
-}
-
 // Returns the class of the current state of this state machine.
 UClass* UStateMachine::GetCurrentStateClass()
 {
@@ -201,7 +177,7 @@ bool UStateMachine::IsStateNull()
 // Returns a new state machine component starting with the given state class.
 UStateMachine* UStateMachine::ConstructStateMachine(AActor* Parent, UClass* _StartingStateClass)
 {
-	if (!IsValid(GWorld))
+	if (!IsValid(GWorld) || !IsValid(Parent) || !IsValid(_StartingStateClass) || !_StartingStateClass->IsChildOf<UStateBase>())
 	{
 		return nullptr;
 	}
@@ -236,13 +212,9 @@ bool UStateMachine::SwitchState(UClass* NewStateClass)
 		if (IsValid(CurrentState))
 		{
 			CurrentState->OnStateBegin();
-
-			CurrentStateType = CurrentState->GetStateType();
 		}
 		else
 		{
-			CurrentStateType = EStateType::NONE;
-
 			return false;
 		}
 	}

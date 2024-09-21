@@ -2,8 +2,6 @@
 // Static Noise Functions Script
 // by Kyle Furey, Sourced from Adrian Biagioli and Riven
 
-// REQUIREMENT: array_3D.h
-
 // SOURCE: https://adrianb.io/2014/08/09/perlinnoise.html
 
 #pragma once
@@ -11,13 +9,23 @@
 #include <random>
 #include <cstdlib>
 #include <cmath>
-#include "array_3D.h"
 
 // Include this heading to use the library.
 #include "noise.h"
 
 // The precision value of the noise value's alpha.
 #define PRECISION double
+
+// Creates a two-dimensional vector of the given type.
+#define VEC_2D(type) std::vector<std::vector<type>>
+#define NEW_VEC_2D(type, x, y) std::vector<std::vector<type>>(x, std::vector<type>(y))
+#define SIZE_X(vector_2D) (vector_2D.empty() ? 0 : vector_2D.size())
+#define SIZE_Y(vector_2D) (vector_2D.empty() ? 0 : (vector_2D[0].empty() ? 0 : vector_2D[0].size()))
+
+// Creates a three-dimensional vector of the given type.
+#define VEC_3D(type) std::vector<std::vector<std::vector<type>>>
+#define NEW_VEC_3D(type, x, y, z) std::vector<std::vector<std::vector<type>>>(x, std::vector<std::vector<type>>(y, std::vector<type>(z)))
+#define SIZE_Z(vector_3D) (vector_3D.empty() ? 0 : (vector_3D[0].empty() ? 0 : ((vector_3D[0][0].empty() ? 0 : vector_3D[0][0].size()))))
 
 // •  Generates a sample of Perlin Noise.
 // •  SOURCE: https://adrianb.io/2014/08/09/perlinnoise.html by Adrian Biagioli.
@@ -300,15 +308,15 @@ public:
 	}
 
 	// Returns a 2D vector of random alpha values (0 - 1) of the given size.
-	static array_2D<PRECISION> discrete_2D(int size, int width)
+	static VEC_2D(PRECISION) discrete_2D(int size, int width)
 	{
-		array_2D<PRECISION> result = array_2D<PRECISION>(size, width);
+		VEC_2D(PRECISION) result = NEW_VEC_2D(PRECISION, size, width);
 
 		for (int y = 0; y < width; y++)
 		{
 			for (int x = 0; x < size; x++)
 			{
-				result[{x, y}] = random_alpha();
+				result[x][y] = random_alpha();
 			}
 		}
 
@@ -316,15 +324,15 @@ public:
 	}
 
 	// Returns a 2D vector of random integers of the given size and range (exclusive).
-	static array_2D<int> discrete_2D(int size, int width, int max)
+	static VEC_2D(int) discrete_2D(int size, int width, int max)
 	{
-		array_2D<int> result = array_2D<int>(size, width);
+		VEC_2D(int) result = NEW_VEC_2D(int, size, width);
 
 		for (int y = 0; y < width; y++)
 		{
 			for (int x = 0; x < size; x++)
 			{
-				result[{x, y}] = random(max);
+				result[x][y] = random(max);
 			}
 		}
 
@@ -332,15 +340,15 @@ public:
 	}
 
 	// Returns a 2D vector of random integers of the given size and range (inclusive).
-	static array_2D<int> discrete_2D(int size, int width, int min, int max)
+	static VEC_2D(int) discrete_2D(int size, int width, int min, int max)
 	{
-		array_2D<int> result = array_2D<int>(size, width);
+		VEC_2D(int) result = NEW_VEC_2D(int, size, width);
 
 		for (int y = 0; y < width; y++)
 		{
 			for (int x = 0; x < size; x++)
 			{
-				result[{x, y}] = random(min, max);
+				result[x][y] = random(min, max);
 			}
 		}
 
@@ -348,9 +356,9 @@ public:
 	}
 
 	// Returns a 3D vector of random alpha values (0 - 1) of the given size.
-	static array_3D<PRECISION> discrete_3D(int size, int width, int height)
+	static VEC_3D(PRECISION) discrete_3D(int size, int width, int height)
 	{
-		array_3D<PRECISION> result = array_3D<PRECISION>(size, width, height);
+		VEC_3D(PRECISION) result = NEW_VEC_3D(PRECISION, size, width, height);
 
 		for (int z = 0; z < height; z++)
 		{
@@ -358,7 +366,7 @@ public:
 			{
 				for (int x = 0; x < size; x++)
 				{
-					result[{x, y, z}] = random_alpha();
+					result[x][y][z] = random_alpha();
 				}
 			}
 		}
@@ -367,9 +375,9 @@ public:
 	}
 
 	// Returns a 3D vector of random integers of the given size and range (exclusive).
-	static array_3D<int> discrete_3D(int size, int width, int height, int max)
+	static VEC_3D(int) discrete_3D(int size, int width, int height, int max)
 	{
-		array_3D<int> result = array_3D<int>(size, width, height);
+		VEC_3D(int) result = NEW_VEC_3D(int, size, width, height);
 
 		for (int z = 0; z < height; z++)
 		{
@@ -377,7 +385,7 @@ public:
 			{
 				for (int x = 0; x < size; x++)
 				{
-					result[{x, y, z}] = random(max);
+					result[x][y][z] = random(max);
 				}
 			}
 		}
@@ -386,9 +394,9 @@ public:
 	}
 
 	// Returns a 3D vector of random integers of the given size and range (inclusive).
-	static array_3D<int> discrete_3D(int size, int width, int height, int min, int max)
+	static VEC_3D(int) discrete_3D(int size, int width, int height, int min, int max)
 	{
-		array_3D<int> result = array_3D<int>(size, width, height);
+		VEC_3D(int) result = NEW_VEC_3D(int, size, width, height);
 
 		for (int z = 0; z < height; z++)
 		{
@@ -396,7 +404,7 @@ public:
 			{
 				for (int x = 0; x < size; x++)
 				{
-					result[{x, y, z}] = random(min, max);
+					result[x][y][z] = random(min, max);
 				}
 			}
 		}
@@ -435,15 +443,15 @@ public:
 	}
 
 	// Returns a 2D vector of alpha values (0 - 1) generated from the Perlin Noise Algorithm of the given size.
-	static array_2D<PRECISION> perlin_2D(int size, int width, PRECISION magnitude = 10, int tiling = 0, PRECISION z = 0)
+	static VEC_2D(PRECISION) perlin_2D(int size, int width, PRECISION magnitude = 10, int tiling = 0, PRECISION z = 0)
 	{
-		array_2D<PRECISION> result = array_2D<PRECISION>(size, width);
+		VEC_2D(PRECISION) result = NEW_VEC_2D(PRECISION, size, width);
 
 		for (int y = 0; y < width; y++)
 		{
 			for (int x = 0; x < size; x++)
 			{
-				result[{x, y}] = perlin::noise(x / magnitude, y / magnitude, z, tiling);
+				result[x][y] = perlin::noise(x / magnitude, y / magnitude, z, tiling);
 			}
 		}
 
@@ -452,15 +460,15 @@ public:
 
 	// •  Returns a 2D vector of alpha values (0 - 1) generated from the Perlin Noise Algorithm of the given size.
 	// •  Features control over octaves and persistence values for a more natural noise.
-	static array_2D<PRECISION> perlin_2D(int size, int width, PRECISION magnitude, int octaves, PRECISION persistence, int tiling = 0, PRECISION z = 0)
+	static VEC_2D(PRECISION) perlin_2D(int size, int width, PRECISION magnitude, int octaves, PRECISION persistence, int tiling = 0, PRECISION z = 0)
 	{
-		array_2D<PRECISION> result = array_2D<PRECISION>(size, width);
+		VEC_2D(PRECISION) result = NEW_VEC_2D(PRECISION, size, width);
 
 		for (int y = 0; y < width; y++)
 		{
 			for (int x = 0; x < size; x++)
 			{
-				result[{x, y}] = perlin::noise(x / magnitude, y / magnitude, z, octaves, persistence, tiling);
+				result[x][y] = perlin::noise(x / magnitude, y / magnitude, z, octaves, persistence, tiling);
 			}
 		}
 
@@ -468,9 +476,9 @@ public:
 	}
 
 	// Returns a 3D vector of alpha values (0 - 1) generated from the Perlin Noise Algorithm of the given size.
-	static array_3D<PRECISION> perlin_3D(int size, int width, int height, PRECISION magnitude = 10, int tiling = 0)
+	static VEC_3D(PRECISION) perlin_3D(int size, int width, int height, PRECISION magnitude = 10, int tiling = 0)
 	{
-		array_3D<PRECISION> result = array_3D<PRECISION>(size, width, height);
+		VEC_3D(PRECISION) result = NEW_VEC_3D(PRECISION, size, width, height);
 
 		for (int z = 0; z < height; z++)
 		{
@@ -478,7 +486,7 @@ public:
 			{
 				for (int x = 0; x < size; x++)
 				{
-					result[{x, y, z}] = perlin::noise(x / magnitude, y / magnitude, z / magnitude, tiling);
+					result[x][y][z] = perlin::noise(x / magnitude, y / magnitude, z / magnitude, tiling);
 				}
 			}
 		}
@@ -488,9 +496,9 @@ public:
 
 	// •  Returns a 3D vector of alpha values (0 - 1) generated from the Perlin Noise Algorithm of the given size.
 	// •  Features control over octaves and persistence values for a more natural noise.
-	static array_3D<PRECISION> perlin_3D(int size, int width, int height, PRECISION magnitude, int octaves, PRECISION persistence, int tiling = 0)
+	static VEC_3D(PRECISION) perlin_3D(int size, int width, int height, PRECISION magnitude, int octaves, PRECISION persistence, int tiling = 0)
 	{
-		array_3D<PRECISION> result = array_3D<PRECISION>(size, width, height);
+		VEC_3D(PRECISION) result = NEW_VEC_3D(PRECISION, size, width, height);
 
 		for (int z = 0; z < height; z++)
 		{
@@ -498,7 +506,7 @@ public:
 			{
 				for (int x = 0; x < size; x++)
 				{
-					result[{x, y, z}] = perlin::noise(x / magnitude, y / magnitude, z / magnitude, octaves, persistence, tiling);
+					result[x][y][z] = perlin::noise(x / magnitude, y / magnitude, z / magnitude, octaves, persistence, tiling);
 				}
 			}
 		}
@@ -541,13 +549,13 @@ public:
 	}
 
 	// Blurs the given noise vector together based on the given alpha value.
-	static array_2D<PRECISION> blur(array_2D<PRECISION> array, PRECISION alpha)
+	static VEC_2D(PRECISION) blur(VEC_2D(PRECISION) vector, PRECISION alpha)
 	{
-		int size_x = array.size_x();
+		int size_x = SIZE_X(vector);
 
-		int size_y = array.size_y();
+		int size_y = SIZE_Y(vector);
 
-		array_2D<PRECISION> copied_vector = array_2D<PRECISION>(size_x, size_y);
+		VEC_2D(PRECISION) copied_vector = NEW_VEC_2D(PRECISION, size_x, size_y);
 
 		for (int y = 0; y < size_y; y++)
 		{
@@ -565,14 +573,14 @@ public:
 						{
 							denominator++;
 
-							average += array[{x + x_offset, y + y_offset}];
+							average += vector[x + x_offset][y + y_offset];
 						}
 					}
 				}
 
 				average /= denominator;
 
-				copied_vector[{x, y}] = lerp(array[{x, y}], average, alpha);
+				copied_vector[x][y] = lerp(vector[x][y], average, alpha);
 			}
 		}
 
@@ -580,15 +588,15 @@ public:
 	}
 
 	// Blurs the given noise vector together based on the given alpha value.
-	static array_3D<PRECISION> blur(array_3D<PRECISION> array, PRECISION alpha)
+	static VEC_3D(PRECISION) blur(VEC_3D(PRECISION) vector, PRECISION alpha)
 	{
-		int size_x = array.size_x();
+		int size_x = SIZE_X(vector);
 
-		int size_y = array.size_y();
+		int size_y = SIZE_Y(vector);
 
-		int size_z = array.size_z();
+		int size_z = SIZE_Z(vector);
 
-		array_3D<PRECISION> copied_vector = array_3D<PRECISION>(size_x, size_y, size_z);
+		VEC_3D(PRECISION) copied_vector = NEW_VEC_3D(PRECISION, size_x, size_y, size_z);
 
 		for (int z = 0; z < size_z; z++)
 		{
@@ -610,7 +618,7 @@ public:
 								{
 									denominator++;
 
-									average += array[{x + x_offset, y + y_offset, z + z_offset}];
+									average += vector[x + x_offset][y + y_offset][z + z_offset];
 								}
 							}
 						}
@@ -618,7 +626,7 @@ public:
 
 					average /= denominator;
 
-					copied_vector[{x, y, z}] = lerp(array[{x, y, z}], average, alpha);
+					copied_vector[x][y][z] = lerp(vector[x][y][z], average, alpha);
 				}
 			}
 		}

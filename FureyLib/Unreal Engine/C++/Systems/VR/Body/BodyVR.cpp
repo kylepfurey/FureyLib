@@ -37,7 +37,9 @@ UBodyVR::UBodyVR()
 
 	RightElbow = nullptr;
 
-	ElbowOffset = FVector(0, -5, 25);
+	ElbowOffset = FVector(0, 0, 0);
+
+	ElbowRotation = FRotator(0, 0, 0);
 }
 
 // Object initializer constructor.
@@ -67,11 +69,13 @@ UBodyVR::UBodyVR(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 
 	RightElbow = nullptr;
 
-	ElbowOffset = FVector(0, -5, 25);
+	ElbowOffset = FVector(0, 0, 0);
+
+	ElbowRotation = FRotator(0, 0, 0);
 }
 
 // Body constructor
-UBodyVR::UBodyVR(bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset)
+UBodyVR::UBodyVR(bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset, FRotator _ElbowRotation)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
@@ -98,6 +102,8 @@ UBodyVR::UBodyVR(bool Active, bool HandTracking, USceneComponent* _Torso, float 
 	RightElbow = _RightElbow;
 
 	ElbowOffset = _ElbowOffset;
+
+	ElbowRotation = _ElbowRotation;
 }
 
 
@@ -149,7 +155,7 @@ void UBodyVR::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 // GETTERS
 
 // Returns whether a VR body is present with the player.
-bool UBodyVR::VRBodyExist()
+bool UBodyVR::BodyVRExists()
 {
 	return IsValid(Instance);
 }
@@ -215,6 +221,17 @@ float UBodyVR::GetTorsoRotateSpeed()
 	return Instance->TorsoRotateSpeed;
 }
 
+// Returns the given VR shoulder object.
+USceneComponent* UBodyVR::GetShoulder(bool bIsRight)
+{
+	if (!IsValid(Instance))
+	{
+		return nullptr;
+	}
+
+	return bIsRight ? Instance->RightShoulder : Instance->LeftShoulder;
+}
+
 // Returns the VR shoulder objects.
 void UBodyVR::GetShoulders(USceneComponent*& Left, USceneComponent*& Right)
 {
@@ -265,6 +282,17 @@ FVector UBodyVR::GetShoulderOffset()
 	return Instance->ShoulderOffset;
 }
 
+// Returns the given VR elbow object.
+USceneComponent* UBodyVR::GetElbow(bool bIsRight)
+{
+	if (!IsValid(Instance))
+	{
+		return nullptr;
+	}
+
+	return bIsRight ? Instance->RightElbow : Instance->LeftElbow;
+}
+
 // Returns the VR elbow objects.
 void UBodyVR::GetElbows(USceneComponent*& Left, USceneComponent*& Right)
 {
@@ -313,6 +341,17 @@ FVector UBodyVR::GetElbowOffset()
 	}
 
 	return Instance->ElbowOffset;
+}
+
+// Returns the VR elbow rotation.
+FRotator UBodyVR::GetElbowRotation()
+{
+	if (!IsValid(Instance))
+	{
+		return FRotator();
+	}
+
+	return Instance->ElbowRotation;
 }
 
 // Returns the torso's Z rotation.
@@ -450,6 +489,17 @@ void UBodyVR::SetElbowOffset(FVector Offset)
 	Instance->ElbowOffset = Offset;
 }
 
+// Sets the VR elbow rotation.
+void UBodyVR::SetElbowRotation(FRotator Rotation)
+{
+	if (!IsValid(Instance))
+	{
+		return;
+	}
+
+	Instance->ElbowRotation = Rotation;
+}
+
 // Rotates the torso to face the headset's direction.
 // Returns whether the rotation was successful.
 bool UBodyVR::MakeTorsoFaceHeadset()
@@ -561,15 +611,15 @@ bool UBodyVR::UpdateBodyVR(float DeltaTime)
 				{
 					if (Instance->bHandTracking)
 					{
-						LeftOffset = FVector(Instance->ElbowOffset.X, -Instance->ElbowOffset.Y, Instance->ElbowOffset.Z);
+						LeftOffset = FVector(Instance->ElbowOffset.Y - 5, Instance->ElbowOffset.X - 25, -Instance->ElbowOffset.Z);
 
-						RightOffset = FVector(Instance->ElbowOffset.X, Instance->ElbowOffset.Y, Instance->ElbowOffset.Z);
+						RightOffset = FVector(-Instance->ElbowOffset.Y - 5, -Instance->ElbowOffset.X + 25, Instance->ElbowOffset.Z);
 					}
 					else
 					{
-						LeftOffset = FVector(Instance->ElbowOffset.X - 35, -Instance->ElbowOffset.Y + 20, Instance->ElbowOffset.Z);
+						LeftOffset = FVector(Instance->ElbowOffset.X - 40, -Instance->ElbowOffset.Z - 5, Instance->ElbowOffset.Y);
 
-						RightOffset = FVector(Instance->ElbowOffset.X - 35, Instance->ElbowOffset.Y - 20, Instance->ElbowOffset.Z);
+						RightOffset = FVector(Instance->ElbowOffset.X - 40, Instance->ElbowOffset.Z + 5, Instance->ElbowOffset.Y);
 					}
 
 					Instance->LeftElbow->SetWorldLocation(LeftHand->GetComponentLocation() + LeftHand->GetComponentQuat() * LeftOffset);
@@ -582,22 +632,24 @@ bool UBodyVR::UpdateBodyVR(float DeltaTime)
 
 					Instance->RightShoulder->SetWorldRotation(UKismetMathLibrary::FindLookAtRotation(Instance->RightShoulder->GetComponentLocation(), Instance->RightElbow->GetComponentLocation()));
 
+					FRotator RightElbowRotation = Instance->ElbowRotation;
+
+					RightElbowRotation.Roll *= -1;
+
+					RightElbowRotation.Yaw *= -1;
+
 					if (Instance->bHandTracking)
 					{
-						LeftOffset = LeftHand->GetComponentQuat() * FVector(-5, 0, 0);
+						Instance->LeftElbow->SetWorldRotation(LeftHand->GetComponentQuat() * FRotator(-90, 0, -90).Quaternion() * FRotator(-90, 90, 0).Quaternion() * Instance->ElbowRotation.Quaternion());
 
-						RightOffset = RightHand->GetComponentQuat() * FVector(-5, 0, 0);
+						Instance->RightElbow->SetWorldRotation(RightHand->GetComponentQuat() * FRotator(90, 0, 90).Quaternion() * FRotator(-90, -90, 0).Quaternion() * RightElbowRotation.Quaternion());
 					}
 					else
 					{
-						LeftOffset = LeftHand->GetComponentQuat() * FVector(0, -3, -5);
+						Instance->LeftElbow->SetWorldRotation(LeftHand->GetComponentQuat() * Instance->ElbowRotation.Quaternion());
 
-						RightOffset = RightHand->GetComponentQuat() * FVector(0, 3, -5);
+						Instance->RightElbow->SetWorldRotation(RightHand->GetComponentQuat() * RightElbowRotation.Quaternion());
 					}
-
-					Instance->LeftElbow->SetWorldRotation(UKismetMathLibrary::FindLookAtRotation(Instance->LeftElbow->GetComponentLocation(), LeftHand->GetComponentLocation() + LeftOffset));
-
-					Instance->RightElbow->SetWorldRotation(UKismetMathLibrary::FindLookAtRotation(Instance->RightElbow->GetComponentLocation(), RightHand->GetComponentLocation() + RightOffset));
 				}
 				else
 				{
@@ -691,7 +743,7 @@ void UBodyVR::HideBody(bool Hide)
 }
 
 // Constructs a new BodyVR component.
-UBodyVR* UBodyVR::ConstructBodyVR(AActor* Parent, bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset)
+UBodyVR* UBodyVR::ConstructBodyVR(AActor* Parent, bool Active, bool HandTracking, USceneComponent* _Torso, float _TorsoOffset, float _TorsoRotateSpeed, USceneComponent* _LeftShoulder, USceneComponent* _RightShoulder, FVector _ShoulderOffset, USceneComponent* _LeftElbow, USceneComponent* _RightElbow, FVector _ElbowOffset, FRotator _ElbowRotation)
 {
 	if (IsValid(Instance) || !IsValid(Parent))
 	{
@@ -729,6 +781,8 @@ UBodyVR* UBodyVR::ConstructBodyVR(AActor* Parent, bool Active, bool HandTracking
 	NewBodyVR->RightElbow = _RightElbow;
 
 	NewBodyVR->ElbowOffset = _ElbowOffset;
+
+	NewBodyVR->ElbowRotation = _ElbowRotation;
 
 	return NewBodyVR;
 }

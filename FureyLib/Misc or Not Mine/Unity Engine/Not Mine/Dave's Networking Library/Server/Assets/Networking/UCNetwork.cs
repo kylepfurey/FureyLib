@@ -237,7 +237,8 @@ public abstract class UCNetwork : MonoBehaviour
             {
                 typeString += "a";
             }
-            else {
+            else
+            {
                 Debug.LogError("Unimplemented RPC parameter type " + arg.GetType());
                 return;
             }
@@ -290,7 +291,7 @@ public abstract class UCNetwork : MonoBehaviour
             {
                 int[] temp = (int[])arg;
                 aMsg.Write(temp.Length);
-                foreach(int a in temp)
+                foreach (int a in temp)
                 {
                     aMsg.Write(a);
                 }
@@ -345,13 +346,14 @@ public abstract class UCNetwork : MonoBehaviour
             {
                 int length = aMsg.ReadInt32();
                 int[] temp = new int[length];
-                for(int i=0; i<length; i++)
+                for (int i = 0; i < length; i++)
                 {
                     temp[i] = aMsg.ReadInt32();
                 }
                 aArgs.Add(temp);
             }
-            else {
+            else
+            {
                 Debug.LogError("Unhandled RPC parameter type " + c);
             }
         }

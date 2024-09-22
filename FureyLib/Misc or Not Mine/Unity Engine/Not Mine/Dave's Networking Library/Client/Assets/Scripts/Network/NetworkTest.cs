@@ -2,7 +2,8 @@
 using System.Collections;
 using System;
 
-public class NetworkTest : MonoBehaviour {
+public class NetworkTest : MonoBehaviour
+{
 
 #if SERVER
     public ServerNetwork serverNet;
@@ -21,7 +22,8 @@ public class NetworkTest : MonoBehaviour {
     string username = "username";
     string password = "password";
     string prefabName = "Cube";
-    void OnGUI() {
+    void OnGUI()
+    {
 
 #if SERVER
         if (serverNet == null) {
@@ -111,47 +113,58 @@ public class NetworkTest : MonoBehaviour {
 #endif
     }
 
-    void Start() {
+    void Start()
+    {
 
     }
 
 
     // These are all the callbacks from the network
-    void OnNetStatusNone() {
+    void OnNetStatusNone()
+    {
         Debug.Log("OnNetStatusNone called");
     }
-    void OnNetStatusInitiatedConnect() {
+    void OnNetStatusInitiatedConnect()
+    {
         Debug.Log("OnNetStatusInitiatedConnect called");
     }
-    void OnNetStatusReceivedInitiation() {
+    void OnNetStatusReceivedInitiation()
+    {
         Debug.Log("OnNetStatusReceivedInitiation called");
     }
-    void OnNetStatusRespondedAwaitingApproval() {
+    void OnNetStatusRespondedAwaitingApproval()
+    {
         Debug.Log("OnNetStatusRespondedAwaitingApproval called");
     }
-    void OnNetStatusRespondedConnect() {
+    void OnNetStatusRespondedConnect()
+    {
         Debug.Log("OnNetStatusRespondedConnect called");
     }
-    void OnNetStatusConnected() {
+    void OnNetStatusConnected()
+    {
         Debug.Log("OnNetStatusConnected called");
 #if CLIENT
       //  clientNet.ChangeArea(1);
 #endif
     }
-    void OnNetStatusDisconnecting() {
+    void OnNetStatusDisconnecting()
+    {
         Debug.Log("OnNetStatusDisconnecting called");
     }
-    void OnNetStatusDisconnected() {
+    void OnNetStatusDisconnected()
+    {
         Debug.Log("OnNetStatusDisconnected called");
     }
-    void OnChangeArea() {
+    void OnChangeArea()
+    {
         // This is where we should do logic for changing level/whatever in the game
         Debug.Log("Area changed called");
     }
 
 
     // Test receiving a RPC
-    void testRPC(string aString) {
+    void testRPC(string aString)
+    {
         Debug.Log("RPC Received with value " + aString);
     }
 }

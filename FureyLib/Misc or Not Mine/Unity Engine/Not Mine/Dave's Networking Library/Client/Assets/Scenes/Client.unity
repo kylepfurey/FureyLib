@@ -291,6 +291,7 @@ GameObject:
   - component: {fileID: 393346514}
   - component: {fileID: 393346512}
   - component: {fileID: 393346511}
+  - component: {fileID: 393346516}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -380,6 +381,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &393346516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 393346510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02f7e204a92901c4ea6a4013721b1150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 393346514}
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onSuccessfulClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &575254260
 GameObject:
   m_ObjectHideFlags: 0
@@ -1347,7 +1367,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f26d5b364556e748b998dda9a74b741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clientNet: {fileID: 0}
+  clientNet: {fileID: 1385401859}
   loginScreen: {fileID: 248918549}
   myPlayer: {fileID: 0}
 --- !u!114 &1385401859

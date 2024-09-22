@@ -1,3 +1,512 @@
 ...Logging started...
-0.0486212: Server Started
-91.0304378: Server shutdown
+0.0488962: Server Started
+16.6246095: RespondedAwaitingApproval -1055412544961584261 127.0.0.1
+16.6371016: RespondedConnect -1055412544961584261 127.0.0.1
+16.6450874: Connected -1055412544961584261 127.0.0.1
+16.6526233: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: StartVoIP( 1 )
+
+16.6542256: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 0, 0 )
+
+16.6553874: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 1, 0 )
+
+16.656603: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 2, 0 )
+
+16.6577757: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 0, 0 )
+
+16.6589494: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 1, 0 )
+
+16.6600792: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 2, 0 )
+
+16.6609201: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 0, 0 )
+
+16.6617768: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 1, 0 )
+
+16.6626661: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 2, 0 )
+
+16.6769672: AreaChange -1055412544961584261 127.0.0.1
+16.7034137: Instantiate -1055412544961584261 127.0.0.1
+	NetworkId: 1
+	Prefab: NetPlayer
+	Loc: 0, 0, 0
+	Orientation: 0, 0, 0, 1
+16.7104574: RPC OtherClients NetSyncId: 1 Function: RPC_UpdateMyObject( 1 )
+
+16.7871827: LiteSyncUpdate -1055412544961584261 127.0.0.1
+17.1961506: SyncUpdate -1055412544961584261 127.0.0.1
+17.2988873: SyncUpdate -1055412544961584261 127.0.0.1
+17.3990023: SyncUpdate -1055412544961584261 127.0.0.1
+17.5017091: SyncUpdate -1055412544961584261 127.0.0.1
+17.6020528: SyncUpdate -1055412544961584261 127.0.0.1
+17.7171113: SyncUpdate -1055412544961584261 127.0.0.1
+17.8131678: SyncUpdate -1055412544961584261 127.0.0.1
+17.8269037: RPC OtherClientsInArea NetSyncId: 1 Function: RPC_ChangeMaterial( Default-Material (Instance), White )
+
+17.909617: SyncUpdate -1055412544961584261 127.0.0.1
+18.0096137: SyncUpdate -1055412544961584261 127.0.0.1
+18.1137009: SyncUpdate -1055412544961584261 127.0.0.1
+18.2636469: RPC OtherClientsInArea NetSyncId: 1 Function: RPC_ChangeMaterial( White (Instance), Green )
+
+27.4158235: RespondedAwaitingApproval -8968318316971726885 127.0.0.1
+27.4315984: RespondedConnect -8968318316971726885 127.0.0.1
+27.4331599: Connected -8968318316971726885 127.0.0.1
+27.435769: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: StartVoIP( 2 )
+
+27.4374894: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 0, 0 )
+
+27.4392003: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 1, 0 )
+
+27.440892: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 2, 0 )
+
+27.4422487: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 0, 0 )
+
+27.4436904: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 1, 0 )
+
+27.4454576: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 2, 0 )
+
+27.4472458: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 0, 0 )
+
+27.4487194: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 1, 0 )
+
+27.4503689: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 2, 0 )
+
+27.4637625: AreaChange -8968318316971726885 127.0.0.1
+27.5160264: Instantiate -8968318316971726885 127.0.0.1
+	NetworkId: 502
+	Prefab: NetPlayer
+	Loc: 0, 0, 0
+	Orientation: 0, 0, 0, 1
+27.5213552: RPC OtherClients NetSyncId: 502 Function: RPC_UpdateMyObject( 502 )
+
+27.8967577: LiteSyncUpdate -8968318316971726885 127.0.0.1
+28.1989171: SyncUpdate -8968318316971726885 127.0.0.1
+28.3060517: SyncUpdate -8968318316971726885 127.0.0.1
+28.4185525: SyncUpdate -8968318316971726885 127.0.0.1
+28.5337667: SyncUpdate -8968318316971726885 127.0.0.1
+28.6339258: SyncUpdate -8968318316971726885 127.0.0.1
+28.7370993: SyncUpdate -8968318316971726885 127.0.0.1
+28.8480515: SyncUpdate -8968318316971726885 127.0.0.1
+28.9536006: SyncUpdate -8968318316971726885 127.0.0.1
+29.0599422: SyncUpdate -8968318316971726885 127.0.0.1
+29.1841331: SyncUpdate -8968318316971726885 127.0.0.1
+29.3013827: SyncUpdate -8968318316971726885 127.0.0.1
+29.3962294: SyncUpdate -8968318316971726885 127.0.0.1
+29.5107567: SyncUpdate -8968318316971726885 127.0.0.1
+29.6131027: SyncUpdate -8968318316971726885 127.0.0.1
+29.7153049: SyncUpdate -8968318316971726885 127.0.0.1
+29.8301659: SyncUpdate -8968318316971726885 127.0.0.1
+29.9361936: SyncUpdate -8968318316971726885 127.0.0.1
+30.0763127: SyncUpdate -8968318316971726885 127.0.0.1
+30.1968025: SyncUpdate -8968318316971726885 127.0.0.1
+30.2976783: SyncUpdate -8968318316971726885 127.0.0.1
+30.4093403: SyncUpdate -8968318316971726885 127.0.0.1
+30.5186799: SyncUpdate -8968318316971726885 127.0.0.1
+30.6169749: SyncUpdate -8968318316971726885 127.0.0.1
+30.7192632: SyncUpdate -8968318316971726885 127.0.0.1
+30.8307552: SyncUpdate -8968318316971726885 127.0.0.1
+30.9513358: SyncUpdate -8968318316971726885 127.0.0.1
+31.0507249: SyncUpdate -8968318316971726885 127.0.0.1
+31.1917072: SyncUpdate -8968318316971726885 127.0.0.1
+31.3111379: SyncUpdate -8968318316971726885 127.0.0.1
+36.313176: Disconnected -1055412544961584261 127.0.0.1
+36.315003: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: VoiceClientDisconnected(  )
+
+36.3750576: SyncUpdate -8968318316971726885 127.0.0.1
+36.4874352: LiteSyncUpdate -8968318316971726885 127.0.0.1
+37.6090303: Destroy -8968318316971726885 127.0.0.1
+37.614592: Disconnected -8968318316971726885 127.0.0.1
+37.616233: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: VoiceClientDisconnected(  )
+
+310.0743401: RespondedAwaitingApproval 9133086765769261679 127.0.0.1
+310.1047245: RespondedConnect 9133086765769261679 127.0.0.1
+310.107669: Connected 9133086765769261679 127.0.0.1
+310.1105811: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: StartVoIP( 3 )
+
+310.1139368: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 0, 0 )
+
+310.1164536: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 1, 0 )
+
+310.1192995: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 2, 0 )
+
+310.1221043: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 0, 0 )
+
+310.1248397: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 1, 0 )
+
+310.1270155: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 2, 0 )
+
+310.1289967: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 0, 0 )
+
+310.1310494: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 1, 0 )
+
+310.1332319: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 2, 0 )
+
+310.1546174: AreaChange 9133086765769261679 127.0.0.1
+310.1908248: Instantiate 9133086765769261679 127.0.0.1
+	NetworkId: 1003
+	Prefab: NetPlayer
+	Loc: 0, 0, 0
+	Orientation: 0, 0, 0, 1
+310.2686966: LiteSyncUpdate 9133086765769261679 127.0.0.1
+311.3938197: SyncUpdate 9133086765769261679 127.0.0.1
+311.492035: SyncUpdate 9133086765769261679 127.0.0.1
+311.5910369: SyncUpdate 9133086765769261679 127.0.0.1
+311.6971299: SyncUpdate 9133086765769261679 127.0.0.1
+311.8015784: SyncUpdate 9133086765769261679 127.0.0.1
+311.9042057: SyncUpdate 9133086765769261679 127.0.0.1
+311.974129: RPC OtherClientsInArea NetSyncId: 1003 Function: RPC_ChangeMaterial( Default-Material (Instance), Green )
+
+312.0010457: SyncUpdate 9133086765769261679 127.0.0.1
+312.1090778: SyncUpdate 9133086765769261679 127.0.0.1
+312.2061115: SyncUpdate 9133086765769261679 127.0.0.1
+312.3092504: SyncUpdate 9133086765769261679 127.0.0.1
+312.4247905: SyncUpdate 9133086765769261679 127.0.0.1
+322.2988755: RespondedAwaitingApproval 7692566101166709031 127.0.0.1
+322.3084077: RespondedConnect 7692566101166709031 127.0.0.1
+322.3096054: Connected 7692566101166709031 127.0.0.1
+322.3104762: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: StartVoIP( 4 )
+
+322.3113259: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 0, 0 )
+
+322.3122043: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 1, 0 )
+
+322.3130759: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 2, 0 )
+
+322.3139855: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 0, 0 )
+
+322.3150051: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 1, 0 )
+
+322.3158491: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 2, 0 )
+
+322.3166987: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 0, 0 )
+
+322.3176376: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 1, 0 )
+
+322.3183643: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 2, 0 )
+
+322.3263648: AreaChange 7692566101166709031 127.0.0.1
+322.3488798: Instantiate 7692566101166709031 127.0.0.1
+	NetworkId: 1504
+	Prefab: NetPlayer
+	Loc: 0, 0, 0
+	Orientation: 0, 0, 0, 1
+322.3570475: RPC OtherClients NetSyncId: 1003 Function: RPC_UpdateMyObject( 1003 )
+
+322.3581913: RPC OtherClients NetSyncId: 1504 Function: RPC_UpdateMyObject( 1504 )
+
+322.3664873: RPC SingleClient NetSyncId: 1003 Function: RPC_ChangeMaterial( Green, Green )
+
+322.3759085: RPC SingleClient NetSyncId: 1504 Function: RPC_ChangeMaterial( Default-Material, Default-Material )
+
+322.4741847: LiteSyncUpdate 7692566101166709031 127.0.0.1
+324.8392967: Disconnected 7692566101166709031 127.0.0.1
+324.840869: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: VoiceClientDisconnected(  )
+
+324.9124103: SyncUpdate 9133086765769261679 127.0.0.1
+325.0162104: LiteSyncUpdate 9133086765769261679 127.0.0.1
+327.6700112: SyncUpdate 9133086765769261679 127.0.0.1
+327.6716135: SyncUpdate 9133086765769261679 127.0.0.1
+327.7725776: SyncUpdate 9133086765769261679 127.0.0.1
+327.7739448: SyncUpdate 9133086765769261679 127.0.0.1
+327.880024: SyncUpdate 9133086765769261679 127.0.0.1
+327.8811719: SyncUpdate 9133086765769261679 127.0.0.1
+327.9780778: SyncUpdate 9133086765769261679 127.0.0.1
+327.9794583: SyncUpdate 9133086765769261679 127.0.0.1
+328.0851426: SyncUpdate 9133086765769261679 127.0.0.1
+328.0862413: SyncUpdate 9133086765769261679 127.0.0.1
+328.1834019: SyncUpdate 9133086765769261679 127.0.0.1
+328.1849013: SyncUpdate 9133086765769261679 127.0.0.1
+351.1443625: Disconnected 9133086765769261679 127.0.0.1
+351.1456358: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: VoiceClientDisconnected(  )
+
+432.8864504: RespondedAwaitingApproval 3177679521374330982 127.0.0.1
+432.8962403: RespondedConnect 3177679521374330982 127.0.0.1
+432.8975742: Connected 3177679521374330982 127.0.0.1
+432.8987866: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: StartVoIP( 5 )
+
+432.8997707: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 0, 0 )
+
+432.9006905: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 1, 0 )
+
+432.9017091: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 2, 0 )
+
+432.9025482: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 0, 0 )
+
+432.9033835: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 1, 0 )
+
+432.9042375: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 2, 0 )
+
+432.9050584: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 0, 0 )
+
+432.9059186: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 1, 0 )
+
+432.9068984: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 2, 0 )
+
+432.9165365: AreaChange 3177679521374330982 127.0.0.1
+432.9353733: Instantiate 3177679521374330982 127.0.0.1
+	NetworkId: 2005
+	Prefab: NetPlayer
+	Loc: 0, 0, 0
+	Orientation: 0, 0, 0, 1
+433.0252464: SyncUpdate 3177679521374330982 127.0.0.1
+433.1251146: SyncUpdate 3177679521374330982 127.0.0.1
+433.2335203: SyncUpdate 3177679521374330982 127.0.0.1
+433.3327949: SyncUpdate 3177679521374330982 127.0.0.1
+433.4388613: SyncUpdate 3177679521374330982 127.0.0.1
+433.5253898: RPC OtherClientsInArea NetSyncId: 2005 Function: RPC_ChangeMaterial( Default-Material (Instance), Blue )
+
+433.5472992: SyncUpdate 3177679521374330982 127.0.0.1
+433.6485224: SyncUpdate 3177679521374330982 127.0.0.1
+433.7413856: SyncUpdate 3177679521374330982 127.0.0.1
+433.8427833: SyncUpdate 3177679521374330982 127.0.0.1
+433.9511434: SyncUpdate 3177679521374330982 127.0.0.1
+434.0538331: SyncUpdate 3177679521374330982 127.0.0.1
+434.1523227: SyncUpdate 3177679521374330982 127.0.0.1
+434.2666537: SyncUpdate 3177679521374330982 127.0.0.1
+434.3698447: LiteSyncUpdate 3177679521374330982 127.0.0.1
+444.0676307: RespondedAwaitingApproval -3572952172908181209 127.0.0.1
+444.0838647: RespondedConnect -3572952172908181209 127.0.0.1
+444.0857421: Connected -3572952172908181209 127.0.0.1
+444.0877434: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: StartVoIP( 6 )
+
+444.0896025: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 0, 0 )
+
+444.0915311: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 1, 0 )
+
+444.0931005: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 2, 0 )
+
+444.0945414: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 0, 0 )
+
+444.0960435: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 1, 0 )
+
+444.0978491: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 2, 0 )
+
+444.0996534: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 0, 0 )
+
+444.1015477: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 1, 0 )
+
+444.1033983: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 2, 0 )
+
+444.1207611: AreaChange -3572952172908181209 127.0.0.1
+444.1600216: Instantiate -3572952172908181209 127.0.0.1
+	NetworkId: 2506
+	Prefab: NetPlayer
+	Loc: 0, 0, 0
+	Orientation: 0, 0, 0, 1
+444.1745505: RPC OtherClients NetSyncId: 2005 Function: RPC_UpdateMyObject(  )
+
+444.1763099: RPC OtherClients NetSyncId: 2506 Function: RPC_UpdateMyObject(  )
+
+444.1906278: RPC OtherClients NetSyncId: 2005 Function: RPC_ChangeMaterial( Blue, Blue )
+
+444.2071425: RPC OtherClients NetSyncId: 2506 Function: RPC_ChangeMaterial( Default-Material, Default-Material )
+
+444.3388507: LiteSyncUpdate -3572952172908181209 127.0.0.1
+453.0594219: Destroy -3572952172908181209 127.0.0.1
+453.0719003: Disconnected -3572952172908181209 127.0.0.1
+453.0741258: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: VoiceClientDisconnected(  )
+
+562.0595016: Disconnected 3177679521374330982 127.0.0.1
+562.0609809: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: VoiceClientDisconnected(  )
+
+577.1394243: RespondedAwaitingApproval -958410898180789172 127.0.0.1
+577.152825: RespondedConnect -958410898180789172 127.0.0.1
+577.1542179: Connected -958410898180789172 127.0.0.1
+577.1553835: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: StartVoIP( 7 )
+
+577.1566266: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 0, 0 )
+
+577.1577331: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 1, 0 )
+
+577.1589586: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 2, 0 )
+
+577.1601603: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 0, 0 )
+
+577.1614699: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 1, 0 )
+
+577.1631067: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 2, 0 )
+
+577.1645463: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 0, 0 )
+
+577.1657921: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 1, 0 )
+
+577.1672641: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 2, 0 )
+
+577.1811211: AreaChange -958410898180789172 127.0.0.1
+577.2340736: Instantiate -958410898180789172 127.0.0.1
+	NetworkId: 3007
+	Prefab: NetPlayer
+	Loc: 0, 0, 0
+	Orientation: 0, 0, 0, 1
+577.3835: LiteSyncUpdate -958410898180789172 127.0.0.1
+593.7494051: SyncUpdate -958410898180789172 127.0.0.1
+593.8567125: SyncUpdate -958410898180789172 127.0.0.1
+593.9479567: SyncUpdate -958410898180789172 127.0.0.1
+594.0534131: SyncUpdate -958410898180789172 127.0.0.1
+594.1498625: SyncUpdate -958410898180789172 127.0.0.1
+594.2590921: SyncUpdate -958410898180789172 127.0.0.1
+594.3589437: SyncUpdate -958410898180789172 127.0.0.1
+594.462641: SyncUpdate -958410898180789172 127.0.0.1
+594.5641744: SyncUpdate -958410898180789172 127.0.0.1
+594.6687959: SyncUpdate -958410898180789172 127.0.0.1
+594.7675856: SyncUpdate -958410898180789172 127.0.0.1
+594.8763823: SyncUpdate -958410898180789172 127.0.0.1
+594.9691637: SyncUpdate -958410898180789172 127.0.0.1
+595.0906313: SyncUpdate -958410898180789172 127.0.0.1
+595.1889854: SyncUpdate -958410898180789172 127.0.0.1
+595.3009329: SyncUpdate -958410898180789172 127.0.0.1
+595.3862538: SyncUpdate -958410898180789172 127.0.0.1
+595.5129015: SyncUpdate -958410898180789172 127.0.0.1
+595.6011027: SyncUpdate -958410898180789172 127.0.0.1
+595.7243291: SyncUpdate -958410898180789172 127.0.0.1
+595.8175858: SyncUpdate -958410898180789172 127.0.0.1
+595.9728899: RPC OtherClientsInArea NetSyncId: 3007 Function: RPC_ChangeMaterial( Default-Material (Instance), Yellow )
+
+596.3781462: RPC OtherClientsInArea NetSyncId: 3007 Function: RPC_ChangeMaterial( Yellow (Instance), Orange )
+
+596.7998955: RPC OtherClientsInArea NetSyncId: 3007 Function: RPC_ChangeMaterial( Orange (Instance), Green )
+
+600.0713591: Disconnected -958410898180789172 127.0.0.1
+600.0727581: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: VoiceClientDisconnected(  )
+
+659.8450955: RespondedAwaitingApproval 3652970100813983149 127.0.0.1
+659.8635795: RespondedConnect 3652970100813983149 127.0.0.1
+659.8658325: Connected 3652970100813983149 127.0.0.1
+659.8678935: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: StartVoIP( 8 )
+
+659.8697863: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 0, 0 )
+
+659.8713034: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 1, 0 )
+
+659.8729034: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 2, 0 )
+
+659.8744438: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 0, 0 )
+
+659.8759576: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 1, 0 )
+
+659.8774417: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 2, 0 )
+
+659.8789178: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 0, 0 )
+
+659.8811451: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 1, 0 )
+
+659.8828503: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 2, 0 )
+
+659.8999006: AreaChange 3652970100813983149 127.0.0.1
+659.930172: Instantiate 3652970100813983149 127.0.0.1
+	NetworkId: 3508
+	Prefab: NetPlayer
+	Loc: 0, 0, 0
+	Orientation: 0, 0, 0, 1
+660.0558467: LiteSyncUpdate 3652970100813983149 127.0.0.1
+660.2700891: SyncUpdate 3652970100813983149 127.0.0.1
+660.3711979: SyncUpdate 3652970100813983149 127.0.0.1
+660.4715712: SyncUpdate 3652970100813983149 127.0.0.1
+660.5833592: SyncUpdate 3652970100813983149 127.0.0.1
+660.6857751: SyncUpdate 3652970100813983149 127.0.0.1
+660.7919611: SyncUpdate 3652970100813983149 127.0.0.1
+660.8954778: SyncUpdate 3652970100813983149 127.0.0.1
+661.005496: SyncUpdate 3652970100813983149 127.0.0.1
+661.0924801: SyncUpdate 3652970100813983149 127.0.0.1
+661.209083: SyncUpdate 3652970100813983149 127.0.0.1
+661.3023593: SyncUpdate 3652970100813983149 127.0.0.1
+661.4098306: SyncUpdate 3652970100813983149 127.0.0.1
+661.5036744: SyncUpdate 3652970100813983149 127.0.0.1
+661.6119949: SyncUpdate 3652970100813983149 127.0.0.1
+661.7112667: SyncUpdate 3652970100813983149 127.0.0.1
+661.8144937: SyncUpdate 3652970100813983149 127.0.0.1
+661.9100888: SyncUpdate 3652970100813983149 127.0.0.1
+662.0258027: SyncUpdate 3652970100813983149 127.0.0.1
+662.1261457: SyncUpdate 3652970100813983149 127.0.0.1
+662.2388697: SyncUpdate 3652970100813983149 127.0.0.1
+662.3350953: SyncUpdate 3652970100813983149 127.0.0.1
+662.5773478: RPC OtherClientsInArea NetSyncId: 3508 Function: RPC_ChangeMaterial( Default-Material (Instance), White )
+
+663.7250017: RPC OtherClientsInArea NetSyncId: 3508 Function: RPC_ChangeMaterial( White (Instance), Blue )
+
+663.754927: RPC OtherClientsInArea NetSyncId: 3508 Function: RPC_ChangeMaterial( Blue (Instance), Blue )
+
+664.2828739: RPC OtherClientsInArea NetSyncId: 3508 Function: RPC_ChangeMaterial( Blue (Instance), Black )
+
+664.8683002: RPC OtherClientsInArea NetSyncId: 3508 Function: RPC_ChangeMaterial( Black (Instance), White )
+
+665.2675226: RPC OtherClientsInArea NetSyncId: 3508 Function: RPC_ChangeMaterial( White (Instance), Green )
+
+665.7158906: RPC OtherClientsInArea NetSyncId: 3508 Function: RPC_ChangeMaterial( Green (Instance), Blue )
+
+666.4485113: SyncUpdate 3652970100813983149 127.0.0.1
+666.5688378: SyncUpdate 3652970100813983149 127.0.0.1
+666.6758134: SyncUpdate 3652970100813983149 127.0.0.1
+666.7812211: SyncUpdate 3652970100813983149 127.0.0.1
+666.8714835: SyncUpdate 3652970100813983149 127.0.0.1
+666.9854397: SyncUpdate 3652970100813983149 127.0.0.1
+667.0849366: SyncUpdate 3652970100813983149 127.0.0.1
+667.1902073: SyncUpdate 3652970100813983149 127.0.0.1
+668.6649744: RespondedAwaitingApproval -1069351111268094922 127.0.0.1
+668.6789961: RespondedConnect -1069351111268094922 127.0.0.1
+668.6804507: Connected -1069351111268094922 127.0.0.1
+668.6818115: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: StartVoIP( 9 )
+
+668.6832307: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 0, 0 )
+
+668.6844577: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 1, 0 )
+
+668.6858577: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 0, 2, 0 )
+
+668.6874086: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 0, 0 )
+
+668.688873: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 1, 0 )
+
+668.6902834: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 1, 2, 0 )
+
+668.6917751: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 0, 0 )
+
+668.6929272: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 1, 0 )
+
+668.6944885: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: UpdateGameState( 2, 2, 0 )
+
+668.7078618: AreaChange -1069351111268094922 127.0.0.1
+668.7408611: Instantiate -1069351111268094922 127.0.0.1
+	NetworkId: 4009
+	Prefab: NetPlayer
+	Loc: 0, 0, 0
+	Orientation: 0, 0, 0, 1
+668.7432656: RPC OtherClients NetSyncId: 3508 Function: RPC_UpdateMyObject(  )
+
+668.7589526: RPC OtherClients NetSyncId: 3508 Function: RPC_ChangeMaterial( Blue, Blue )
+
+668.7607779: RPC OtherClients NetSyncId: 4009 Function: RPC_UpdateMyObject(  )
+
+668.7742264: RPC OtherClients NetSyncId: 4009 Function: RPC_ChangeMaterial( Default-Material, Default-Material )
+
+668.8214867: LiteSyncUpdate -1069351111268094922 127.0.0.1
+670.2654854: RPC OtherClientsInArea NetSyncId: 4009 Function: RPC_ChangeMaterial( Default-Material (Instance), Black )
+
+670.4472265: RPC OtherClientsInArea NetSyncId: 4009 Function: RPC_ChangeMaterial( Black (Instance), Yellow )
+
+674.4952992: RPC OtherClientsInArea NetSyncId: 3508 Function: RPC_ChangeMaterial( Blue (Instance), Green )
+
+675.8946298: RPC OtherClientsInArea NetSyncId: 4009 Function: RPC_ChangeMaterial( Yellow (Instance), Yellow )
+
+676.0154966: RPC OtherClientsInArea NetSyncId: 4009 Function: RPC_ChangeMaterial( Yellow (Instance), Purple )
+
+677.8301807: SyncUpdate 3652970100813983149 127.0.0.1
+677.9316345: SyncUpdate 3652970100813983149 127.0.0.1
+678.0580531: SyncUpdate 3652970100813983149 127.0.0.1
+678.1456974: SyncUpdate 3652970100813983149 127.0.0.1
+678.2786258: SyncUpdate 3652970100813983149 127.0.0.1
+678.3670262: SyncUpdate 3652970100813983149 127.0.0.1
+678.4745038: SyncUpdate 3652970100813983149 127.0.0.1
+678.579437: SyncUpdate 3652970100813983149 127.0.0.1
+678.6860813: SyncUpdate 3652970100813983149 127.0.0.1
+678.7831674: SyncUpdate 3652970100813983149 127.0.0.1
+678.8852832: SyncUpdate 3652970100813983149 127.0.0.1
+680.5085483: RPC OtherClientsInArea NetSyncId: 4009 Function: RPC_ChangeMaterial( Purple (Instance), Green )
+
+688.8877336: Destroy 3652970100813983149 127.0.0.1
+688.9038075: Disconnected 3652970100813983149 127.0.0.1
+688.9058739: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: VoiceClientDisconnected(  )
+
+725.2236427: Destroy -1069351111268094922 127.0.0.1
+725.2367867: Disconnected -1069351111268094922 127.0.0.1
+725.2385041: => Outgoing RPC Sent to: SingleClient as SingleClient NetSyncId: -1 Function: VoiceClientDisconnected(  )
+
+728.1896579: Server shutdown

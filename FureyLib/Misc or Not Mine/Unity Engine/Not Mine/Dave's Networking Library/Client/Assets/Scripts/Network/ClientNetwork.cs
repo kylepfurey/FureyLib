@@ -46,7 +46,7 @@ public class ClientNetwork : UCNetwork
         connection.Start();
 
         client = connection as NetClient;
-        
+
 
 #if UNITY_EDITOR
         lastRPCCallClearTime = Time.realtimeSinceStartup;
@@ -185,7 +185,7 @@ public class ClientNetwork : UCNetwork
             // Create the object locally
             GameObject tempObj = CreateLocalObject(prefabName, position, orientation, netId);
 
-            if(tempObj != null && !string.IsNullOrEmpty(json))
+            if (tempObj != null && !string.IsNullOrEmpty(json))
             {
                 tempObj.SendMessage("ParseJson", json);
             }

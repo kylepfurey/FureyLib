@@ -1,4 +1,4 @@
-﻿#if true
+﻿#if SERVER
 
 using UnityEngine;
 using System.Collections;
@@ -289,7 +289,7 @@ public class ServerNetwork : UCNetwork
             {
                 ReceiveRPC(aMsg);
             }
-            
+
             // Check if the server wants to stop the RPC from being sent to the clients
             if (!abortRPC)
             {
@@ -445,7 +445,7 @@ public class ServerNetwork : UCNetwork
             {
                 clients = GetClientsInArea(networkObjects[netId].areaIds);
                 // Remove our own client from the list
-                for (int i=0; i<clients.Count; i++)
+                for (int i = 0; i < clients.Count; i++)
                 {
                     if (clients[i].RemoteUniqueIdentifier == aMsg.SenderConnection.RemoteUniqueIdentifier)
                     {

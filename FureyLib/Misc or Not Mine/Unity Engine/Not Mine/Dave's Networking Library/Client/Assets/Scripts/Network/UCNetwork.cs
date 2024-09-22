@@ -236,7 +236,8 @@ public abstract class UCNetwork : MonoBehaviour
             {
                 typeString += "q";
             }
-            else {
+            else
+            {
                 Debug.LogError("Unimplemented RPC parameter type " + arg.GetType());
                 return;
             }
@@ -250,7 +251,7 @@ public abstract class UCNetwork : MonoBehaviour
             {
                 aMsg.Write((long)arg);
             }
-            else if(arg is ulong)
+            else if (arg is ulong)
             {
                 aMsg.Write((ulong)arg);
             }
@@ -331,7 +332,8 @@ public abstract class UCNetwork : MonoBehaviour
                 float w = aMsg.ReadFloat();
                 aArgs.Add(new Quaternion(x, y, z, w));
             }
-            else {
+            else
+            {
                 Debug.LogError("Unhandled RPC parameter type " + c);
             }
         }

@@ -60,7 +60,7 @@ public class NetworkSync : MonoBehaviour
 
     // Counter for when to send a sync update
     float timeToSend = 0;
-    
+
 #if UNITY_EDITOR
     class PreviousPositionData
     {
@@ -147,7 +147,7 @@ public class NetworkSync : MonoBehaviour
 #endif
 
     }
-     
+
     // Update is called once per frame
     void Update()
     {
@@ -227,10 +227,10 @@ public class NetworkSync : MonoBehaviour
         position = aPosition;
         rotation = aRotation;
 
-        
+
         transform.localPosition = aPosition;
         transform.localRotation = aRotation;
-    
+
         MemoryStream stream = new MemoryStream(aData);
         BinaryReader binReader = new BinaryReader(stream);
         if (setDataFunction != null)
@@ -311,7 +311,7 @@ public class NetworkSync : MonoBehaviour
     public void AddToArea(int aAreaId)
     {
         clientNet.AddObjectToArea(networkId, aAreaId);
-        if(!areaIds.Contains(aAreaId))
+        if (!areaIds.Contains(aAreaId))
         {
             areaIds.Add(aAreaId);
         }

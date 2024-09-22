@@ -1,4 +1,4 @@
-﻿#if SERVER
+﻿#if true
 
 using UnityEngine;
 using System.Collections;

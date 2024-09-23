@@ -19,7 +19,7 @@
 // Creates a two-dimensional vector of the given type.
 #define VEC_2D(type) std::vector<std::vector<type>>
 #define NEW_VEC_2D(type, x, y) std::vector<std::vector<type>>(x, std::vector<type>(y))
-#define SIZE_X(vector_2D) (vector_2D.empty() ? 0 : vector_2D.size())
+#define SIZE_X(vector) (vector.empty() ? 0 : vector.size())
 #define SIZE_Y(vector_2D) (vector_2D.empty() ? 0 : (vector_2D[0].empty() ? 0 : vector_2D[0].size()))
 
 // Creates a three-dimensional vector of the given type.

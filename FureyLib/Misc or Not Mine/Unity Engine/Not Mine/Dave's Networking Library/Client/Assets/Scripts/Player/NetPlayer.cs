@@ -60,6 +60,11 @@ public class NetPlayer : MonoBehaviour, IMouseClickable
 
             transform.position += movement;
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
 
@@ -72,7 +77,7 @@ public class NetPlayer : MonoBehaviour, IMouseClickable
     /// <param name="hitInfo"></param>
     public void OnMouseClick(Camera mainCamera, RaycastHit hitInfo)
     {
-        if (renderer != null && clickedMaterials.Count > 0)
+        if (networkSync != null && networkSync.owned && renderer != null && clickedMaterials.Count > 0)
         {
             Material oldMaterial = renderer.material;
 

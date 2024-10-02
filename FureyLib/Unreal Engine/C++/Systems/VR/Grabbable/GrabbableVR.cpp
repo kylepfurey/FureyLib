@@ -47,6 +47,15 @@ FGrabPointVR::FGrabPointVR(TArray<EHandGestureVR> _Gestures, FName _GrabPointNam
 }
 
 
+// GRAB POINT EQUALITY
+
+// Returns if this grab point is equal to the given grab point are equal.
+bool FGrabPointVR::operator==(const FGrabPointVR& GrabPoint) const
+{
+	return Collider == GrabPoint.Collider;
+}
+
+
 // GRABBABLE CONSTRUCTORS
 
 // Default constructor.
@@ -349,6 +358,13 @@ void UGrabbableVR::BeginDestroy()
 
 			UnbindInput(true);
 		}
+	}
+
+	for (FGrabPointVR GrabPoint : GrabPoints)
+	{
+		LeftGrabbablePoints.Remove(GrabPoint);
+
+		RightGrabbablePoints.Remove(GrabPoint);
 	}
 }
 
@@ -1106,10 +1122,6 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 	}
 	else if (bActive)
 	{
-		TArray<FGrabPointVR> LeftGrabbablePoints = TArray<FGrabPointVR>();
-
-		TArray<FGrabPointVR> RightGrabbablePoints = TArray<FGrabPointVR>();
-
 		bool LeftTimerUpdated = false;
 
 		bool RightTimerUpdated = false;
@@ -1122,13 +1134,13 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 		{
 		case EGrabModeVR::LEFT_ONLY:
 
-			LeftGrabbable = true;
+			LeftGrabbable = IsLeftHandEmpty();
 
 			break;
 
 		case EGrabModeVR::RIGHT_ONLY:
 
-			RightGrabbable = true;
+			RightGrabbable = IsRightHandEmpty();
 
 			break;
 
@@ -1136,11 +1148,11 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 
 			if (UHandTrackerVR::IsDominantHandRight())
 			{
-				RightGrabbable = true;
+				RightGrabbable = IsRightHandEmpty();
 			}
 			else
 			{
-				LeftGrabbable = true;
+				LeftGrabbable = IsLeftHandEmpty();
 			}
 
 			break;
@@ -1149,20 +1161,20 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 
 			if (UHandTrackerVR::IsDominantHandRight())
 			{
-				LeftGrabbable = true;
+				LeftGrabbable = IsLeftHandEmpty();
 			}
 			else
 			{
-				RightGrabbable = true;
+				RightGrabbable = IsRightHandEmpty();
 			}
 
 			break;
 
 		case EGrabModeVR::BOTH:
 
-			LeftGrabbable = true;
+			LeftGrabbable = IsLeftHandEmpty();
 
-			RightGrabbable = true;
+			RightGrabbable = IsRightHandEmpty();
 
 			break;
 		}
@@ -1171,9 +1183,13 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 		{
 			for (FGrabPointVR GrabPoint : GrabPoints)
 			{
+				LeftGrabbablePoints.Remove(GrabPoint);
+
+				RightGrabbablePoints.Remove(GrabPoint);
+
 				if (IsValid(GrabPoint.Collider))
 				{
-					if (IsValid(LeftHandCollider))
+					if (LeftGrabbable && IsValid(LeftHandCollider))
 					{
 						for (EHandGestureVR Gesture : GrabPoint.Gestures)
 						{
@@ -1196,7 +1212,7 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 						}
 					}
 
-					if (IsValid(RightHandCollider))
+					if (RightGrabbable && IsValid(RightHandCollider))
 					{
 						for (EHandGestureVR Gesture : GrabPoint.Gestures)
 						{
@@ -1225,9 +1241,13 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 		{
 			for (FGrabPointVR GrabPoint : GrabPoints)
 			{
+				LeftGrabbablePoints.Remove(GrabPoint);
+
+				RightGrabbablePoints.Remove(GrabPoint);
+
 				if (IsValid(GrabPoint.Collider))
 				{
-					if (IsValid(LeftHandCollider) && LeftDown > 0.5)
+					if (LeftGrabbable && IsValid(LeftHandCollider) && LeftDown >= GRAB_TRIGGER_PERCENT)
 					{
 						if (LeftGrabTime <= GrabBuffer && GrabPoint.Collider->IsOverlappingComponent(LeftHandCollider))
 						{
@@ -1242,7 +1262,7 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 						}
 					}
 
-					if (IsValid(RightHandCollider) && RightDown > 0.5)
+					if (RightGrabbable && IsValid(RightHandCollider) && RightDown >= GRAB_TRIGGER_PERCENT)
 					{
 						if (RightGrabTime <= GrabBuffer && GrabPoint.Collider->IsOverlappingComponent(RightHandCollider))
 						{
@@ -1278,7 +1298,7 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 
 		bool bIsRight = false;
 
-		if (!LeftGrabbablePoints.IsEmpty())
+		if (LeftGrabbable)
 		{
 			for (FGrabPointVR GrabPoint : LeftGrabbablePoints)
 			{
@@ -1295,7 +1315,7 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 			}
 		}
 
-		if (!RightGrabbablePoints.IsEmpty())
+		if (RightGrabbable)
 		{
 			for (FGrabPointVR GrabPoint : RightGrabbablePoints)
 			{
@@ -1312,7 +1332,7 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 			}
 		}
 
-		if (ClosestDistance != FLT_MAX)
+		if (ClosestDistance != FLT_MAX && GrabPoints.Contains(ClosestGrabPoint))
 		{
 			Grab(bIsRight, ClosestGrabPoint);
 		}
@@ -1323,7 +1343,7 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 // Returns if the grab was successful.
 bool UGrabbableVR::Grab(bool bIsRight, FGrabPointVR GrabPoint, bool InvokeEvent)
 {
-	if (bActive && !IsGrabbed() && IsValid(GrabPoint.Collider))
+	if (bActive && !IsGrabbed() && GrabPoints.Contains(GrabPoint) && IsValid(GrabPoint.Collider))
 	{
 		if (bIsRight)
 		{
@@ -1762,3 +1782,9 @@ UPrimitiveComponent* UGrabbableVR::LeftHandCollider = nullptr;
 
 // The object used for checking right hand collisions.
 UPrimitiveComponent* UGrabbableVR::RightHandCollider = nullptr;
+
+// All currently valid grab points in the left hand.
+TSet<FGrabPointVR> UGrabbableVR::LeftGrabbablePoints = TSet<FGrabPointVR>();
+
+// All currently valid grab points in the right hand.
+TSet<FGrabPointVR> UGrabbableVR::RightGrabbablePoints = TSet<FGrabPointVR>();

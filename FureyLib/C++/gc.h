@@ -41,7 +41,7 @@ public:
 
 // •  Represents a shared pointer that will be deallocated at the end of the program with type safety.
 // •  Inherits from the garbage_base storage class.
-template <typename data_type> class garbage : public garbage_base
+template <typename data_type> class garbage final : public garbage_base
 {
 public:
 
@@ -61,7 +61,7 @@ public:
 // •  Stores copies of pointers to dynamically allocated memory for automatic deallocation at the end of the program if they are not already freed.
 // •  Do not make an instance of this class as there is already a global instance named "gc".
 // •  Note: Use containers such as std::array and std::vector for allocation of multiple variables instead of C arrays.
-class garbage_collector
+class garbage_collector final
 {
 private:
 
@@ -276,7 +276,7 @@ public:
 	// DESTRUCTOR
 
 	// Deallocates the garbage collector's remaining memory when the program closes.
-	virtual ~garbage_collector()
+	~garbage_collector()
 	{
 		int total = collect_garbage();
 
@@ -284,23 +284,23 @@ public:
 	}
 };
 
-// Overrides the new keyword to store newly allocated memory to the garbage collector.
+// Overrides the new keyword to store newly allocated memory in the garbage collector.
 #define new gc += new
 
-// Overrides the malloc() function to store newly allocated memory to the garbage collector.
+// Overrides the malloc() function to store newly allocated memory in the garbage collector.
 #define malloc gc + malloc
 
-// Overrides the calloc() function to store newly allocated memory to the garbage collector.
+// Overrides the calloc() function to store newly allocated memory in the garbage collector.
 #define calloc gc + calloc
 
-// Overrides the realloc() function to store newly allocated memory to the garbage collector.
+// Overrides the realloc() function to store newly allocated memory in the garbage collector.
 #define realloc gc + realloc
 
 // Overrides the delete keyword to safely delete and remove memory from the garbage collector.
 #define delete gc -=
 
 // Overrides the free() function to safely delete and remove memory from the garbage collector.
-#define free gc.deallocate_c_memory
+#define free gc -
 
 // This program's global instance of the garbage collector.
-garbage_collector gc = garbage_collector();
+inline garbage_collector gc = garbage_collector();

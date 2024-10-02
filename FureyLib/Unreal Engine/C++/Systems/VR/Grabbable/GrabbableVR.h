@@ -9,6 +9,7 @@
 #include "Components/ActorComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "Containers/Array.h"
+#include "Containers/Set.h"
 #include "Math/Vector.h"
 #include "Math/Rotator.h"
 #include "Math/Quat.h"
@@ -20,6 +21,9 @@
 
 // Include this heading to use the class
 // #include "VR/Grabbable/GrabbableVR.h"
+
+// The percentage a grab input should be at least at to grab an object.
+#define GRAB_TRIGGER_PERCENT 0.5
 
 // The delay in seconds before completing a throw (used for easier aiming).
 #define THROW_DELAY 0.01
@@ -86,7 +90,19 @@ public:
 
 	/** Grab point constructor. */
 	FGrabPointVR(TArray<EHandGestureVR> _Gestures, FName _GrabPointName = TEXT("New Grab Point"), UPrimitiveComponent* _Collider = nullptr, FVector _HandOffset = FVector(0, 0, 0), bool UseRotationOffset = true, FRotator _RotationOffset = FRotator(0, 0, 0), EGrabPointPriorityVR _Priority = EGrabPointPriorityVR::NORMAL);
+
+
+	// GRAB POINT EQUALITY
+
+	/** Returns if this grab point is equal to the given grab point are equal. */
+	bool operator==(const FGrabPointVR& GrabPoint) const;
 };
+
+// Returns a hash code for this grab point.
+FORCEINLINE uint32 GetTypeHash(const FGrabPointVR& GrabPoint)
+{
+	return ::GetTypeHash(GrabPoint.Collider);
+}
 
 /** Which hands can be used to grab a grabbable object in VR. */
 UENUM(BlueprintType, Category = "GrabbableVR")
@@ -223,6 +239,12 @@ protected:
 
 	/** The object used for checking right hand collisions. */
 	static UPrimitiveComponent* RightHandCollider;
+
+	/** All currently valid grab points in the left hand. */
+	static TSet<FGrabPointVR> LeftGrabbablePoints;
+
+	/** All currently valid grab points in the right hand. */
+	static TSet<FGrabPointVR> RightGrabbablePoints;
 
 	/** The time in seconds since the left hand initiated a grab gesture. */
 	float LeftGrabTime = 0;

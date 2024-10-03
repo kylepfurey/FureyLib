@@ -28,5 +28,6 @@ typedef     char16_t      char16;
 typedef     char32_t      char32;
 typedef     intptr_t      intptr;
 typedef     uintptr_t     uintptr;
+typedef     ptrdiff_t     ptrdiff;
 typedef     nullptr_t     null;
 typedef     size_t        size;

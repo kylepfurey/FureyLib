@@ -43,7 +43,7 @@ public:
 
 	/** Called when this state is set as the state machine's current state. */
 	UFUNCTION(BlueprintCallable, Category = "State Machine")
-	virtual void OnStateBegin_Implementation() override;
+	virtual void OnStateBegin_Implementation(UClass* PreviousStateClass) override;
 
 	/** Called every frame while this state is the state machine's current state. */
 	UFUNCTION(BlueprintCallable, Category = "State Machine")
@@ -51,5 +51,5 @@ public:
 
 	/** Called when this state machine's current state is no longer this state. */
 	UFUNCTION(BlueprintCallable, Category = "State Machine")
-	virtual void OnStateEnd_Implementation() override;
+	virtual void OnStateEnd_Implementation(UClass* NewStateClass) override;
 };

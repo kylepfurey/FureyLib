@@ -38,10 +38,10 @@ UState::UState(UStateMachine* _StateMachine)
 // STATE EVENTS
 
 // Called when this state is set as the state machine's current state.
-void UState::OnStateBegin_Implementation()
+void UState::OnStateBegin_Implementation(UClass* PreviousStateClass)
 {
 	// Calls the base class's implementation.
-	Super::OnStateBegin_Implementation();
+	Super::OnStateBegin_Implementation(PreviousStateClass);
 
 	// New code here
 }
@@ -56,10 +56,10 @@ void UState::OnStateTick_Implementation(float DeltaTime)
 }
 
 // Called when this state machine's current state is no longer this state.
-void UState::OnStateEnd_Implementation()
+void UState::OnStateEnd_Implementation(UClass* NewStateClass)
 {
 	// Calls the base class's implementation.
-	Super::OnStateEnd_Implementation();
+	Super::OnStateEnd_Implementation(NewStateClass);
 
 	// New code here
 }

@@ -43,26 +43,41 @@ UClass* UStateBase::GetStateClass()
 	return StaticClass();
 }
 
-// Returns a new state of the given state class and state machine.
-UStateBase* UStateBase::ConstructState(UClass* StateClass, UStateMachine* _StateMachine)
+// Returns this state's owning actor.
+AActor* UStateBase::GetActor()
 {
-	if (IsValid(StateClass) && StateClass->IsChildOf(UStateBase::StaticClass()) && IsValid(_StateMachine))
+	if (IsValid(StateMachine))
 	{
-		UStateBase* NewState = NewObject<UStateBase>(_StateMachine, StateClass);
+		return StateMachine->GetOwner();
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+// Returns a new state of the given state class and state machine.
+UStateBase* UStateBase::ConstructState(UClass* NewStateClass, UStateMachine* _StateMachine)
+{
+	if (IsValid(NewStateClass) && NewStateClass->IsChildOf(UStateBase::StaticClass()) && IsValid(_StateMachine))
+	{
+		UStateBase* NewState = NewObject<UStateBase>(_StateMachine, NewStateClass);
 
 		NewState->StateMachine = _StateMachine;
 
 		return NewState;
 	}
-
-	return nullptr;
+	else
+	{
+		return nullptr;
+	}
 }
 
 
 // STATE BASE EVENTS
 
 // Called when this state is set as the state machine's current state.
-void UStateBase::OnStateBegin_Implementation()
+void UStateBase::OnStateBegin_Implementation(UClass* PreviousStateClass)
 {
 	// Note: Logic applies to all derived states.
 
@@ -78,7 +93,7 @@ void UStateBase::OnStateTick_Implementation(float DeltaTime)
 }
 
 // Called when this state machine's current state is no longer this state.
-void UStateBase::OnStateEnd_Implementation()
+void UStateBase::OnStateEnd_Implementation(UClass* PreviousStateClass)
 {
 	// Note: Logic applies to all derived states.
 
@@ -136,6 +151,14 @@ void UStateMachine::BeginPlay()
 	SwitchState(StartingStateClass);
 }
 
+// Called when the component is destroyed.
+void UStateMachine::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	SwitchState(nullptr);
+}
+
 // Called every frame.
 void UStateMachine::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -163,7 +186,7 @@ UClass* UStateMachine::GetCurrentStateClass()
 }
 
 // Returns the starting state class of this state machine.
-UClass* UStateMachine::GetStartingState()
+UClass* UStateMachine::GetStartingStateClass()
 {
 	return StartingStateClass;
 }
@@ -200,9 +223,17 @@ UStateMachine* UStateMachine::ConstructStateMachine(AActor* Parent, UClass* _Sta
 // Returns whether the switch was successful.
 bool UStateMachine::SwitchState(UClass* NewStateClass)
 {
+	UClass* PreviousStateClass;
+
 	if (IsValid(CurrentState))
 	{
-		CurrentState->OnStateEnd();
+		PreviousStateClass = CurrentState->StaticClass();
+
+		CurrentState->OnStateEnd(NewStateClass);
+	}
+	else
+	{
+		PreviousStateClass = nullptr;
 	}
 
 	if (IsValid(NewStateClass))
@@ -211,7 +242,7 @@ bool UStateMachine::SwitchState(UClass* NewStateClass)
 
 		if (IsValid(CurrentState))
 		{
-			CurrentState->OnStateBegin();
+			CurrentState->OnStateBegin(PreviousStateClass);
 		}
 		else
 		{

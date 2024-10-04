@@ -53,17 +53,21 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "State Machine")
 	virtual UClass* GetStateClass();
 
+	/** Returns this state's owning actor. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "State Machine")
+	virtual AActor* GetActor();
+
 	/** Returns a new state of the given state class and state machine. */
 	UFUNCTION(BlueprintCallable, Category = "State Machine")
-	static UStateBase* ConstructState(UClass* StateClass, UStateMachine* _StateMachine);
+	static UStateBase* ConstructState(UClass* NewStateClass, UStateMachine* _StateMachine);
 
 
 	// STATE BASE EVENTS
 
 	/** Called when this state is set as the state machine's current state. */
 	UFUNCTION(BlueprintNativeEvent, Category = "State Machine")
-	void OnStateBegin();
-	virtual void OnStateBegin_Implementation();
+	void OnStateBegin(UClass* PreviousStateClass);
+	virtual void OnStateBegin_Implementation(UClass* PreviousStateClass);
 
 	/** Called every frame while this state is the state machine's current state. */
 	UFUNCTION(BlueprintNativeEvent, Category = "State Machine")
@@ -72,8 +76,8 @@ public:
 
 	/** Called when this state machine's current state is no longer this state. */
 	UFUNCTION(BlueprintNativeEvent, Category = "State Machine")
-	void OnStateEnd();
-	virtual void OnStateEnd_Implementation();
+	void OnStateEnd(UClass* NewStateClass);
+	virtual void OnStateEnd_Implementation(UClass* PreviousStateClass);
 };
 
 /** Base for building a state machine. */
@@ -102,6 +106,9 @@ protected:
 
 	/** Called when the game starts. */
 	virtual void BeginPlay() override;
+
+	/** Called when the component is destroyed. */
+	virtual void BeginDestroy() override;
 
 public:
 
@@ -135,7 +142,7 @@ public:
 
 	/** Returns the starting state class of this state machine. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "State Machine")
-	virtual UClass* GetStartingState();
+	virtual UClass* GetStartingStateClass();
 
 	/** Returns whether the current state is null. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "State Machine")

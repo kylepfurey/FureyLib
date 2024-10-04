@@ -1017,6 +1017,10 @@ void UGrabbableVR::CompleteGrab()
 
 	if (ClosestDistance != FLT_MAX && GrabPoints.Contains(ClosestGrabPoint))
 	{
+		LeftGrabbablePoints.Remove(ClosestGrabPoint);
+
+		RightGrabbablePoints.Remove(ClosestGrabPoint);
+
 		Grab(bIsRight, ClosestGrabPoint);
 	}
 }

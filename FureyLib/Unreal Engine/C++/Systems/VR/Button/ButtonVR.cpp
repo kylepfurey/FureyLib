@@ -425,7 +425,7 @@ void UButtonVR::UpdateButton(float DeltaTime)
 			}
 			else
 			{
-				if (bHeld)
+				if (bClicked)
 				{
 					Unclick();
 				}

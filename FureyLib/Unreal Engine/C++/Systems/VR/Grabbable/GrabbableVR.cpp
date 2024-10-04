@@ -970,6 +970,57 @@ void UGrabbableVR::ReenablePawnCollision()
 	}
 }
 
+// Completes a grab after all grab points are checked (used for delays).
+void UGrabbableVR::CompleteGrab()
+{
+	FGrabPointVR ClosestGrabPoint = FGrabPointVR();
+
+	ClosestGrabPoint.Priority = (EGrabPointPriorityVR)0;
+
+	float ClosestDistance = FLT_MAX;
+
+	bool bIsRight = false;
+
+	if (!LeftGrabbablePoints.IsEmpty())
+	{
+		for (FGrabPointVR GrabPoint : LeftGrabbablePoints)
+		{
+			float NewDistance = FVector::DistSquared(LeftHandCollider->GetComponentLocation(), GrabPoint.Collider->GetComponentLocation());
+
+			if (GrabPoint.Priority > ClosestGrabPoint.Priority || (NewDistance < ClosestDistance && GrabPoint.Priority == ClosestGrabPoint.Priority))
+			{
+				ClosestGrabPoint = GrabPoint;
+
+				ClosestDistance = NewDistance;
+
+				bIsRight = false;
+			}
+		}
+	}
+
+	if (!RightGrabbablePoints.IsEmpty())
+	{
+		for (FGrabPointVR GrabPoint : RightGrabbablePoints)
+		{
+			float NewDistance = FVector::DistSquared(RightHandCollider->GetComponentLocation(), GrabPoint.Collider->GetComponentLocation());
+
+			if (GrabPoint.Priority > ClosestGrabPoint.Priority || (NewDistance < ClosestDistance && GrabPoint.Priority == ClosestGrabPoint.Priority))
+			{
+				ClosestGrabPoint = GrabPoint;
+
+				ClosestDistance = NewDistance;
+
+				bIsRight = true;
+			}
+		}
+	}
+
+	if (ClosestDistance != FLT_MAX && GrabPoints.Contains(ClosestGrabPoint))
+	{
+		Grab(bIsRight, ClosestGrabPoint);
+	}
+}
+
 // Completes a throw motion (used for delays).
 void UGrabbableVR::CompleteThrow()
 {
@@ -1290,51 +1341,9 @@ void UGrabbableVR::UpdateGrab(float DeltaSeconds)
 			RightGrabTime = 0;
 		}
 
-		FGrabPointVR ClosestGrabPoint = FGrabPointVR();
-
-		ClosestGrabPoint.Priority = (EGrabPointPriorityVR)0;
-
-		float ClosestDistance = FLT_MAX;
-
-		bool bIsRight = false;
-
-		if (LeftGrabbable)
+		if (!LeftGrabbablePoints.IsEmpty() || !RightGrabbablePoints.IsEmpty())
 		{
-			for (FGrabPointVR GrabPoint : LeftGrabbablePoints)
-			{
-				float NewDistance = FVector::DistSquared(LeftHandCollider->GetComponentLocation(), GrabPoint.Collider->GetComponentLocation());
-
-				if (GrabPoint.Priority > ClosestGrabPoint.Priority || (NewDistance < ClosestDistance && GrabPoint.Priority == ClosestGrabPoint.Priority))
-				{
-					ClosestGrabPoint = GrabPoint;
-
-					ClosestDistance = NewDistance;
-
-					bIsRight = false;
-				}
-			}
-		}
-
-		if (RightGrabbable)
-		{
-			for (FGrabPointVR GrabPoint : RightGrabbablePoints)
-			{
-				float NewDistance = FVector::DistSquared(RightHandCollider->GetComponentLocation(), GrabPoint.Collider->GetComponentLocation());
-
-				if (GrabPoint.Priority > ClosestGrabPoint.Priority || (NewDistance < ClosestDistance && GrabPoint.Priority == ClosestGrabPoint.Priority))
-				{
-					ClosestGrabPoint = GrabPoint;
-
-					ClosestDistance = NewDistance;
-
-					bIsRight = true;
-				}
-			}
-		}
-
-		if (ClosestDistance != FLT_MAX && GrabPoints.Contains(ClosestGrabPoint))
-		{
-			Grab(bIsRight, ClosestGrabPoint);
+			GetWorld()->GetTimerManager().SetTimerForNextTick(this, &UGrabbableVR::CompleteGrab);
 		}
 	}
 }

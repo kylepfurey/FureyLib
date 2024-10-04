@@ -321,6 +321,9 @@ protected:
 	/** Reenables collision with pawns (used for delays). */
 	virtual void ReenablePawnCollision();
 
+	/** Completes a grab after all grab points are checked (used for delays). */
+	virtual void CompleteGrab();
+
 	/** Completes a throw motion (used for delays). */
 	virtual void CompleteThrow();
 

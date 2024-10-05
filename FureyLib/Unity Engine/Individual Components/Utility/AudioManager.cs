@@ -12,7 +12,9 @@ using UnityEngine;
 /// </summary>
 public class AudioManager : MonoBehaviour, IEnumerable
 {
-    [Header("A component that allows easy access to play sounds.")]
+    [Header("A component that allows easy access to play sounds.\n")]
+
+    [Header("AUDIO")]
 
     [Header("Each category for this audio manager's sounds:")]
     [SerializeField] private List<AudioCategory> audioCategories = new List<AudioCategory>();
@@ -36,7 +38,7 @@ public class AudioManager : MonoBehaviour, IEnumerable
             }
         }
 
-        audioCategories.Clear();
+        audioCategories = null;
     }
 
 

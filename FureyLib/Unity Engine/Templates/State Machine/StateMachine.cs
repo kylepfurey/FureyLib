@@ -5,22 +5,6 @@
 using UnityEngine;
 
 /// <summary>
-/// State machine states enum
-/// </summary>
-public enum StateType
-{
-    /// <summary>
-    /// No state selected
-    /// </summary>
-    None = 0,
-
-    /// <summary>
-    /// Example state
-    /// </summary>
-    State = 1
-};
-
-/// <summary>
 /// Base for building a state machine.
 /// </summary>
 public class StateMachine : MonoBehaviour
@@ -29,11 +13,6 @@ public class StateMachine : MonoBehaviour
     /// The current state of this state machine
     /// </summary>
     public StateBase currentState = null;
-
-    /// <summary>
-    /// The current state of this state machine
-    /// </summary>
-    public StateType currentStateType = StateType.None;
 
     /// <summary>
     /// Starting state constructor

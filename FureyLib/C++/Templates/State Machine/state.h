@@ -17,16 +17,10 @@ public:
 	state(state_machine* state_machine)
 	{
 		this->my_state_machine = state_machine;
-
-		// Change the state type enum here!
-		this->my_state_machine->current_state_type = state_type::state;
 	}
 
 	// Destructor
-	virtual ~state()
-	{
-
-	}
+	virtual ~state() = default;
 
 	// Called when this state is set as the state machine's current state
 	void on_state_enter() override

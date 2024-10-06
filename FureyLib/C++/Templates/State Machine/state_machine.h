@@ -12,16 +12,6 @@
 // Include this heading to use the class
 #include "state_machine.h"
 
-// State machine states enum
-enum state_type
-{
-	// No state selected
-	none = 0,
-
-	// Example state
-	state = 1
-};
-
 // Forward declaration of state_machine
 class state_machine;
 
@@ -36,10 +26,7 @@ protected:
 public:
 
 	// Destructor
-	virtual ~state_base()
-	{
-
-	}
+	virtual ~state_base() = default;
 
 	// Called when this state is set as the state machine's current state
 	virtual void on_state_enter()
@@ -67,9 +54,6 @@ public:
 
 	// The current state of this state machine
 	state_base* current_state = nullptr;
-
-	// The current state of this state machine
-	state_type current_state_type = state_type::none;
 
 	// Starting state constructor
 	state_machine(state_base* new_state)

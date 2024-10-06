@@ -16,9 +16,6 @@ public class State : StateBase
     public State(StateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
-
-        // Change the state type enum here!
-        this.stateMachine.currentStateType = StateType.State;
     }
 
     /// <summary>

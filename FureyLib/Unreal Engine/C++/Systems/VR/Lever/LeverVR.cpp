@@ -152,17 +152,15 @@ void ALeverVR::Tick(float DeltaTime)
 
 		if (GrabComponent->IsGrabbed())
 		{
-			FVector Position = GetActorLocation();
+			SetActorRelativeLocation(GrabbedPosition);
 
-			FRotator Rotation = GetActorRotation();
-
-			SetActorLocationAndRotation(GrabbedPosition, GrabbedRotation);
+			SetActorRelativeRotation(GrabbedRotation);
 		}
 		else
 		{
-			GrabbedPosition = GetActorLocation();
+			GrabbedPosition = GetRootComponent()->GetRelativeLocation();
 
-			GrabbedRotation = GetActorRotation();
+			GrabbedRotation = GetRootComponent()->GetRelativeRotation();
 		}
 	}
 

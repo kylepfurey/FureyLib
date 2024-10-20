@@ -1,29 +1,14 @@
-
 # Template State Machine Script
 # by Kyle Furey
 
-from enum import Enum
-
 # Include this heading to use the class
-from state_machine import StateMachine
-
-
-class StateType(Enum):
-    """State machine states enum"""
-
-    NONE = 0
-    """No state selected"""
-
-    STATE = 1
-    """Example state"""
-
-    pass
+# from state_machine import StateBase, StateMachine
 
 
 class StateBase:
     """The base class for each state. All states should inherit from this class."""
 
-    state_machine = None
+    state_machine: 'StateMachine' = None
     """The inherited state machine from the owner"""
 
     def on_state_enter(self):
@@ -53,10 +38,7 @@ class StateBase:
 class StateMachine:
     """Base for building a state machine."""
 
-    current_state = None
-    """The current state of this state machine"""
-
-    current_state_type = StateType.NONE
+    current_state: StateBase = None
     """The current state of this state machine"""
 
     def __init__(self, new_state: StateBase):
@@ -66,12 +48,20 @@ class StateMachine:
 
         pass
 
+    def tick(self):
+        """Updates the current state (should be called each tick)"""
+
+        # Call the current state's update function
+        if self.current_state is not None:
+            self.current_state.on_state_update()
+
+        pass
+
     def switch_state(self, new_state: StateBase):
         """Properly switches the state machine's current state"""
 
         # Exit the current state
         if self.current_state is not None:
-
             self.current_state.on_state_exit()
 
         # Switch the current state to the new state
@@ -79,18 +69,7 @@ class StateMachine:
 
         # Enter the new state
         if self.current_state is not None:
-
             self.current_state.on_state_enter()
-
-        pass
-
-    def tick(self):
-        """Updates the current state (should be called each tick)"""
-
-        # Call the current state's update function
-        if self.current_state is not None:
-
-            self.current_state.on_state_update()
 
         pass
 

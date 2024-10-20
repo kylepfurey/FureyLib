@@ -9,60 +9,130 @@ using UnityEngine;
 /// </summary>
 public class StateMachine : MonoBehaviour
 {
+    // STATE MACHINE VARIABLES
+
     /// <summary>
-    /// The current state of this state machine
+    /// The current state of this state machine.
     /// </summary>
-    public StateBase currentState = null;
+    private StateBase _currentState = null;
 
     /// <summary>
-    /// Starting state constructor
+    /// The state to start this state machine in.
     /// </summary>
-    /// <param name="newState"></param>
-    public StateMachine(StateBase newState)
-    {
-        SwitchState(newState);
-    }
+    private StateBase _startingState = null;
+
+
+    // STATE MACHINE PROPERTIES
 
     /// <summary>
-    /// Properly switches the state machine's current state
+    /// Returns this state machine's current state.
     /// </summary>
-    /// <param name="newState"></param>
-    public void SwitchState(StateBase newState)
-    {
-        // Exit the current state
-        if (currentState != null)
-        {
-            currentState.OnStateExit();
-        }
-
-        // Switch the current state to the new state
-        currentState = newState;
-
-        // Enter the new state
-        if (currentState != null)
-        {
-            currentState.OnStateEnter();
-        }
-    }
+    public StateBase currentState { get { return _currentState; } }
 
     /// <summary>
-    /// Instantiates the starting state (should be changed from template)
+    /// Gets or sets the state this state machine starts in.
+    /// </summary>
+    public StateBase startingState { get { return _startingState; } set { if (_startingState == null) { _startingState = value; } } }
+
+    /// <summary>
+    /// Returns whether this state machine's current state is null.
+    /// </summary>
+    public bool nullState { get { return _currentState == null; } }
+
+
+    // UNITY FUNCTIONS
+
+    /// <summary>
+    /// Instantiates the starting state.
     /// </summary>
     private void Start()
     {
-        // Sets the current state as the starting state (should be changed from template state)
-        SwitchState(new State(this));
+        // Sets the current state as the starting state
+        SwitchState(_startingState);
     }
 
     /// <summary>
-    /// Calls the update function based on the current state
+    /// Properly destroys the current state.
+    /// </summary>
+    private void OnDestroy()
+    {
+        SwitchState(null);
+    }
+
+    /// <summary>
+    /// Calls the update function based on the current state.
     /// </summary>
     private void Update()
     {
         // Call the current state's update function
-        if (currentState != null)
+        if (_currentState != null)
         {
-            currentState.OnStateUpdate();
+            _currentState.OnStateUpdate(Time.deltaTime);
+        }
+    }
+
+
+    // STATE MACHINE GETTERS
+
+    /// <summary>
+    /// Returns this state machine's current state.
+    /// </summary>
+    /// <returns></returns>
+    public StateBase GetCurrentState()
+    {
+        return _currentState;
+    }
+
+    /// <summary>
+    /// Returns the state this state machine started in.
+    /// </summary>
+    /// <returns></returns>
+    public StateBase GetStartingState()
+    {
+        return _startingState;
+    }
+
+    /// <summary>
+    /// Returns whether this state machine's current state is null.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsStateNull()
+    {
+        return _currentState == null;
+    }
+
+
+    // STATE MACHINE FUNCTIONS
+
+    /// <summary>
+    /// Properly switches the state machine's current state.<br/>
+    /// Returns whether the switch was successful.
+    /// </summary>
+    /// <param name="newState"></param>
+    public void SwitchState(StateBase newState)
+    {
+        StateBase previousState;
+
+        if (_currentState != null)
+        {
+            previousState = _currentState;
+
+            _currentState.OnStateExit(newState);
+        }
+        else
+        {
+            previousState = null;
+        }
+
+        if (newState != null)
+        {
+            _currentState = newState;
+
+            _currentState.OnStateStart(previousState);
+        }
+        else
+        {
+            _currentState = null;
         }
     }
 }
@@ -72,32 +142,89 @@ public class StateMachine : MonoBehaviour
 /// </summary>
 public abstract class StateBase
 {
-    /// <summary>
-    /// The inherited state machine from the owner
-    /// </summary>
-    protected StateMachine stateMachine = null;
+    // STATE BASE VARIABLES
 
     /// <summary>
-    /// Called when this state is set as the state machine's current state
+    /// The inherited state machine from the owner.
     /// </summary>
-    public virtual void OnStateEnter()
+    protected StateMachine _stateMachine = null;
+
+
+    // STATE BASE PROPERTIES
+
+    /// <summary>
+    /// Returns this state's state machine.
+    /// </summary>
+    public virtual StateMachine stateMachine { get { return _stateMachine; } }
+
+    /// <summary>
+    /// Returns this state's owning game object.
+    /// </summary>
+    public virtual GameObject gameObject { get { return _stateMachine != null ? _stateMachine.gameObject : null; } }
+
+
+    // STATE BASE CONSTRUCTOR
+
+    /// <summary>
+    /// State machine constructor.
+    /// </summary>
+    /// <param name="stateMachine"></param>
+    public StateBase(StateMachine stateMachine = null)
     {
-        // Note: Logic applies to all inherited states
+        _stateMachine = stateMachine;
+    }
+
+
+    // STATE BASE FUNCTIONS
+
+    /// <summary>
+    /// Returns this state's state machine.
+    /// </summary>
+    /// <returns></returns>
+    public virtual StateMachine GetStateMachine()
+    {
+        return _stateMachine;
     }
 
     /// <summary>
-    /// Called every frame while this state is the state machine's current state
+    /// Returns this state's owning game object.
     /// </summary>
-    public virtual void OnStateUpdate()
+    /// <returns></returns>
+    public virtual GameObject GetGameObject()
+    {
+        return _stateMachine != null ? _stateMachine.gameObject : null;
+    }
+
+
+    // STATE BASE EVENTS
+
+    /// <summary>
+    /// Called when this state is set as the state machine's current state.
+    /// </summary>
+    public virtual void OnStateStart(StateBase previousState)
     {
         // Note: Logic applies to all inherited states
+
+        // New code here
     }
 
     /// <summary>
-    /// Called when this state machine's current state is no longer this state
+    /// Called every frame while this state is the state machine's current state.
     /// </summary>
-    public virtual void OnStateExit()
+    public virtual void OnStateUpdate(float deltaTime)
     {
         // Note: Logic applies to all inherited states
+
+        // New code here
+    }
+
+    /// <summary>
+    /// Called when this state machine's current state is no longer this state.
+    /// </summary>
+    public virtual void OnStateExit(StateBase newState)
+    {
+        // Note: Logic applies to all inherited states
+
+        // New code here
     }
 }

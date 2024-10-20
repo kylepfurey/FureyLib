@@ -93,7 +93,7 @@ void UStateBase::OnStateTick_Implementation(float DeltaTime)
 }
 
 // Called when this state machine's current state is no longer this state.
-void UStateBase::OnStateEnd_Implementation(UClass* PreviousStateClass)
+void UStateBase::OnStateEnd_Implementation(UClass* NewStateClass)
 {
 	// Note: Logic applies to all derived states.
 
@@ -221,7 +221,7 @@ UStateMachine* UStateMachine::ConstructStateMachine(AActor* Parent, UClass* _Sta
 
 // Properly switches the state machine's current state to the given state type.
 // Returns whether the switch was successful.
-bool UStateMachine::SwitchState(UClass* NewStateClass)
+void UStateMachine::SwitchState(UClass* NewStateClass)
 {
 	UClass* PreviousStateClass;
 
@@ -240,19 +240,10 @@ bool UStateMachine::SwitchState(UClass* NewStateClass)
 	{
 		CurrentState = UStateBase::ConstructState(NewStateClass, this);
 
-		if (IsValid(CurrentState))
-		{
-			CurrentState->OnStateBegin(PreviousStateClass);
-		}
-		else
-		{
-			return false;
-		}
+		CurrentState->OnStateBegin(PreviousStateClass);
 	}
 	else
 	{
 		CurrentState = nullptr;
 	}
-
-	return true;
 }

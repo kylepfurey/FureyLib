@@ -77,7 +77,7 @@ public:
 	/** Called when this state machine's current state is no longer this state. */
 	UFUNCTION(BlueprintNativeEvent, Category = "State Machine")
 	void OnStateEnd(UClass* NewStateClass);
-	virtual void OnStateEnd_Implementation(UClass* PreviousStateClass);
+	virtual void OnStateEnd_Implementation(UClass* NewStateClass);
 };
 
 /** Base for building a state machine. */
@@ -160,5 +160,5 @@ public:
 	* Returns whether the switch was successful.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "State Machine")
-	virtual bool SwitchState(UClass* NewStateClass);
+	virtual void SwitchState(UClass* NewStateClass);
 };

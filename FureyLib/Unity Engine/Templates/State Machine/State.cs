@@ -9,39 +9,62 @@ using UnityEngine;
 /// </summary>
 public class State : StateBase
 {
+    // STATE VARIABLES
+
+    // New variables here
+
+
+    // STATE PROPERTIES
+
+    // New properties here
+
+
+    // STATE CONSTRUCTOR
+
     /// <summary>
-    /// Constructor (sets state machine)
+    /// State machine constructor.
     /// </summary>
     /// <param name="stateMachine"></param>
-    public State(StateMachine stateMachine)
+    public State(StateMachine stateMachine = null)
     {
-        this.stateMachine = stateMachine;
+        _stateMachine = stateMachine;
+
+        // Initialize variables here
+    }
+
+
+    // STATE EVENTS
+
+    /// <summary>
+    /// Called when this state is set as the state machine's current state.
+    /// </summary>
+    public override void OnStateStart(StateBase previousState)
+    {
+        // Calls the base class's function
+        base.OnStateStart(previousState);
+
+        // New code here
     }
 
     /// <summary>
-    /// Called when this state is set as the state machine's current state
+    /// Called every frame while this state is the state machine's current state.
     /// </summary>
-    public override void OnStateEnter()
+    public override void OnStateUpdate(float deltaTime)
     {
         // Calls the base class's function
-        base.OnStateEnter();
+        base.OnStateUpdate(deltaTime);
+
+        // New code here
     }
 
     /// <summary>
-    /// Called every frame while this state is the state machine's current state
+    /// Called when this state machine's current state is no longer this state.
     /// </summary>
-    public override void OnStateUpdate()
+    public override void OnStateExit(StateBase newState)
     {
         // Calls the base class's function
-        base.OnStateUpdate();
-    }
+        base.OnStateExit(newState);
 
-    /// <summary>
-    /// Called when this state machine's current state is no longer this state
-    /// </summary>
-    public override void OnStateExit()
-    {
-        // Calls the base class's function
-        base.OnStateExit();
+        // New code here
     }
 }

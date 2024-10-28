@@ -9,17 +9,10 @@ using UnityEngine;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    [Header("A singleton component that allows easy access to other components.")]
-
-    [Header("\nCONFIGURATION")]
+    [Header("A singleton component that allows easy access to other components.\n")]
 
     [Header("Whether to always keep the game manager loaded between scenes:")]
     [SerializeField] private bool dontDestroyOnLoad = true;
-
-    /// <summary>
-    /// Reference to the game manager in the scene
-    /// </summary>
-    [HideInInspector] public static GameManager instance;
 
     // New variables here
 
@@ -27,27 +20,9 @@ public class GameManager : MonoBehaviour
     // PROPERTIES
 
     /// <summary>
-    /// Reference to the player
+    /// A singleton reference to the game manager.
     /// </summary>
-    public static PlayerClass player
-    {
-        get
-        {
-            if (_player == null)
-            {
-                _player = FindObjectOfType<PlayerClass>();
-            }
-
-            return _player;
-        }
-
-        private set
-        {
-            _player = value;
-        }
-    }
-
-    private static PlayerClass _player = null;
+    public static GameManager instance { get; private set; } = null;
 
     // New properties here
 
@@ -55,7 +30,7 @@ public class GameManager : MonoBehaviour
     // FUNCTIONS
 
     /// <summary>
-    /// Awake is called when the script is loaded
+    /// Sets this object as the current game manager.
     /// </summary>
     private void Awake()
     {
@@ -65,13 +40,21 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            DestroyImmediate(this);
+            Destroy(gameObject);
         }
 
         if (dontDestroyOnLoad)
         {
             DontDestroyOnLoad(gameObject);
         }
+    }
+
+    /// <summary>
+    /// Removes this object as the current game manager.
+    /// </summary>
+    private void OnDestroy()
+    {
+        instance = null;
     }
 
     // New functions here

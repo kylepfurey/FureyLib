@@ -50,7 +50,7 @@ public class NetPlayer : MonoBehaviour, IMouseClickable
     }
 
     /// <summary>
-    /// Update is called once per frame
+    /// Moves the player if it is owned by this client.
     /// </summary>
     private void Update()
     {

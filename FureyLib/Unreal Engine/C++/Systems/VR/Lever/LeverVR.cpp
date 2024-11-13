@@ -424,24 +424,24 @@ void ALeverVR::UpdateLever(float DeltaTime)
 			LeverPivot->SetRelativeRotation(FQuat::FastLerp(LeverPivot->GetRelativeRotation().Quaternion(), FQuat::Identity, DeltaTime * ResetSpeed));
 		}
 
-		Axes = GetLeverAxes();
-
-		if (Axes.X > FMath::Abs(LeverDownPercent))
-		{
-			OnLeverRight.ExecuteIfBound();
-		}
-		else
-		{
-			OnLeverLeft.ExecuteIfBound();
-		}
-
-		if (Axes.Y > FMath::Abs(LeverDownPercent))
+		if (IsLeverDown(ELeverAxisVR::FORWARD))
 		{
 			OnLeverForward.ExecuteIfBound();
 		}
-		else
+
+		if (IsLeverDown(ELeverAxisVR::BACKWARD))
 		{
 			OnLeverBackward.ExecuteIfBound();
+		}
+
+		if (IsLeverDown(ELeverAxisVR::RIGHT))
+		{
+			OnLeverRight.ExecuteIfBound();
+		}
+
+		if (IsLeverDown(ELeverAxisVR::LEFT))
+		{
+			OnLeverLeft.ExecuteIfBound();
 		}
 	}
 }

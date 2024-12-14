@@ -8,20 +8,17 @@
 #include "base_class.h"
 
 
-// BASE CLASS CONSTRUCTORS
+// CONSTRUCTORS AND DESTRUCTOR
 
-void destruct_base(base_class* self);
-
-// Default constructor:
-// Returns a newly constructed instance of the given class.
-base_class construct_base()
+// Initializes a new base class.
+base_class base_class_new()
 {
-	base_class self =
+	const base_class self =
 	{
-		// New constructor code here
+		// New code here
 
 		// Set destructor
-		self.destruct = &destruct_base
+		&base_class_free
 	};
 
 	return self;
@@ -29,17 +26,13 @@ base_class construct_base()
 
 // New constructors here
 
-
-// BASE CLASS DESTRUCTOR
-
-// Destructor:
-// Properly destroys this class.
-void destruct_base(base_class* self)
+// Properly destroys this base class.
+void base_class_free(base_class* self)
 {
-	// New destructor code here
+	// New code here
 }
 
 
-// BASE CLASS FUNCTIONS
+// FUNCTIONS
 
-// New function definitions here
+// New functions here

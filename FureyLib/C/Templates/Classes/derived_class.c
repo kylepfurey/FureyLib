@@ -8,23 +8,20 @@
 #include "derived_class.h"
 
 
-// DERIVED CLASS CONSTRUCTORS
+// CONSTRUCTORS AND DESTRUCTOR
 
-void destruct_derived(derived_class* self);
-
-// Default constructor:
-// Returns a newly constructed instance of the given class.
-derived_class construct_derived()
+// Initializes a new derived class.
+derived_class derived_class_new()
 {
-	derived_class self =
+	const derived_class self =
 	{
 		// Call base constructor
-		self.super = construct_base(),
+		base_class_new(),
 
-		// New constructor code here
+		// New code here
 
 		// Set destructor
-		self.destruct = &destruct_derived
+		&derived_class_free
 	};
 
 	return self;
@@ -32,20 +29,16 @@ derived_class construct_derived()
 
 // New constructors here
 
-
-// DERIVED CLASS DESTRUCTOR
-
-// Destructor:
-// Properly destroys this class.
-void destruct_derived(derived_class* self)
+// Properly destroys this derived class.
+void derived_class_free(derived_class* self)
 {
-	// New destructor code here
+	// New code here
 
 	// Call base destructor
-	destruct_base(&self->super);
+	base_class_free(&self->super);
 }
 
 
-// DERIVED CLASS FUNCTIONS
+// FUNCTIONS
 
-// New function definitions here
+// New functions here

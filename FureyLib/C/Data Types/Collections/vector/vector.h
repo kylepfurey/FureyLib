@@ -9,7 +9,7 @@
 
 // STRUCTURE
 
-/** Represent a dynamic array in C. */
+/** Represents a dynamic array in C. */
 typedef struct {
     // VARIABLES
 

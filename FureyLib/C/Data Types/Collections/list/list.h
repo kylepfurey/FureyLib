@@ -11,7 +11,7 @@
 /** Represents a single doubly linked list node in C. */
 typedef struct list_node list_node;
 
-/** Represent a doubly circular linked list in C. */
+/** Represents a doubly circular linked list in C. */
 typedef struct list list;
 
 /** Represents a single doubly linked list node in C. */
@@ -31,7 +31,7 @@ struct list_node {
     void *data;
 };
 
-/** Represent a doubly circular linked list in C. */
+/** Represents a doubly circular linked list in C. */
 struct list {
     // VARIABLES
 

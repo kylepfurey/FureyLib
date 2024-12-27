@@ -16,5 +16,6 @@
 
 #include "vector/vector.h"
 #include "list/list.h"
+#include "tree/tree.h"
 #include "set/set.h"
 #include "map/map.h"

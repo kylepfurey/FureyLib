@@ -24,18 +24,14 @@ vector vector_new(const size_t size_of_type, const size_t capacity) {
 
 // Properly destroys the given vector.
 void vector_free(vector *self) {
-    if (self != NULL) {
-        free(self->data);
-
-        self->data = NULL;
-    }
+    vector_resize(self, 0);
 }
 
 // FUNCTIONS
 
 // Resizes the vector to given capacity.
 // Any elements outside the new capacity are deleted.
-// This returns true if the vector was successfully resized.
+// Returns true if the vector was successfully resized.
 bool vector_resize(vector *self, const size_t new_capacity) {
     if (self != NULL && self->capacity != new_capacity && new_capacity <= SIZE_MAX / self->element_size) {
         if (self->data == NULL) {
@@ -79,16 +75,12 @@ bool vector_resize(vector *self, const size_t new_capacity) {
 // Clears the vector of all of its elements.
 void vector_clear(vector *self) {
     if (self != NULL) {
-        free(self->data);
-
         self->size = 0;
-        self->capacity = 0;
-        self->data = NULL;
     }
 }
 
-// Returns the element at the given index in the vector.
-// This returns NULL if the given index is out of the vector's bounds.
+// Returns the element at the given index in the vector
+// or NULL if the given index is out of the vector's bounds.
 void *vector_at(const vector *self, const size_t index) {
     if (self == NULL || self->data == NULL || index >= self->size) {
         return NULL;
@@ -97,10 +89,10 @@ void *vector_at(const vector *self, const size_t index) {
     return self->data + self->element_size * index;
 }
 
-// Places a new element at the given index and pushes the rest of the vector forward.
+// Places a new element at the given index and pushes the rest of the vector's elements forward.
 // This will double the vector's capacity if new space is needed.
-// Returns the element at the given index or NULL if the insertion failed.
-void *vector_insert(vector *self, const size_t index) {
+// Returns the new element at the given index or NULL if the insertion failed.
+void *vector_insert(vector *self, size_t index) {
     if (self == NULL || index > self->size) {
         return NULL;
     }
@@ -121,8 +113,19 @@ void *vector_insert(vector *self, const size_t index) {
     return self->data + self->element_size * index;
 }
 
+// Places a new element at the end of the vector.
+// This will double the vector's capacity if new space is needed.
+// Returns the new element or NULL if the insertion failed.
+void *vector_push(vector *self) {
+    if (self != NULL) {
+        return vector_insert(self, self->size);
+    }
+
+    return NULL;
+}
+
 // Erases the vector's element at the given index and shifts subsequent elements backward.
-// This returns true if the removal was successful.
+// Returns true if the removal was successful.
 bool vector_erase(vector *self, const size_t index) {
     if (self == NULL || index >= self->size) {
         return false;
@@ -135,4 +138,14 @@ bool vector_erase(vector *self, const size_t index) {
     }
 
     return true;
+}
+
+// Erases the vector's element at the given index and shifts subsequent elements backward.
+// Returns true if the removal was successful.
+bool vector_pop(vector *self) {
+    if (self != NULL) {
+        return vector_erase(self, self->size - 1);
+    }
+
+    return false;
 }

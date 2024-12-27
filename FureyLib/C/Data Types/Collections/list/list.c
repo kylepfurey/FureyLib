@@ -17,7 +17,7 @@ list list_new(const size_t size_of_type) {
     return self;
 }
 
-// Properly destroys the given linked list and its nodes.
+// Properly destroys the given linked list.
 void list_free(list *self) {
     list_clear(self);
 }
@@ -34,6 +34,8 @@ void list_clear(list *self) {
 
             free(current->data);
 
+            current->data = NULL;
+
             free(current);
 
             current = next;
@@ -45,7 +47,7 @@ void list_clear(list *self) {
 }
 
 // Traverses the linked list until it reaches the node at given index.
-// This returns a pointer to the node at the given index or NULL if the index is out of the linked list's bounds.
+// Returns a pointer to the node at the given index or NULL if the index is out of the linked list's bounds.
 list_node *list_at(const list *self, const size_t index) {
     if (self == NULL || self->head == NULL || index >= self->size) {
         return NULL;
@@ -71,21 +73,10 @@ list_node *list_at(const list *self, const size_t index) {
 }
 
 // Inserts a new node after the given node in the linked list.
-// Passing NULL will push the node at the end of the linked list.
 // Returns a pointer to the new node or NULL if the insertion failed.
 list_node *list_insert(list *self, list_node *previous_node) {
-    if (self == NULL) {
+    if (!list_contains(self, previous_node)) {
         return NULL;
-    }
-
-    if (previous_node == NULL) {
-        if (self->head != NULL) {
-            previous_node = self->head->previous;
-        }
-    } else {
-        if (self->head == NULL || previous_node->list != self) {
-            return NULL;
-        }
     }
 
     list_node *new_node = malloc(sizeof(list_node));
@@ -96,6 +87,8 @@ list_node *list_insert(list *self, list_node *previous_node) {
     new_node->data = malloc(sizeof(self->element_size));
     if (new_node->data == NULL) {
         free(new_node);
+
+        new_node = NULL;
 
         return NULL;
     }
@@ -118,18 +111,25 @@ list_node *list_insert(list *self, list_node *previous_node) {
     return new_node;
 }
 
+// Inserts a new node at the end of the linked list.
+// Returns a pointer to the new node or NULL if the insertion failed.
+list_node *list_push(list *self) {
+    if (self != NULL && self->head != NULL) {
+        return list_insert(self, self->head->previous);
+    }
+
+    return false;
+}
+
 // Erases the given node from the linked list.
 // This takes in a pointer to a pointer to a node to ensure memory safety.
-// This returns true if the removal was successful.
+// Returns true if the removal was successful.
 bool list_erase(list *self, list_node **node) {
-    if (self == NULL || self->head == NULL || node == NULL) {
+    if (node == NULL || !list_contains(self, *node)) {
         return false;
     }
 
     list_node *removed_node = *node;
-    if (removed_node == NULL || removed_node->list != self) {
-        return false;
-    }
 
     --self->size;
 
@@ -149,14 +149,29 @@ bool list_erase(list *self, list_node **node) {
 
     free(removed_node->data);
 
+    removed_node->data = NULL;
+
     free(removed_node);
+
+    removed_node = NULL;
 
     *node = NULL;
 
     return true;
 }
 
-// Returns whether the linked list contains the given node. 
+// Erases the node at the end of the linked list.
+// Returns true if the removal was successful.
+bool list_pop(list *self) {
+    if (self != NULL && self->head != NULL) {
+        list_node *end = self->head->previous;
+        return list_erase(self, &end);
+    }
+
+    return false;
+}
+
+// Returns whether the given node is within the linked list.
 bool list_contains(const list *self, const list_node *node) {
     if (self == NULL || node == NULL) {
         return false;

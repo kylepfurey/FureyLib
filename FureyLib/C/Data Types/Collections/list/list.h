@@ -18,8 +18,8 @@ typedef struct list list;
 struct list_node {
     // VARIABLES
 
-    /** A pointer to the linked list that owns this node. */
-    const list *list;
+    /** A pointer to the linked list structure that owns this node. */
+    const void *list;
 
     /** A pointer to the node sequentially before this node in the linked list. */
     list_node *previous;
@@ -50,7 +50,7 @@ struct list {
 /** Initializes a new linked list. */
 list list_new(size_t size_of_type);
 
-/** Properly destroys the given linked list and its nodes. */
+/** Properly destroys the given linked list. */
 void list_free(list *self);
 
 // FUNCTIONS
@@ -60,23 +60,34 @@ void list_clear(list *self);
 
 /**
  * Traverses the linked list until it reaches the node at given index.<br/>
- * This returns a pointer to the node at the given index or NULL if the index is out of the linked list's bounds.
+ * Returns a pointer to the node at the given index or NULL if the index is out of the linked list's bounds.
  */
 list_node *list_at(const list *self, size_t index);
 
 /**
  * Inserts a new node after the given node in the linked list.<br/>
- * Passing NULL will push the node at the end of the linked list.<br/>
  * Returns a pointer to the new node or NULL if the insertion failed.
  */
 list_node *list_insert(list *self, list_node *previous_node);
 
 /**
+ * Inserts a new node at the end of the linked list.<br/>
+ * Returns a pointer to the new node or NULL if the insertion failed.
+ */
+list_node *list_push(list *self);
+
+/**
  * Erases the given node from the linked list.<br/>
  * This takes in a pointer to a pointer to a node to ensure memory safety.<br/>
- * This returns true if the removal was successful.
+ * Returns true if the removal was successful.
  */
 bool list_erase(list *self, list_node **node);
 
-/** Returns whether the linked list contains the given node. */
+/**
+ * Erases the node at the end of the linked list.<br/>
+ * Returns true if the removal was successful.
+ */
+bool list_pop(list *self);
+
+/** Returns whether the given node is within the linked list. */
 bool list_contains(const list *self, const list_node *node);

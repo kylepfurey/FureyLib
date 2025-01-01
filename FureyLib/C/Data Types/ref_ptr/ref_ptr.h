@@ -9,13 +9,13 @@
 
 /** Represents a pointer to dynamically allocated memory that tracks its number of references. */
 typedef struct {
-     // VARIABLES
+    // VARIABLES
 
-     /** The raw pointer to the data that is being reference counted. */
-     void *data;
+    /** The raw pointer to the data that is being reference counted. */
+    void *data;
 
-     /** The total number of remaining references to the data. */
-     size_t count;
+    /** The total number of remaining references to the data. */
+    size_t count;
 } ref_ptr;
 
 // CONSTRUCTORS AND DESTRUCTOR

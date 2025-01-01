@@ -14,7 +14,7 @@ use std::collections::*;
 // mod macro;
 // use crate::macro::*;
 
-// Example macro (use "$log:expr" in the lambda to signify parameters)
+/** Example macro (use "$log:expr" in the lambda to signify parameters). */
 #[macro_export]
 macro_rules! MACRO
 {

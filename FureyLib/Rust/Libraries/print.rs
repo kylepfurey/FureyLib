@@ -8,7 +8,7 @@ use std::io::*;
 // mod print;
 // use crate::print::*;
 
-// Prints a message to the console
+/** Prints a message to the console. */
 pub fn print(log: &str)
 {
     println!("{}", log);

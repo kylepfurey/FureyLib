@@ -9,7 +9,7 @@ use std::string::*;
 use std::vec::*;
 use std::collections::*;
 
-// Entry point of the program.
+/** Entry point of the program. */
 fn main()
 {
     println!("Hello, Dinner!");

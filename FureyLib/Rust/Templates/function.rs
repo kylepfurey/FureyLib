@@ -14,7 +14,7 @@ use std::collections::*;
 // mod function;
 // use crate::function::*;
 
-// Example function
+/** Example function. */
 pub fn function()
 {
     println!("Function called!");

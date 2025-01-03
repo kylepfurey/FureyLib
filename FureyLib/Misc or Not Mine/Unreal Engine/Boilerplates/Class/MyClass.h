@@ -19,30 +19,26 @@ protected:
 
 	// New variables here
 
-
-	// FUNCTIONS
-
-	// New functions here
-
 public:
-
-	// VARIABLES
-
-	// New variables here
-
 
 	// CONSTRUCTORS AND DESTRUCTOR
 
 	/** Default constructor. */
 	FMyClass();
 
-	/** Copy constructor. */
-	FMyClass(const FMyClass& Copied);
-
-	/** Move constructor. */
-	FMyClass(FMyClass&& Moved) noexcept;
-
 	// New constructors here
+
+	/** Delete copy constructor. */
+	FMyClass(const FMyClass& Copied) = delete;
+
+	/** Delete move constructor. */
+	FMyClass(FMyClass&& Moved) = delete;
+
+	/** Delete copy assignment operator. */
+	FMyClass& operator=(const FMyClass& Copied) = delete;
+
+	/** Delete move assignment operator. */
+	FMyClass& operator=(FMyClass&& Moved) = delete;
 
 	/** Destructor. */
 	virtual ~FMyClass();
@@ -51,21 +47,4 @@ public:
 	// FUNCTIONS
 
 	// New functions here
-
-
-	// OPERATORS
-
-	/** Copy assignment operator. */
-	FMyClass& operator=(const FMyClass& Copied)
-	{
-		return *this;
-	}
-
-	/** Move assignment operator. */
-	FMyClass& operator=(FMyClass&& Moved) noexcept
-	{
-		return *this;
-	}
-
-	// New overloaded operators here
 };

@@ -1,11 +1,10 @@
-
+// .cs
 // Name
 // Creator
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using Godot;
 
 /// <summary>
@@ -51,7 +50,7 @@ public partial class NewGodotScript : Node
     }
 	
 	
-	// FUNCTIONS
+    // FUNCTIONS
 
     // New functions here
 }

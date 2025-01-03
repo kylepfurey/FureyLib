@@ -13,20 +13,9 @@
 
 /** Template Unreal structure script. */
 USTRUCT(BlueprintType)
-struct MYGAME_API FMyStruct
+struct MYGAME_API FMyStruct final
 {
 	GENERATED_BODY()
-
-protected:
-
-	// VARIABLES
-
-	// New variables here
-
-
-	// FUNCTIONS
-
-	// New functions here
 
 public:
 
@@ -47,7 +36,7 @@ public:
 	// New constructors here
 
 	/** Destructor. */
-	virtual ~FMyStruct();
+	~FMyStruct();
 
 
 	// FUNCTIONS

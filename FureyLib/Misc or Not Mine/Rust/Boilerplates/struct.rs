@@ -1,4 +1,4 @@
-
+// .rs
 // Name
 // Creator
 
@@ -11,10 +11,6 @@ use std::vec::*;
 use std::collections::*;
 use std::ops::*;
 
-// Include this heading to use the class
-// mod r#struct;
-// use r#struct::*;
-
 
 // STRUCTURE
 
@@ -22,11 +18,11 @@ use std::ops::*;
 pub struct Struct {
     // VARIABLES
 
-    // Example x variable.
-    x: f32,
+    /** Example x variable. */
+    pub x: f32,
 
-    // Example y variable.
-    y: f32,
+    /** Example y variable. */
+    pub y: f32
 
     // New variables here
 }
@@ -48,7 +44,7 @@ impl Struct {
 
     /** Returns the magnitude of the given structure. */
     pub fn magnitude(&self) -> f32 {
-        if self.x == 0.0 || self.y == 0.0 {
+        if self.x == 0.0 && self.y == 0.0 {
             return 0.0;
         }
         (self.x * self.x + self.y * self.y).sqrt()
@@ -56,7 +52,7 @@ impl Struct {
 
     /** Normalizes the given structure. */
     pub fn normalize(&mut self) -> &mut Self {
-        let magnitude = self.magnitude();
+        let magnitude: f32 = self.magnitude();
         if magnitude == 0.0 {
             return self;
         }

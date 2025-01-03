@@ -1,4 +1,4 @@
-﻿
+﻿// .cs
 // Name
 // Creator
 
@@ -16,21 +16,12 @@ public struct Struct
     // New variables here
 	
 	
-	// CONSTRUCTORS
+    // CONSTRUCTORS
 
     /// <summary>
     /// Default constructor.
     /// </summary>
     public Struct()
-    {
-
-    }
-
-    /// <summary>
-    /// Copy constructor.
-    /// </summary>
-    /// <param name="copied"></param>
-    public Struct(Struct copied)
     {
 
     }

@@ -1,10 +1,7 @@
-
+// .c
 // Name
 // Creator
 
-// REQUIREMENT: struct.h
-
-// Include this heading to use the structure
 #include "struct.h"
 
 
@@ -22,7 +19,7 @@ my_struct my_struct_new(const float x, const float y) {
 // New constructors here
 
 // Properly destroys the given structure.
-void my_struct_free(my_struct* self) {
+void my_struct_free(my_struct *self) {
 	self->x = 0;
 	self->y = 0;
 }
@@ -31,7 +28,7 @@ void my_struct_free(my_struct* self) {
 // FUNCTIONS
 
 // Returns the magnitude of the given structure.
-float my_struct_magnitude(const my_struct* self) {
+float my_struct_magnitude(const my_struct *self) {
 	if (self->x == 0 && self->y == 0) {
 		return 0;
 	}
@@ -39,7 +36,7 @@ float my_struct_magnitude(const my_struct* self) {
 }
 
 // Normalizes the given structure.
-my_struct* my_struct_normalize(my_struct* self) {
+my_struct *my_struct_normalize(my_struct *self) {
 	const float magnitude = my_struct_magnitude(self);
 	if (magnitude == 0) {
 		return self;

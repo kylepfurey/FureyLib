@@ -16,18 +16,6 @@ FMyClass::FMyClass()
 
 }
 
-// Copy constructor.
-FMyClass::FMyClass(const FMyClass& Copied)
-{
-
-}
-
-// Move constructor.
-FMyClass::FMyClass(FMyClass&& Moved) noexcept
-{
-
-}
-
 // New constructors here
 
 // Destructor.

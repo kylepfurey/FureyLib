@@ -163,4 +163,3 @@ int32 FAsyncThread::NumberOfProcessors()
 {
 	return FPlatformMisc::NumberOfCoresIncludingHyperthreads();
 }
-

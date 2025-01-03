@@ -1,4 +1,4 @@
-
+// .cpp
 // Program Main Entry Point Script
 
 #include <memory>
@@ -9,9 +9,8 @@
 
 using namespace std;
 
-// Entry point of the program.
-int main(int argc, char* argv[])
-{
+/** Entry point of the program. */
+int main(int argc, char **argv) {
 	cout << "Hello, Dinner!" << endl;
 
 	// New code here

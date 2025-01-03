@@ -1,4 +1,4 @@
-﻿
+﻿// .cs
 // Program Main Entry Point Script
 
 using System;
@@ -10,7 +10,7 @@ namespace Application
     /// <summary>
     /// The class representing the program that the application is running on.
     /// </summary>
-    public class Program
+    public static class Program
     {
         /// <summary>
         /// Entry point of the program.

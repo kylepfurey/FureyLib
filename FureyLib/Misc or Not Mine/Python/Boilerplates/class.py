@@ -1,4 +1,4 @@
-
+# .py
 # Name
 # Creator
 
@@ -15,11 +15,6 @@ class Class:
 
     def __init__(self):
         """Default constructor."""
-
-        pass
-
-    def __copy__(self, copied: Class):
-        """Copy constructor."""
 
         pass
 

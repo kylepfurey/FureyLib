@@ -2,7 +2,7 @@
 // Networking Game Instance Script
 // by Kyle Furey
 
-// REQUIREMENTS: OnlineSubsystem, Network.cpp, Client.cpp
+// REQUIREMENTS: OnlineSubsystem, Network.cpp, Client.cpp, ServerState.cpp, ClientState.cpp
 
 #pragma once
 #include "CoreMinimal.h"
@@ -32,6 +32,12 @@ class AServer;
 
 // Forward declaration of client.
 class AClient;
+
+// Forward declaration of server state.
+class AServerState;
+
+// Forward declaration of client state.
+class AClientState;
 
 /** The status of a client on the network. */
 UENUM(BlueprintType, Category = "Network")
@@ -68,7 +74,10 @@ public:
 	FNetworkSession(const FOnlineSessionSearchResult& Session) : Session(Session) {}
 };
 
-/** Represents a static game instance with functions and data related to client-server networking. */
+/**
+ * Represents a static game instance with functions and data related to client-server networking.
+ * This class is only accessible by the device running the game and is purely used for storing persistent data between connections.
+ */
 UCLASS(Blueprintable, BlueprintType, Abstract)
 class MYGAME_API UNetwork : public UGameInstance
 {
@@ -405,6 +414,14 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Client")
 	static AClient* MyClient();
+
+	/** Returns the replicated state of this game instance's server. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Server")
+	static AServerState* GetServerState();
+
+	/** Returns the replicated state of this game instance's client. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Client")
+	static AClientState* GetClientState();
 
 	/** Returns whether this game instance's client is the owner of the given actor. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Ownership")

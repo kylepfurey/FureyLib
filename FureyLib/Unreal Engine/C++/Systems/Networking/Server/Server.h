@@ -2,7 +2,7 @@
 // Server Game Mode Base Script
 // by Kyle Furey
 
-// REQUIREMENTS: OnlineSubsystem, Network.h, Server.cpp, Client.cpp
+// REQUIREMENTS: OnlineSubsystem, Network.h, Server.cpp, Client.cpp, ServerState.cpp
 
 #pragma once
 #include "CoreMinimal.h"
@@ -13,7 +13,10 @@
 // Include this heading to use the class
 // #include "Networking/Server/Server.h"
 
-/** Represents a game mode base where client player controllers can remotely connect to an authoritative server. */
+/**
+ * Represents a game mode base where client player controllers can remotely connect to an authoritative server.
+ * This class is only accessible by the machine running the server but can interact with its replicated clients.
+ */
 UCLASS(Blueprintable, BlueprintType, Abstract)
 class MYGAME_API AServer : public AGameModeBase
 {
@@ -28,14 +31,6 @@ protected:
 
 
 	// SERVER
-
-	/** The maximum number of clients that can connect to this server. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetMaxClients", Category = "Server")
-	int64 MaxClients = 0;
-
-	/** The name of this server. */
-	UPROPERTY(BlueprintReadOnly, BlueprintGetter = "GetServerName", Category = "Server")
-	FName ServerName = TEXT("None");
 
 	/**
 	 * The next ID to assign to a connected client.
@@ -52,6 +47,9 @@ protected:
 
 	/** Called when the game starts or when spawned. */
 	virtual void BeginPlay() override;
+
+	/** Called when this actor is destroyed. */
+	virtual void BeginDestroy() override;
 
 	/** Called when a player controller connects to this game mode base. */
 	virtual void PostLogin(APlayerController* NewPlayer) override;
@@ -118,14 +116,6 @@ public:
 
 	// GETTERS
 
-	/** Returns the maximum number of clients that can connect to this server. */
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Server")
-	virtual int64 GetMaxClients();
-
-	/** Returns the name of this server. */
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Server")
-	virtual FName GetServerName();
-
 	/** Peeks and returns the client ID that will be assigned to the next connnected client. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Server")
 	virtual int64 GetNextClientID();
@@ -141,4 +131,8 @@ public:
 	/** Returns the total number of currently connected clients. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Server")
 	virtual int64 TotalClients();
+
+	/** Returns the replicated state of this server. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Server")
+	virtual AServerState* GetState();
 };

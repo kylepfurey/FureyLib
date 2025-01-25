@@ -18,8 +18,6 @@ AClient::AClient()
 	bReplicates = true;
 
 	ClientID = -1;
-
-	ClientName = TEXT("None");
 }
 
 // Object initializer constructor.
@@ -30,8 +28,6 @@ AClient::AClient(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 	bReplicates = true;
 
 	ClientID = -1;
-
-	ClientName = TEXT("None");
 }
 
 
@@ -43,20 +39,11 @@ void AClient::BeginPlay()
 	// Calls the base class's function.
 	Super::BeginPlay();
 
-	if (Instance == nullptr && IsLocalController())
+	if (IsMyClient())
 	{
-		Instance = this;
-	}
-
-	UNetwork* Network = UNetwork::GetNetwork();
-
-	if (IsMyClient() && IsValid(Network))
-	{
-		FName Name = Network->GetClientName();
-
-		if (Name != TEXT("None") && Name != FName())
+		if (Instance == nullptr)
 		{
-			SetClientName(Name);
+			Instance = this;
 		}
 	}
 }
@@ -68,8 +55,18 @@ void AClient::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AClient, ClientID);
+}
 
-	DOREPLIFETIME(AClient, ClientName);
+// Called when this actor is destroyed.
+void AClient::BeginDestroy()
+{
+	// Calls the base class's function.
+	Super::BeginDestroy();
+
+	if (Instance == this)
+	{
+		Instance = nullptr;
+	}
 }
 
 
@@ -87,7 +84,7 @@ AClient* AClient::GetInstance()
 // Returns whether this client is the game instance's client.
 bool AClient::IsMyClient()
 {
-	return UNetwork::MyClient() == this;
+	return IsLocalController();
 }
 
 // Kicks this client from the server.
@@ -168,9 +165,6 @@ void AClient::OnRep_PlaySoundAtLocation_Implementation(USoundBase* Sound, FVecto
 // Automatically called when this client receives its client ID.
 void AClient::OnClientIDAssigned_Implementation(int64 _ClientID) {}
 
-// Automatically called when this client's names changes.
-void AClient::OnClientNameChanged_Implementation(FName OldName, FName NewName) {}
-
 
 // GETTERS
 
@@ -179,12 +173,6 @@ void AClient::OnClientNameChanged_Implementation(FName OldName, FName NewName) {
 int64 AClient::GetClientID()
 {
 	return ClientID;
-}
-
-// Returns the name of this client.
-FName AClient::GetClientName()
-{
-	return ClientName;
 }
 
 
@@ -204,38 +192,6 @@ void AClient::SetClientID_Implementation(int64 _ClientID)
 void AClient::OnRep_ClientID_Implementation()
 {
 	OnClientIDAssigned(ClientID);
-}
-
-// Sets the name of this client across the network.
-void AClient::SetClientName_Implementation(FName _ClientName)
-{
-	AServer* Server = UNetwork::GetServer();
-
-	if (IsValid(Server))
-	{
-		Server->ChangeName(this, _ClientName.ToString(), ClientName == TEXT("None") || ClientName == FName());
-
-		ClientName = _ClientName;
-	}
-}
-
-// Automatically called when this client's name is replicated.
-void AClient::OnRep_ClientName_Implementation()
-{
-	Rename(*ClientName.ToString());
-
-	SetActorLabel(ClientName.ToString());
-
-	UNetwork* Network = UNetwork::GetNetwork();
-
-	FName Name = ClientName;
-
-	if (IsMyClient() && IsValid(Network))
-	{
-		Network->SetClientName(ClientName);
-	}
-
-	OnClientNameChanged(Name, ClientName);
 }
 
 
@@ -319,65 +275,6 @@ bool UNetwork::IsOwnedBy(AActor* Actor, AClient* Client)
 	}
 
 	return false;
-}
-
-
-// SERVER
-
-// Called when a player controller connects to this game mode base.
-void AServer::PostLogin(APlayerController* NewPlayer)
-{
-	// Calls the base class's function.
-	Super::PostLogin(NewPlayer);
-
-	AClient* Client = Cast<AClient>(NewPlayer);
-
-	if (IsValid(Client))
-	{
-		AllClients.Add(NextClientID, Client);
-
-		Client->SetClientID(NextClientID);
-
-		++NextClientID;
-
-		OnClientConnected(Client);
-	}
-}
-
-// Called when a player controller leaves the game.
-void AServer::Logout(AController* ExitingPlayer)
-{
-	// Calls the base class's function.
-	Super::Logout(ExitingPlayer);
-
-	AClient* Client = Cast<AClient>(ExitingPlayer);
-
-	if (IsValid(Client))
-	{
-		OnClientDisconnected(Client);
-
-		AllClients.Remove(Client->GetClientID());
-	}
-}
-
-// Safely handles when player controllers are swapped on a seamless level travel.
-// NOTE: This should be called when OnSwapPlayerControllers() is called in blueprints.
-void AServer::SwapPlayerControllers(APlayerController* OldPC, APlayerController* NewPC)
-{
-	AClient* OldClient = Cast<AClient>(OldPC);
-
-	AClient* NewClient = Cast<AClient>(NewPC);
-
-	if (IsValid(OldClient) && IsValid(NewClient))
-	{
-		NewClient->SetClientID(OldClient->GetClientID());
-
-		NewClient->SetClientName(OldClient->GetClientName());
-
-		AllClients.Add(OldClient->GetClientID(), NewClient);
-
-		OnSwapPlayerControllers(OldClient, NewClient);
-	}
 }
 
 

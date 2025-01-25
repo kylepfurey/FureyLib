@@ -2,7 +2,7 @@
 // Client Player Controller Script
 // by Kyle Furey
 
-// REQUIREMENTS: OnlineSubsystem, Server.h, Client.cpp
+// REQUIREMENTS: OnlineSubsystem, Server.h, Client.cpp, ClientState.cpp
 
 #pragma once
 #include "CoreMinimal.h"
@@ -13,7 +13,10 @@
 // Include this heading to use the class
 // #include "Networking/Client/Client.h"
 
-/** Represents an individual client player controller that can remotely connect and replicate to an authoritative server. */
+/**
+ * Represents an individual client player controller that can remotely connect and replicate to an authoritative server.
+ * This class is only accessible by the machine who owns the client, but the server can access and update all of its connected clients.
+ */
 UCLASS(Blueprintable, BlueprintType, Abstract)
 class MYGAME_API AClient : public APlayerController
 {
@@ -36,10 +39,6 @@ protected:
 	UPROPERTY(ReplicatedUsing = OnRep_ClientID, BlueprintReadOnly, BlueprintGetter = "GetClientID", Category = "Client")
 	int64 ClientID = -1;
 
-	/** The name of this client. */
-	UPROPERTY(ReplicatedUsing = OnRep_ClientName, BlueprintReadOnly, BlueprintGetter = "GetClientName", Category = "Client")
-	FName ClientName = TEXT("None");
-
 
 	// UNREAL FUNCTIONS
 
@@ -48,6 +47,9 @@ protected:
 
 	/** Determines what variables can be replicated across the network. */
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	/** Called when this actor is destroyed. */
+	virtual void BeginDestroy() override;
 
 
 	// CLIENT
@@ -108,11 +110,6 @@ public:
 	void OnClientIDAssigned(int64 _ClientID);
 	virtual void OnClientIDAssigned_Implementation(int64 _ClientID);
 
-	/** Automatically called when this client's names changes. */
-	UFUNCTION(BlueprintNativeEvent, Category = "Client")
-	void OnClientNameChanged(FName OldName, FName NewName);
-	virtual void OnClientNameChanged_Implementation(FName OldName, FName NewName);
-
 
 	// GETTERS
 
@@ -123,9 +120,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Client")
 	virtual int64 GetClientID();
 
-	/** Returns the name of this client. */
+	/** Returns the replicated state of this client. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Client")
-	virtual FName GetClientName();
+	virtual AClientState* GetState();
 
 
 	// SETTERS
@@ -142,14 +139,4 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Client")
 	void OnRep_ClientID();
 	virtual void OnRep_ClientID_Implementation();
-
-	/** Sets the name of this client across the network. */
-	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Client")
-	void SetClientName(FName _ClientName);
-	virtual void SetClientName_Implementation(FName _ClientName);
-
-	/** Automatically called when this client's name is replicated. */
-	UFUNCTION(BlueprintNativeEvent, Category = "Client")
-	void OnRep_ClientName();
-	virtual void OnRep_ClientName_Implementation();
 };

@@ -15,26 +15,9 @@ AServer::AServer()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	bReplicates = false;
+
 	bUseSeamlessTravel = true;
-
-	UNetwork* Network = UNetwork::GetNetwork();
-
-	if (!IsValid(Network))
-	{
-		MaxClients = 0;
-
-		ServerName = TEXT("None");
-
-		NextClientID = 0;
-
-		AllClients = TMap<int64, AClient*>();
-
-		return;
-	}
-
-	MaxClients = Network->GetMaxConnections();
-
-	ServerName = Network->GetServerName();
 
 	NextClientID = 0;
 
@@ -46,26 +29,9 @@ AServer::AServer(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	bReplicates = false;
+
 	bUseSeamlessTravel = true;
-
-	UNetwork* Network = UNetwork::GetNetwork();
-
-	if (!IsValid(Network))
-	{
-		MaxClients = 0;
-
-		ServerName = TEXT("None");
-
-		NextClientID = 0;
-
-		AllClients = TMap<int64, AClient*>();
-
-		return;
-	}
-
-	MaxClients = Network->GetMaxConnections();
-
-	ServerName = Network->GetServerName();
 
 	NextClientID = 0;
 
@@ -86,9 +52,26 @@ void AServer::BeginPlay()
 		Instance = this;
 	}
 
-	Rename(*ServerName.ToString());
+	UNetwork* Network = UNetwork::GetNetwork();
 
-	SetActorLabel(ServerName.ToString());
+	if (IsValid(Network))
+	{
+		Rename(*Network->GetServerName().ToString());
+
+		SetActorLabel(Network->GetServerName().ToString());
+	}
+}
+
+// Called when this actor is destroyed.
+void AServer::BeginDestroy()
+{
+	// Calls the base class's function.
+	Super::BeginDestroy();
+
+	if (Instance == this)
+	{
+		Instance = nullptr;
+	}
 }
 
 
@@ -131,18 +114,6 @@ void AServer::OnSwapPlayerControllers_Implementation(AClient* OldClient, AClient
 
 
 // GETTERS
-
-// Returns the maximum number of clients that can connect to this server.
-int64 AServer::GetMaxClients()
-{
-	return MaxClients;
-}
-
-// Returns the name of this server.
-FName AServer::GetServerName()
-{
-	return ServerName;
-}
 
 // Peeks and returns the client ID that will be assigned to the next connnected client.
 int64 AServer::GetNextClientID()

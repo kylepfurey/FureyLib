@@ -15,7 +15,13 @@ AClient::AClient()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	bReplicates = true;
+	AActor::SetReplicates(true);
+
+	AActor::SetReplicateMovement(false);
+
+	bAlwaysRelevant = true;
+
+	bOnlyRelevantToOwner = false;
 
 	ClientID = -1;
 }
@@ -25,7 +31,13 @@ AClient::AClient(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	bReplicates = true;
+	AActor::SetReplicates(true);
+
+	AActor::SetReplicateMovement(false);
+
+	bAlwaysRelevant = true;
+
+	bOnlyRelevantToOwner = false;
 
 	ClientID = -1;
 }

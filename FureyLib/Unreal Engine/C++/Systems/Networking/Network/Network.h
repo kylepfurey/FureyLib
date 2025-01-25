@@ -18,6 +18,9 @@
 // Include this heading to use the class
 // #include "Networking/Network/Network.h"
 
+// Whether an owning client has authority over their spawned objects.
+#define OWNING_CLIENT_HAS_AUTHORITY 1
+
 // Delays the given expression for the given number of seconds.
 #define DELAY_FOR_SECONDS(Seconds, Expression) FTimerHandle Handle; GetWorld()->GetTimerManager().SetTimer(Handle, [this]Expression, Seconds, false);
 

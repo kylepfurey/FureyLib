@@ -15,7 +15,13 @@ AServer::AServer()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	bReplicates = false;
+	AActor::SetReplicates(false);
+
+	AActor::SetReplicateMovement(false);
+
+	bAlwaysRelevant = true;
+
+	bOnlyRelevantToOwner = false;
 
 	bUseSeamlessTravel = true;
 
@@ -29,7 +35,13 @@ AServer::AServer(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	bReplicates = false;
+	AActor::SetReplicates(false);
+
+	AActor::SetReplicateMovement(false);
+
+	bAlwaysRelevant = true;
+
+	bOnlyRelevantToOwner = false;
 
 	bUseSeamlessTravel = true;
 

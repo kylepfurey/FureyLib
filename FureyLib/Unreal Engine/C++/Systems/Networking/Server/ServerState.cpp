@@ -15,7 +15,13 @@ AServerState::AServerState()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	bReplicates = true;
+	AActor::SetReplicates(true);
+
+	AActor::SetReplicateMovement(false);
+
+	bAlwaysRelevant = true;
+
+	bOnlyRelevantToOwner = false;
 
 	MaxClients = 0;
 
@@ -29,7 +35,13 @@ AServerState::AServerState(const FObjectInitializer& ObjectInitializer) : Super(
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	bReplicates = true;
+	AActor::SetReplicates(true);
+
+	AActor::SetReplicateMovement(false);
+
+	bAlwaysRelevant = true;
+
+	bOnlyRelevantToOwner = false;
 
 	MaxClients = 0;
 

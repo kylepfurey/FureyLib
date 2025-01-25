@@ -13,6 +13,9 @@
 !/Config/**
 !/Plugins/**
 
+# Do not ignore Steam App ID
+!steam_appid.txt
+
 # Ignore MetaXR Plugins
 /Plugins/MetaXR/**
 /Plugins/MetaXRPlatform/**

@@ -409,9 +409,14 @@ bool UNetwork::Host(FName _ServerName, FName LevelToLoad, bool bPublic, int32 _M
 	OnCreateSessionCompleteCaptures.LevelToLoad = LevelToLoad;
 	OnCreateSessionCompleteCaptures.Handle = Session->OnCreateSessionCompleteDelegates.AddUObject(this, &UNetwork::OnCreateSessionComplete);
 
-	SetNetStatus(ENetworkStatus::CONNECTING);
+	if (Session->CreateSession(*ID, ServerName, SessionSettings))
+	{
+		SetNetStatus(ENetworkStatus::CONNECTING);
 
-	return Session->CreateSession(*ID, ServerName, SessionSettings);
+		return true;
+	}
+
+	return false;
 }
 
 // Searches asynchronously for other servers' online sessions to display and possibly connect to.
@@ -449,11 +454,16 @@ bool UNetwork::Search(int32 MaxResults, bool bUseLAN)
 
 	OnFindSessionsCompleteHandle = Session->OnFindSessionsCompleteDelegates.AddUObject(this, &UNetwork::OnFindSessionsComplete);
 
-	bSearching = true;
+	if (Session->FindSessions(*ID, SessionSearch.ToSharedRef()))
+	{
+		bSearching = true;
 
-	OnSearch();
+		OnSearch();
 
-	return Session->FindSessions(*ID, SessionSearch.ToSharedRef());
+		return true;
+	}
+
+	return false;
 }
 
 // Attempts to connect to the given session asynchronously.
@@ -487,9 +497,14 @@ bool UNetwork::Connect(const FNetworkSession& JoinedSession)
 	OnJoinSessionCompleteCaptures.MaxConnections = JoinedSession.Session.Session.SessionSettings.NumPublicConnections + JoinedSession.Session.Session.SessionSettings.NumPrivateConnections;
 	OnJoinSessionCompleteCaptures.Handle = Session->OnJoinSessionCompleteDelegates.AddUObject(this, &UNetwork::OnJoinSessionComplete);
 
-	SetNetStatus(ENetworkStatus::CONNECTING);
+	if (Session->JoinSession(*ID, NAME_GameSession, JoinedSession.Session))
+	{
+		SetNetStatus(ENetworkStatus::CONNECTING);
 
-	return Session->JoinSession(*ID, NAME_GameSession, JoinedSession.Session);
+		return true;
+	}
+
+	return false;
 }
 
 // Disconnects from the current session and either returns to the given level or quits the game if offline.
@@ -522,9 +537,14 @@ bool UNetwork::Disconnect(FName LevelToLoad, bool bQuitIfOffline)
 		OnDestroySessionCompleteCaptures.LevelToLoad = LevelToLoad;
 		OnDestroySessionCompleteCaptures.Handle = Session->OnDestroySessionCompleteDelegates.AddUObject(this, &UNetwork::OnDestroySessionComplete);
 
-		OnDisconnect();
+		if (Session->DestroySession(NAME_GameSession))
+		{
+			OnDisconnect();
 
-		return Session->DestroySession(NAME_GameSession);
+			return true;
+		}
+
+		return false;
 	}
 	else
 	{

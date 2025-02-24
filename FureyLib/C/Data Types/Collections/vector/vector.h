@@ -64,7 +64,14 @@ void *vector_insert(vector *self, size_t index);
  * This will double the vector's capacity if new space is needed.<br/>
  * Returns the new element or NULL if the insertion failed.
  */
-void *vector_push(vector *self);
+void *vector_push_back(vector *self);
+
+/**
+ * Places a new element at the front of the vector.<br/>
+ * This will double the vector's capacity if new space is needed.<br/>
+ * Returns the new element or NULL if the insertion failed.
+ */
+void *vector_push_front(vector *self);
 
 /**
  * Erases the vector's element at the given index and shifts subsequent elements backward.<br/>
@@ -76,4 +83,10 @@ bool vector_erase(vector *self, size_t index);
  * Erases the element at the end of the vector.<br/>
  * Returns true if the removal was successful.
  */
-bool vector_pop(vector *self);
+bool vector_pop_back(vector *self);
+
+/**
+ * Erases the element at the front of the vector.<br/>
+ * Returns true if the removal was successful.
+ */
+bool vector_pop_front(vector *self);

@@ -42,7 +42,7 @@ struct map {
     tree_node *root;
 
     /** A pointer to a function used to compare each pair's key. */
-    const comparison (*comparer)(const void *, const void *);
+    const comparison (*comparer_func)(const void *, const void *);
 };
 
 // CONSTRUCTORS AND DESTRUCTOR
@@ -52,7 +52,7 @@ struct map {
  * A NULL comparer function uses the default_compare() function.
  */
 map map_new(size_t size_of_key, size_t size_of_value,
-            const comparison (*comparer)(const void *, const void *));
+            const comparison (*comparer_func)(const void *, const void *));
 
 /** Properly destroys the given map. */
 void map_free(map *self);

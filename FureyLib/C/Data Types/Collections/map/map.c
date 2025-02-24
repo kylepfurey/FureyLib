@@ -9,13 +9,13 @@
 // Initializes a new map with the given key comparer function.
 // A NULL comparer function uses the default_compare() function.
 map map_new(const size_t size_of_key, const size_t size_of_value,
-            const comparison (*comparer)(const void *, const void *)) {
+            const comparison (*comparer_func)(const void *, const void *)) {
     const map self = {
         size_of_key,
         size_of_value,
         0,
         NULL,
-        comparer != NULL ? comparer : default_compare,
+        comparer_func != NULL ? comparer_func : default_compare,
     };
 
     return self;
@@ -88,7 +88,7 @@ void *map_insert(map *self, const void *key) {
             return NULL;
         }
 
-        switch (self->comparer(key, pair->key)) {
+        switch (self->comparer_func(key, pair->key)) {
             case LESS_THAN:
                 parent_node = inserted_node;
                 inserted_node = inserted_node->left;
@@ -153,7 +153,7 @@ bool map_erase(map *self, const void *key) {
             return false;
         }
 
-        switch (self->comparer(key, pair->key)) {
+        switch (self->comparer_func(key, pair->key)) {
             case LESS_THAN:
                 removed_node = removed_node->left;
                 break;
@@ -191,7 +191,7 @@ void *map_find(const map *self, const void *key) {
 
     const tree_node *current = self->root;
     while (current != NULL && current->data != NULL) {
-        switch (self->comparer(key, ((pair *) current->data)->key)) {
+        switch (self->comparer_func(key, ((pair *) current->data)->key)) {
             case LESS_THAN:
                 current = current->left;
                 break;

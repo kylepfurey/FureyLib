@@ -113,9 +113,22 @@ list_node *list_insert(list *self, list_node *previous_node) {
 
 // Inserts a new node at the end of the linked list.
 // Returns a pointer to the new node or NULL if the insertion failed.
-list_node *list_push(list *self) {
+list_node *list_push_back(list *self) {
     if (self != NULL && self->head != NULL) {
         return list_insert(self, self->head->previous);
+    }
+
+    return false;
+}
+
+// Inserts a new node at the front of the linked list.
+// Returns a pointer to the new node or NULL if the insertion failed.
+list_node *list_push_front(list *self) {
+    if (self != NULL && self->head != NULL) {
+        if (list_insert(self, self->head->previous)) {
+            self->head = self->head->previous;
+            return self->head;
+        }
     }
 
     return false;
@@ -162,10 +175,21 @@ bool list_erase(list *self, list_node **node) {
 
 // Erases the node at the end of the linked list.
 // Returns true if the removal was successful.
-bool list_pop(list *self) {
+bool list_pop_back(list *self) {
     if (self != NULL && self->head != NULL) {
         list_node *end = self->head->previous;
         return list_erase(self, &end);
+    }
+
+    return false;
+}
+
+// Erases the node at the front of the linked list.
+// Returns true if the removal was successful.
+bool list_pop_front(list *self) {
+    if (self != NULL && self->head != NULL) {
+        list_node *head = self->head;
+        return list_erase(self, &head);
     }
 
     return false;

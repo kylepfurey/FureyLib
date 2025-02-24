@@ -8,12 +8,12 @@
 
 // Initializes a new set with the given comparer function.
 // A NULL comparer function uses the default_compare() function.
-set set_new(const size_t size_of_type, const comparison (*comparer)(const void *, const void *)) {
+set set_new(const size_t size_of_type, const comparison (*comparer_func)(const void *, const void *)) {
     const set self = {
         size_of_type,
         0,
         NULL,
-        comparer != NULL ? comparer : default_compare,
+        comparer_func != NULL ? comparer_func : default_compare,
     };
 
     return self;
@@ -99,7 +99,7 @@ tree_node *set_insert(set *self, const void *data) {
     tree_node *parent_node = NULL;
     bool insert_right = false;
     while (inserted_node != NULL) {
-        switch (self->comparer(data, inserted_node->data)) {
+        switch (self->comparer_func(data, inserted_node->data)) {
             case LESS_THAN:
                 parent_node = inserted_node;
                 inserted_node = inserted_node->left;
@@ -154,7 +154,7 @@ tree_node *set_find(const set *self, const void *data) {
 
     tree_node *current = self->root;
     while (current != NULL) {
-        switch (self->comparer(data, current->data)) {
+        switch (self->comparer_func(data, current->data)) {
             case LESS_THAN:
                 current = current->left;
                 break;
@@ -169,4 +169,43 @@ tree_node *set_find(const set *self, const void *data) {
     }
 
     return NULL;
+}
+
+// Using recursion, traverses the set in-order, copying each value into an array.
+void _set_store_values(const tree_node *root, void *array, size_t *index) {
+    if (root == NULL || root->data == NULL || array == NULL) {
+        return;
+    }
+
+    _set_store_values(root->left, array, index);
+
+    const set *set = root->tree;
+    if (set == NULL) {
+        return;
+    }
+
+    memcpy(array + set->element_size * *index, root->data, set->element_size);
+
+    ++*index;
+
+    _set_store_values(root->right, array, index);
+}
+
+// Copies all the set's values into a new array.
+// NOTE: This array must be freed!
+void *set_values(const set *self) {
+    if (self == NULL) {
+        return NULL;
+    }
+
+    void *array = malloc(self->element_size * self->size);
+    if (array == NULL) {
+        return NULL;
+    }
+
+    size_t index = 0;
+
+    _set_store_values(self->root, array, &index);
+
+    return array;
 }

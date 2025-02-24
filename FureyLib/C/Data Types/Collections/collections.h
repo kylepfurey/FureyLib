@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdint.h>
 
 // C COLLECTIONS
 
@@ -18,3 +19,4 @@
 #include "tree/tree.h"
 #include "set/set.h"
 #include "map/map.h"
+#include "hash_table/hash_table.h"

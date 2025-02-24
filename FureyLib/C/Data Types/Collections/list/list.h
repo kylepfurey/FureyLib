@@ -74,7 +74,13 @@ list_node *list_insert(list *self, list_node *previous_node);
  * Inserts a new node at the end of the linked list.<br/>
  * Returns a pointer to the new node or NULL if the insertion failed.
  */
-list_node *list_push(list *self);
+list_node *list_push_back(list *self);
+
+/**
+ * Inserts a new node at the front of the linked list.<br/>
+ * Returns a pointer to the new node or NULL if the insertion failed.
+ */
+list_node *list_push_front(list *self);
 
 /**
  * Erases the given node from the linked list.<br/>
@@ -87,7 +93,13 @@ bool list_erase(list *self, list_node **node);
  * Erases the node at the end of the linked list.<br/>
  * Returns true if the removal was successful.
  */
-bool list_pop(list *self);
+bool list_pop_back(list *self);
+
+/**
+ * Erases the node at the front of the linked list.<br/>
+ * Returns true if the removal was successful.
+ */
+bool list_pop_front(list *self);
 
 /** Returns whether the given node is within the linked list. */
 bool list_contains(const list *self, const list_node *node);

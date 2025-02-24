@@ -25,7 +25,7 @@ struct set {
     tree_node *root;
 
     /** A pointer to a function used to compare each node's data. */
-    const comparison (*comparer)(const void *, const void *);
+    const comparison (*comparer_func)(const void *, const void *);
 };
 
 // CONSTRUCTORS AND DESTRUCTOR
@@ -34,7 +34,7 @@ struct set {
  * Initializes a new set with the given comparer function.<br/>
  * A NULL comparer function uses the default_compare() function.
  */
-set set_new(size_t size_of_type, const comparison (*comparer)(const void *, const void *));
+set set_new(size_t size_of_type, const comparison (*comparer_func)(const void *, const void *));
 
 /** Properly destroys the given set. */
 void set_free(set *self);
@@ -67,3 +67,9 @@ bool set_erase(set *self, const void *data);
  * Returns the matching node or NULL if no node was found.
  */
 tree_node *set_find(const set *self, const void *data);
+
+/**
+ * Copies all the set's values into a new array.<br/>
+ * NOTE: This array must be freed!
+ */
+void *set_values(const set *self);

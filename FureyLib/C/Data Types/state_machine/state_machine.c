@@ -22,9 +22,9 @@ state_machine state_machine_new(void *data, const state starting_state) {
 // Returns the state machine's new state.
 state state_machine_execute(state_machine *self) {
     if (self == NULL) {
-        return NULL;
+        return NULL_STATE;
     }
-    if (self->state != NULL) {
+    if (self->state != NULL_STATE) {
         self->state = (state) self->state(self);
     }
     return self->state;

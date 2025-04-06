@@ -1,4 +1,4 @@
-//.h
+// .h
 // Functional State Machine Type
 // by Kyle Furey
 
@@ -8,6 +8,9 @@
 // The state's reference to the state machine is stored as "SM".
 #define DECLARE_STATE(Type, Name) static void* Name(Toolbox::StateMachine<Type>& SM)
 
+// Represents an empty state.
+#define NULL_STATE nullptr
+
 /** A collection of useful collection types in C++. */
 namespace Toolbox {
 
@@ -16,6 +19,7 @@ namespace Toolbox {
 	/** A system that manages data via states that can transition into a finite number of other states. */
 	template<typename Type>
 	class StateMachine final {
+	public:
 
 		// STATE
 
@@ -41,7 +45,7 @@ namespace Toolbox {
 		// CONSTRUCTORS
 
 		/** Default constructor. */
-		StateMachine(const Type& Data = Type(), const STATE StartingState = nullptr) : state(StartingState), data(Data) {
+		StateMachine(const Type& Data = Type(), const STATE StartingState = NULL_STATE) : state(StartingState), data(Data) {
 		}
 
 		/** Default constructor. */
@@ -56,19 +60,19 @@ namespace Toolbox {
 			return state;
 		}
 
-		/** Returns a constant reference to the state machine's managed data. */
-		Type Get() const {
-			return data;
-		}
-
 		/** Returns a reference to the state machine's managed data. */
 		Type& Get() {
 			return data;
 		}
 
+		/** Returns a constant reference to the state machine's managed data. */
+		const Type& Get() const {
+			return data;
+		}
+
 		/** Returns whether the state machine's current state is valid. */
 		bool IsValidState() const {
-			return state != nullptr;
+			return state != NULL_STATE;
 		}
 
 
@@ -96,7 +100,7 @@ namespace Toolbox {
 		 * Returns the state machine's new state.
 		 */
 		STATE Execute() {
-			if (state != nullptr) {
+			if (state != NULL_STATE) {
 				state = static_cast<STATE>(state(*this));
 			}
 			return state;

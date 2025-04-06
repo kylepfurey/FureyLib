@@ -14,6 +14,9 @@
 // The state's pointer to the state machine is stored as "self".
 #define DECLARE_STATE(name) void *name(state_machine *self)
 
+// Represents an empty state.
+#define NULL_STATE NULL
+
 // TYPEDEF
 
 /** A system that manages data via states that can transition into a finite number of other states. */

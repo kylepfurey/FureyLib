@@ -3,7 +3,7 @@
 // by Kyle Furey
 
 #pragma once
-#include "Vector.h"
+#include "List.h"
 
 /** A collection of useful collection types in C++. */
 namespace Toolbox {
@@ -16,8 +16,8 @@ namespace Toolbox {
 
 		// DATA
 
-		/** The underlying vector managing this queue. */
-		Vector<Type> data;
+		/** The underlying list managing this queue. */
+		List<Type> data;
 
 	public:
 
@@ -44,11 +44,6 @@ namespace Toolbox {
 		/** Returns the number of elements in the queue. */
 		size_t Size() const {
 			return data.Size();
-		}
-
-		/** Returns the current maximum number of elements in the queue. */
-		size_t Capacity() const {
-			return data.Capacity();
 		}
 
 		/** Returns a constant reference to the next element in the queue. */
@@ -93,14 +88,9 @@ namespace Toolbox {
 
 		// EXPANSION
 
-		/** Sets the queue's size to zero. */
+		/** Deallocates the queue. */
 		void Clear() {
 			data.Clear();
-		}
-
-		/** Deallocates the queue. */
-		void Reset() {
-			data.Reset();
 		}
 
 		/** Pushes a copy of the given data to the front of the queue. */
@@ -158,15 +148,15 @@ namespace Toolbox {
 		}
 
 
-		// AS VECTOR
+		// AS LIST
 
-		/** Returns a reference to this queue's underlying vector. */
-		Vector<Type>& AsVector() {
+		/** Returns a reference to this queue's underlying list. */
+		List<Type>& AsList() {
 			return data;
 		}
 
-		/** Returns a constant reference to this queue's underlying vector. */
-		const Vector<Type>& AsVector() const {
+		/** Returns a constant reference to this queue's underlying list. */
+		const List<Type>& AsList() const {
 			return data;
 		}
 	};

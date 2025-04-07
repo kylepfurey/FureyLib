@@ -105,5 +105,12 @@ namespace Toolbox {
 			}
 			return state;
 		}
+
+		/** Executes the state machine's current state until it is NULL. */
+		void Unwrap() {
+			while (state != NULL_STATE) {
+				state = static_cast<STATE>(state(*this));
+			}
+		}
 	};
 }

@@ -50,8 +50,17 @@ state_machine state_machine_new(void *data, state starting_state);
 // FUNCTIONS
 
 /**
+ * Forcefully switches the state machine's current state to the given state.<br/>
+ * NOTE: This does not execute the new state.
+ */
+void state_machine_switch(state_machine *self, state new_state);
+
+/**
  * Executes the state machine's current state.<br/>
  * The current state's returned state will be the state machine's new state.<br/>
  * Returns the state machine's new state.
  */
 state state_machine_execute(state_machine *self);
+
+/** Executes the state machine's current state until it is NULL. */
+void state_machine_unwrap(state_machine *self);

@@ -108,4 +108,15 @@ public sealed class StateMachine<Type>
 
         return State;
     }
+
+    /// <summary>
+    /// Executes the state machine's current state until it is NULL.
+    /// </summary>
+    public void Unwrap()
+    {
+        while (State != null)
+        {
+            State = State(this);
+        }
+    }
 }

@@ -67,7 +67,7 @@ public:
 	// •  Searches every possible node starting from oldest to newest.
 	// •  Time complexity and precision depend on the selected pathfinding algorithm.
 	// •  Will calculate the closest location to the goal if the goal is unreachable.
-	template<typename data_type> static std::stack<node<data_type>*> pathfind(algorithm algorithm, node<data_type>* start, node<data_type>* end, HEURISTIC_TYPE heuristic_scale = 1.1f.1f)
+	template<typename data_type> static std::stack<node<data_type>*> pathfind(algorithm algorithm, node<data_type>* start, node<data_type>* end, HEURISTIC_TYPE heuristic_scale = 1.1f)
 	{
 		switch (algorithm)
 		{
@@ -643,7 +643,7 @@ public:
 	// •  Searches every possible node from oldest to newest but queues nodes with less weight first + the heuristic, and recalculates routes if a faster way to a node is found.
 	// •  Guarantees the fastest and possibly least resistant route in shorter time.
 	// •  Will calculate the closest location to the goal if the goal is unreachable.
-	template<typename data_type> static std::stack<node<data_type>*> a_star_search(node<data_type>* start, node<data_type>* end, HEURISTIC_TYPE heuristic_scale = 1.1f.1f)
+	template<typename data_type> static std::stack<node<data_type>*> a_star_search(node<data_type>* start, node<data_type>* end, HEURISTIC_TYPE heuristic_scale = 1.1f)
 	{
 		// Check if the start and end node are identical
 		if (start == end || !start->active)

@@ -579,7 +579,7 @@ public static class Pathfinding
                 }
 
                 // Store the new total cost of traveling this node
-                float newCost = weights[current] + connection.weight + connection.to.weight;
+                WeightType newCost = weights[current] + connection.weight + connection.to.weight;
 
                 // Check that our connected node is not currently in our dictionary
                 if (!from.ContainsKey(connection.to) || newCost < weights[connection.to])
@@ -731,7 +731,7 @@ public static class Pathfinding
                 }
 
                 // Store the new total cost of traveling this node
-                float newCost = weights[current] + connection.weight + connection.to.weight;
+                WeightType newCost = weights[current] + connection.weight + connection.to.weight;
 
                 // Check that our connected node is not currently in our dictionary
                 if (!from.ContainsKey(connection.to) || newCost < weights[connection.to])

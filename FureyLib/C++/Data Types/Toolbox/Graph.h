@@ -3,6 +3,7 @@
 // by Kyle Furey
 
 #pragma once
+#include <cfloat>
 #include "Stack.h"
 #include "PriorityQueue.h"
 #include "Map.h"
@@ -12,6 +13,12 @@
 
 // The default unsigned weight of each graph node.
 #define DEFAULT_WEIGHT 100
+
+// The maximum possible value of a heuristic.
+#define HEURISTIC_MAX DBL_MAX
+
+// The maximum number of loops when building a path in a graph.
+#define MAX_LOOPS 300
 
 /** A collection of useful collection types in C++. */
 namespace Toolbox {
@@ -193,18 +200,6 @@ namespace Toolbox {
 			/** Returns the number of connections this node has. */
 			size_t TotalConnections() const {
 				return connections.Size();
-			}
-
-
-			// NAVIGATION
-
-			/** Calculates the shortest path from this node to the given goal node. */
-			Stack<NodeCode> PathTo(const NodeCode Goal) const {
-				if (Goal == INVALID_NODE_CODE) {
-					return Stack<NodeCode>();
-				}
-				Stack<NodeCode> Route;
-				return Route;
 			}
 
 
@@ -434,13 +429,80 @@ namespace Toolbox {
 
 		// NAVIGATION
 
-		/** Calculates the shortest path from the given start node to the given end node. */
+		/**
+		 * Calculates the shortest path from the given start node to the given end node using the A Star Search algorithm.<br/>
+		 * REFERENCE: https://www.redblobgames.com/pathfinding/a-star/introduction.html
+		 */
 		Stack<NodeCode> BuildPath(const NodeCode Start, const NodeCode End) const {
-			const Node* Node = Find(Start);
-			if (Node == nullptr) {
+			if (Start == INVALID_NODE_CODE || End == INVALID_NODE_CODE || Start == End) {
 				return Stack<NodeCode>();
 			}
-			return Node->PathTo(End);
+			const Node* CurrentNode = Find(Start);
+			const Node* EndNode = Find(End);
+			if (CurrentNode == nullptr || EndNode == nullptr) {
+				return Stack<NodeCode>();
+			}
+			PriorityQueue<NodeCode, Heuristic> Frontier;
+			Frontier.Push(Start, 0);
+			Map<NodeCode, NodeCode> From;
+			From.Insert(Start, INVALID_NODE_CODE);
+			Map<NodeCode, NodeWeight> Weights;
+			Weights.Insert(Start, 0);
+			CurrentNode = EndNode;
+			size_t LoopCount = 0;
+			while (!Frontier.IsEmpty()) {
+				++LoopCount;
+				if (LoopCount > MAX_LOOPS) {
+					break;
+				}
+				CurrentNode = Find(Frontier.Pop());
+				if (CurrentNode == nullptr) {
+					continue;
+				}
+				if (CurrentNode == EndNode) {
+					break;
+				}
+				Vector<Connection> Connections = CurrentNode->Connections().Values();
+				for (auto& Connection : Connections) {
+					if (!Connection.Active) {
+						continue;
+					}
+					const Node* ToNode = Find(Connection.To());
+					if (ToNode == nullptr || !ToNode->Active) {
+						continue;
+					}
+					NodeWeight NewCost = Weights[CurrentNode->Code()] + Connection.Weight + ToNode->Weight;
+					if (!From.ContainsKey(Connection.To()) || NewCost < Weights[Connection.To()]) {
+						Weights[Connection.To()] = NewCost;
+						Frontier.Push(Connection.To(), static_cast<Heuristic>(NewCost) + HEURISTIC_FUNC(*ToNode, *EndNode));
+						From[Connection.To()] = CurrentNode->Code();
+					}
+				}
+			}
+			Frontier.Clear();
+			if (CurrentNode != EndNode) {
+				CurrentNode = Find(Start);
+				Heuristic CurrentHeuristic = HEURISTIC_MAX;
+				Vector<NodeCode> FromTo = From.Keys();
+				for (auto& To : FromTo) {
+					const Node* ToNode = Find(To);
+					if (ToNode == nullptr) {
+						continue;
+					}
+					Heuristic NewHeuristic = HEURISTIC_FUNC(*ToNode, *EndNode);
+					if (NewHeuristic < CurrentHeuristic) {
+						CurrentNode = ToNode;
+						CurrentHeuristic = NewHeuristic;
+					}
+				}
+			}
+			Stack<NodeCode> Route;
+			NodeCode CurrentCode = CurrentNode->Code();
+			while (From[CurrentCode] != INVALID_NODE_CODE) {
+				Route.Push(CurrentCode);
+				CurrentCode = From[CurrentCode];
+			}
+			return Route;
 		}
 
 

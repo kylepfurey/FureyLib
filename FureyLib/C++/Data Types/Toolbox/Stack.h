@@ -141,7 +141,7 @@ namespace Toolbox {
 		/** Returns the stack as a string. */
 		std::string ToString() const {
 			std::string String;
-			for (size_t Index = data.Size(); Index >= 0; --Index) {
+			for (ptrdiff_t Index = data.Size() - 1; Index >= 0; --Index) {
 				String += "{ " + std::to_string(data[Index]) + " } -> ";
 			}
 			if (!String.empty()) {

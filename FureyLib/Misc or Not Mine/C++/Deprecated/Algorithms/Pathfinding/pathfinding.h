@@ -560,7 +560,7 @@ public:
 				}
 
 				// Store the new total cost of traveling this node
-				float new_cost = weights[current] + connection.weight + connection.to.weight;
+				WEIGHT_TYPE new_cost = weights[current] + connection.weight + connection.to.weight;
 
 				// Check that our connected node is not currently in our dictionary
 				if (!from.count(connection.to) || new_cost < weights[connection.to])
@@ -710,7 +710,7 @@ public:
 				}
 
 				// Store the new total cost of traveling this node
-				float new_cost = weights[current] + connection.weight + connection.to.weight;
+				WEIGHT_TYPE new_cost = weights[current] + connection.weight + connection.to.weight;
 
 				// Check that our connected node is not currently in our dictionary
 				if (!from.count(connection.to) || new_cost < weights[connection.to])

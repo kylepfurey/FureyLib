@@ -21,19 +21,20 @@ namespace Toolbox {
 	/** Returns a unique unsigned number representing the state of the given value's binary. */
 	template<typename Type>
 	static Hash Hashify(const Type& Value) {
+		void* Memory = (void*)&Value;
 		switch (sizeof(Type)) {
 		case 1:
-			return (Hash)((uint8_t)Value);
+			return (Hash)(*(uint8_t*)Memory);
 		case 2:
 		case 3:
-			return (Hash)((uint16_t)Value);
+			return (Hash)(*(uint16_t*)Memory);
 		case 4:
 		case 5:
 		case 6:
 		case 7:
-			return (Hash)((uint32_t)Value);
+			return (Hash)(*(uint32_t*)Memory);
 		default:
-			return (Hash)((uint64_t)Value);
+			return (Hash)(*(uint64_t*)Memory);
 		}
 	}
 
@@ -237,6 +238,19 @@ namespace Toolbox {
 				}
 				return String;
 			}
+		}
+
+
+		// AS VECTOR
+
+		/** Returns a reference to this set's underlying vector. */
+		Vector<List<Type>>& AsVector() {
+			return buckets;
+		}
+
+		/** Returns a constant reference to this set's underlying vector. */
+		const Vector<List<Type>>& AsVector() const {
+			return buckets;
 		}
 	};
 }

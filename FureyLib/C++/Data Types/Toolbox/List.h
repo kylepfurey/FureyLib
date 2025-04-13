@@ -7,7 +7,7 @@
 #include <random>
 #include <initializer_list>
 #include <stdexcept>
-#include "Toolbox/Sorting.h"
+#include "Sorting.h"
 
 /** A collection of useful collection types in C++. */
 namespace Toolbox {
@@ -23,6 +23,12 @@ namespace Toolbox {
 		/** An individual doubly linked node in a linked list. */
 		struct Node final {
 
+			// FRIENDS
+
+			friend class List<Type>;
+
+		private:
+
 			// DATA
 
 			/** A pointer to the previous node. */
@@ -37,8 +43,9 @@ namespace Toolbox {
 			/** Whether this node is NIL and marks the end of a linked list iteration. */
 			bool NIL;
 
+		public:
 
-			// CONSTRUCTORS
+			// CONSTRUCTOR
 
 			/** Default constructor. */
 			Node(const Type& Value = Type(), Node* Previous = nullptr, Node* Next = nullptr) : previous(Previous), data(Value), next(Next), NIL(false) {

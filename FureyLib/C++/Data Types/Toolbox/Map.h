@@ -28,7 +28,7 @@ namespace Toolbox {
 			ValueType value;
 
 
-			// CONSTRUCTORS
+			// CONSTRUCTOR
 
 			/** Default constructor. */
 			Pair(const KeyType& Key = KeyType(), const ValueType& Value = ValueType()) : key(Key), value(Value) {
@@ -101,7 +101,7 @@ namespace Toolbox {
 			return buckets.Size();
 		}
 
-		/** Find and returns a pointer to the given key's value in the map, or nullptr if it does not exist. */
+		/** Finds and returns a pointer to the given key's value in the map, or nullptr if it does not exist. */
 		ValueType* Find(const KeyType& Key) {
 			size_t Index = HASH_FUNC(Key) % buckets.Size();
 			size_t ElementIndex = 0;
@@ -114,7 +114,7 @@ namespace Toolbox {
 			return nullptr;
 		}
 
-		/** Find and returns a constant pointer to the given key's value in the map, or nullptr if it does not exist. */
+		/** Finds and returns a constant pointer to the given key's value in the map, or nullptr if it does not exist. */
 		const ValueType* Find(const KeyType& Key) const {
 			size_t Index = HASH_FUNC(Key) % buckets.Size();
 			size_t ElementIndex = 0;
@@ -292,6 +292,19 @@ namespace Toolbox {
 				}
 				return String;
 			}
+		}
+
+
+		// AS VECTOR
+
+		/** Returns a reference to this map's underlying vector. */
+		Vector<List<Pair>>& AsVector() {
+			return buckets;
+		}
+
+		/** Returns a constant reference to this map's underlying vector. */
+		const Vector<List<Pair>>& AsVector() const {
+			return buckets;
 		}
 	};
 }

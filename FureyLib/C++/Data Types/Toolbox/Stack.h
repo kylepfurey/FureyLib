@@ -94,29 +94,32 @@ namespace Toolbox {
 		}
 
 		/** Pushes a copy of the given data to the front of the stack. */
-		Type& Push(const Type& Value) {
-			return data.PushBack(Value);
+		void Push(const Type& Value) {
+			data.PushBack(Value);
 		}
 
 		/** Pushes a copy of the given data to the end of the stack. */
-		Type& PushLast(const Type& Value) {
-			return data.PushFront(Value);
+		void PushLast(const Type& Value) {
+			data.PushFront(Value);
 		}
 
 		/** Pushes a new element with the given arguments to the front of the quue. */
 		template<typename... ArgumentTypes>
-		Type& Emplace(ArgumentTypes&&... Arguments) {
-			return data.EmplaceBack(Arguments...);
+		void Emplace(ArgumentTypes&&... Arguments) {
+			data.EmplaceBack(Arguments...);
 		}
 
 		/** Pushes a new element with the given arguments to the end of the stack. */
 		template<typename... ArgumentTypes>
-		Type& EmplaceLast(ArgumentTypes&&... Arguments) {
-			return data.EmplaceFront(Arguments...);
+		void EmplaceLast(ArgumentTypes&&... Arguments) {
+			data.EmplaceFront(Arguments...);
 		}
 
 		/** Removes and returns the next element in the stack. */
 		Type Pop() {
+			if (data.IsEmpty()) {
+				throw std::runtime_error("ERROR: The stack is empty!");
+			}
 			Type back = data.Back();
 			data.PopBack();
 			return back;
@@ -124,6 +127,9 @@ namespace Toolbox {
 
 		/** Removes and returns the last element in the stack. */
 		Type PopLast() {
+			if (data.IsEmpty()) {
+				throw std::runtime_error("ERROR: The stack is empty!");
+			}
 			Type front = data.Front();
 			data.PopFront();
 			return front;
@@ -135,8 +141,8 @@ namespace Toolbox {
 		/** Returns the stack as a string. */
 		std::string ToString() const {
 			std::string String;
-			for (size_t Index = 0; Index < data.Size(); ++Index) {
-				String += "{ " + std::to_string(data[Index]) + " } <- ";
+			for (size_t Index = data.Size(); Index >= 0; --Index) {
+				String += "{ " + std::to_string(data[Index]) + " } -> ";
 			}
 			if (!String.empty()) {
 				String.erase(String.length() - 4, 4);

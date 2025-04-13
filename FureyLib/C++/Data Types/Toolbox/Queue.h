@@ -94,29 +94,32 @@ namespace Toolbox {
 		}
 
 		/** Pushes a copy of the given data to the front of the queue. */
-		Type& Push(const Type& Value) {
-			return data.PushFront(Value);
+		void Push(const Type& Value) {
+			data.PushFront(Value);
 		}
 
 		/** Pushes a copy of the given data to the end of the queue. */
-		Type& PushLast(const Type& Value) {
-			return data.PushBack(Value);
+		void PushLast(const Type& Value) {
+			data.PushBack(Value);
 		}
 
 		/** Pushes a new element with the given arguments to the front of the quue. */
 		template<typename... ArgumentTypes>
-		Type& Emplace(ArgumentTypes&&... Arguments) {
-			return data.EmplaceFront(Arguments...);
+		void Emplace(ArgumentTypes&&... Arguments) {
+			data.EmplaceFront(Arguments...);
 		}
 
 		/** Pushes a new element with the given arguments to the end of the queue. */
 		template<typename... ArgumentTypes>
-		Type& EmplaceLast(ArgumentTypes&&... Arguments) {
-			return data.EmplaceBack(Arguments...);
+		void EmplaceLast(ArgumentTypes&&... Arguments) {
+			data.EmplaceBack(Arguments...);
 		}
 
 		/** Removes and returns the next element in the queue. */
 		Type Pop() {
+			if (data.IsEmpty()) {
+				throw std::runtime_error("ERROR: The queue is empty!");
+			}
 			Type front = data.Front();
 			data.PopFront();
 			return front;
@@ -124,6 +127,9 @@ namespace Toolbox {
 
 		/** Removes and returns the last element in the queue. */
 		Type PopLast() {
+			if (data.IsEmpty()) {
+				throw std::runtime_error("ERROR: The queue is empty!");
+			}
 			Type back = data.Back();
 			data.PopBack();
 			return back;

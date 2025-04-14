@@ -17,7 +17,7 @@ namespace Toolbox {
 	/** Represents a fixed size array of the given type. */
 	template<typename Type, size_t SIZE>
 	class Array final {
-		static_assert(SIZE != 0, "ERROR: Cannot initialize an array of size 0.");
+		static_assert(SIZE != 0, "ERROR: Cannot initialize an array of size 0!");
 
 		// DATA
 
@@ -50,6 +50,9 @@ namespace Toolbox {
 
 		/** Initializer list constructor. */
 		Array(const std::initializer_list<Type>& List) : data() {
+			for (size_t Index = 0; Index < SIZE; ++Index) {
+				data[Index] = 0;
+			}
 			size_t Count = List.size() > SIZE ? SIZE : List.size();
 			for (size_t Index = 0; Index < Count; ++Index) {
 				data[Index] = *(List.begin() + Index);
@@ -96,12 +99,12 @@ namespace Toolbox {
 			return data;
 		}
 
-		/** Returns a pointer to the last element in the array. */
+		/** Returns a pointer to after the last element in the array. */
 		Type* end() {
 			return data + SIZE;
 		}
 
-		/** Returns a constant pointer to the last element in the array. */
+		/** Returns a constant pointer to after the last element in the array. */
 		const Type* end() const {
 			return data + SIZE;
 		}

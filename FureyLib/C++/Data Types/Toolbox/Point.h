@@ -21,6 +21,16 @@ namespace Toolbox {
 	struct Point final {
 		static_assert(DIMENSIONS != 0, "ERROR: Cannot initialize a point with 0 dimensions!");
 
+		// POINT COMPONENT
+
+		/** An enumeration point components and their indicies. */
+		enum class Component {
+			X = 0,
+			Y = 1,
+			Z = 2,
+			W = 3
+		};
+
 	private:
 
 		// DATA
@@ -348,7 +358,7 @@ namespace Toolbox {
 		// TO STRING
 
 		/** Returns the point's components as a string. */
-		std::string ToString() {
+		std::string ToString() const {
 			std::string String = "{ ";
 			for (size_t Index = 0; Index < DIMENSIONS; ++Index) {
 				String += std::to_string(components[Index]) + ", ";
@@ -416,34 +426,23 @@ namespace Toolbox {
 	};
 
 
-	// COMPONENT
-
-	/** An enumeration of indicies to point components. */
-	enum class Component {
-		X = 0,
-		Y = 1,
-		Z = 2,
-		W = 3
-	};
-
-
-	// VECTOR TYPES
+	// POINT TYPES
 
 	/**
 	 * A two dimensional point.<br/>
 	 * { X, Y }
 	 */
-	using Vector2 = Point<2, double>;
+	using Vector2D = Point<2, double>;
 
 	/**
 	 * A three dimensional point.<br/>
 	 * { X, Y, Z }
 	 */
-	using Vector3 = Point<3, double>;
+	using Vector3D = Point<3, double>;
 
 	/**
 	 * A four dimensional point.<br/>
 	 * { X, Y, Z, W }
 	 */
-	using Vector4 = Point<4, double>;
+	using Vector4D = Point<4, double>;
 }

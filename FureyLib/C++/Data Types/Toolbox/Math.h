@@ -23,7 +23,7 @@ namespace Toolbox {
 		// MATH
 
 		/** Returns the dot product of the given points. */
-		template<size_t DIMENSIONS, typename PrecisionType = DEFAULT_PRECISION>
+		template<size_t DIMENSIONS = 3, typename PrecisionType = DEFAULT_PRECISION>
 		static PrecisionType DotProduct(const Point<DIMENSIONS, PrecisionType>& Left, const Point<DIMENSIONS, PrecisionType>& Right) {
 			PrecisionType Sum = 0;
 			for (size_t Index = 0; Index < DIMENSIONS; ++Index) {
@@ -33,20 +33,10 @@ namespace Toolbox {
 		}
 
 		/** Returns the distance from the start point to the end point. */
-		template<size_t DIMENSIONS, typename PrecisionType = DEFAULT_PRECISION>
-		static PrecisionType DistanceTo(const Point<DIMENSIONS, PrecisionType>& Start, const Point<DIMENSIONS, PrecisionType>& End) {
+		template<size_t DIMENSIONS = 3, typename PrecisionType = DEFAULT_PRECISION>
+		static PrecisionType Distance(const Point<DIMENSIONS, PrecisionType>& Start, const Point<DIMENSIONS, PrecisionType>& End) {
 			Point<DIMENSIONS, PrecisionType> Delta = Start - End;
 			return Delta.Magnitude();
-		}
-
-		/** Returns the cross product of the given 3D points. */
-		template<typename PrecisionType = DEFAULT_PRECISION>
-		static Point<3, PrecisionType> CrossProduct(const Point<3, PrecisionType>& Left, const Point<3, PrecisionType>& Right) {
-			return {
-				Left.Y() * Right.Z() - Left.Z() * Right.Y(),
-				Left.Z() * Right.X() - Left.X() * Right.Z(),
-				Left.X() * Right.Y() - Left.Y() * Right.X()
-			};
 		}
 
 		/** Rotates the given 2D point by the given radians. */
@@ -57,6 +47,16 @@ namespace Toolbox {
 			return {
 				Point.X() * Cos - Point.Y() * Sin,
 				Point.X() * Sin + Point.Y() * Cos
+			};
+		}
+
+		/** Returns the cross product of the given 3D points. */
+		template<typename PrecisionType = DEFAULT_PRECISION>
+		static Point<3, PrecisionType> CrossProduct(const Point<3, PrecisionType>& Left, const Point<3, PrecisionType>& Right) {
+			return {
+				Left.Y() * Right.Z() - Left.Z() * Right.Y(),
+				Left.Z() * Right.X() - Left.X() * Right.Z(),
+				Left.X() * Right.Y() - Left.Y() * Right.X()
 			};
 		}
 

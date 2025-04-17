@@ -33,7 +33,11 @@ namespace Toolbox {
 		// CONSTRUCTOR
 
 		/** Default constructor. */
-		Box(const Point& Origin = Point(), const PrecisionType HalfSize = 5) :Origin(Origin), HalfSize(HalfSize) {
+		Box(const Point& Origin = Point(), const PrecisionType HalfSize = 5) : Origin(Origin), HalfSize(HalfSize) {
+		}
+
+		/** Default constructor. */
+		Box(const PrecisionType HalfSize, const Point& Origin = Point()) : Origin(Origin), HalfSize(HalfSize) {
 		}
 
 

@@ -57,7 +57,7 @@ namespace Toolbox {
 		}
 
 		/** Move constructor. */
-		Map(Map<KeyType, ValueType, HASH_FUNC>&& Moved) : size(Moved.size), buckets(std::move(Moved.buckets)) {
+		Map(Map<KeyType, ValueType, HASH_FUNC>&& Moved) noexcept : size(Moved.size), buckets(std::move(Moved.buckets)) {
 			Moved.size = 0;
 		}
 
@@ -99,6 +99,11 @@ namespace Toolbox {
 		/** Returns the number of buckets in the map. */
 		size_t Buckets() const {
 			return buckets.Size();
+		}
+
+		/** Returns this map's hash function. */
+		Hash(*HashFunction() const)(const KeyType&) {
+			return HASH_FUNC;
 		}
 
 		/** Finds and returns a pointer to the given key's value in the map, or nullptr if it does not exist. */

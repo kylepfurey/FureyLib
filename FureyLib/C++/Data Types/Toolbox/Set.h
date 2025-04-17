@@ -3,6 +3,7 @@
 // by Kyle Furey
 
 #pragma once
+#include <functional>
 #include <cstdint>
 #include "Vector.h"
 #include "List.h"
@@ -16,11 +17,13 @@ namespace Toolbox {
 	// HASH FUNCTION
 
 	/** A unique value that represents the current state of an instance. */
-	using Hash = uint64_t;
+	using Hash = size_t;
 
 	/** Returns a unique unsigned number representing the state of the given value's binary. */
 	template<typename Type>
 	static Hash Hashify(const Type& Value) {
+		return std::hash<Type>{}(Value);
+		/*
 		void* Memory = (void*)&Value;
 		switch (sizeof(Type)) {
 		case 1:
@@ -36,6 +39,7 @@ namespace Toolbox {
 		default:
 			return (Hash)(*(uint64_t*)Memory);
 		}
+		*/
 	}
 
 
@@ -66,7 +70,7 @@ namespace Toolbox {
 		}
 
 		/** Move constructor. */
-		Set(Set<Type, HASH_FUNC>&& Moved) : size(Moved.size), buckets(std::move(Moved.buckets)) {
+		Set(Set<Type, HASH_FUNC>&& Moved) noexcept : size(Moved.size), buckets(std::move(Moved.buckets)) {
 			Moved.size = 0;
 		}
 
@@ -104,6 +108,11 @@ namespace Toolbox {
 		/** Returns the number of buckets in the set. */
 		size_t Buckets() const {
 			return buckets.Size();
+		}
+
+		/** Returns this set's hash function. */
+		Hash(*HashFunction() const)(const Type&) {
+			return HASH_FUNC;
 		}
 
 		/** Returns whether the given value is present in the set. */

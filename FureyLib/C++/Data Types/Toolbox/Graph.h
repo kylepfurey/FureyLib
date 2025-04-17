@@ -292,7 +292,7 @@ namespace Toolbox {
 		}
 
 		/** Move constructor. */
-		Graph(Graph<Type>&& Moved) : nextCode(1), nodes(std::move(Moved.nodes)) {
+		Graph(Graph<Type>&& Moved) noexcept : nextCode(1), nodes(std::move(Moved.nodes)) {
 		}
 
 
@@ -333,6 +333,11 @@ namespace Toolbox {
 		/** Returns the next code given to the next inserted node. */
 		size_t NextCode() const {
 			return nextCode;
+		}
+
+		/** Returns this graph's heuristic function. */
+		Heuristic(*HeuristicFunction())(const Node&, const Node&) {
+			return HEURISTIC_FUNC;
 		}
 
 		/** Finds and returns a pointer to the given node in the graph, or nullptr if it does not exist. */

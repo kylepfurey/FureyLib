@@ -14,7 +14,10 @@
 
 // GARBAGE COLLECTOR
 
-/** A singleton class used to automatically manage and free memory at the end of a program's life in C++. */
+/**
+ * A singleton class used to automatically manage and free memory at the end of a program's life in C++.<br/>
+ * NOTE: Dynamic arrays must be allocated with classes as the Garbage Collector cannot properly delete array pointers.
+ */
 class GarbageCollector final {
 
 	// GARBAGE

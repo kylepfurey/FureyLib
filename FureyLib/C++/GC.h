@@ -203,10 +203,10 @@ GarbageCollector GC;
 // KEYWORD OVERRIDES
 
 // Garbage collector new keyword override.
-#define new GC += new 
+#define new GC += new
 
 // Garbage collector delete keyword override.
-#define delete GC -= 
+#define delete GC -=
 
 
 #endif	// GC_COMPILED

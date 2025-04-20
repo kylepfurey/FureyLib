@@ -11,7 +11,7 @@
 // The default floating point type used for precision.
 #define DEFAULT_PRECISION double
 
-/** A collection of useful collection types in C++. */
+/** A collection of useful template types in C++. */
 namespace Toolbox {
 
 	// POINT

@@ -5,7 +5,7 @@
 #pragma once
 #include "Set.h"
 
-/** A collection of useful collection types in C++. */
+/** A collection of useful template types in C++. */
 namespace Toolbox {
 
 	// HASH MAP
@@ -13,6 +13,7 @@ namespace Toolbox {
 	/** A collection of key value pairs that allow fast value lookups via hashing a key. */
 	template<typename KeyType, typename ValueType, Hash(*HASH_FUNC)(const KeyType&) = Hashify>
 	class Map final {
+		static_assert(HASH_FUNC != nullptr, "ERROR: Cannot pass a null function as a template parameter!");
 
 		// PAIR
 

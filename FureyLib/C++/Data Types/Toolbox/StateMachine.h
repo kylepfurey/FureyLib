@@ -11,7 +11,7 @@
 // Represents an empty state.
 #define NULL_STATE nullptr
 
-/** A collection of useful collection types in C++. */
+/** A collection of useful template types in C++. */
 namespace Toolbox {
 
 	// STATE MACHINE

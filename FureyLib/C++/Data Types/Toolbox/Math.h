@@ -14,7 +14,7 @@
 // Scalar used for converting radians to degrees.
 #define RAD_TO_DEG (1 / 57.2958)
 
-/** A collection of useful collection types in C++. */
+/** A collection of useful template types in C++. */
 namespace Toolbox {
 
 	/** Useful math functions. */

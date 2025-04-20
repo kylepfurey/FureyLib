@@ -20,217 +20,211 @@
 // The maximum number of loops when building a path in a graph.
 #define MAX_LOOPS 300
 
-/** A collection of useful collection types in C++. */
+/** A collection of useful template types in C++. */
 namespace Toolbox {
 
-	// STRUCTURES
+	// NODE
 
-	/** Private namespace. */
-	namespace {
+	/**
+	 * An unsigned number used to represent an individual node.<br/>
+	 * A code of INVALID_NODE_CODE is an invalid node.
+	 */
+	using NodeCode = size_t;
 
-		// NODE
+	/** An unsigned number used to represent the weight of traversing a node. */
+	using NodeWeight = size_t;
 
-		/**
-		 * An unsigned number used to represent an individual node.<br/>
-		 * A code of INVALID_NODE_CODE is an invalid node.
-		 */
-		using NodeCode = size_t;
 
-		/** An unsigned number used to represent the weight of traversing a node. */
-		using NodeWeight = size_t;
+	// CONNECTION
 
+	/** Represents an individual graph node with its own data and connections. */
+	template <typename Type>
+	struct GraphNode;
+
+	/** Represents a link between two graph nodes. */
+	template <typename Type>
+	struct Connection final {
+	private:
+
+		// DATA
+
+		/** The code of the node this connection is linked towards within its graph. */
+		NodeCode to;
+
+		/** The code of the node that owns this connection within its graph. */
+		NodeCode from;
+
+	public:
+
+		// DATA
+
+		/** The weight of traversing this connection. */
+		NodeWeight Weight;
+
+		/** Whether this connection is currently active. */
+		bool Active;
+
+
+		// CONSTRUCTORS
+
+		/** Default constructor. */
+		Connection(const NodeCode To = INVALID_NODE_CODE, const NodeCode From = INVALID_NODE_CODE, const NodeWeight Weight = DEFAULT_WEIGHT, const bool Active = true) : to(To), from(From), Weight(Weight), Active(Active) {
+		}
+
+
+		// GETTERS
+
+		/** Returns the code of the node this connection is linked towards within its graph. */
+		NodeCode To() const {
+			return to;
+		}
+
+		/** Returns the code of the node that owns this connection within its graph. */
+		NodeCode From() const {
+			return from;
+		}
+
+		/** Returns whether this connection is a valid connection for a node. */
+		bool IsValidConnection() const {
+			return to != INVALID_NODE_CODE && from != INVALID_NODE_CODE;
+		}
+	};
+
+
+	// NODE
+
+	/** Represents an individual graph node with its own data and connections. */
+	template <typename Type>
+	struct GraphNode final {
 
 		// CONNECTION
 
-		/** Represents an individual graph node with its own data and connections. */
-		template <typename Type>
-		struct Node;
-
 		/** Represents a link between two graph nodes. */
-		template <typename Type>
-		struct Connection final {
-		private:
+		using Connection = Connection<Type>;
 
-			// DATA
+	private:
 
-			/** The code of the node this connection is linked towards within its graph. */
-			NodeCode to;
+		// DATA
 
-			/** The code of the node that owns this connection within its graph. */
-			NodeCode from;
+		/** The unique code used to identify this node in its graph. */
+		NodeCode code;
 
-		public:
+	public:
 
-			// DATA
+		// DATA
 
-			/** The weight of traversing this connection. */
-			NodeWeight Weight;
+		/** The data this node owns. */
+		Type Data;
 
-			/** Whether this connection is currently active. */
-			bool Active;
+	private:
+
+		// DATA
+
+		/** Each of this node's connections within its graph by their node codes. */
+		Map<NodeCode, Connection> connections;
+
+	public:
+
+		// DATA
+
+		/** The weight of this individual node. */
+		NodeWeight Weight;
+
+		/** Whether this node is currently active. */
+		bool Active;
 
 
-			// CONSTRUCTORS
+		// CONSTRUCTOR
 
-			/** Default constructor. */
-			Connection(const NodeCode To = INVALID_NODE_CODE, const NodeCode From = INVALID_NODE_CODE, const NodeWeight Weight = DEFAULT_WEIGHT, const bool Active = true) : to(To), from(From), Weight(Weight), Active(Active) {
+		/** Default constructor. */
+		GraphNode(const NodeCode Code = INVALID_NODE_CODE, const Type& Data = Type(), const NodeWeight Weight = DEFAULT_WEIGHT, const bool Active = true) : code(Code), Data(Data), connections(), Weight(Weight), Active(Active) {
+		}
+
+
+		// GETTERS
+
+		/** Returns this node's unique code used to identify itself within its graph. */
+		NodeCode Code() const {
+			return code;
+		}
+
+		/** Returns whether the node's code is valid. */
+		bool IsValidNode() const {
+			return code != INVALID_NODE_CODE;
+		}
+
+
+		// CONNECTIONS
+
+		/** Returns this node's neighboring connections. */
+		const Map<NodeCode, Connection>& Connections() const {
+			return connections;
+		}
+
+		/** Connects this node to the given node and returns a pointer to the connection. */
+		Connection* Connect(const NodeCode Node, const NodeWeight Weight = DEFAULT_WEIGHT, const bool Active = true) {
+			if (Node == INVALID_NODE_CODE || Node == code) {
+				return nullptr;
 			}
+			return &connections.Insert(Node, Connection(Node, code, Weight, Active));
+		}
+
+		/**
+		 * Disconnects this node from the given node.<br/>
+		 * Returns whether the node was successfully disconnected.
+		 */
+		bool Disconnect(const NodeCode Node) {
+			return connections.Erase(Node);
+		}
+
+		/** Returns a pointer to the connection to the given node if this node is connected to it, or nullptr if not. */
+		Connection* FindConnection(const NodeCode Node) {
+			return connections.Find(Node);
+		}
+
+		/** Returns a constant pointer to the connection to the given node if this node is connected to it, or nullptr if not. */
+		const Connection* FindConnection(const NodeCode Node) const {
+			return connections.Find(Node);
+		}
+
+		/** Returns whether this node is connected to the given node. */
+		bool IsConnected(const NodeCode Node) const {
+			return connections.ContainsKey(Node);
+		}
+
+		/** Returns the number of connections this node has. */
+		size_t TotalConnections() const {
+			return connections.Size();
+		}
 
 
-			// GETTERS
+		// OPERATORS
 
-			/** Returns the code of the node this connection is linked towards within its graph. */
-			NodeCode To() const {
-				return to;
-			}
+		/** Returns a pointer to this nodes connection to the given node if it exists, otherwise nullptr. */
+		Connection* operator[](const NodeCode Node) {
+			return FindConnection(Node);
+		}
 
-			/** Returns the code of the node that owns this connection within its graph. */
-			NodeCode From() const {
-				return from;
-			}
+		/** Returns a constant pointer to this nodes connection to the given node if it exists, otherwise nullptr. */
+		const Connection* operator[](const NodeCode Node) const {
+			return FindConnection(Node);
+		}
 
-			/** Returns whether this connection is a valid connection for a node. */
-			bool IsValidConnection() const {
-				return to != INVALID_NODE_CODE && from != INVALID_NODE_CODE;
-			}
-		};
+		/** Returns whether this node is equivilent to the given node. */
+		bool operator==(const GraphNode& Node) const {
+			return code == Node.code;
+		}
 
+		/** Returns whether this node is not equivilent to the given node. */
+		bool operator!=(const GraphNode& Node) const {
+			return code != Node.code;
+		}
 
-		// NODE
-
-		/** Represents an individual graph node with its own data and connections. */
-		template <typename Type>
-		struct Node final {
-
-			// CONNECTION
-
-			/** Represents a link between two graph nodes. */
-			using Connection = Connection<Type>;
-
-		private:
-
-			// DATA
-
-			/** The unique code used to identify this node in its graph. */
-			NodeCode code;
-
-		public:
-
-			// DATA
-
-			/** The data this node owns. */
-			Type Data;
-
-		private:
-
-			// DATA
-
-			/** Each of this node's connections within its graph by their node codes. */
-			Map<NodeCode, Connection> connections;
-
-		public:
-
-			// DATA
-
-			/** The weight of this individual node. */
-			NodeWeight Weight;
-
-			/** Whether this node is currently active. */
-			bool Active;
-
-
-			// CONSTRUCTOR
-
-			/** Default constructor. */
-			Node(const NodeCode Code = INVALID_NODE_CODE, const Type& Data = Type(), const NodeWeight Weight = DEFAULT_WEIGHT, const bool Active = true) : code(Code), Data(Data), connections(), Weight(Weight), Active(Active) {
-			}
-
-
-			// GETTERS
-
-			/** Returns this node's unique code used to identify itself within its graph. */
-			NodeCode Code() const {
-				return code;
-			}
-
-			/** Returns whether the node's code is valid. */
-			bool IsValidNode() const {
-				return code != INVALID_NODE_CODE;
-			}
-
-
-			// CONNECTIONS
-
-			/** Returns this node's neighboring connections. */
-			const Map<NodeCode, Connection>& Connections() const {
-				return connections;
-			}
-
-			/** Connects this node to the given node and returns a pointer to the connection. */
-			Connection* Connect(const NodeCode Node, const NodeWeight Weight = DEFAULT_WEIGHT, const bool Active = true) {
-				if (Node == INVALID_NODE_CODE || Node == code) {
-					return nullptr;
-				}
-				return &connections.Insert(Node, Connection(Node, code, Weight, Active));
-			}
-
-			/**
-			 * Disconnects this node from the given node.<br/>
-			 * Returns whether the node was successfully disconnected.
-			 */
-			bool Disconnect(const NodeCode Node) {
-				return connections.Erase(Node);
-			}
-
-			/** Returns a pointer to the connection to the given node if this node is connected to it, or nullptr if not. */
-			Connection* FindConnection(const NodeCode Node) {
-				return connections.Find(Node);
-			}
-
-			/** Returns a constant pointer to the connection to the given node if this node is connected to it, or nullptr if not. */
-			const Connection* FindConnection(const NodeCode Node) const {
-				return connections.Find(Node);
-			}
-
-			/** Returns whether this node is connected to the given node. */
-			bool IsConnected(const NodeCode Node) const {
-				return connections.ContainsKey(Node);
-			}
-
-			/** Returns the number of connections this node has. */
-			size_t TotalConnections() const {
-				return connections.Size();
-			}
-
-
-			// OPERATORS
-
-			/** Returns a pointer to this nodes connection to the given node if it exists, otherwise nullptr. */
-			Connection* operator[](const NodeCode Node) {
-				return FindConnection(Node);
-			}
-
-			/** Returns a constant pointer to this nodes connection to the given node if it exists, otherwise nullptr. */
-			const Connection* operator[](const NodeCode Node) const {
-				return FindConnection(Node);
-			}
-
-			/** Returns whether this node is equivilent to the given node. */
-			bool operator==(const Node& Node) const {
-				return code == Node.code;
-			}
-
-			/** Returns whether this node is not equivilent to the given node. */
-			bool operator!=(const Node& Node) const {
-				return code != Node.code;
-			}
-
-			/** Returns whether this node is a valid node. */
-			explicit operator bool() const {
-				return code != INVALID_NODE_CODE;
-			}
-		};
-	}
+		/** Returns whether this node is a valid node. */
+		explicit operator bool() const {
+			return code != INVALID_NODE_CODE;
+		}
+	};
 
 
 	// HEURISTIC FUNCTION
@@ -240,7 +234,7 @@ namespace Toolbox {
 
 	/** Returns 0 as no heuristic was given. */
 	template <typename Type>
-	static Heuristic NoHeuristic(const Node<Type>& Current, const Node<Type>& End) {
+	static Heuristic NoHeuristic(const GraphNode<Type>& Current, const GraphNode<Type>& End) {
 		return 0;
 	}
 
@@ -248,8 +242,9 @@ namespace Toolbox {
 	// GRAPH
 
 	/** A collection of interconnected nodes that can be traversed based on their weights. */
-	template<typename Type, Heuristic(*HEURISTIC_FUNC)(const Node<Type>&, const Node<Type>&) = NoHeuristic>
+	template<typename Type, Heuristic(*HEURISTIC_FUNC)(const GraphNode<Type>&, const GraphNode<Type>&) = NoHeuristic>
 	class Graph final {
+		static_assert(HEURISTIC_FUNC != nullptr, "ERROR: Cannot pass a null function as a template parameter!");
 	public:
 
 		// NODE AND CONNECTION
@@ -264,7 +259,7 @@ namespace Toolbox {
 		using NodeWeight = size_t;
 
 		/** Represents an individual graph node with its own data and connections. */
-		using Node = Node<Type>;
+		using Node = GraphNode<Type>;
 
 		/** Represents a link between two graph nodes. */
 		using Connection = Connection<Type>;

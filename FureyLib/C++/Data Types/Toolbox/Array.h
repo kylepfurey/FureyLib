@@ -1,5 +1,5 @@
 // .h
-// Array Type
+// Fixed Array Type
 // by Kyle Furey
 
 #pragma once
@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include "Toolbox/Sorting.h"
 
-/** A collection of useful collection types in C++. */
+/** A collection of useful template types in C++. */
 namespace Toolbox {
 
 	// ARRAY

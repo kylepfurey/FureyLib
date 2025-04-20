@@ -5,7 +5,7 @@
 #pragma once
 #include "Queue.h"
 
-/** A collection of useful collection types in C++. */
+/** A collection of useful template types in C++. */
 namespace Toolbox {
 
 	// PRIORITY QUEUE

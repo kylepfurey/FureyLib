@@ -4,6 +4,7 @@
 
 #pragma once
 #include <functional>
+#include <utility>
 #include <cstdint>
 #include "Vector.h"
 #include "List.h"
@@ -11,7 +12,7 @@
 // The maximum number of elements allowed in a bucket before rehashing.
 #define REHASH_MAX 3
 
-/** A collection of useful collection types in C++. */
+/** A collection of useful template types in C++. */
 namespace Toolbox {
 
 	// HASH FUNCTION
@@ -48,6 +49,7 @@ namespace Toolbox {
 	/** A collection of values that allow fast lookups via hashing. */
 	template<typename Type, Hash(*HASH_FUNC)(const Type&) = Hashify>
 	class Set final {
+		static_assert(HASH_FUNC != nullptr, "ERROR: Cannot pass a null function as a template parameter!");
 
 		// DATA
 

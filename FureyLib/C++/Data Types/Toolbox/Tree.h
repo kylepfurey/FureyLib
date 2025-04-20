@@ -1,5 +1,5 @@
 // .h
-// Tree Type
+// N-Dimensional Tree Type
 // by Kyle Furey
 
 #pragma once
@@ -13,7 +13,7 @@
 // The maximum possible distance value.
 #define DISTANCE_MAX DBL_MAX
 
-/** A collection of useful collection types in C++. */
+/** A collection of useful template types in C++. */
 namespace Toolbox {
 
 	// TREE

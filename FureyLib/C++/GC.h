@@ -1,5 +1,5 @@
 // .h
-// Static Garbage Collector Type
+// Compile-time Garbage Collector Class
 // by Kyle Furey
 
 #pragma once

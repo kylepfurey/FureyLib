@@ -1,4 +1,4 @@
-﻿//.cs
+// .cs
 // Memory Manager Type
 // by Kyle Furey
 
@@ -76,6 +76,18 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable 
     }
 
     /// <summary>
+    /// Creates a new managed object from the given arguments and returns a weak reference to it.
+    /// </summary>
+    public WeakReference<DerivedType> New<DerivedType>(params object[] Arguments) where DerivedType : class, Type
+    {
+        DerivedType Instance = (DerivedType)Activator.CreateInstance(typeof(DerivedType), Arguments);
+
+        managedObjects.Add(Instance);
+
+        return new WeakReference<DerivedType>(Instance);
+    }
+
+    /// <summary>
     /// Creates a new managed object from a clone of the given object and returns a weak reference to it.
     /// </summary>
     public WeakReference<DerivedType> New<DerivedType>(DerivedType Cloned) where DerivedType : class, Type, ICloneable
@@ -99,11 +111,20 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable 
     }
 
     /// <summary>
+    /// Creates a new managed object from the given arguments and returns a weak reference to it.
+    /// </summary>
+    public WeakReference<DerivedType> Add<DerivedType>(params object[] Arguments) where DerivedType : class, Type
+    {
+        return New<DerivedType>(Arguments);
+    }
+
+
+    /// <summary>
     /// Creates a new managed object from a clone of the given object and returns a weak reference to it.
     /// </summary>
     public WeakReference<DerivedType> Add<DerivedType>(DerivedType Cloned) where DerivedType : class, Type, ICloneable
     {
-        return New(Cloned);
+        return New<DerivedType>(Cloned);
     }
 
 
@@ -255,6 +276,38 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable 
 }
 
 
+// WEAK REFERENCE EXTENSIONS
+
+/// <summary>
+/// Extension methods for WeakReference<T>.
+/// </summary>
+public static class WeakReferenceExtensions
+{
+    // WEAK REFERENCE EXTENSIONS
+
+    /// <summary>
+    /// Returns whether this weak reference is still valid.
+    /// </summary>
+    public static bool IsValid<Type>(this WeakReference<Type> Self) where Type : class
+    {
+        return Self != null && Self.TryGetTarget(out Type Value);
+    }
+
+    /// <summary>
+    /// Returns the underlying value of this weak reference or null if it is not valid.
+    /// </summary>
+    public static Type Get<Type>(this WeakReference<Type> Self) where Type : class
+    {
+        if (Self != null && Self.TryGetTarget(out Type Value))
+        {
+            return Value;
+        }
+
+        return null;
+    }
+}
+
+
 // REFERENCE
 
 /// <summary>
@@ -275,7 +328,15 @@ public sealed class Reference<Type> where Type : struct
     /// <summary>
     /// Default constructor.
     /// </summary>
-    public Reference(Type Data = default(Type))
+    public Reference()
+    {
+        Value = default(Type);
+    }
+
+    /// <summary>
+    /// Data constructor.
+    /// </summary>
+    public Reference(Type Data)
     {
         Value = Data;
     }

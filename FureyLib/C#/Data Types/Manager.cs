@@ -11,7 +11,7 @@ using System.Collections.Generic;
 /// <summary>
 /// A class used to manually instantiate and delete managed objects of a given type.
 /// </summary>
-public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable where Type : class
+public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : class
 {
     // DATA
 
@@ -41,14 +41,6 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable 
     public Manager(int Capacity = 16)
     {
         managedObjects = new List<Type>(Capacity);
-    }
-
-    /// <summary>
-    /// Destructor.
-    /// </summary>
-    ~Manager()
-    {
-        Clear();
     }
 
 
@@ -270,17 +262,6 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable 
     IEnumerator IEnumerable.GetEnumerator()
     {
         return managedObjects.GetEnumerator();
-    }
-
-
-    // DISPOSE
-
-    /// <summary>
-    /// Forcefully deletes all managed objects within the memory manager.
-    /// </summary>
-    public void Dispose()
-    {
-        Clear();
     }
 }
 

@@ -133,7 +133,7 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable 
     /// <summary>
     /// Forcefully deletes a managed object and returns whether it was successful.
     /// </summary>
-    public bool Delete(Type Deleted)
+    public bool Delete(Type Deleted, bool ForceGC = false)
     {
         if (managedObjects.Remove(Deleted))
         {
@@ -142,9 +142,12 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable 
                 Disposed.Dispose();
             }
 
-            GC.Collect();
+            if (ForceGC)
+            {
+                GC.Collect();
 
-            GC.WaitForPendingFinalizers();
+                GC.WaitForPendingFinalizers();
+            }
 
             return true;
         }
@@ -155,7 +158,7 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable 
     /// <summary>
     /// Forcefully deletes a managed object and returns whether it was successful.
     /// </summary>
-    public bool Delete(WeakReference<Type> Deleted)
+    public bool Delete(WeakReference<Type> Deleted, bool ForceGC = false)
     {
         if (Deleted != null && Deleted.TryGetTarget(out Type Target))
         {
@@ -166,9 +169,12 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable 
                     Disposed.Dispose();
                 }
 
-                GC.Collect();
+                if (ForceGC)
+                {
+                    GC.Collect();
 
-                GC.WaitForPendingFinalizers();
+                    GC.WaitForPendingFinalizers();
+                }
 
                 return true;
             }
@@ -180,17 +186,17 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable 
     /// <summary>
     /// Forcefully deletes a managed object and returns whether it was successful.
     /// </summary>
-    public bool Remove(Type Deleted)
+    public bool Remove(Type Deleted, bool ForceGC = false)
     {
-        return Delete(Deleted);
+        return Delete(Deleted, ForceGC);
     }
 
     /// <summary>
     /// Forcefully deletes a managed object and returns whether it was successful.
     /// </summary>
-    public bool Remove(WeakReference<Type> Deleted)
+    public bool Remove(WeakReference<Type> Deleted, bool ForceGC = false)
     {
-        return Delete(Deleted);
+        return Delete(Deleted, ForceGC);
     }
 
 
@@ -199,7 +205,7 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable 
     /// <summary>
     /// Forcefully deletes all managed objects within the memory manager.
     /// </summary>
-    public int Clear()
+    public int Clear(bool ForceGC = false)
     {
         int Count = managedObjects.Count;
 
@@ -213,9 +219,12 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type>, IDisposable 
 
         managedObjects.Clear();
 
-        GC.Collect();
+        if (ForceGC)
+        {
+            GC.Collect();
 
-        GC.WaitForPendingFinalizers();
+            GC.WaitForPendingFinalizers();
+        }
 
         return Count;
     }
@@ -323,7 +332,7 @@ public sealed class Reference<Type> where Type : struct
     public Type Value { get; set; }
 
 
-    // CONSTRUCTOR
+    // CONSTRUCTORS
 
     /// <summary>
     /// Default constructor.

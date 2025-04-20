@@ -209,7 +209,7 @@ GarbageCollector GC;
 #define delete GC -= 
 
 
-#endif	// GC_ENABLED
+#endif	// GC_COMPILED
 
 
 // GARBAGE COLLECTOR

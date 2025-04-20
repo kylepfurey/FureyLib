@@ -6,7 +6,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-// MANAGER
+
+// MEMORY MANAGER
 
 /// <summary>
 /// A class used to manually instantiate and delete managed objects of a given type.
@@ -20,17 +21,42 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// Objects can be manually created via Manager.New().<br/>
     /// Objects can be manually deleted via Manager.Delete().
     /// </summary>
-    private readonly List<Type> managedObjects;
+    public List<Type> ManagedObjects { get; private set; }
 
     /// <summary>
     /// The current number of managed objects.
     /// </summary>
-    public int Count => managedObjects.Count;
+    public int Count => ManagedObjects.Count;
 
     /// <summary>
     /// The maximum number of managed objects before automatically expanding.
     /// </summary>
-    public int Capacity => managedObjects.Capacity;
+    public int Capacity => ManagedObjects.Capacity;
+
+
+    // DELEGATES
+
+    /// <summary>
+    /// A delegate for newly created managed objects.<br/>
+    /// NOTE: Storing ManagedObject will prolong the lifetime of weak references to it!
+    /// </summary>
+    public delegate void NewObjectDelegate(Type ManagedObject);
+
+    /// <summary>
+    /// A delegate for deleted managed objects.<br/>
+    /// NOTE: Storing ManagedObject will prolong the lifetime of weak references to it!
+    /// </summary>
+    public delegate void ObjectDeletedDelegate(Type ManagedObject);
+
+    /// <summary>
+    /// Events for when a new managed object is created.
+    /// </summary>
+    public event NewObjectDelegate OnNewObject;
+
+    /// <summary>
+    /// Events for when a managed object is deleted.
+    /// </summary>
+    public event ObjectDeletedDelegate OnObjectDeleted;
 
 
     // CONSTRUCTORS
@@ -40,7 +66,7 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// </summary>
     public Manager(int Capacity = 16)
     {
-        managedObjects = new List<Type>(Capacity);
+        ManagedObjects = new List<Type>(Capacity);
     }
 
 
@@ -51,7 +77,7 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// </summary>
     public WeakReference<Type> this[int Index]
     {
-        get => new WeakReference<Type>(managedObjects[Index]);
+        get => new WeakReference<Type>(ManagedObjects[Index]);
     }
 
 
@@ -62,9 +88,11 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// </summary>
     public WeakReference<DerivedType> New<DerivedType>() where DerivedType : class, Type, new()
     {
-        managedObjects.Add((Type)(new DerivedType()));
+        ManagedObjects.Add((Type)(new DerivedType()));
 
-        return new WeakReference<DerivedType>((DerivedType)managedObjects[managedObjects.Count - 1]);
+        OnNewObject?.Invoke(ManagedObjects[ManagedObjects.Count - 1]);
+
+        return new WeakReference<DerivedType>((DerivedType)ManagedObjects[ManagedObjects.Count - 1]);
     }
 
     /// <summary>
@@ -74,7 +102,9 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     {
         DerivedType Instance = (DerivedType)Activator.CreateInstance(typeof(DerivedType), Arguments);
 
-        managedObjects.Add(Instance);
+        ManagedObjects.Add(Instance);
+
+        OnNewObject?.Invoke(ManagedObjects[ManagedObjects.Count - 1]);
 
         return new WeakReference<DerivedType>(Instance);
     }
@@ -89,9 +119,11 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
             return null;
         }
 
-        managedObjects.Add((Type)(Cloned.Clone()));
+        ManagedObjects.Add((Type)(Cloned.Clone()));
 
-        return new WeakReference<DerivedType>((DerivedType)managedObjects[managedObjects.Count - 1]);
+        OnNewObject?.Invoke(ManagedObjects[ManagedObjects.Count - 1]);
+
+        return new WeakReference<DerivedType>((DerivedType)ManagedObjects[ManagedObjects.Count - 1]);
     }
 
     /// <summary>
@@ -125,11 +157,13 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// <summary>
     /// Forcefully deletes a managed object and returns whether it was successful.
     /// </summary>
-    public bool Delete(Type Deleted, bool ForceGC = false)
+    public bool Delete(Type ManagedObject, bool ForceGC = false)
     {
-        if (managedObjects.Remove(Deleted))
+        if (ManagedObjects.Remove(ManagedObject))
         {
-            if (Deleted is IDisposable Disposed)
+            OnObjectDeleted?.Invoke(ManagedObject);
+
+            if (ManagedObject is IDisposable Disposed)
             {
                 Disposed.Dispose();
             }
@@ -150,12 +184,14 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// <summary>
     /// Forcefully deletes a managed object and returns whether it was successful.
     /// </summary>
-    public bool Delete(WeakReference<Type> Deleted, bool ForceGC = false)
+    public bool Delete<DerivedType>(WeakReference<DerivedType> ManagedObject, bool ForceGC = false) where DerivedType : class, Type
     {
-        if (Deleted != null && Deleted.TryGetTarget(out Type Target))
+        if (ManagedObject != null && ManagedObject.TryGetTarget(out DerivedType Target))
         {
-            if (managedObjects.Remove(Target))
+            if (ManagedObjects.Remove(Target))
             {
+                OnObjectDeleted?.Invoke(Target);
+
                 if (Target is IDisposable Disposed)
                 {
                     Disposed.Dispose();
@@ -178,17 +214,17 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// <summary>
     /// Forcefully deletes a managed object and returns whether it was successful.
     /// </summary>
-    public bool Remove(Type Deleted, bool ForceGC = false)
+    public bool Remove(Type ManagedObject, bool ForceGC = false)
     {
-        return Delete(Deleted, ForceGC);
+        return Delete(ManagedObject, ForceGC);
     }
 
     /// <summary>
     /// Forcefully deletes a managed object and returns whether it was successful.
     /// </summary>
-    public bool Remove(WeakReference<Type> Deleted, bool ForceGC = false)
+    public bool Remove<DerivedType>(WeakReference<DerivedType> ManagedObject, bool ForceGC = false) where DerivedType : class, Type
     {
-        return Delete(Deleted, ForceGC);
+        return Delete<DerivedType>(ManagedObject, ForceGC);
     }
 
 
@@ -199,9 +235,9 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// </summary>
     public int Clear(bool ForceGC = false)
     {
-        int Count = managedObjects.Count;
+        int Count = ManagedObjects.Count;
 
-        foreach (Type Deleted in managedObjects)
+        foreach (Type Deleted in ManagedObjects)
         {
             if (Deleted is IDisposable Disposed)
             {
@@ -209,7 +245,7 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
             }
         }
 
-        managedObjects.Clear();
+        ManagedObjects.Clear();
 
         if (ForceGC)
         {
@@ -227,19 +263,19 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// <summary>
     /// Returns whether the given managed object is within this memory manager.
     /// </summary>
-    public bool Contains(Type Deleted)
+    public bool Contains(Type ManagedObject)
     {
-        return managedObjects.Contains(Deleted);
+        return ManagedObjects.Contains(ManagedObject);
     }
 
     /// <summary>
     /// Returns whether the given managed object is within this memory manager.
     /// </summary>
-    public bool Contains(WeakReference<Type> Deleted)
+    public bool Contains(WeakReference<Type> ManagedObject)
     {
-        if (Deleted != null && Deleted.TryGetTarget(out Type Target))
+        if (ManagedObject != null && ManagedObject.TryGetTarget(out Type Target))
         {
-            return managedObjects.Contains(Target);
+            return ManagedObjects.Contains(Target);
         }
 
         return false;
@@ -253,7 +289,7 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// </summary>
     public IEnumerator<Type> GetEnumerator()
     {
-        return managedObjects.GetEnumerator();
+        return ManagedObjects.GetEnumerator();
     }
 
     /// <summary>
@@ -261,7 +297,7 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// </summary>
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return managedObjects.GetEnumerator();
+        return ManagedObjects.GetEnumerator();
     }
 }
 

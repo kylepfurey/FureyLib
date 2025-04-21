@@ -173,7 +173,10 @@ public:
 		return false;
 	}
 
-	/** Deletes ALL of the Garbage Collector's pointers and returns how many were collected. */
+	/**
+	 * Deletes ALL of the Garbage Collector's pointers and returns how many were collected.<br/>
+	 * NOTE: This is DANGEROUS to manually call as it causes dangling pointers.
+	 */
 	size_t Collect(bool Log = false) {
 		size_t Count = garbage.size();
 		for (auto& Garbage : garbage) {

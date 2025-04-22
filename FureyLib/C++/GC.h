@@ -5,7 +5,7 @@
 #pragma once
 #include <iostream>
 #include <list>
-#include <exception>
+#include <stdexcept>
 
 // Whether the Garbage Collector was compiled.
 #define GC_COMPILED 1

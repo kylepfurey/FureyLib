@@ -138,6 +138,9 @@ public:
 	/** Returns whether the given pointer is already referenced in the Garbage Collector. */
 	template<typename Type>
 	bool IsTracked(const Type* Memory) const {
+		if (Memory == nullptr) {
+			return false;
+		}
 		for (auto Garbage : garbage) {
 			if (Garbage != nullptr && Garbage->Memory<Type>() == Memory) {
 				return true;
@@ -149,7 +152,7 @@ public:
 	/** Adds a new pointer to the Garbage Collector. */
 	template<typename Type>
 	Type* Track(Type* Memory) {
-		if (IsTracked(Memory)) {
+		if (Memory == nullptr || IsTracked(Memory)) {
 			return Memory;
 		}
 		garbage.push_back(new TemplatedGarbage<Type>(Memory));
@@ -159,6 +162,9 @@ public:
 	/** Removes a pointer from the Garbage Collector and frees it. */
 	template<typename Type>
 	bool Delete(Type*& Memory) {
+		if (Memory == nullptr) {
+			return false;
+		}
 		auto Iterator = garbage.begin();
 		for (auto& Garbage : garbage) {
 			if (Garbage != nullptr && Garbage->Memory<Type>() == Memory) {
@@ -208,10 +214,10 @@ GarbageCollector GC;
 
 // KEYWORD OVERRIDES
 
-// Garbage collector new keyword override.
+// Garbage Collector new keyword override.
 #define new GC += new
 
-// Garbage collector delete keyword override.
+// Garbage Collector delete keyword override.
 #define delete GC -=
 
 

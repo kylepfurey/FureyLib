@@ -103,6 +103,11 @@ public:
         return nullptr;
     }
 
+    /** Returns whether the map contains the given key. */
+    bool contains(const K &key) const {
+        return find(key) != nullptr;
+    }
+
     /** Inserts a new pair with the given key and value. */
     V &insert(const K &key, const V &value) {
         const size_t hash = std::hash<K>{}(key);
@@ -136,6 +141,14 @@ public:
             ++iter;
         }
         return false;
+    }
+
+    /** Clears the map of all its pairs. */
+    void clear() {
+        for (auto &bucket : pairs) {
+            bucket.clear();
+        }
+        count = 0;
     }
 
     /** Returns a reference to the value of a pair that matches the given key. */

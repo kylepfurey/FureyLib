@@ -155,7 +155,7 @@ public:
 		if (Memory == nullptr || IsTracked(Memory)) {
 			return Memory;
 		}
-		garbage.push_back(new TemplatedGarbage<Type>(Memory));
+		garbage.push_front(new TemplatedGarbage<Type>(Memory));
 		return Memory;
 	}
 

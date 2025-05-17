@@ -12,7 +12,7 @@
 #include <cstdint>
 
 // Whether the memory heap class will throw exceptions.
-#define MEMHEAP_THROWS 0
+#define MEMHEAP_THROWS 1
 
 
 // MEMORY HEAP

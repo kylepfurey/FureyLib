@@ -82,11 +82,11 @@ class GarbageCollector final {
 
 	// DATA
 
-	/** A linked list of pointers to the Garbage Collector's managed memory. */
-	std::list<Garbage*> garbage;
-
 	/** Whether the Garbage Collector is currently enabled. */
 	static bool Enabled;
+
+	/** A linked list of pointers to the Garbage Collector's managed memory. */
+	std::list<Garbage*> garbage;
 
 public:
 

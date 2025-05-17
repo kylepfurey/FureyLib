@@ -51,6 +51,7 @@ class GarbageCollector final {
 	template <typename Type>
 	struct TemplatedGarbage final : public Garbage {
 	private:
+
 		// DATA
 
 		/** The underlying pointer to the managed memory. */
@@ -83,7 +84,7 @@ class GarbageCollector final {
 	// DATA
 
 	/** Whether the Garbage Collector is currently enabled. */
-	static bool Enabled;
+	static bool enabled;
 
 	/** A linked list of pointers to the Garbage Collector's managed memory. */
 	std::list<Garbage*> garbage;
@@ -94,17 +95,17 @@ public:
 
 	/** Default constructor. */
 	GarbageCollector() {
-		if (Enabled) {
+		if (enabled) {
 			std::cerr << "\n\nERROR: Only one Garbage Collector may be instantiated at a time!\nUse GC for global access." << std::endl;
 			throw std::runtime_error("ERROR: Only one Garbage Collector may be instantiated at a time!\nUse GC for global access.");
 		}
-		Enabled = true;
+		enabled = true;
 	}
 
 	/** Destructor. */
 	~GarbageCollector() {
 		Collect(true);
-		Enabled = false;
+		enabled = false;
 	}
 
 
@@ -127,7 +128,7 @@ public:
 
 	/** Returns whether the Garbage Collector is currently enabled. */
 	static bool IsEnabled() {
-		return Enabled;
+		return enabled;
 	}
 
 	/** Returns how many pointers are currently stored within the Garbage Collector. */
@@ -206,7 +207,7 @@ public:
 // STATIC VARIABLE INITIALIZATION
 
 // Whether the Garbage Collector is currently enabled.
-bool GarbageCollector::Enabled = false;
+bool GarbageCollector::enabled = false;
 
 /** The global instance of the Garbage Collector. */
 GarbageCollector GC;

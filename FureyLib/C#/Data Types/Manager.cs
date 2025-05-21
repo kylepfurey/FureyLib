@@ -17,11 +17,11 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     // DATA
 
     /// <summary>
-    /// Each managed object this memory manager currently stores.<br/>
+    /// A linked list of each managed object this memory manager currently stores.<br/>
     /// Objects can be manually created via Manager.New().<br/>
     /// Objects can be manually deleted via Manager.Delete().
     /// </summary>
-    public List<Type> ManagedObjects { get; private set; }
+    public LinkedList<Type> ManagedObjects { get; private set; }
 
     /// <summary>
     /// The current number of managed objects.
@@ -29,9 +29,14 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     public int Count => ManagedObjects.Count;
 
     /// <summary>
-    /// The maximum number of managed objects before automatically expanding.
+    /// A weak reference to the oldest created managed object.
     /// </summary>
-    public int Capacity => ManagedObjects.Capacity;
+    public WeakReference<Type> First => new WeakReference<Type>(ManagedObjects.First.Value);
+
+    /// <summary>
+    /// A weak reference to the most recently created managed object.
+    /// </summary>
+    public WeakReference<Type> Last => new WeakReference<Type>(ManagedObjects.Last.Value);
 
 
     // DELEGATES
@@ -64,9 +69,9 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// <summary>
     /// Default constructor.
     /// </summary>
-    public Manager(int Capacity = 16)
+    public Manager()
     {
-        ManagedObjects = new List<Type>(Capacity);
+        ManagedObjects = new LinkedList<Type>();
     }
 
 
@@ -77,7 +82,36 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// </summary>
     public WeakReference<Type> this[int Index]
     {
-        get => new WeakReference<Type>(ManagedObjects[Index]);
+        get
+        {
+            if (Index < 0 || Index >= ManagedObjects.Count)
+            {
+                return null;
+            }
+
+            LinkedListNode<Type> Node = null;
+
+            if (Index > ManagedObjects.Count / 2)
+            {
+                Node = ManagedObjects.Last;
+
+                for (int i = ManagedObjects.Count - 1; i > Index; --i)
+                {
+                    Node = Node.Previous;
+                }
+            }
+            else
+            {
+                Node = ManagedObjects.First;
+
+                for (int i = 0; i < Index; ++i)
+                {
+                    Node = Node.Next;
+                }
+            }
+
+            return new WeakReference<Type>(Node.Value);
+        }
     }
 
 
@@ -88,11 +122,11 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     /// </summary>
     public WeakReference<DerivedType> New<DerivedType>() where DerivedType : class, Type, new()
     {
-        ManagedObjects.Add((Type)(new DerivedType()));
+        ManagedObjects.AddLast((Type)(new DerivedType()));
 
-        OnNewObject?.Invoke(ManagedObjects[ManagedObjects.Count - 1]);
+        OnNewObject?.Invoke(ManagedObjects.Last.Value);
 
-        return new WeakReference<DerivedType>((DerivedType)ManagedObjects[ManagedObjects.Count - 1]);
+        return new WeakReference<DerivedType>((DerivedType)ManagedObjects.Last.Value);
     }
 
     /// <summary>
@@ -102,28 +136,11 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     {
         DerivedType Instance = (DerivedType)Activator.CreateInstance(typeof(DerivedType), Arguments);
 
-        ManagedObjects.Add(Instance);
+        ManagedObjects.AddLast(Instance);
 
-        OnNewObject?.Invoke(ManagedObjects[ManagedObjects.Count - 1]);
+        OnNewObject?.Invoke(ManagedObjects.Last.Value);
 
         return new WeakReference<DerivedType>(Instance);
-    }
-
-    /// <summary>
-    /// Creates a new managed object from a clone of the given object and returns a weak reference to it.
-    /// </summary>
-    public WeakReference<DerivedType> New<DerivedType>(DerivedType Cloned) where DerivedType : class, Type, ICloneable
-    {
-        if (Cloned == null)
-        {
-            return null;
-        }
-
-        ManagedObjects.Add((Type)(Cloned.Clone()));
-
-        OnNewObject?.Invoke(ManagedObjects[ManagedObjects.Count - 1]);
-
-        return new WeakReference<DerivedType>((DerivedType)ManagedObjects[ManagedObjects.Count - 1]);
     }
 
     /// <summary>
@@ -140,15 +157,6 @@ public sealed class Manager<Type> : IEnumerable, IEnumerable<Type> where Type : 
     public WeakReference<DerivedType> Add<DerivedType>(params object[] Arguments) where DerivedType : class, Type
     {
         return New<DerivedType>(Arguments);
-    }
-
-
-    /// <summary>
-    /// Creates a new managed object from a clone of the given object and returns a weak reference to it.
-    /// </summary>
-    public WeakReference<DerivedType> Add<DerivedType>(DerivedType Cloned) where DerivedType : class, Type, ICloneable
-    {
-        return New<DerivedType>(Cloned);
     }
 
 

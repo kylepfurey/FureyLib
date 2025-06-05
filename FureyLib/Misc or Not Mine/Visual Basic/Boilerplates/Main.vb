@@ -25,5 +25,5 @@ Namespace Application
 
 			Return 0
 		End Function
-	End Class
+	End Module
 End Namespace

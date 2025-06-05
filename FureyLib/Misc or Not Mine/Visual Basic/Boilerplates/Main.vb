@@ -1,6 +1,10 @@
 ' .vb
 ' Program Main Entry Point Script
 
+Imports System
+Imports System.Collections
+Imports System.Collections.Generic
+
 Namespace Application
 
 	''' <summary>

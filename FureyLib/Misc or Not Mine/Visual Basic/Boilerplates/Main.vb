@@ -11,7 +11,7 @@ Namespace Application
 		''' <summary>
 		''' Entry point of the program.
 		''' </summary>
-		''' <param name="args"></param>
+		''' <param name="cmdArgs"></param>
 		''' <returns>The return code of the program.</returns>
 		Public Shared Function Main(ByVal cmdArgs() As String) As Integer
 

@@ -8,9 +8,9 @@ Imports System.Collections.Generic
 Namespace Application
 
 	''' <summary>
-	''' The class representing the program that the application is running on.
+	''' The module representing the program that the application is running on.
 	''' </summary>
-	Public Class Program
+	Public Module Program
 
 		''' <summary>
 		''' Entry point of the program.

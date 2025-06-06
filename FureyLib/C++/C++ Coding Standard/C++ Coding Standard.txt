@@ -9,7 +9,7 @@ C++ Coding Standard
         if (condition) {
         } else {
         }
-     3. Else statements start on the line after the closing brace.
+     3. Else statements start on the same line as the closing brace.
      4. Avoid nested if and else statements as much as possible. Keep scopes and statements short and sweet.
      5. Always use switch statements over chained if statements. If you cannot use a switch statement, minimize the number of conditions checked.
      6. Always use braces to denote scope. Avoid using inline statements.

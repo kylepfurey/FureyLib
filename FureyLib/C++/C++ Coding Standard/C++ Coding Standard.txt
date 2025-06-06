@@ -7,8 +7,7 @@ C++ Coding Standard
      1. Use tabs that equal 4 spaces.
      2. Use trailing braces like:
         if (condition) {
-        }
-        else {
+        } else {
         }
      3. Else statements start on the line after the closing brace.
      4. Avoid nested if and else statements as much as possible. Keep scopes and statements short and sweet.

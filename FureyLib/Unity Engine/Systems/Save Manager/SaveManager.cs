@@ -1,5 +1,5 @@
 // .cs
-// Singleton Save Manager Class
+// Singleton Save Manager Component
 // by Kyle Furey
 
 #nullable enable
@@ -8,10 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
-using UnityEngine;
 using UnityEditor;
-using Newtonsoft.Json;
+using UnityEngine;
 
 /// <summary>
 /// A singleton component used to manage saved data to and from save files.
@@ -25,6 +23,115 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     public class SaveFile
     {
+        // CLASSES
+
+        /// <summary>
+        /// A collection of save data specific to an element of the game.
+        /// </summary>
+        public class SaveData
+        {
+            // VARIABLES
+
+            /// <summary>
+            /// All of this category's stored properties stored as serialized strings.
+            /// </summary>
+            private Dictionary<string, string> properties = null!;
+
+
+            // PROPERTIES
+
+            /// <summary>
+            /// The category of this save data.
+            /// </summary>
+            public string category { get; private set; } = string.Empty;
+
+
+            // CONSTRUCTOR
+
+            /// <summary>
+            /// Default constructor.
+            /// </summary>
+            public SaveData(string category)
+            {
+                this.category = category;
+                this.properties = new Dictionary<string, string>();
+            }
+
+            /// <summary>
+            /// Property constructor.
+            /// </summary>
+            public SaveData(string category, Dictionary<string, string> properties)
+            {
+                this.category = category;
+                this.properties = properties;
+            }
+
+
+            // METHODS
+
+            /// <summary>
+            /// Returns all of this category's properties.
+            /// </summary>
+            public Dictionary<string, string> AllProperties() => properties;
+
+            /// <summary>
+            /// Saves the given property to this category and returns whether a property was overwritten.
+            /// </summary>
+            public bool SaveProperty<Type>(string property, Type value)
+            {
+                property = property.Trim();
+
+                if (string.IsNullOrWhiteSpace(property))
+                {
+                    Debug.LogError("SAVE ERROR: Saving an invalid property!\n" +
+                        "Property Name: " +
+                        property);
+                    return false;
+                }
+
+                bool exists = properties.ContainsKey(property);
+                properties[property] = value.Serialize();
+                return exists;
+            }
+
+            /// <summary>
+            /// Loads the given property from this category if it was found and returns whether the property was found.
+            /// </summary>
+            public bool LoadProperty<Type>(string property, ref Type value)
+            {
+                property = property.Trim();
+
+                if (properties.ContainsKey(property))
+                {
+                    value = properties[property].Deserialize<Type>();
+                    return true;
+                }
+
+                return false;
+            }
+
+            /// <summary>
+            /// Erases a property from this category and returns whether the property was successfully erased.
+            /// </summary>
+            public bool EraseProperty(string property) => properties.Remove(property.Trim());
+
+            /// <summary>
+            /// Returns whether the given property is saved within this category.
+            /// </summary>
+            public bool HasProperty(string property) => properties.ContainsKey(property.Trim());
+
+            /// <summary>
+            /// Clears all properties within this category.
+            /// </summary>
+            public void ClearProperties() => properties.Clear();
+
+            /// <summary>
+            /// Returns the total number of stored properties.
+            /// </summary>
+            public int PropertyCount() => properties.Count;
+        }
+
+
         // VARIABLES
 
         /// <summary>
@@ -85,42 +192,24 @@ public class SaveManager : MonoBehaviour
             {
                 try
                 {
-                    string[] lines = File.ReadAllLines(path);
-                    if (lines == null || lines.Length == 0)
+                    string text = File.ReadAllText(path).Trim();
+                    if (string.IsNullOrEmpty(text) || text.Length == 0)
                     {
+                        Debug.LogError("SAVE ERROR: Save file was empty!");
                         return;
                     }
 
-                    version = lines[0].Trim();
-
-                    string category = string.Empty;
-                    for (int i = 1; i < lines.Length; ++i)
+                    SerializableSaveFile saveFile = text.Deserialize<SerializableSaveFile>();
+                    if (saveFile.categories == null)
                     {
-                        if (string.IsNullOrWhiteSpace(lines[i]))
-                        {
-                            if (category != string.Empty)
-                            {
-                                category = string.Empty;
-                            }
-                        }
-                        else
-                        {
-                            if (category == string.Empty)
-                            {
-                                category = lines[i].Trim().ToUpper();
-                                categories[category] = new SaveData();
-                            }
-                            else
-                            {
-                                string[] keyValue = lines[i].Split('=');
-                                if (keyValue != null && keyValue.Length == 2)
-                                {
-                                    string key = keyValue[0].Trim();
-                                    string value = keyValue[1].Trim();
-                                    categories[category].AllProperties()[key] = value;
-                                }
-                            }
-                        }
+                        Debug.LogError("SAVE ERROR: Could not parse save file!");
+                        return;
+                    }
+
+                    version = saveFile.version;
+                    foreach (var pair in saveFile.categories)
+                    {
+                        categories[pair.Key] = new SaveData(pair.Key, pair.Value);
                     }
                 }
                 catch (Exception exception)
@@ -154,7 +243,7 @@ public class SaveManager : MonoBehaviour
 
             try
             {
-                File.WriteAllText(path, ToString());
+                File.WriteAllText(path, new SerializableSaveFile(this).Serialize());
                 return true;
             }
             catch (Exception exception)
@@ -194,7 +283,7 @@ public class SaveManager : MonoBehaviour
                 return null;
             }
 
-            SaveData saveData = new SaveData();
+            SaveData saveData = new SaveData(category);
             categories[category] = saveData;
 
             return saveData;
@@ -232,113 +321,43 @@ public class SaveManager : MonoBehaviour
         /// Returns the total number of categories for this save file.
         /// </summary>
         public int CategoryCount() => categories.Count;
-
-        /// <summary>
-        /// Serializes this save file and its categories into a parsable string.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder str = new StringBuilder();
-            str.AppendLine(saveVersion);
-            foreach (var pair in categories)
-            {
-                str.AppendLine(pair.Key.Trim().ToUpper());
-                str.AppendLine(pair.Value.ToString());
-            }
-            return str.ToString();
-        }
     }
 
+
+    // STRUCTURES
+
     /// <summary>
-    /// A collection of save data specific to an element of the game.
+    /// A serializable container for a save file written to disk.
     /// </summary>
-    public class SaveData
+    [Serializable]
+    public struct SerializableSaveFile
     {
         // VARIABLES
 
         /// <summary>
-        /// All of this category's stored properties stored as strings.
+        /// The version number of this save file (serializable).
         /// </summary>
-        private Dictionary<string, string> properties = new Dictionary<string, string>();
-
-
-        // METHODS
+        public string version;
 
         /// <summary>
-        /// Returns all of this category's properties.
+        /// All loaded save data contained within this file by category name (serializable).
         /// </summary>
-        public Dictionary<string, string> AllProperties() => properties;
+        public Dictionary<string, Dictionary<string, string>> categories;
+
+
+        // CONSTRUCTOR
 
         /// <summary>
-        /// Saves the given property to this category and returns whether a property was overwritten.
+        /// Default constructor.
         /// </summary>
-        public bool SaveProperty<Type>(string property, Type value)
+        public SerializableSaveFile(SaveFile saveFile)
         {
-            property = property.Trim();
-
-            if (string.IsNullOrWhiteSpace(property))
+            version = saveFile.version;
+            categories = new Dictionary<string, Dictionary<string, string>>(saveFile.CategoryCount());
+            foreach (var pair in saveFile.AllCategories())
             {
-                Debug.LogError("SAVE ERROR: Saving an invalid property!\n" +
-                    "Property Name: " +
-                    property);
-                return false;
+                categories[pair.Key] = pair.Value.AllProperties();
             }
-
-            bool exists = properties.ContainsKey(property);
-            properties[property] = JsonConvert.SerializeObject(value, Formatting.None);
-            return exists;
-        }
-
-        /// <summary>
-        /// Loads the given property from this category if it was found and returns whether the property was found.
-        /// </summary>
-        public bool LoadProperty<Type>(string property, ref Type value)
-        {
-            property = property.Trim();
-
-            if (properties.ContainsKey(property))
-            {
-                value = JsonConvert.DeserializeObject<Type>(properties[property])!;
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Erases a property from this category and returns whether the property was successfully erased.
-        /// </summary>
-        public bool EraseProperty(string property) => properties.Remove(property.Trim());
-
-        /// <summary>
-        /// Returns whether the given property is saved within this category.
-        /// </summary>
-        public bool HasProperty(string property) => properties.ContainsKey(property.Trim());
-
-        /// <summary>
-        /// Clears all properties within this category.
-        /// </summary>
-        public void ClearProperties() => properties.Clear();
-
-        /// <summary>
-        /// Returns the total number of stored properties.
-        /// </summary>
-        public int PropertyCount() => properties.Count;
-
-        /// <summary>
-        /// Serializes this category's save data into a list of all properties and their values.
-        /// </summary>
-        public override string ToString()
-        {
-            StringBuilder result = new StringBuilder();
-            foreach (var pair in properties)
-            {
-                result.Append(pair.Key);
-                result.Append('=');
-                result.AppendLine(pair.Value);
-            }
-            return result.ToString();
         }
     }
 
@@ -382,6 +401,11 @@ public class SaveManager : MonoBehaviour
     /// The extension to save each save file with.
     /// </summary>
     public static string saveExtension => ".sav";
+
+    /// <summary>
+    /// The serializer used for save data.
+    /// </summary>
+    public static ISerializer serializer => ISerializer.instance;
 
 
     // EVENTS
@@ -534,7 +558,7 @@ public class SaveManager : MonoBehaviour
             return false;
         }
 
-        SaveData? category = currentSave.GetCategory(savedObjects[savedObject]);
+        SaveFile.SaveData? category = currentSave.GetCategory(savedObjects[savedObject]);
         if (category == null)
         {
             Debug.LogError("SAVE ERROR: Saving an object with an invalid category!\n" +
@@ -607,7 +631,7 @@ public class SaveManager : MonoBehaviour
             return false;
         }
 
-        SaveData? category = currentSave.GetCategory(savedObjects[savedObject]);
+        SaveFile.SaveData? category = currentSave.GetCategory(savedObjects[savedObject]);
         if (category == null)
         {
             Debug.LogError("SAVE ERROR: Loading an object with an invalid category!\n" +
@@ -627,8 +651,8 @@ public class SaveManager : MonoBehaviour
                     MethodInfo loadMethod = category.GetType().GetMethod("LoadProperty");
                     MethodInfo genericLoad = loadMethod.MakeGenericMethod(field.FieldType);
                     object[] args = new object[] { field.Name, null! };
-                    genericLoad.Invoke(category, args);
-                    field.SetValue(savedObject, args[1]);
+                    if ((bool)genericLoad.Invoke(category, args))
+                        field.SetValue(savedObject, args[1]);
                 }
                 catch
                 {
@@ -651,8 +675,8 @@ public class SaveManager : MonoBehaviour
                     MethodInfo loadMethod = category.GetType().GetMethod("LoadProperty");
                     MethodInfo genericLoad = loadMethod.MakeGenericMethod(property.PropertyType);
                     object[] args = new object[] { property.Name, null! };
-                    genericLoad.Invoke(category, args);
-                    property.SetValue(savedObject, args[1]);
+                    if ((bool)genericLoad.Invoke(category, args))
+                        property.SetValue(savedObject, args[1]);
                 }
                 catch
                 {
@@ -736,7 +760,7 @@ public class SaveManager : MonoBehaviour
     {
         if (!Directory.Exists(saveDirectory))
             Directory.CreateDirectory(saveDirectory);
-            
+
         EditorUtility.RevealInFinder(Path.Combine(saveDirectory, saveExtension));
     }
 }

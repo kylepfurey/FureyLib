@@ -13,15 +13,17 @@ using UnityEngine;
 /// </summary>
 public interface ISaveData
 {
+    // INTERFACE
+	
     /// <summary>
     /// Called when this object is requested to save its data to a save file.
     /// </summary>
     /// <param name="saveData">The save data category that is storing this object's properties.</param>
-    public void OnSave(SaveManager.SaveData saveData);
+    public void OnSave(SaveManager.SaveFile.SaveData saveData);
 
     /// <summary>
     /// Called when this object is requested to load its data from a save file.
     /// </summary>
     /// <param name="saveData">The save data category that is storing this object's properties.</param>
-    public void OnLoad(SaveManager.SaveData saveData);
+    public void OnLoad(SaveManager.SaveFile.SaveData saveData);
 }

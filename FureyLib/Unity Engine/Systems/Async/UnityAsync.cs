@@ -47,7 +47,7 @@ public class UnityAsync : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        if (!instance)
+        if (instance == null)
         {
             instance = this;
         }

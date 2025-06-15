@@ -6,6 +6,7 @@
 #include <vector>
 #include <list>
 #include <utility>
+#include <cstdlib>
 
 // The max number of elements that can be contained within a bucket before rehashing a map.
 #define BUCKET_CAPACITY 3

@@ -14,7 +14,7 @@
 
 namespace std {
     /** Standard string to_string() implementation. */
-	template<typename T>
+    template<typename T>
     static basic_string<T> to_string(const basic_string<T> &__val) {
         return __val;
     }
@@ -209,22 +209,12 @@ public:
     // TABLE
 
     /** Returns an iterator to the beginning of the table. */
-    auto begin() {
+    std::unordered_map<std::string, object *>::const_iterator begin() const {
         return objects.begin();
     }
 
     /** Returns an iterator to the end of the table. */
-    auto end() {
-        return objects.end();
-    }
-
-    /** Returns an iterator to the beginning of the table. */
-    auto begin() const {
-        return objects.begin();
-    }
-
-    /** Returns an iterator to the end of the table. */
-    auto end() const {
+    std::unordered_map<std::string, object *>::const_iterator end() const {
         return objects.end();
     }
 

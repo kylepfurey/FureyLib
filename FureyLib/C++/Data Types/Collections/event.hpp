@@ -16,6 +16,13 @@
 /** A collection of functions that can be bound, unbound, and invoked all at once. */
 template <typename T, typename... A>
 class event final {
+public:
+
+    // TYPES
+
+    /** The type of function pointer bound to this event. */
+    using target = T (*)(A...);
+
 private:
 
     // DATA
@@ -24,7 +31,7 @@ private:
     std::vector<std::pair<std::string, std::function<T(A...)>>> bindings;
 
 
-    // ID
+    // METHODS
 
     /** Creates a string ID from the given function. */
     static std::string make_id(const std::function<T(A...)> &callback) {
@@ -36,12 +43,6 @@ private:
     }
 
 public:
-
-    // TYPES
-
-    /** The type of function pointer bound to this event. */
-    using target = T (*)(A...);
-
 
     // CONSTRUCTOR
 

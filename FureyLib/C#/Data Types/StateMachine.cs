@@ -13,19 +13,19 @@ using System.Collections.Generic;
 /// <summary>
 /// An interface defining a class that can be used as a state within a state machine.
 /// </summary>
-public interface IState<T>
+public interface IState<Type>
 {
     // INTERFACE
 
     /// <summary>
     /// The state machine that owns this state instance.
     /// </summary>
-    public StateMachine<T> StateMachine { get; }
+    public StateMachine<Type> StateMachine { get; init; }
 
     /// <summary>
     /// Called when a state machine instantiates this state.
     /// </summary>
-    public abstract void OnStateEnter(IState<T>? previousState);
+    public abstract void OnStateEnter(IState<Type>? previousState);
 
     /// <summary>
     /// Called when a state machine updates this state.
@@ -35,7 +35,7 @@ public interface IState<T>
     /// <summary>
     /// Called when a state machine switches off this state.
     /// </summary>
-    public abstract void OnStateExit(IState<T>? nextState);
+    public abstract void OnStateExit(IState<Type>? nextState);
 }
 
 
@@ -44,24 +44,24 @@ public interface IState<T>
 /// <summary>
 /// A class that manages its data within different states of code.
 /// </summary>
-public sealed class StateMachine<T>
+public sealed class StateMachine<Type>
 {
     // PROPERTIES
 
     /// <summary>
     /// The data this state machine is managing.
     /// </summary>
-    public T Data { get; set; } = default(T);
+    public Type Data { get; set; } = default(Type);
 
     /// <summary>
     /// The current state of this state machine.
     /// </summary>
-    public IState<T>? State { get; private set; } = null!;
+    public IState<Type>? State { get; private set; } = null!;
 
     /// <summary>
     /// The type of the state machine's current state.
     /// </summary>
-    public Type? StateType => State != null ? State.GetType() : null;
+    public System.Type? StateType => State != null ? State.GetType() : null;
 
     /// <summary>
     /// The time of this state machine's last update.
@@ -79,7 +79,7 @@ public sealed class StateMachine<T>
     /// <summary>
     /// Default constructor.
     /// </summary>
-    public StateMachine(T Data = default(T), IState<T>? State = null!)
+    public StateMachine(Type Data = default(Type), IState<Type>? State = null!)
     {
         this.Data = Data;
         this.State = State;
@@ -90,7 +90,7 @@ public sealed class StateMachine<T>
     /// <summary>
     /// State constructor.
     /// </summary>
-    public StateMachine(IState<T>? State, T Data = default(T))
+    public StateMachine(IState<Type>? State, Type Data = default(T))
     {
         this.Data = Data;
         this.State = State;
@@ -109,14 +109,14 @@ public sealed class StateMachine<T>
     /// <summary>
     /// Returns whether the state machine's current state is the given type.
     /// </summary>
-    public bool IsState<StateType>() where StateType : IState<T> => State is StateType;
+    public bool IsState<StateType>() where StateType : IState<Type> => State is StateType;
 
     /// <summary>
     /// Switches the state machine's current state to a new state.
     /// </summary>
-    public IState<T>? SwitchState(IState<T>? newState)
+    public IState<Type>? SwitchState(IState<Type>? newState)
     {
-        IState<T> currentState = State;
+        IState<Type>? currentState = State;
         State?.OnStateExit(newState);
         State = newState;
         State?.OnStateEnter(currentState);
@@ -126,7 +126,7 @@ public sealed class StateMachine<T>
     /// <summary>
     /// Updates the state machine's current state and returns the state machine's current or new state.
     /// </summary>
-    public IState<T>? Update()
+    public IState<Type>? Update()
     {
         State?.OnStateUpdate(DeltaTime);
         LastUpdate = DateTime.Now;

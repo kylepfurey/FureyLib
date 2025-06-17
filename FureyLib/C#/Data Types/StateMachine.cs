@@ -20,7 +20,7 @@ public interface IState<Type>
     /// <summary>
     /// The state machine that owns this state instance.
     /// </summary>
-    public StateMachine<Type> StateMachine { get; }
+    public StateMachine<Type> StateMachine { get; set; }
 
     /// <summary>
     /// Called when a state machine instantiates this state.
@@ -83,6 +83,7 @@ public sealed class StateMachine<Type>
     {
         this.Data = Data;
         this.State = State;
+        this.State?.StateMachine = this;
         this.State?.OnStateEnter(null);
         LastUpdate = DateTime.Now;
     }
@@ -94,6 +95,7 @@ public sealed class StateMachine<Type>
     {
         this.Data = Data;
         this.State = State;
+        this.State?.StateMachine = this;
         this.State?.OnStateEnter(null);
         LastUpdate = DateTime.Now;
     }
@@ -124,6 +126,7 @@ public sealed class StateMachine<Type>
         IState<Type>? currentState = State;
         State?.OnStateExit(newState);
         State = newState;
+        State?.StateMachine = this;
         State?.OnStateEnter(currentState);
         return State;
     }

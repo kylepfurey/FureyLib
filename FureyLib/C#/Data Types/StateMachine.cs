@@ -112,7 +112,7 @@ public sealed class StateMachine<Type>
     public bool StateIs<StateType>() where StateType : IState<Type> => State is StateType;
 
     /// <summary>
-    /// Returns whether the state machine's current state is the given type.
+    /// Returns the state machine's current state as the given type.
     /// </summary>
     public StateType? StateAs<StateType>() where StateType : IState<Type> => State as StateType;
 
@@ -134,7 +134,7 @@ public sealed class StateMachine<Type>
     public IState<Type>? Update()
     {
         DateTime now = DateTime.Now;
-        DeltaTime = now - LastUpdate;
+        DeltaTime = (now - LastUpdate).TotalSeconds;
         LastUpdate = now;
         State?.OnStateUpdate(DeltaTime);
         return State;

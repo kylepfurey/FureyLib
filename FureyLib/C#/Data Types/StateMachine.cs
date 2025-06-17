@@ -1,5 +1,5 @@
 // .cs
-// State Machine Class
+// State Machine Interface and Class
 // by Kyle Furey
 
 #nullable enable
@@ -56,7 +56,7 @@ public sealed class StateMachine<Type>
     /// <summary>
     /// The current state of this state machine.
     /// </summary>
-    public IState<Type>? State { get; private set; } = null!;
+    public IState<Type>? State { get; private set; } = null;
 
     /// <summary>
     /// The type of the state machine's current state.
@@ -83,7 +83,7 @@ public sealed class StateMachine<Type>
     {
         this.Data = Data;
         this.State = State;
-        this.State?.OnStateEnter(null!);
+        this.State?.OnStateEnter(null);
         LastUpdate = DateTime.Now;
     }
 
@@ -94,7 +94,7 @@ public sealed class StateMachine<Type>
     {
         this.Data = Data;
         this.State = State;
-        this.State?.OnStateEnter(null!);
+        this.State?.OnStateEnter(null);
         LastUpdate = DateTime.Now;
     }
 

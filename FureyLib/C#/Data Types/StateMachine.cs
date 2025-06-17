@@ -1,4 +1,4 @@
-// .cs
+﻿// .cs
 // State Machine Interface and Class
 // by Kyle Furey
 
@@ -51,7 +51,7 @@ public sealed class StateMachine<Type>
     /// <summary>
     /// The data this state machine is managing.
     /// </summary>
-    public Type Data { get; set; } = default(Type);
+    public Type Data { get; set; } = default(Type)!;
 
     /// <summary>
     /// The current state of this state machine.
@@ -73,31 +73,45 @@ public sealed class StateMachine<Type>
     /// </summary>
     public double DeltaTime { get; private set; } = 0.0;
 
+    /// <summary>
+    /// A delegate for a method that handles state switching events.
+    /// </summary>
+    public delegate void StateSwitchedEventHandler(IState<Type>? newState);
+
+    /// <summary>
+    /// An event that is called when the state machine switches to a new state.
+    /// </summary>
+    public event StateSwitchedEventHandler? OnStateSwitched;
+
 
     // CONSTRUCTORS
 
     /// <summary>
     /// Default constructor.
     /// </summary>
-    public StateMachine(Type Data = default(Type), IState<Type>? State = null!)
+    public StateMachine(Type data = default(Type)!, IState<Type>? state = null!)
     {
-        this.Data = Data;
-        this.State = State;
-        this.State?.StateMachine = this;
-        this.State?.OnStateEnter(null);
-        LastUpdate = DateTime.Now;
+        Data = data;
+        State = state;
+        if (State != null)
+        {
+            State.StateMachine = this;
+            State.OnStateEnter(null);
+        }
     }
 
     /// <summary>
     /// State constructor.
     /// </summary>
-    public StateMachine(IState<Type>? State, Type Data = default(Type))
+    public StateMachine(IState<Type>? state, Type data = default(Type)!)
     {
-        this.Data = Data;
-        this.State = State;
-        this.State?.StateMachine = this;
-        this.State?.OnStateEnter(null);
-        LastUpdate = DateTime.Now;
+        Data = data;
+        State = state;
+        if (State != null)
+        {
+            State.StateMachine = this;
+            State.OnStateEnter(null);
+        }
     }
 
 
@@ -116,7 +130,7 @@ public sealed class StateMachine<Type>
     /// <summary>
     /// Returns the state machine's current state as the given type.
     /// </summary>
-    public StateType? StateAs<StateType>() where StateType : IState<Type> => State as StateType;
+    public StateType? StateAs<StateType>() where StateType : class, IState<Type> => State as StateType;
 
     /// <summary>
     /// Switches the state machine's current state to a new state.
@@ -126,8 +140,12 @@ public sealed class StateMachine<Type>
         IState<Type>? currentState = State;
         State?.OnStateExit(newState);
         State = newState;
-        State?.StateMachine = this;
-        State?.OnStateEnter(currentState);
+        if (State != null)
+        {
+            State.StateMachine = this;
+            State.OnStateEnter(currentState);
+        }
+        OnStateSwitched?.Invoke(State);
         return State;
     }
 
@@ -137,7 +155,7 @@ public sealed class StateMachine<Type>
     public IState<Type>? Update()
     {
         DateTime now = DateTime.Now;
-        DeltaTime = (now - LastUpdate).TotalSeconds;
+        DeltaTime = Math.Max((now - LastUpdate).TotalSeconds, 0.000001);
         LastUpdate = now;
         State?.OnStateUpdate(DeltaTime);
         return State;
@@ -148,6 +166,6 @@ public sealed class StateMachine<Type>
     /// </summary>
     public void Unwrap()
     {
-        while (Update() != null);
+        while (Update() != null) ;
     }
 }

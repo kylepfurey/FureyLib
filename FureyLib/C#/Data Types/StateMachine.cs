@@ -20,7 +20,7 @@ public interface IState<Type>
     /// <summary>
     /// The state machine that owns this state instance.
     /// </summary>
-    public StateMachine<Type> StateMachine { get; init; }
+    public StateMachine<Type> StateMachine { get; }
 
     /// <summary>
     /// Called when a state machine instantiates this state.
@@ -71,7 +71,7 @@ public sealed class StateMachine<Type>
     /// <summary>
     /// The time in seconds since the state machine's last update.
     /// </summary>
-    public double DeltaTime => (DateTime.Now - LastUpdate).TotalSeconds;
+    public double DeltaTime { get; private set; } = 0.0;
 
 
     // CONSTRUCTORS
@@ -90,7 +90,7 @@ public sealed class StateMachine<Type>
     /// <summary>
     /// State constructor.
     /// </summary>
-    public StateMachine(IState<Type>? State, Type Data = default(T))
+    public StateMachine(IState<Type>? State, Type Data = default(Type))
     {
         this.Data = Data;
         this.State = State;
@@ -109,7 +109,12 @@ public sealed class StateMachine<Type>
     /// <summary>
     /// Returns whether the state machine's current state is the given type.
     /// </summary>
-    public bool IsState<StateType>() where StateType : IState<Type> => State is StateType;
+    public bool StateIs<StateType>() where StateType : IState<Type> => State is StateType;
+
+    /// <summary>
+    /// Returns whether the state machine's current state is the given type.
+    /// </summary>
+    public StateType? StateAs<StateType>() where StateType : IState<Type> => State as StateType;
 
     /// <summary>
     /// Switches the state machine's current state to a new state.
@@ -128,8 +133,10 @@ public sealed class StateMachine<Type>
     /// </summary>
     public IState<Type>? Update()
     {
+        DateTime now = DateTime.Now;
+        DeltaTime = now - LastUpdate;
+        LastUpdate = now;
         State?.OnStateUpdate(DeltaTime);
-        LastUpdate = DateTime.Now;
         return State;
     }
 

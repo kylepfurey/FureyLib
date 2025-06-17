@@ -1,35 +1,77 @@
-﻿// .cs
-// Functional State Machine Type
+// .cs
+// State Machine Class
 // by Kyle Furey
 
+#nullable enable
 using System;
+using System.Collections;
+using System.Collections.Generic;
+
+
+// STATE
 
 /// <summary>
-/// A system that manages data via states that can transition into a finite number of other states.s
+/// An interface defining a class that can be used as a state within a state machine.
 /// </summary>
-public sealed class StateMachine<Type>
+public interface IState<T>
 {
-    // STATE
+    // INTERFACE
 
     /// <summary>
-    /// Represents single function that acts as the state machine's current state.<br/>
-    /// This function takes a state machine as its only parameter.<br/>
-    /// This function returns the next state for the state machine to execute.
+    /// The state machine that owns this state instance.
     /// </summary>
-    public delegate STATE STATE(StateMachine<Type> SM);
+    public StateMachine<T> StateMachine { get; }
+
+    /// <summary>
+    /// Called when a state machine instantiates this state.
+    /// </summary>
+    public abstract void OnStateEnter(IState<T>? previousState);
+
+    /// <summary>
+    /// Called when a state machine updates this state.
+    /// </summary>
+    public abstract void OnStateUpdate(double deltaTime);
+
+    /// <summary>
+    /// Called when a state machine switches off this state.
+    /// </summary>
+    public abstract void OnStateExit(IState<T>? nextState);
+}
 
 
-    // DATA
+// STATE MACHINE
+
+/// <summary>
+/// A class that manages its data within different states of code.
+/// </summary>
+public sealed class StateMachine<T>
+{
+    // PROPERTIES
+
+    /// <summary>
+    /// The data this state machiene is managing.
+    /// </summary>
+    public T Data { get; set; } = default(T);
 
     /// <summary>
     /// The current state of this state machine.
     /// </summary>
-    public STATE State { get; private set; }
+    public IState<T>? State { get; private set; } = null!;
 
     /// <summary>
-    /// The managed data by this state machine.
+    /// The type of the state machine's current state.
     /// </summary>
-    public Type Data { get; set; }
+    public Type? StateType => State != null ? State.GetType() : null;
+
+    /// <summary>
+    /// The time of this state machine's last update.
+    /// </summary>
+    public DateTime LastUpdate { get; private set; } = DateTime.Now;
+
+    /// <summary>
+    /// The time in seconds since the state machine's last update.
+    /// </summary>
+    public double DeltaTime => (DateTime.Now - LastUpdate).TotalSeconds;
 
 
     // CONSTRUCTORS
@@ -37,86 +79,87 @@ public sealed class StateMachine<Type>
     /// <summary>
     /// Default constructor.
     /// </summary>
-    public StateMachine(Type Data = default(Type), STATE StartingState = null)
+    public StateMachine(T Data = default(T), IState<T>? State = null!)
     {
-        this.State = StartingState;
         this.Data = Data;
+        this.State = State;
+        this.State?.OnStateEnter(null!);
+        LastUpdate = DateTime.Now;
     }
 
     /// <summary>
-    /// Default constructor.
+    /// State constructor.
     /// </summary>
-    public StateMachine(STATE StartingState, Type Data = default(Type))
+    public StateMachine(IState<T>? State, T Data = default(T))
     {
-        this.State = StartingState;
         this.Data = Data;
+        this.State = State;
+        this.State?.OnStateEnter(null!);
+        LastUpdate = DateTime.Now;
     }
 
 
-    // GETTERS
+    // METHODS
 
     /// <summary>
-    /// Returns the state machine's managed data.
+    /// Returns whether the state machine's current state is not null.
     /// </summary>
-    public Type Get()
-    {
-        return Data;
-    }
+    public bool IsStateValid() => State != null;
 
     /// <summary>
-    /// Returns whether the state machine's current state is valid.
+    /// Returns whether the state machine's current state is the given type.
     /// </summary>
-    public bool IsValidState()
-    {
-        return State != null;
-    }
-
-
-    // SETTERS
+    public bool IsState<StateType>() where StateType : IState<T> => State is StateType;
 
     /// <summary>
-    /// Forcefully switches the state machine's current state to the given state.<br/>
-    /// NOTE: This does not execute the new state.
+    /// Returns the current state of the state machine.
     /// </summary>
-    public void Switch(STATE NewState)
-    {
-        State = NewState;
-    }
+    public IState<T>? GetState() => State;
 
     /// <summary>
-    /// Sets the state machine's managed data to the given data.
+    /// Returns the current state of the state machine as the given type.
     /// </summary>
-    public void Set(Type NewData)
-    {
-        Data = NewData;
-    }
-
-
-    // EXECUTION
+    public StateType? GetState<StateType>() where StateType : IState<T> => (StateType)State;
 
     /// <summary>
-    /// Executes the state machine's current state.<br/>
-    /// The current state's returned state will be the state machine's new state.<br/>
-    /// Returns the state machine's new state.
+    /// Switches the state machine's current state to a new state.
     /// </summary>
-    public STATE Execute()
+    public IState<T>? SwitchState(IState<T>? newState)
     {
-        if (State != null)
-        {
-            State = State(this);
-        }
-
+        IState<T> currentState = State;
+        State?.OnStateExit(newState);
+        State = newState;
+        State?.OnStateEnter(currentState);
         return State;
     }
 
     /// <summary>
-    /// Executes the state machine's current state until it is NULL.
+    /// Switches the state machine's current state to a new state of the given type.
+    /// </summary>
+    public StateType? SwitchState<StateType>(StateType? newState) where StateType : IState<T>
+    {
+        IState<T> currentState = State;
+        State?.OnStateExit(newState);
+        State = newState;
+        State?.OnStateEnter(currentState);
+        return (StateType)State;
+    }
+
+    /// <summary>
+    /// Updates the state machine's current state and returns the state machine's current or new state.
+    /// </summary>
+    public IState<T>? Update()
+    {
+        State?.OnStateUpdate(DeltaTime);
+        LastUpdate = DateTime.Now;
+        return State;
+    }
+
+    /// <summary>
+    /// Updates the state machine until its current state is null.
     /// </summary>
     public void Unwrap()
     {
-        while (State != null)
-        {
-            State = State(this);
-        }
+        while (Update() != null);
     }
 }

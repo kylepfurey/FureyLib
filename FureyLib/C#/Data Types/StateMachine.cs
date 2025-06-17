@@ -49,7 +49,7 @@ public sealed class StateMachine<T>
     // PROPERTIES
 
     /// <summary>
-    /// The data this state machiene is managing.
+    /// The data this state machine is managing.
     /// </summary>
     public T Data { get; set; } = default(T);
 
@@ -112,16 +112,6 @@ public sealed class StateMachine<T>
     public bool IsState<StateType>() where StateType : IState<T> => State is StateType;
 
     /// <summary>
-    /// Returns the current state of the state machine.
-    /// </summary>
-    public IState<T>? GetState() => State;
-
-    /// <summary>
-    /// Returns the current state of the state machine as the given type.
-    /// </summary>
-    public StateType? GetState<StateType>() where StateType : IState<T> => (StateType)State;
-
-    /// <summary>
     /// Switches the state machine's current state to a new state.
     /// </summary>
     public IState<T>? SwitchState(IState<T>? newState)
@@ -131,18 +121,6 @@ public sealed class StateMachine<T>
         State = newState;
         State?.OnStateEnter(currentState);
         return State;
-    }
-
-    /// <summary>
-    /// Switches the state machine's current state to a new state of the given type.
-    /// </summary>
-    public StateType? SwitchState<StateType>(StateType? newState) where StateType : IState<T>
-    {
-        IState<T> currentState = State;
-        State?.OnStateExit(newState);
-        State = newState;
-        State?.OnStateEnter(currentState);
-        return (StateType)State;
     }
 
     /// <summary>

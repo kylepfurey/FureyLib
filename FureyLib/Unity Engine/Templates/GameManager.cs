@@ -1,7 +1,10 @@
-
-// Game Manager Template Script
+// .cs
+// Game Manager Component Script
 // by Kyle Furey
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -9,12 +12,13 @@ using UnityEngine;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    [Header("A singleton component that allows easy access to other components.\n")]
+	// VARIABLES
 
-    [Header("Whether to always keep the game manager loaded between scenes:")]
-    [SerializeField] private bool dontDestroyOnLoad = true;
-
-    // New variables here
+    /// <summary>
+    /// Whether this component's game object should persist through scene changes.
+    /// </summary>
+    [SerializeField]
+    private bool dontDestroyOnLoad = true;
 
 
     // PROPERTIES
@@ -24,10 +28,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static GameManager instance { get; private set; } = null;
 
-    // New properties here
 
-
-    // FUNCTIONS
+    // EVENTS
 
     /// <summary>
     /// Sets this object as the current game manager.
@@ -40,7 +42,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(this);
         }
 
         if (dontDestroyOnLoad)
@@ -54,8 +56,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        instance = null;
+        if (instance == this)
+        {
+            instance = null;
+        }
     }
-
-    // New functions here
 }

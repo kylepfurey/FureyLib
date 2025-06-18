@@ -49,7 +49,7 @@ public interface IState
 /// </summary>
 public sealed class StateMachine : MonoBehaviour
 {
-    // ENUM
+    // ENUMS
 
     /// <summary>
     /// How destroying is handled with state components.
@@ -175,7 +175,6 @@ public sealed class StateMachine : MonoBehaviour
     {
         if (_state == null)
             return false;
-
         switch (destroyBehaviour)
         {
             default:

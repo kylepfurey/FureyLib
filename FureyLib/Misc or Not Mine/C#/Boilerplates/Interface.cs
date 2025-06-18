@@ -16,7 +16,7 @@ public interface IInterface
     /// <summary>
     /// Contracted function.
     /// </summary>
-    public abstract void Function();
+    void Function();
 
     // New functions here
 }

@@ -170,6 +170,11 @@ public:
 		return state;
 	}
 
+	/** Returns the type of the state machine's current state. */
+	const std::type_info& GetStateType() {
+		return state != nullptr ? typeid(*state) : typeid(nullptr);
+	}
+
 	/** Returns whether the state machine's current state is not null. */
 	bool IsStateValid() const {
 		return state != nullptr;

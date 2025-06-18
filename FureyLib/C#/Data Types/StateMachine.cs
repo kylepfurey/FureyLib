@@ -80,7 +80,7 @@ public sealed class StateMachine<Type>
     /// <summary>
     /// An event that is called when the state machine switches to a new state.
     /// </summary>
-    public event StateSwitchedEventHandler OnStateSwitched;
+    public event StateSwitchedEventHandler OnSwitchState;
 
 
     // CONSTRUCTORS
@@ -96,6 +96,7 @@ public sealed class StateMachine<Type>
         {
             State.StateMachine = this;
             State.OnStateEnter(null);
+            OnSwitchState?.Invoke(State);
         }
     }
 
@@ -110,6 +111,7 @@ public sealed class StateMachine<Type>
         {
             State.StateMachine = this;
             State.OnStateEnter(null);
+            OnSwitchState?.Invoke(State);
         }
     }
 
@@ -144,7 +146,7 @@ public sealed class StateMachine<Type>
             State.StateMachine = this;
             State.OnStateEnter(currentState);
         }
-        OnStateSwitched?.Invoke(State);
+        OnSwitchState?.Invoke(State);
         return State;
     }
 

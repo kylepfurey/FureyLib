@@ -198,8 +198,8 @@ public:
 	// The maximum number of loops before an algorithm terminates.
 	static int max_loops;
 
-	// •  Calculates an arbitrary value that represents how close a node is to the goal.
-	// •  Heuristic Value = Euclidean Distance or Manhattan Distance
+	// â€¢  Calculates an arbitrary value that represents how close a node is to the goal.
+	// â€¢  Heuristic Value = Euclidean Distance or Manhattan Distance
 	static HEURISTIC_TYPE calculate_heuristic(grid_space current, grid_space end, bool manhattan = false)
 	{
 		if (!manhattan)
@@ -224,10 +224,10 @@ public:
 		}
 	}
 
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using the given pathfinding algorithm.
-	// •  Searches every possible node starting from oldest to newest.
-	// •  Time complexity and precision depend on the selected pathfinding algorithm.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using the given pathfinding algorithm.
+	// â€¢  Searches every possible node starting from oldest to newest.
+	// â€¢  Time complexity and precision depend on the selected pathfinding algorithm.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space> pathfind(algorithm algorithm, grid_space start, grid_space end, grid_graph graph_settings, HEURISTIC_TYPE heuristic_scale = 1.1f)
 	{
 		switch (algorithm)
@@ -259,10 +259,10 @@ public:
 
 	// ALGORITHMS
 
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using the Depth First Search Algorithm.
-	// •  Searches every possible node starting from newest to oldest.
-	// •  Guarantees the fastest route but only checks the newest node first. This is best used for search trees.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using the Depth First Search Algorithm.
+	// â€¢  Searches every possible node starting from newest to oldest.
+	// â€¢  Guarantees the fastest route but only checks the newest node first. This is best used for search trees.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space> depth_first_search(grid_space start, grid_space end, grid_graph graph_settings)
 	{
 		// Check that we can actually move
@@ -420,10 +420,10 @@ public:
 		return route;
 	}
 
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using the Breadth First Search Algorithm.
-	// •  Searches every possible node starting from oldest to newest.
-	// •  Guarantees the fastest route but increases in time exponentially.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using the Breadth First Search Algorithm.
+	// â€¢  Searches every possible node starting from oldest to newest.
+	// â€¢  Guarantees the fastest route but increases in time exponentially.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space> breadth_first_search(grid_space start, grid_space end, grid_graph graph_settings)
 	{
 		// Check that we can actually move
@@ -581,10 +581,10 @@ public:
 		return route;
 	}
 
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using the Heuristic Search Algorithm.
-	// •  Searches every possible node from oldest to newest but queues nodes considered closer to the goal by the heuristic function first.
-	// •  Completes quicker but can be a slower route.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using the Heuristic Search Algorithm.
+	// â€¢  Searches every possible node from oldest to newest but queues nodes considered closer to the goal by the heuristic function first.
+	// â€¢  Completes quicker but can be a slower route.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space> heuristic_search(grid_space start, grid_space end, grid_graph graph_settings)
 	{
 		// Check that we can actually move
@@ -753,20 +753,20 @@ public:
 		return route;
 	}
 
-	// •  Identical to Heuristic Search.
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using the Greedy Best First Search Algorithm.
-	// •  Searches every possible node from oldest to newest but queues nodes considered closer to the goal by the heuristic function first.
-	// •  Completes quicker but can be a slower route.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Identical to Heuristic Search.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using the Greedy Best First Search Algorithm.
+	// â€¢  Searches every possible node from oldest to newest but queues nodes considered closer to the goal by the heuristic function first.
+	// â€¢  Completes quicker but can be a slower route.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space> greedy_best_first_search(grid_space start, grid_space end, grid_graph graph_settings)
 	{
 		return heuristic_search(start, end, graph_settings);
 	}
 
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using Dijkstra's Search Algorithm.
-	// •  Searches every possible node from oldest to newest but queues nodes with less weight first, and recalculates routes if a faster way to a node is found.
-	// •  Guarantees the fastest and least resistant route but increases in time exponentially.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using Dijkstra's Search Algorithm.
+	// â€¢  Searches every possible node from oldest to newest but queues nodes with less weight first, and recalculates routes if a faster way to a node is found.
+	// â€¢  Guarantees the fastest and least resistant route but increases in time exponentially.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space> dijkstra_search(grid_space start, grid_space end, grid_graph graph_settings)
 	{
 		// Check that we can actually move
@@ -958,20 +958,20 @@ public:
 		return route;
 	}
 
-	// •  Identical to Dijkstra Search.
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using Uniform Cost Search Algorithm.
-	// •  Searches every possible node from oldest to newest but queues nodes with less weight first, and recalculates routes if a faster way to a node is found.
-	// •  Guarantees the fastest and least resistant route but increases in time exponentially.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Identical to Dijkstra Search.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using Uniform Cost Search Algorithm.
+	// â€¢  Searches every possible node from oldest to newest but queues nodes with less weight first, and recalculates routes if a faster way to a node is found.
+	// â€¢  Guarantees the fastest and least resistant route but increases in time exponentially.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space> uniform_cost_search(grid_space start, grid_space end, grid_graph graph_settings)
 	{
 		return dijkstra_search(start, end, graph_settings);
 	}
 
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using the A Star Search Algorithm.
-	// •  Searches every possible node from oldest to newest but queues nodes with less weight first + the heuristic, and recalculates routes if a faster way to a node is found.
-	// •  Guarantees the fastest and possibly least resistant route in shorter time.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using the A Star Search Algorithm.
+	// â€¢  Searches every possible node from oldest to newest but queues nodes with less weight first + the heuristic, and recalculates routes if a faster way to a node is found.
+	// â€¢  Guarantees the fastest and possibly least resistant route in shorter time.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space> a_star_search(grid_space start, grid_space end, grid_graph graph_settings, HEURISTIC_TYPE heuristic_scale = 1.1f)
 	{
 		// Check that we can actually move
@@ -1353,8 +1353,8 @@ public:
 	// The maximum number of loops before an algorithm terminates.
 	static int max_loops;
 
-	// •  Calculates an arbitrary value that represents how close a node is to the goal.
-	// •  Heuristic Value = Euclidean Distance or Manhattan Distance
+	// â€¢  Calculates an arbitrary value that represents how close a node is to the goal.
+	// â€¢  Heuristic Value = Euclidean Distance or Manhattan Distance
 	static HEURISTIC_TYPE calculate_heuristic(grid_space_3D current, grid_space_3D end, bool manhattan = false)
 	{
 		if (!manhattan)
@@ -1383,10 +1383,10 @@ public:
 		}
 	}
 
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using the given pathfinding algorithm.
-	// •  Searches every possible node starting from oldest to newest.
-	// •  Time complexity and precision depend on the selected pathfinding algorithm.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using the given pathfinding algorithm.
+	// â€¢  Searches every possible node starting from oldest to newest.
+	// â€¢  Time complexity and precision depend on the selected pathfinding algorithm.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space_3D> pathfind(algorithm algorithm, grid_space_3D start, grid_space_3D end, grid_graph_3D graph_settings, HEURISTIC_TYPE heuristic_scale = 1.1f)
 	{
 		switch (algorithm)
@@ -1418,10 +1418,10 @@ public:
 
 	// ALGORITHMS
 
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using the Depth First Search Algorithm.
-	// •  Searches every possible node starting from newest to oldest.
-	// •  Guarantees the fastest route but only checks the newest node first. This is best used for search trees.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using the Depth First Search Algorithm.
+	// â€¢  Searches every possible node starting from newest to oldest.
+	// â€¢  Guarantees the fastest route but only checks the newest node first. This is best used for search trees.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space_3D> depth_first_search(grid_space_3D start, grid_space_3D end, grid_graph_3D graph_settings)
 	{
 		// Check that we can actually move
@@ -1612,10 +1612,10 @@ public:
 		return route;
 	}
 
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using the Breadth First Search Algorithm.
-	// •  Searches every possible node starting from oldest to newest.
-	// •  Guarantees the fastest route but increases in time exponentially.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using the Breadth First Search Algorithm.
+	// â€¢  Searches every possible node starting from oldest to newest.
+	// â€¢  Guarantees the fastest route but increases in time exponentially.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space_3D> breadth_first_search(grid_space_3D start, grid_space_3D end, grid_graph_3D graph_settings)
 	{
 		// Check that we can actually move
@@ -1806,10 +1806,10 @@ public:
 		return route;
 	}
 
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using the Heuristic Search Algorithm.
-	// •  Searches every possible node from oldest to newest but queues nodes considered closer to the goal by the heuristic function first.
-	// •  Completes quicker but can be a slower route.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using the Heuristic Search Algorithm.
+	// â€¢  Searches every possible node from oldest to newest but queues nodes considered closer to the goal by the heuristic function first.
+	// â€¢  Completes quicker but can be a slower route.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space_3D> heuristic_search(grid_space_3D start, grid_space_3D end, grid_graph_3D graph_settings)
 	{
 		// Check that we can actually move
@@ -2063,20 +2063,20 @@ public:
 		return route;
 	}
 
-	// •  Identical to Heuristic Search.
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using the Greedy Best First Search Algorithm.
-	// •  Searches every possible node from oldest to newest but queues nodes considered closer to the goal by the heuristic function first.
-	// •  Completes quicker but can be a slower route.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Identical to Heuristic Search.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using the Greedy Best First Search Algorithm.
+	// â€¢  Searches every possible node from oldest to newest but queues nodes considered closer to the goal by the heuristic function first.
+	// â€¢  Completes quicker but can be a slower route.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space_3D> greedy_best_first_search(grid_space_3D start, grid_space_3D end, grid_graph_3D graph_settings)
 	{
 		return heuristic_search(start, end, graph_settings);
 	}
 
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using Dijkstra's Search Algorithm.
-	// •  Searches every possible node from oldest to newest but queues nodes with less weight first, and recalculates routes if a faster way to a node is found.
-	// •  Guarantees the fastest and least resistant route but increases in time exponentially.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using Dijkstra's Search Algorithm.
+	// â€¢  Searches every possible node from oldest to newest but queues nodes with less weight first, and recalculates routes if a faster way to a node is found.
+	// â€¢  Guarantees the fastest and least resistant route but increases in time exponentially.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space_3D> dijkstra_search(grid_space_3D start, grid_space_3D end, grid_graph_3D graph_settings)
 	{
 		// Check that we can actually move
@@ -2353,20 +2353,20 @@ public:
 		return route;
 	}
 
-	// •  Identical to Dijkstra Search.
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using Uniform Cost Search Algorithm.
-	// •  Searches every possible node from oldest to newest but queues nodes with less weight first, and recalculates routes if a faster way to a node is found.
-	// •  Guarantees the fastest and least resistant route but increases in time exponentially.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Identical to Dijkstra Search.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using Uniform Cost Search Algorithm.
+	// â€¢  Searches every possible node from oldest to newest but queues nodes with less weight first, and recalculates routes if a faster way to a node is found.
+	// â€¢  Guarantees the fastest and least resistant route but increases in time exponentially.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space_3D> uniform_cost_search(grid_space_3D start, grid_space_3D end, grid_graph_3D graph_settings)
 	{
 		return dijkstra_search(start, end, graph_settings);
 	}
 
-	// •  Starting from the start node, returns a list of nodes representing a route to the end node using the A Star Search Algorithm.
-	// •  Searches every possible node from oldest to newest but queues nodes with less weight first + the heuristic, and recalculates routes if a faster way to a node is found.
-	// •  Guarantees the fastest and possibly least resistant route in shorter time.
-	// •  Will calculate the closest location to the goal if the goal is unreachable.
+	// â€¢  Starting from the start node, returns a list of nodes representing a route to the end node using the A Star Search Algorithm.
+	// â€¢  Searches every possible node from oldest to newest but queues nodes with less weight first + the heuristic, and recalculates routes if a faster way to a node is found.
+	// â€¢  Guarantees the fastest and possibly least resistant route in shorter time.
+	// â€¢  Will calculate the closest location to the goal if the goal is unreachable.
 	static std::stack<grid_space_3D> a_star_search(grid_space_3D start, grid_space_3D end, grid_graph_3D graph_settings, HEURISTIC_TYPE heuristic_scale = 1.1f)
 	{
 		// Check that we can actually move

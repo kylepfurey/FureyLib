@@ -47,7 +47,7 @@ public:
 UENUM(BlueprintType, Category = "State Machine")
 enum class EStateDestroyBehaviour : uint8
 {
-	NEVER				UMETA(DisplayName = "NEVER"),
+	NEVER				UMETA(DisplayName = "Never"),
 	MY_COMPONENTS		UMETA(DisplayName = "My Components"),
 	OTHER_COMPONENTS	UMETA(DisplayName = "Other Components"),
 	ALWAYS				UMETA(DisplayName = "Always"),
@@ -117,7 +117,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "State Machine")
 	virtual TSubclassOf<UActorComponent> GetStartingStateClass() const;
 
-	/** Returns the behaviour set for when components are destroyed by this state machine. */
+	/** Returns the set behaviour for when components are destroyed by this state machine. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "State Machine")
 	virtual EStateDestroyBehaviour GetDestroyBehaviour() const;
 
@@ -144,7 +144,7 @@ public:
 
 	// SETTERS
 
-	/** Sets the behaviour set for when components are destroyed by this state machine. */
+	/** Sets the behaviour for when components are destroyed by this state machine. */
 	UFUNCTION(BlueprintCallable, Category = "State Machine")
 	virtual void SetDestroyBehaviour(const EStateDestroyBehaviour _DestroyBehaviour);
 

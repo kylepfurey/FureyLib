@@ -2,7 +2,6 @@
 // Awaitable Unity Async Functions
 // by Kyle Furey
 
-#nullable enable
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ using UnityEngine;
 /// <summary>
 /// A component that tracks Unity ticks for async code.
 /// </summary>
-public class UnityAsync : MonoBehaviour
+public sealed class UnityAsync : MonoBehaviour
 {
     // VARIABLES
 
@@ -30,6 +29,11 @@ public class UnityAsync : MonoBehaviour
     /// The number of LateUpdate() calls since this component was created.
     /// </summary>
     private ulong lateUpdateCount = 0;
+
+    /// <summary>
+    /// The time in seconds since this component was created.
+    /// </summary>
+    private double timer = 0.0;
 
 
     // PROPERTIES
@@ -67,6 +71,7 @@ public class UnityAsync : MonoBehaviour
     private void Update()
     {
         ++updateCount;
+        timer += (double)Time.deltaTime;
     }
 
     /// <summary>
@@ -91,7 +96,7 @@ public class UnityAsync : MonoBehaviour
     private void OnDestroy()
     {
         if (instance == this)
-            instance = null!;
+            instance = null;
     }
 
 
@@ -102,11 +107,14 @@ public class UnityAsync : MonoBehaviour
     /// </summary>
     public static async Task NextUpdate(uint numberOfFrames = 1)
     {
-        if (!instance)
+        if (instance == null)
+        {
+            Debug.LogError("ASYNC ERROR: UnityAsync was null!");
             return;
+        }
 
         ulong next = instance.updateCount + numberOfFrames;
-        while (instance && instance.updateCount < next)
+        while (instance != null && instance.updateCount < next)
             await Task.Yield();
     }
 
@@ -115,14 +123,14 @@ public class UnityAsync : MonoBehaviour
     /// </summary>
     public static async Task NextFixedUpdate(uint numberOfFrames = 1)
     {
-        if (!instance)
+        if (instance == null)
         {
             Debug.LogError("ASYNC ERROR: UnityAsync was null!");
             return;
         }
 
         ulong next = instance.fixedUpdateCount + numberOfFrames;
-        while (instance && instance.fixedUpdateCount < next)
+        while (instance != null && instance.fixedUpdateCount < next)
             await Task.Yield();
     }
 
@@ -131,14 +139,30 @@ public class UnityAsync : MonoBehaviour
     /// </summary>
     public static async Task NextLateUpdate(uint numberOfFrames = 1)
     {
-        if (!instance)
+        if (instance == null)
         {
             Debug.LogError("ASYNC ERROR: UnityAsync was null!");
             return;
         }
 
         ulong next = instance.lateUpdateCount + numberOfFrames;
-        while (instance && instance.lateUpdateCount < next)
+        while (instance != null && instance.lateUpdateCount < next)
+            await Task.Yield();
+    }
+
+    /// <summary>
+    /// Awaits the given number of seconds in Unity-scaled time.
+    /// </summary>
+    public static async Task DelayInSeconds(double secondsDelay)
+    {
+        if (instance == null)
+        {
+            Debug.LogError("ASYNC ERROR: UnityAsync was null!");
+            return;
+        }
+
+        double next = instance.timer + secondsDelay;
+        while (instance != null && instance.timer < next)
             await Task.Yield();
     }
 }

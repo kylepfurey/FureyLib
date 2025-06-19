@@ -21,7 +21,7 @@ class UState : public UInterface
 };
 
 /** An optional interface used to help define a state machine component's events. */
-class SHAKE_API IState
+class MYGAME_API IState
 {
 	GENERATED_BODY()
 
@@ -59,7 +59,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSwitchState, UActorComponent*, Ne
 
 /** A component used to manage an actor's state through switching a single component. */
 UCLASS(Blueprintable, BlueprintType, ClassGroup = (StateMachine), meta = (BlueprintSpawnableComponent), Category = "State Machine")
-class SHAKE_API UStateMachine : public UActorComponent
+class MYGAME_API UStateMachine : public UActorComponent
 {
 	GENERATED_BODY()
 

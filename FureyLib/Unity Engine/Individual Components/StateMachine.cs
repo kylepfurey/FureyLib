@@ -45,7 +45,7 @@ public interface IState
 // STATE MACHINE
 
 /// <summary>
-/// A component used to manage a game object's state through a single switching component.
+/// A component used to manage a game object's state through switching a single component.
 /// </summary>
 public sealed class StateMachine : MonoBehaviour
 {

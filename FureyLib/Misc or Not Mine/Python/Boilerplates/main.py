@@ -3,8 +3,8 @@
 
 import sys
 import string
-import types
 import typing
+import types
 
 
 def main(args: list[str]) -> int:

@@ -2,9 +2,10 @@
 # Name
 # Creator
 
+import sys
 import string
-import types
 import typing
+import types
 
 
 class Class:

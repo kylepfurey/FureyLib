@@ -42,24 +42,30 @@ class StateMachine:
 
     # VARIABLES
 
-    _data: Any = None
+    _data: Any
     """The data this state machine is managing."""
 
-    _state: IState = None
+    _state: IState
     """The current state of this state machine."""
 
-    _last_update: float = time()
+    _last_update: float
     """The time of this state machine's last update."""
 
-    _delta_time: float = 0.0
+    _delta_time: float
     """The time in seconds since the state machine's last update."""
 
     # CONSTRUCTORS
 
     def __init__(self, data: Any = None, state: IState = None) -> None:
         """Default constructor."""
-        self._data = data
-        self._state = state
+        if isinstance(data, IState) and state == None:
+            self._data = None
+            self._state = data
+        else:
+            self._data = data
+            self._state = state
+        self._last_update = time()
+        self._delta_time = 0.0
         if self._state is not None:
             self._state._state_machine = self
             self._state.on_state_enter(None)
@@ -100,7 +106,7 @@ class StateMachine:
         """Sets the data this state machine is managing."""
         self._data = data
 
-    def switch_state(self, new_state: IState):
+    def switch_state(self, new_state: IState) -> IState:
         """Switches the state machine's current state to a new state."""
         current_state: IState = self._state
         if self._state is not None:

@@ -89,7 +89,7 @@ bool UStateMachine::IsStateValid() const
 // Returns whether the state machine's current state component is the given component class.
 bool UStateMachine::StateIs(TSubclassOf<UActorComponent> StateClass) const
 {
-	return IsValid(State) && State->GetClass() == StateClass;
+	return IsValid(State) && State->IsA(StateClass);
 }
 
 

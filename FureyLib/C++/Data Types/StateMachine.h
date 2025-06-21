@@ -183,7 +183,7 @@ public:
 	/** Returns whether the state machine's current state is the given type. */
 	template<typename StateType>
 	bool StateIs() const {
-		return state != nullptr && typeid(*state) == typeid(StateType);
+		return dynamic_cast<StateType*>(state) != nullptr;
 	}
 
 	/** Returns the state machine's current state as the given type. */

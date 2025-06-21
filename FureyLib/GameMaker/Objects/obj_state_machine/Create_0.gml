@@ -40,7 +40,17 @@ is_state_valid = function() {
 /// @description						Returns whether the state machine's current state instance is an instance of the given object.
 
 state_is = function(obj) {
-	return state != noone && state.object_index == obj;
+	if (state == noone) {
+		return false;
+	}
+	var current = state.object_index;
+	while (current != -1) {
+		if (current == obj) {
+			return true;
+		}
+		current = object_get_parent(current);
+	}
+	return false;
 }
 
 /// @function							switch_state_to(new_state);

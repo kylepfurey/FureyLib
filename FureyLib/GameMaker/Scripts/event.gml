@@ -2,10 +2,10 @@
 // Multicast Event Structure
 // by Kyle Furey
 
-/// @function		event();
+/// @function		Event();
 /// @description	Constructs a collection of functions and IDs that can be bound, unbound, and invoked all at once.
 
-function event() constructor {
+function Event() constructor {
 
 	// VARIABLES
 

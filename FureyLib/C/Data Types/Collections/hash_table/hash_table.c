@@ -186,7 +186,7 @@ void *hash_table_values(const hash_table *self) {
     size_t i = 0;
     for (size_t j = 0; j < self->bucket_count; ++j) {
         if (self->buckets[j].value != NULL) {
-            memcpy(array + i * self->element_size, self->buckets[j].value, self->element_size);
+            memcpy((uint8_t *) array + i * self->element_size, self->buckets[j].value, self->element_size);
             ++i;
         }
     }
@@ -201,5 +201,5 @@ hash default_hash(const void *key) {
         return 0;
     }
 
-    return *(int8_t *) key;
+    return *(uint8_t *) key;
 }

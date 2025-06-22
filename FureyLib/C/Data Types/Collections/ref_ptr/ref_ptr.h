@@ -1,5 +1,5 @@
 // .h
-// Reference Counting Pointer Script
+// C Reference Counting Pointer Script
 // by Kyle Furey
 
 #pragma once

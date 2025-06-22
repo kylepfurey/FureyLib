@@ -184,7 +184,7 @@ void _set_store_values(const tree_node *root, void *array, size_t *index) {
         return;
     }
 
-    memcpy(array + set->element_size * *index, root->data, set->element_size);
+    memcpy((uint8_t *) array + set->element_size * *index, root->data, set->element_size);
 
     ++*index;
 

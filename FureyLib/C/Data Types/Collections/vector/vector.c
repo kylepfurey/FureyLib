@@ -33,7 +33,11 @@ void vector_free(vector *self) {
 // Any elements outside the new capacity are deleted.
 // Returns true if the vector was successfully resized.
 bool vector_resize(vector *self, const size_t new_capacity) {
-    if (self != NULL && self->capacity != new_capacity && new_capacity <= SIZE_MAX / self->element_size) {
+    if (self != NULL && new_capacity <= SIZE_MAX / self->element_size) {
+        if (self->capacity == new_capacity) {
+            return true;
+        }
+
         if (self->data == NULL) {
             if (new_capacity > 0) {
                 self->data = malloc(self->element_size * new_capacity);
@@ -86,7 +90,7 @@ void *vector_at(const vector *self, const size_t index) {
         return NULL;
     }
 
-    return self->data + self->element_size * index;
+    return (uint8_t *) self->data + self->element_size * index;
 }
 
 // Places a new element at the given index and pushes the rest of the vector's elements forward.
@@ -105,34 +109,12 @@ void *vector_insert(vector *self, size_t index) {
     }
 
     for (size_t i = self->size; i > index; --i) {
-        memcpy(self->data + self->element_size * i, self->data + self->element_size * (i - 1), self->element_size);
+        memmove((uint8_t *) self->data + self->element_size * i, (uint8_t *) self->data + self->element_size * (i - 1), self->element_size);
     }
 
     ++self->size;
 
-    return self->data + self->element_size * index;
-}
-
-// Places a new element at the end of the vector.
-// This will double the vector's capacity if new space is needed.
-// Returns the new element or NULL if the insertion failed.
-void *vector_push_back(vector *self) {
-    if (self != NULL) {
-        return vector_insert(self, self->size);
-    }
-
-    return NULL;
-}
-
-// Places a new element at the front of the vector.
-// This will double the vector's capacity if new space is needed.
-// Returns the new element or NULL if the insertion failed.
-void *vector_push_front(vector *self) {
-    if (self != NULL) {
-        return vector_insert(self, 0);
-    }
-
-    return NULL;
+    return (uint8_t *)self->data + self->element_size * index;
 }
 
 // Erases the vector's element at the given index and shifts subsequent elements backward.
@@ -145,28 +127,8 @@ bool vector_erase(vector *self, const size_t index) {
     --self->size;
 
     for (size_t i = index; i < self->size; ++i) {
-        memcpy(self->data + self->element_size * i, self->data + self->element_size * (i + 1), self->element_size);
+        memmove((uint8_t *) self->data + self->element_size * i, (uint8_t *) self->data + self->element_size * (i + 1), self->element_size);
     }
 
     return true;
-}
-
-// Erases the element at the end of the vector.
-// Returns true if the removal was successful.
-bool vector_pop_back(vector *self) {
-    if (self != NULL) {
-        return vector_erase(self, self->size - 1);
-    }
-
-    return false;
-}
-
-// Erases the element at the front of the vector.
-// Returns true if the removal was successful.
-bool vector_pop_front(vector *self) {
-    if (self != NULL) {
-        return vector_erase(self, 0);
-    }
-
-    return false;
 }

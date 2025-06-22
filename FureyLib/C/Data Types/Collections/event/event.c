@@ -30,7 +30,11 @@ void event_free(event *self) {
 
 // Resizes the event's underlying array to the given capacity.
 bool event_resize(event *self, const size_t new_capacity) {
-    if (self != NULL && self->capacity != new_capacity && new_capacity <= SIZE_MAX / sizeof(func)) {
+    if (self != NULL && new_capacity <= SIZE_MAX / sizeof(func)) {
+        if (self->capacity == new_capacity) {
+            return true;
+        }
+
         if (self->bindings == NULL) {
             if (new_capacity > 0) {
                 self->bindings = malloc(sizeof(func) * new_capacity);
@@ -65,6 +69,15 @@ bool event_resize(event *self, const size_t new_capacity) {
     }
 
     return false;
+}
+
+// Unbinds all functions from this event.
+void event_clear(event *self) {
+    if (self == NULL) {
+        return;
+    }
+
+    self->count = 0;
 }
 
 // Binds a new function to this event.
@@ -118,13 +131,4 @@ bool event_is_bound(const event *self, const func callback) {
     }
 
     return false;
-}
-
-// Unbinds all functions from this event.
-void event_clear(event *self) {
-    if (self == NULL) {
-        return;
-    }
-
-    self->count = 0;
 }

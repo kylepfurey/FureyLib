@@ -1,5 +1,5 @@
 // .c
-// Reference Counting Pointer Script
+// C Reference Counting Pointer Script
 // by Kyle Furey
 
 #include "ref_ptr.h"

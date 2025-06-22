@@ -73,10 +73,21 @@ list_node *list_at(const list *self, const size_t index) {
 }
 
 // Inserts a new node after the given node in the linked list.
+// If previous_node == NULL, the node will push to the front so the head is the new node.
 // Returns a pointer to the new node or NULL if the insertion failed.
 list_node *list_insert(list *self, list_node *previous_node) {
-    if (!list_contains(self, previous_node)) {
-        return NULL;
+    if (previous_node != NULL) {
+        if (!list_contains(self, previous_node)) {
+            return NULL;
+        }
+    } else {
+        if (self == NULL) {
+            return NULL;
+        }
+        if (self->head != NULL) {
+            self->head = list_insert(self, self->head->previous);
+            return self->head;
+        }
     }
 
     list_node *new_node = malloc(sizeof(list_node));
@@ -84,7 +95,7 @@ list_node *list_insert(list *self, list_node *previous_node) {
         return NULL;
     }
 
-    new_node->data = malloc(sizeof(self->element_size));
+    new_node->data = malloc(self->element_size);
     if (new_node->data == NULL) {
         free(new_node);
 
@@ -109,29 +120,6 @@ list_node *list_insert(list *self, list_node *previous_node) {
     ++self->size;
 
     return new_node;
-}
-
-// Inserts a new node at the end of the linked list.
-// Returns a pointer to the new node or NULL if the insertion failed.
-list_node *list_push_back(list *self) {
-    if (self != NULL && self->head != NULL) {
-        return list_insert(self, self->head->previous);
-    }
-
-    return false;
-}
-
-// Inserts a new node at the front of the linked list.
-// Returns a pointer to the new node or NULL if the insertion failed.
-list_node *list_push_front(list *self) {
-    if (self != NULL && self->head != NULL) {
-        if (list_insert(self, self->head->previous)) {
-            self->head = self->head->previous;
-            return self->head;
-        }
-    }
-
-    return false;
 }
 
 // Erases the given node from the linked list.
@@ -171,28 +159,6 @@ bool list_erase(list *self, list_node **node) {
     *node = NULL;
 
     return true;
-}
-
-// Erases the node at the end of the linked list.
-// Returns true if the removal was successful.
-bool list_pop_back(list *self) {
-    if (self != NULL && self->head != NULL) {
-        list_node *end = self->head->previous;
-        return list_erase(self, &end);
-    }
-
-    return false;
-}
-
-// Erases the node at the front of the linked list.
-// Returns true if the removal was successful.
-bool list_pop_front(list *self) {
-    if (self != NULL && self->head != NULL) {
-        list_node *head = self->head;
-        return list_erase(self, &head);
-    }
-
-    return false;
 }
 
 // Returns whether the given node is within the linked list.

@@ -19,5 +19,6 @@
 #include "tree/tree.h"
 #include "set/set.h"
 #include "map/map.h"
+#include "ref_ptr/ref_ptr.h"
 #include "hash_table/hash_table.h"
 #include "event/event.h"

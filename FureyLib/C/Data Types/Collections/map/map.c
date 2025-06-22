@@ -221,7 +221,7 @@ void _map_store_keys(const tree_node *root, void *array, size_t *index) {
         return;
     }
 
-    memcpy(array + map->key_size * *index, ((pair *) root->data)->key, map->key_size);
+    memcpy((uint8_t *) array + map->key_size * *index, ((pair *) root->data)->key, map->key_size);
 
     ++*index;
 
@@ -260,7 +260,7 @@ void _map_store_values(const tree_node *root, void *array, size_t *index) {
         return;
     }
 
-    memcpy(array + map->value_size * *index, ((pair *) root->data)->value, map->value_size);
+    memcpy((uint8_t *) array + map->value_size * *index, ((pair *) root->data)->value, map->value_size);
 
     ++*index;
 

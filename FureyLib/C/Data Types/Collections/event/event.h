@@ -42,6 +42,9 @@ void event_free(event *self);
 /** Resizes the event's underlying array to the given capacity. */
 bool event_resize(event *self, size_t new_capacity);
 
+/** Unbinds all functions from this event. */
+void event_clear(event *self);
+
 /** Binds a new function to this event. */
 void event_bind(event *self, func callback);
 
@@ -51,11 +54,9 @@ bool event_unbind(event *self, func callback);
 /** Returns whether at least one bound function matches the given function. */
 bool event_is_bound(const event *self, func callback);
 
-/** Unbinds all functions from this event. */
-void event_clear(event *self);
-
 /** Invokes each bound function with the given arguments. */
-#define event_invoke(self, ...) {\
+#define event_invoke(self, ...)\
+do {\
     if ((self) != NULL) {\
         for (size_t i = 0; i < (self)->count; ++i) {\
             if ((self)->bindings[i] != NULL) {\
@@ -63,11 +64,11 @@ void event_clear(event *self);
             }\
         }\
     }\
-}
+} while (0)
 
 /** Invokes each bound function with the given arguments and stores the last function's result in return. */
 #define event_invoke_return(self, return_type, return_value, ...)\
-    return_type return_value = (return_type)0; {\
+return_type return_value = (return_type)0; {\
     if ((self) != NULL) {\
         for (size_t i = 0; i < (self)->count; ++i) {\
             if ((self)->bindings[i] != NULL) {\

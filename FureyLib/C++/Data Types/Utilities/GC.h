@@ -7,12 +7,18 @@
 #include <list>
 #include <stdexcept>
 
+
+// MACROS
+
+#ifndef GC_COMPILED
 // Whether the Garbage Collector was compiled.
 #define GC_COMPILED 1
-#if GC_COMPILED
+#endif
 
 
 // GARBAGE COLLECTOR
+
+#if GC_COMPILED
 
 /**
  * A singleton class used to automatically manage and free memory at the end of a program's life in C++.<br/>
@@ -220,7 +226,6 @@ GarbageCollector GC;
 
 // Garbage Collector delete keyword override.
 #define delete GC -=
-
 
 #endif	// GC_COMPILED
 

@@ -4,21 +4,36 @@
 
 #pragma once
 #include <iostream>
-#include <unordered_map>
+#include <map>
 #include <initializer_list>
 #include <stdexcept>
 #include <utility>
 #include <cstring>
 #include <cstdint>
 
-// Whether the memory heap class will throw exceptions.
+
+// MACROS
+
+#ifndef MEMHEAP_THROWS
+// Whether the Memory Heap class will throw exceptions.
 #define MEMHEAP_THROWS 1
+#endif
+
+#ifndef MEMHEAP_DEFAULT_SIZE
+// The default size of the Memory Heap class.
+#define MEMHEAP_DEFAULT_SIZE 1024
+#endif
+
+#ifndef MEMHEAP_SINGLETON
+// Whether the Memory Heap class will store a singleton named Heap.
+#define MEMHEAP_SINGLETON 1
+#endif
 
 
 // MEMORY HEAP
 
 /** A class that manages a fixed block of memory that can be used to allocate and deallocate blocks dynamically. */
-template<size_t SIZE = 1024>
+template<size_t SIZE = MEMHEAP_DEFAULT_SIZE>
 class MemHeap final {
 	static_assert(SIZE != 0, "ERROR: Cannot allocate a heap with 0 bytes!");
 
@@ -28,7 +43,7 @@ class MemHeap final {
 	uint8_t memory[SIZE];
 
 	/** Each allocated block of memory and its size. */
-	std::unordered_map<void*, size_t> blocks;
+	std::map<void*, size_t> blocks;
 
 public:
 
@@ -91,7 +106,7 @@ public:
 		if (SizeA == 0 || SizeB == 0) {
 			return false;
 		}
-		return (PointerA < static_cast<uint8_t*>(PointerB) + SizeB) && (PointerB < static_cast<uint8_t*>(PointerA) + SizeA);
+		return (static_cast<uint8_t*>(PointerA) < static_cast<uint8_t*>(PointerB) + SizeB) && (static_cast<uint8_t*>(PointerB) < static_cast<uint8_t*>(PointerA) + SizeA);
 	}
 
 	/** Logs the current state of this heap. */
@@ -123,7 +138,7 @@ public:
 			throw std::runtime_error("ERROR: Allocating more memory than the heap budget!");
 		}
 		if (blocks.size() == 0) {
-			blocks.insert({ memory, Size });
+			blocks.emplace(memory, Size);
 			return memory;
 		}
 		for (auto& Block1 : blocks) {
@@ -137,22 +152,20 @@ public:
 				}
 				if (SuccessRight && DoesMemoryOverlap(RightBlock, Size, Block2.first, Block2.second)) {
 					SuccessRight = false;
-					break;
 				}
 				if (SuccessLeft && DoesMemoryOverlap(LeftBlock, Size, Block2.first, Block2.second)) {
 					SuccessLeft = false;
-					break;
 				}
 				if (!SuccessRight && !SuccessLeft) {
 					break;
 				}
 			}
 			if (SuccessRight) {
-				blocks.insert({ RightBlock, Size });
+				blocks.emplace(RightBlock, Size);
 				return RightBlock;
 			}
 			if (SuccessLeft) {
-				blocks.insert({ LeftBlock, Size });
+				blocks.emplace(LeftBlock, Size);
 				return LeftBlock;
 			}
 		}
@@ -169,6 +182,14 @@ public:
 	 * The new block of memory is zero-initialized and stored contiguously.
 	 */
 	void* Calloc(const size_t Count, const size_t Size) {
+		if (Size != 0 && Count > SIZE / Size) {
+#if MEMHEAP_THROWS
+			std::cerr << "\n\nERROR: Calloc overflow (Count * Size > SIZE_MAX)!" << std::endl;
+			throw std::runtime_error("ERROR: Calloc overflow (Count * Size > SIZE_MAX)!");
+#else
+			return nullptr;
+#endif
+		}
 		const size_t Total = Count * Size;
 		uint8_t* Pointer = static_cast<uint8_t*>(Malloc(Total));
 #if !MEMHEAP_THROWS
@@ -223,13 +244,13 @@ public:
 #if MEMHEAP_THROWS
 					std::memcpy(NewPointer, Pointer, Size);
 					blocks.erase(Pointer);
-					blocks.insert({ NewPointer, NewSize });
+					blocks.emplace(NewPointer, NewSize);
 					return NewPointer;
 #else
 					if (NewPointer != nullptr) {
 						std::memcpy(NewPointer, Pointer, Size);
 						blocks.erase(Pointer);
-						blocks.insert({ NewPointer, NewSize });
+						blocks.emplace(NewPointer, NewSize);
 						return NewPointer;
 					}
 					else {
@@ -336,3 +357,11 @@ public:
 		}
 	}
 };
+
+
+// STATIC VARIABLE INITIALIZATION
+
+#if MEMHEAP_SINGLETON
+/** The global instance of the Memory Heap. */
+MemHeap<> Heap;
+#endif	// MEMHEAP_SINGLETON

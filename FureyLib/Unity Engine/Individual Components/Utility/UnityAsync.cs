@@ -2,6 +2,7 @@
 // Awaitable Unity Async Functions
 // by Kyle Furey
 
+#nullable enable
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -96,7 +97,7 @@ public sealed class UnityAsync : MonoBehaviour
     private void OnDestroy()
     {
         if (instance == this)
-            instance = null;
+            instance = null!;
     }
 
 

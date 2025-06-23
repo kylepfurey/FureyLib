@@ -70,7 +70,7 @@ func is_state_valid() -> bool:
 
 ## Returns whether the state machine's current state node is an instance of the given script.
 func state_is(script: GDScript) -> bool:
-	if _state == null
+	if _state == null:
 		return false
 	current: GDScript = _state.get_script()
 	while current != null:

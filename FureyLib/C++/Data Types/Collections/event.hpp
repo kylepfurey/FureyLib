@@ -133,6 +133,14 @@ public:
         return unbind(make_id(std::function<T(A...)>(callback)));
     }
 
+    /** Returns whether at least one bound function matches the given function. */
+    bool is_bound(const target callback) const {
+        if (callback == nullptr) {
+            return false;
+        }
+        return is_bound(make_id(std::function<T(A...)>(callback)));
+    }
+
     /** Returns whether at least one bound function matches the given ID. */
     bool is_bound(const std::string &id) const {
         for (auto &pair : bindings) {
@@ -141,14 +149,6 @@ public:
             }
         }
         return false;
-    }
-
-    /** Returns whether at least one bound function matches the given function. */
-    bool is_bound(const target callback) const {
-        if (callback == nullptr) {
-            return false;
-        }
-        return is_bound(make_id(std::function<T(A...)>(callback)));
     }
 
     /** Invokes each bound function with the given arguments and returns the most recent function's returned value. */
@@ -199,7 +199,7 @@ private:
     std::vector<std::pair<std::string, std::function<void(A...)>>> bindings;
 
 
-    // METHODS
+    // EVENT
 
     /** Creates a string ID from the given function. */
     static std::string make_id(const std::function<void(A...)> &callback) {

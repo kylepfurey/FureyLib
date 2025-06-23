@@ -9,7 +9,7 @@ use std::rc::*;
 use std::string::*;
 use std::vec::*;
 
-/** Entry point of the program. */
+/// Entry point of the program.
 fn main() {
     println!("Hello, Dinner!");
 

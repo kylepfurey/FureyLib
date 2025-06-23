@@ -11,23 +11,23 @@ use std::rc::*;
 use std::string::*;
 use std::vec::*;
 
-// STRUCTURE
+// STRUCTURE VARIABLES
 
-/** Template structure script. */
+/// Template structure script.
 pub struct Struct {
-    // VARIABLES
-    /** Example x variable. */
+    /// Example x variable.
     pub x: f32,
 
-    /** Example y variable. */
+    /// Example y variable.
     pub y: f32, // New variables here
 }
 
-// FUNCTIONS
+// STRUCTURE METHODS
+
 impl Struct {
     // CONSTRUCTORS
 
-    /** Initializes a new structure. */
+    /// Default constructor.
     pub fn new(x: f32, y: f32) -> Self {
         Struct { x, y }
     }
@@ -36,7 +36,7 @@ impl Struct {
 
     // METHODS
 
-    /** Returns the magnitude of the given structure. */
+    /// Returns the magnitude of the given structure.
     pub fn magnitude(&self) -> f32 {
         if self.x == 0.0 && self.y == 0.0 {
             return 0.0;
@@ -44,7 +44,7 @@ impl Struct {
         (self.x * self.x + self.y * self.y).sqrt()
     }
 
-    /** Normalizes the given structure. */
+    /// Normalizes the given structure.
     pub fn normalize(&mut self) -> &mut Self {
         let magnitude: f32 = self.magnitude();
         if magnitude == 0.0 {
@@ -56,13 +56,4 @@ impl Struct {
     }
 
     // New methods here
-}
-
-// DESTRUCTOR
-impl Drop for Struct {
-    /** Properly destroys the given structure. */
-    fn drop(&mut self) {
-        self.x = 0.0;
-        self.y = 0.0;
-    }
 }

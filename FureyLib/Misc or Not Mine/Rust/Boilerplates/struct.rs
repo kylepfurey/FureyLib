@@ -2,31 +2,26 @@
 // Name
 // Creator
 
-use std::mem::*;
-use std::rc::*;
 use std::boxed::*;
+use std::collections::*;
 use std::io::*;
+use std::mem::*;
+use std::ops::*;
+use std::rc::*;
 use std::string::*;
 use std::vec::*;
-use std::collections::*;
-use std::ops::*;
-
 
 // STRUCTURE
 
 /** Template structure script. */
 pub struct Struct {
     // VARIABLES
-
     /** Example x variable. */
     pub x: f32,
 
     /** Example y variable. */
-    pub y: f32
-
-    // New variables here
+    pub y: f32, // New variables here
 }
-
 
 // FUNCTIONS
 impl Struct {
@@ -38,7 +33,6 @@ impl Struct {
     }
 
     // New constructors here
-
 
     // METHODS
 
@@ -63,7 +57,6 @@ impl Struct {
 
     // New methods here
 }
-
 
 // DESTRUCTOR
 impl Drop for Struct {

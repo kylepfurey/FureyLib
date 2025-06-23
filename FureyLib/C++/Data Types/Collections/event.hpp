@@ -31,7 +31,7 @@ private:
     std::vector<std::pair<std::string, std::function<T(A...)>>> bindings;
 
 
-    // METHODS
+    // EVENT
 
     /** Creates a string ID from the given function. */
     static std::string make_id(const std::function<T(A...)> &callback) {

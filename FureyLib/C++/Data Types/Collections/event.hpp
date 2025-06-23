@@ -21,25 +21,25 @@ public:
     // TYPES
 
     /** The type of function pointer bound to this event. */
-    using target = T (*)(A...);
+    using target = std::function<T(A...)>;
 
 private:
 
     // DATA
 
     /** Each bound function and its ID. */
-    std::vector<std::pair<std::string, std::function<T(A...)>>> bindings;
+    std::vector<std::pair<std::string, target>> bindings;
 
 
     // EVENT
 
     /** Creates a string ID from the given function. */
-    static std::string make_id(const std::function<T(A...)> &callback) {
-        if (callback.template target<target>() == nullptr) {
+    static std::string make_id(const target &callback) {
+        if (callback.template target<T (*)(A...)>() == nullptr) {
             throw std::runtime_error("ERROR: Cannot implicitly generate an ID for a method or lambda!\n"
                                      "Use make_id<T>() on an object to generate a ID for your function!");
         }
-        return std::to_string(reinterpret_cast<uintptr_t>(callback.template target<target>()));
+        return std::to_string(reinterpret_cast<uintptr_t>(*callback.template target<T (*)(A...)>));
     }
 
 public:
@@ -55,13 +55,13 @@ public:
     // OPERATORS
 
     /** Binds a new function to this event. */
-    event &operator+=(const target callback) {
+    event &operator+=(const target &callback) {
         bind(callback);
         return *this;
     }
 
     /** Unbinds the first instance of the given function from this event. */
-    event &operator-=(const target callback) {
+    event &operator-=(const target &callback) {
         unbind(callback);
         return *this;
     }
@@ -80,17 +80,17 @@ public:
     // EVENT
 
     /** Returns an iterator to the beginning of the event. */
-    typename std::vector<std::pair<std::string, std::function<T(A...)>>>::const_iterator begin() const {
+    typename std::vector<std::pair<std::string, target>>::const_iterator begin() const {
         return bindings.begin();
     }
 
     /** Returns an iterator to the end of the event. */
-    typename std::vector<std::pair<std::string, std::function<T(A...)>>>::const_iterator end() const {
+    typename std::vector<std::pair<std::string, target>>::const_iterator end() const {
         return bindings.end();
     }
 
     /** Returns the total number of bound functions. */
-    size_t size() const {
+    size_t count() const {
         return bindings.size();
     }
 
@@ -100,13 +100,12 @@ public:
     }
 
     /** Binds a new function to this event. */
-    void bind(const target callback) {
-        std::function<T(A...)> func(callback);
-        bind(make_id(func), func);
+    void bind(const target &callback) {
+        bind(make_id(callback), callback);
     }
 
     /** Binds a new function and its ID to this event. */
-    void bind(const std::string &id, const std::function<T(A...)> &callback) {
+    void bind(const std::string &id, const target &callback) {
         if (callback == nullptr) {
             throw std::runtime_error("ERROR: Cannot bind an invalid function to an event!");
         }
@@ -126,19 +125,19 @@ public:
     }
 
     /** Unbinds the first bound function that matches the given function from this event. */
-    bool unbind(const target callback) {
+    bool unbind(const target &callback) {
         if (callback == nullptr) {
             return false;
         }
-        return unbind(make_id(std::function<T(A...)>(callback)));
+        return unbind(make_id(callback));
     }
 
     /** Returns whether at least one bound function matches the given function. */
-    bool is_bound(const target callback) const {
+    bool is_bound(const target &callback) const {
         if (callback == nullptr) {
             return false;
         }
-        return is_bound(make_id(std::function<T(A...)>(callback)));
+        return is_bound(make_id(callback));
     }
 
     /** Returns whether at least one bound function matches the given ID. */
@@ -189,25 +188,25 @@ public:
     // TYPES
 
     /** The type of function pointer bound to this event. */
-    using target = void (*)(A...);
+    using target = std::function<void(A...)>;
 
 private:
 
     // DATA
 
     /** Each bound function and its ID. */
-    std::vector<std::pair<std::string, std::function<void(A...)>>> bindings;
+    std::vector<std::pair<std::string, target>> bindings;
 
 
     // EVENT
 
     /** Creates a string ID from the given function. */
-    static std::string make_id(const std::function<void(A...)> &callback) {
-        if (callback.template target<target>() == nullptr) {
+    static std::string make_id(const target &callback) {
+        if (callback.template target<void (*)(A...)>() == nullptr){
             throw std::runtime_error("ERROR: Cannot implicitly generate an ID for a method or lambda!\n"
                                      "Use make_id<T>() on an object to generate a ID for your function!");
         }
-        return std::to_string(reinterpret_cast<uintptr_t>(callback.template target<target>()));
+        return std::to_string(reinterpret_cast<uintptr_t>(*callback.template target<void (*)(A...)>()));
     }
 
 public:
@@ -223,13 +222,13 @@ public:
     // OPERATORS
 
     /** Binds a new function to this event. */
-    event &operator+=(const target callback) {
+    event &operator+=(const target &callback) {
         bind(callback);
         return *this;
     }
 
     /** Unbinds the first instance of the given function from this event. */
-    event &operator-=(const target callback) {
+    event &operator-=(const target &callback) {
         unbind(callback);
         return *this;
     }
@@ -247,17 +246,17 @@ public:
     // EVENT
 
     /** Returns an iterator to the beginning of the event. */
-    typename std::vector<std::pair<std::string, std::function<void(A...)>>>::const_iterator begin() const {
+    typename std::vector<std::pair<std::string, target>>::const_iterator begin() const {
         return bindings.begin();
     }
 
     /** Returns an iterator to the end of the event. */
-    typename std::vector<std::pair<std::string, std::function<void(A...)>>>::const_iterator end() const {
+    typename std::vector<std::pair<std::string, target>>::const_iterator end() const {
         return bindings.end();
     }
 
     /** Returns the total number of bound functions. */
-    size_t size() const {
+    size_t count() const {
         return bindings.size();
     }
 
@@ -267,13 +266,12 @@ public:
     }
 
     /** Binds a new function to this event. */
-    void bind(const target callback) {
-        std::function<void(A...)> func(callback);
-        bind(make_id(func), func);
+    void bind(const target &callback) {
+        bind(make_id(callback), callback);
     }
 
     /** Binds a new function and its ID to this event. */
-    void bind(const std::string &id, const std::function<void(A...)> &callback) {
+    void bind(const std::string &id, const target &callback) {
         if (callback == nullptr) {
             throw std::runtime_error("ERROR: Cannot bind an invalid function to an event!");
         }
@@ -293,11 +291,11 @@ public:
     }
 
     /** Unbinds the first bound function that matches the given function from this event. */
-    bool unbind(const target callback) {
+    bool unbind(const target &callback) {
         if (callback == nullptr) {
             return false;
         }
-        return unbind(make_id(std::function<void(A...)>(callback)));
+        return unbind(make_id(callback));
     }
 
     /** Returns whether at least one bound function matches the given ID. */
@@ -311,11 +309,11 @@ public:
     }
 
     /** Returns whether at least one bound function matches the given function. */
-    bool is_bound(const target callback) const {
+    bool is_bound(const target &callback) const {
         if (callback == nullptr) {
             return false;
         }
-        return is_bound(make_id(std::function<void(A...)>(callback)));
+        return is_bound(make_id(callback));
     }
 
     /** Invokes each bound function with the given arguments and returns the most recent function's returned value. */
@@ -344,7 +342,6 @@ public:
     }
 };
 
-
 // ID
 
 /** Creates a string ID from the given data's address. */
@@ -353,17 +350,16 @@ static std::string make_id(const T &data) {
     return std::to_string(reinterpret_cast<uintptr_t>(&data));
 }
 
-
 // UNWRAP METHOD
 
 /** Converts the given pointer to a method into a function pointer. */
-template<typename I, typename T, typename... A>
-static T(*unwrap_method(T(I::* const method)(A...) const))(const I &, A...) {
-    return reinterpret_cast<T(*)(const I &, A...)>(method);
+template <typename I, typename T, typename... A>
+static T (*unwrap_method(T (I::*const method)(A...) const))(const I &, A...) {
+    return reinterpret_cast<T (*)(const I &, A...)>(method);
 }
 
 /** Converts the given pointer to a method into a function pointer. */
-template<typename I, typename T, typename... A>
-static T(*unwrap_method(T(I::* const method)(A...)))(I &, A...) {
-    return reinterpret_cast<T(*)(I &, A...)>(method);
+template <typename I, typename T, typename... A>
+static T (*unwrap_method(T (I::*const method)(A...)))(I &, A...) {
+    return reinterpret_cast<T (*)(I &, A...)>(method);
 }

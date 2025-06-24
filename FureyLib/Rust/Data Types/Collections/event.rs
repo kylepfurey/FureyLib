@@ -79,7 +79,7 @@ impl<T: Default, A: Clone> Event<T, A> {
         let string = id.into();
         for i in 0..self.bindings.len() {
             if self.bindings[i].0 == string {
-                self.bindings.remove(i);
+                drop(self.bindings.remove(i));
                 return true;
             }
         }

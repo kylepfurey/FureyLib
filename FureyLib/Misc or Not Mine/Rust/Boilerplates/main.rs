@@ -12,8 +12,8 @@ use std::string::*;
 use std::vec::*;
 
 /// Entry point of the program.
-fn main() -> result::Result<(), io::Error> {
-    let mut args: vec::Vec<string::String> = env::args().collect();
+fn main() -> Result<(), Box<dyn Error>>> {
+    let mut args: Vec<String> = args().collect();
 
     println!("Hello, Dinner!");
 

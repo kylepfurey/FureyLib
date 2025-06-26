@@ -3,15 +3,21 @@
 
 use std::boxed::*;
 use std::collections::*;
+use std::error::*;
 use std::io::*;
 use std::mem::*;
 use std::rc::*;
+use std::result::*;
 use std::string::*;
 use std::vec::*;
 
 /// Entry point of the program.
-fn main() {
+fn main() -> Result<(), Error> {
+    let args: Vec<String> = env::args().collect();
+    
     println!("Hello, Dinner!");
 
     // New code here
+
+    Ok(())
 }

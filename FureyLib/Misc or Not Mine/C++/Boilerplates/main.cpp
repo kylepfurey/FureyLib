@@ -10,7 +10,7 @@
 using namespace std;
 
 /** Entry point of the program. */
-int main(int argc, char **argv) {
+int main(int argc, char *argv[]) {
 	cout << "Hello, Dinner!" << endl;
 
 	// New code here

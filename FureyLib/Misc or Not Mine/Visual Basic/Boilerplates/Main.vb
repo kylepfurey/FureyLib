@@ -17,7 +17,7 @@ Namespace Application
 		''' </summary>
 		''' <param name="cmdArgs"></param>
 		''' <returns>The return code of the program.</returns>
-		Public Shared Function Main(ByVal cmdArgs() As String) As Integer
+		Public Shared Function Main(ByVal ParamArray cmdArgs As String()) As Integer
 
 			Console.WriteLine("Hello, Dinner!")
 

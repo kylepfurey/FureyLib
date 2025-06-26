@@ -4,7 +4,6 @@
 
 use std::boxed::*;
 use std::collections::*;
-use std::error::*;
 use std::io::*;
 use std::mem::*;
 use std::ops::*;

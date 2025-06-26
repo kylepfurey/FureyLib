@@ -13,7 +13,7 @@ use std::vec::*;
 
 /// Entry point of the program.
 fn main() -> Result<(), io::Error> {
-    let args: Vec<String> = env::args().collect();
+    let mut args: Vec<String> = env::args().collect();
     
     println!("Hello, Dinner!");
 

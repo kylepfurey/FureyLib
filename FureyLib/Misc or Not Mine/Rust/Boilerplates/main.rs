@@ -12,7 +12,7 @@ use std::string::*;
 use std::vec::*;
 
 /// Entry point of the program.
-fn main() -> Result<(), Box<dyn Error>>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let mut args: Vec<String> = args().collect();
 
     println!("Hello, Dinner!");

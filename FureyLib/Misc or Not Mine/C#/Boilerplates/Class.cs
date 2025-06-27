@@ -11,25 +11,38 @@ using System.Collections.Generic;
 /// </summary>
 public class Class
 {
-    // VARIABLES
+	// VARIABLES
 
-    // New variables here
-
-
-    // CONSTRUCTORS
-
-    /// <summary>
-    /// Default constructor.
-    /// </summary>
-    public Class()
-    {
-
-    }
-
-    // New constructors here
+	// New variables here
 
 
-    // FUNCTIONS
+	// PROPERTIES
 
-    // New functions here
+	// New properties here
+
+
+	// CONSTRUCTORS
+
+	/// <summary>
+	/// Default constructor.
+	/// </summary>
+	public Class()
+	{
+
+	}
+
+	/// <summary>
+	/// Copy constructor.
+	/// </summary>
+	public Class(Class copied)
+	{
+
+	}
+
+	// New constructors here
+
+
+	// METHODS
+
+	// New methods here
 }

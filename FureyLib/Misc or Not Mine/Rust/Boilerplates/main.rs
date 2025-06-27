@@ -13,11 +13,11 @@ use std::vec::*;
 
 /// Entry point of the program.
 fn main() -> ExitCode {
-    let mut args: Vec<String> = args().collect();
+	let mut args: Vec<String> = args().collect();
 
-    println!("Hello, Dinner!");
+	println!("Hello, Dinner!");
 
-    // New code here
+	// New code here
 
-    ExitCode::SUCCESS
+	ExitCode::SUCCESS
 }

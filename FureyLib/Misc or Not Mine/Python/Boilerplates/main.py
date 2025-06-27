@@ -8,16 +8,16 @@ import types
 
 
 def main(args: list[str]) -> int:
-    """Entry point of the program."""
-    print("Hello, Dinner!")
+	"""Entry point of the program."""
+	print("Hello, Dinner!")
 
-    # New code here
+	# New code here
 
-    return 0
+	return 0
 
 
 # Starts the application.
 if __name__ == "__main__":
-    code: int = main(sys.argv)
-    print("\n\nProgram exited with code " + str(code) + ".\n")
-    sys.exit(code)
+	code: int = main(sys.argv)
+	print("\n\nProgram exited with code " + str(code) + ".\n")
+	sys.exit(code)

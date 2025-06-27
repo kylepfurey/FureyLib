@@ -16,45 +16,45 @@ use std::vec::*;
 
 /// Template structure script.
 pub struct Struct {
-    /// Example x variable.
-    pub x: f32,
+	/// Example x variable.
+	pub x: f32,
 
-    /// Example y variable.
-    pub y: f32, // New variables here
+	/// Example y variable.
+	pub y: f32, // New variables here
 }
 
 // STRUCTURE METHODS
 
 impl Struct {
-    // CONSTRUCTORS
+	// CONSTRUCTORS
 
-    /// Default constructor.
-    pub fn new(x: f32, y: f32) -> Self {
-        Struct { x, y }
-    }
+	/// Default constructor.
+	pub fn new(x: f32, y: f32) -> Self {
+		Struct { x, y }
+	}
 
-    // New constructors here
+	// New constructors here
 
-    // METHODS
+	// METHODS
 
-    /// Returns the magnitude of the given structure.
-    pub fn magnitude(&self) -> f32 {
-        if self.x == 0.0 && self.y == 0.0 {
-            return 0.0;
-        }
-        (self.x * self.x + self.y * self.y).sqrt()
-    }
+	/// Returns the magnitude of the given structure.
+	pub fn magnitude(&self) -> f32 {
+		if self.x == 0.0 && self.y == 0.0 {
+			return 0.0;
+		}
+		(self.x * self.x + self.y * self.y).sqrt()
+	}
 
-    /// Normalizes the given structure.
-    pub fn normalize(&mut self) -> &mut Self {
-        let magnitude: f32 = self.magnitude();
-        if magnitude == 0.0 {
-            return self;
-        }
-        self.x /= magnitude;
-        self.y /= magnitude;
-        self
-    }
+	/// Normalizes the given structure.
+	pub fn normalize(&mut self) -> &mut Self {
+		let magnitude: f32 = self.magnitude();
+		if magnitude == 0.0 {
+			return self;
+		}
+		self.x /= magnitude;
+		self.y /= magnitude;
+		self
+	}
 
-    // New methods here
+	// New methods here
 }

@@ -12,45 +12,53 @@ using Godot;
 /// </summary>
 public partial class NewGodotScript : Node
 {
-    // VARIABLES
+	// VARIABLES
 
-    // New variables here
-
-
-    // CONSTRUCTORS
-
-    /// <summary>
-    /// Default constructor.
-    /// </summary>
-    public NewGodotScript()
-    {
-
-    }
-
-    // New constructors here
+	// New variables here
 
 
-    // GODOT FUNCTIONS
+	// PROPERTIES
 
-    /// <summary>
-    /// Called when the node enters the scene tree for the first time.
-    /// </summary>
-    public override void _Ready()
-    {
+	// New properties here
 
-    }
 
-    /// <summary>
-    /// Called every frame. 'delta' is the elapsed time since the previous frame.
-    /// </summary>
-    /// <param name="delta"></param>
-    public override void _Process(double delta)
-    {
+	// EVENTS
 
-    }
+	/// <summary>
+	/// Called when the node enters the scene tree for the first time.
+	/// </summary>
+	public override void _EnterTree()
+	{
+
+	}
+
+	/// <summary>
+	/// Called once all child nodes have entered the scene tree.
+	/// </summary>
+	public override void _Ready()
+	{
+
+	}
+
+	/// <summary>
+	/// Called every frame. 'delta' is the elapsed time since the previous frame.
+	/// </summary>
+	/// <param name="delta"></param>
+	public override void _Process(double delta)
+	{
+
+	}
+
+	/// <summary>
+	/// Called right before the node is removed from the scene tree.
+	/// </summary>
+	public override void _ExitTree()
+	{
+
+	}
 	
 	
-    // FUNCTIONS
+	// METHODS
 
-    // New functions here
+	// New methods here
 }

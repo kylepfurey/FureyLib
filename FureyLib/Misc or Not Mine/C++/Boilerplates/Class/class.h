@@ -11,7 +11,6 @@
 
 /** Template class script. */
 class my_class {
-protected:
 
 	// VARIABLES
 
@@ -24,25 +23,30 @@ public:
 	/** Default constructor. */
 	my_class();
 
+	/** Copy constructor. */
+	my_class(const my_class& copied);
+
+	/** Move constructor. */
+	my_class(my_class&& moved) noexcept;
+
 	// New constructors here
-
-	/** Delete copy constructor. */
-	my_class(const my_class& copied) = delete;
-
-	/** Delete move constructor. */
-	my_class(my_class&& moved) = delete;
-
-	/** Delete copy assignment operator. */
-	my_class& operator=(const my_class& copied) = delete;
-
-	/** Delete move assignment operator. */
-	my_class& operator=(my_class&& moved) = delete;
 
 	/** Destructor. */
 	virtual ~my_class();
 
 
-	// FUNCTIONS
+	// OPERATORS
 
-	// New functions here
+	/** Copy assignment operator. */
+	my_class& operator=(const my_class& copied);
+
+	/** Move assignment operator. */
+	my_class& operator=(my_class&& moved) noexcept;
+
+	// New operators here
+
+
+	// METHODS
+
+	// New methods here
 };

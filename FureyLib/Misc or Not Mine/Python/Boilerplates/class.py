@@ -9,21 +9,20 @@ import types
 
 
 class Class:
-    """Template class script."""
+	"""Template class script."""
 
-    # VARIABLES
+	# VARIABLES
 
-    # New variables here
+	# New variables here
 
-    # CONSTRUCTORS
+	# CONSTRUCTORS
 
-    def __init__(self):
-        """Default constructor."""
-        pass
+	def __init__(self):
+		"""Default constructor."""
+		pass
 
-    # New constructors here
+	# New constructors here
 
-    # FUNCTIONS
+	# METHODS
 
-    # New functions here
-    
+	# New methods here

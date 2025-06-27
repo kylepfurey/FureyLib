@@ -11,24 +11,24 @@ Imports System.Collections.Generic
 ''' </summary>
 Public Class NewClass
 
-	' VARIABLES
+    ' VARIABLES
 
-	' New variables here
-
-
-	' CONSTRUCTORS
-
-	''' <summary>
-	''' Default constructor.
-	''' </summary>
-	Public Sub New()
-
-	End Sub
-
-	' New constructors here
+    ' New variables here
 
 
-	' FUNCTIONS
+    ' CONSTRUCTORS
 
-	' New functions here
+    ''' <summary>
+    ''' Default constructor.
+    ''' </summary>
+    Public Sub New()
+
+    End Sub
+
+    ' New constructors here
+
+
+    ' FUNCTIONS
+
+    ' New functions here
 End Class

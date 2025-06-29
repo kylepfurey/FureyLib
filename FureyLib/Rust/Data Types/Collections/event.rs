@@ -4,26 +4,25 @@
 
 use std::any::Any;
 use std::clone::Clone;
-use std::collections::hash_map::DefaultHasher;
 use std::convert::Into;
-use std::default::Default;
-use std::hash::{Hash, Hasher};
+use std::hash::{DefaultHasher, Hash, Hasher};
 use std::iter::IntoIterator;
 use std::ops::{AddAssign, FnMut, SubAssign};
+use std::option::Option;
 use std::string::String;
 use std::vec::{IntoIter, Vec};
 
 // EVENT VARIABLES
 
 /// A collection of functions that can be bound, unbound, and invoked all at once.
-pub struct Event<T: Default, A: Clone> {
+pub struct Event<'a, T, A: Clone> {
     /// Each bound function and its ID.
-    bindings: Vec<(String, Box<dyn FnMut(A) -> T>)>,
+    bindings: Vec<(String, Box<dyn FnMut(A) -> T + 'a>)>,
 }
 
 // EVENT METHODS
 
-impl<T: Default, A: Clone> Event<T, A> {
+impl<'a, T, A: Clone> Event<'a, T, A> {
     // CONSTRUCTORS
 
     /// Default constructor.
@@ -65,7 +64,7 @@ impl<T: Default, A: Clone> Event<T, A> {
     }
 
     /// Binds a new function and its ID to this event.
-    pub fn bind_id<F: FnMut(A) -> T + 'static>(&mut self, id: impl Into<String>, callback: F) {
+    pub fn bind_id<F: FnMut(A) -> T + 'a>(&mut self, id: impl Into<String>, callback: F) {
         self.bindings.push((id.into(), Box::new(callback)));
     }
 
@@ -103,10 +102,10 @@ impl<T: Default, A: Clone> Event<T, A> {
     }
 
     /// Invokes each bound function with the given arguments and returns the most recent function's returned value.
-    pub fn invoke(&mut self, args: A) -> T {
-        let mut result = T::default();
+    pub fn invoke(&mut self, args: A) -> Option<T> {
+        let mut result = None;
         for i in 0..self.bindings.len() {
-            result = self.bindings[i].1(args.clone());
+            result = Some(self.bindings[i].1(args.clone()));
         }
         result
     }
@@ -119,23 +118,23 @@ impl<T: Default, A: Clone> Event<T, A> {
 
 // EVENT OPERATORS
 
-impl<T: Default, A: Clone, F: FnMut(A) -> T + 'static> AddAssign<F> for Event<T, A> {
+impl<'a, T, A: Clone, F: FnMut(A) -> T + 'static> AddAssign<F> for Event<'a, T, A> {
     /// Binds a new function to this event.
     fn add_assign(&mut self, callback: F) {
         self.bind(callback)
     }
 }
 
-impl<T: Default, A: Clone, F: FnMut(A) -> T + 'static> SubAssign<F> for Event<T, A> {
+impl<'a, T, A: Clone, F: FnMut(A) -> T + 'static> SubAssign<F> for Event<'a, T, A> {
     /// Unbinds the first instance of the given function from this event.
     fn sub_assign(&mut self, callback: F) {
         self.unbind(callback);
     }
 }
 
-impl<T: Default, A: Clone> IntoIterator for Event<T, A> {
+impl<'a, T, A: Clone> IntoIterator for Event<'a, T, A> {
     /// Each function stored within this event.
-    type Item = (String, Box<dyn FnMut(A) -> T>);
+    type Item = (String, Box<dyn FnMut(A) -> T + 'a>);
 
     /// An iterator to this event's bound functions.
     type IntoIter = IntoIter<Self::Item>;

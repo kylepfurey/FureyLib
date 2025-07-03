@@ -224,12 +224,7 @@ public:
 	 */
 	void* Realloc(void* Pointer, const size_t NewSize) {
 		if (Pointer == nullptr) {
-#if MEMHEAP_THROWS
-			std::cerr << "\n\nERROR: Reallocating a null pointer!" << std::endl;
-			throw std::runtime_error("ERROR: Reallocating a null pointer!");
-#else
-			return nullptr;
-#endif
+			return Malloc(NewSize);
 		}
 		if (!blocks.count(Pointer)) {
 #if MEMHEAP_THROWS

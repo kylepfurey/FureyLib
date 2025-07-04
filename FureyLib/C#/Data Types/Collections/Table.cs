@@ -7,17 +7,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+
+// TABLE
+
 /// <summary>
 /// A collection of named objects of any type.
 /// </summary>
 public sealed class Table : IEnumerable, IEnumerable<KeyValuePair<string, object>>
 {
-    // DATA
+    // VARIABLES
 
     /// <summary>
     /// Each stored object by name.
     /// </summary>
-    private Dictionary<string, object> objects;
+    private Dictionary<string, object> objects = null!;
+
+
+    // PROPERTIES
 
     /// <summary>
     /// The current number of stored objects.

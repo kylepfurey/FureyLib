@@ -15,7 +15,7 @@ Namespace Application
 		''' <summary>
 		''' Entry point of the program.
 		''' </summary>
-		''' <param name="cmdArgs"></param>
+		''' <param name="args"></param>
 		''' <returns>The return code of the program.</returns>
 		Public Function Main(ByVal ParamArray args As String()) As Integer
 

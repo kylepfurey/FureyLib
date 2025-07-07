@@ -51,19 +51,13 @@ impl Table {
     /// Returns the object with the given name (or none).
     pub fn get(&self, name: impl Into<String>) -> Option<&Box<dyn Any>> {
         let string = name.into();
-        if self.objects.contains_key(&string) {
-            return self.objects.get(&string);
-        }
-        None
+        self.objects.get(&string)
     }
 
     /// Returns the object with the given name (or none).
     pub fn get_mut(&mut self, name: impl Into<String>) -> Option<&mut Box<dyn Any>> {
         let string = name.into();
-        if self.objects.contains_key(&string) {
-            return self.objects.get_mut(&string);
-        }
-        None
+        self.objects.get_mut(&string)
     }
 
     /// Returns the object downcasted with the given name and type (or none).
@@ -92,7 +86,7 @@ impl Table {
     }
 
     /// Returns whether the table contains an object of the given name and type.
-    pub fn contains_a<T: 'static>(&'static self, name: impl Into<String>) -> bool {
+    pub fn contains_a<T: 'static>(&self, name: impl Into<String>) -> bool {
         let obj = self.objects.get(&name.into());
         if obj.is_some() {
             return obj.unwrap().is::<T>();

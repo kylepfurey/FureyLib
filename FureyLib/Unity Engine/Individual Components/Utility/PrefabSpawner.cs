@@ -71,7 +71,7 @@ public class PrefabSpawner : MonoBehaviour
             return null;
         }
 
-        GameObject prefab = prefabs[UnityEngine.Random.Range(0, prefabs.Count - 1)];
+        GameObject prefab = prefabs[UnityEngine.Random.Range(0, prefabs.Count)];
         if (prefab == null)
         {
             Debug.LogError("PREFAB ERROR: A set prefab on the PrefabSpawner on " +

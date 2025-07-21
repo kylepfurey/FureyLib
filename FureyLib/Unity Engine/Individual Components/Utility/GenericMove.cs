@@ -68,6 +68,11 @@ public sealed class GenericMove : MonoBehaviour
     [SerializeField]
     private float minScale = 0.05f;
 
+    /// <summary>
+    /// Nodes that need to be cleaned up.
+    /// </summary>
+    private List<GameObject> ownedNodes = new List<GameObject>();
+
 
     // EVENTS
 
@@ -93,6 +98,7 @@ public sealed class GenericMove : MonoBehaviour
             if (node.target.transform.IsChildOf(transform))
             {
                 node.target.transform.parent = transform.parent; // Prevents child targets from constantly moving away
+                ownedNodes.Add(node.target);
             }
         }
 
@@ -103,6 +109,20 @@ public sealed class GenericMove : MonoBehaviour
             if (this != null)
             {
                 Destroy(gameObject);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Destroys owned path nodes.
+    /// </summary>
+    private void OnDestroy()
+    {
+        foreach (var node in ownedNodes)
+        {
+            if (node != null)
+            {
+                Destroy(node);
             }
         }
     }

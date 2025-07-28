@@ -20,7 +20,9 @@ pub struct Struct {
 	pub x: f32,
 
 	/// Example y variable.
-	pub y: f32, // New variables here
+	pub y: f32,
+
+	// New variables here
 }
 
 // STRUCTURE METHODS

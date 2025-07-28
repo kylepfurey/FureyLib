@@ -11,6 +11,10 @@ import (
 /** Entry point of the program. */
 func main() {
 	// var args []string = os.Args
+
 	fmt.Println("Hello, Dinner!")
+
+	// New code here
+
 	os.Exit(0)
 }

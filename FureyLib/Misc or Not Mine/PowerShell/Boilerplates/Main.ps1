@@ -12,4 +12,5 @@ function Main {
 	return "Program exited with code " + (0) + "."
 }
 
+# Starts the application.
 Main $args

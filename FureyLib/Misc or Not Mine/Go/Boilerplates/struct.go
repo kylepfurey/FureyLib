@@ -30,7 +30,7 @@ func newStruct(x float32, y float32) my_struct {
 
 // STRUCTURE METHODS
 
-/** Returns the magnitude of the given structure. */
+/** Returns the magnitude of this structure. */
 func (self *my_struct) Magnitude() float32 {
 	if self.X == 0.0 && self.Y == 0.0 {
 		return 0.0
@@ -38,7 +38,7 @@ func (self *my_struct) Magnitude() float32 {
 	return float32(math.Sqrt(float64(self.X*self.X + self.Y*self.Y)))
 }
 
-/** Normalizes the given structure. */
+/** Normalizes this structure. */
 func (self *my_struct) Normalize() *my_struct {
 	var magnitude float32 = self.Magnitude()
 	if magnitude == 0.0 {

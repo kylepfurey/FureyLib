@@ -39,7 +39,7 @@ impl Struct {
 
 	// METHODS
 
-	/// Returns the magnitude of the given structure.
+	/// Returns the magnitude this structure.
 	pub fn magnitude(&self) -> f32 {
 		if self.x == 0.0 && self.y == 0.0 {
 			return 0.0;
@@ -47,7 +47,7 @@ impl Struct {
 		(self.x * self.x + self.y * self.y).sqrt()
 	}
 
-	/// Normalizes the given structure.
+	/// Normalizes this structure.
 	pub fn normalize(&mut self) -> &mut Self {
 		let magnitude: f32 = self.magnitude();
 		if magnitude == 0.0 {

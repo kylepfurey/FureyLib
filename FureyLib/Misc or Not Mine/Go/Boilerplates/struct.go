@@ -2,14 +2,14 @@
 // Name
 // Creator
 
-package my_struct
+package MyStruct
 
 import "math"
 
 // STRUCTURE VARIABLES
 
 /** Template structure script. */
-type my_struct struct {
+type MyStruct struct {
 	/** Example x variable. */
 	X float32
 
@@ -22,8 +22,8 @@ type my_struct struct {
 // STRUCTURE CONSTRUCTORS
 
 /** Default constructor. */
-func newStruct(x float32, y float32) my_struct {
-	return my_struct{x, y}
+func NewStruct(x float32, y float32) MyStruct {
+	return MyStruct{x, y}
 }
 
 // New constructors here
@@ -31,7 +31,7 @@ func newStruct(x float32, y float32) my_struct {
 // STRUCTURE METHODS
 
 /** Returns the magnitude of this structure. */
-func (self *my_struct) Magnitude() float32 {
+func (self *MyStruct) Magnitude() float32 {
 	if self.X == 0.0 && self.Y == 0.0 {
 		return 0.0
 	}
@@ -39,7 +39,7 @@ func (self *my_struct) Magnitude() float32 {
 }
 
 /** Normalizes this structure. */
-func (self *my_struct) Normalize() *my_struct {
+func (self *MyStruct) Normalize() *MyStruct {
 	var magnitude float32 = self.Magnitude()
 	if magnitude == 0.0 {
 		return self

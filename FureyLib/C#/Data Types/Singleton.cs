@@ -2,6 +2,9 @@
 // Singleton Base Class
 // by Kyle Furey
 
+
+// SINGLETON
+
 /// <summary>
 /// Allows a derived class to have a single global instance via T.Instance.
 /// </summary>

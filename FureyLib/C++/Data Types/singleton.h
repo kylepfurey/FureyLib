@@ -4,6 +4,9 @@
 
 #pragma once
 
+
+// SINGLETON
+
 /** Allows a derived class to have a single global instance via T::instance(). */
 template<typename T>
 class singleton {

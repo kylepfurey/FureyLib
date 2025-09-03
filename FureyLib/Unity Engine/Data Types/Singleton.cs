@@ -4,6 +4,9 @@
 
 using UnityEngine;
 
+
+// SINGLETON
+
 /// <summary>
 /// Allows a derived MonoBehaviour to have a single global instance via T.Instance.
 /// </summary>

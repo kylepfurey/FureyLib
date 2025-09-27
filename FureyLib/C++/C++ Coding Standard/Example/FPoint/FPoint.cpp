@@ -17,7 +17,7 @@ float Math::FPoint::Magnitude() const {
 }
 
 // Returns a string variation of this point.
-std::string Math::FPoint::ToString(bool toInt) const {
+std::string Math::FPoint::ToString(const bool toInt) const {
 	if (toInt) {
 		return std::string("{ ") +
 			   std::to_string(static_cast<int>(X)) +
@@ -34,7 +34,7 @@ std::string Math::FPoint::ToString(bool toInt) const {
 
 // Normalizes this point.
 Math::FPoint& Math::FPoint::Normalize() {
-	float magnitude = Magnitude();
+	const float magnitude = Magnitude();
 	X /= magnitude;
 	Y /= magnitude;
 	return *this;

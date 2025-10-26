@@ -38,7 +38,7 @@ private:
 public:
 
     /** Returns a reference to the data with the given ID within this buffer, or throws an exception. */
-    inline T& operator[](const id id) {
+    inline T& operator[](id id) {
         if (id >= N || (_available[id / 8] & 1u << (id % 8)) == 0) {
             throw std::runtime_error("ERROR: Invalid ID when accessing buffer!");
         }
@@ -46,7 +46,7 @@ public:
     }
 
     /** Returns a const reference to the data with the given ID within this buffer, or throws an exception. */
-    inline const T& operator[](const id id) const {
+    inline const T& operator[](id id) const {
         if (id >= N || (_available[id / 8] & 1u << (id % 8)) == 0) {
             throw std::runtime_error("ERROR: Invalid ID when accessing buffer!");
         }
@@ -79,11 +79,11 @@ public:
 
     /** Inserts new data into this buffer and returns its ID, or buffer<T, N>::ERROR if the buffer is full. */
     template<typename ... A>
-    inline id insert(const A... args) {
+    inline id insert(A... args) {
         if (_count >= N) {
             return ERROR;
         }
-        const id id = _next_id++;
+        id id = _next_id++;
         new(&reinterpret_cast<T*>(_buffer)[id]) T(args...);
         _available[id / 8] |= 1u << (id % 8);
         ++_count;
@@ -94,7 +94,7 @@ public:
     }
 
     /** Erases the data in this buffer with the given ID and returns whether it was successful. */
-    inline bool erase(const id id) {
+    inline bool erase(id id) {
         if (id >= N || (_available[id / 8] & 1u << (id % 8)) == 0) {
             return false;
         }
@@ -106,7 +106,7 @@ public:
     }
 
     /** Returns a pointer to the data in this buffer with the given ID, or nullptr if no data exists. */
-    inline T* find(const id id) {
+    inline T* find(id id) {
         if (id >= N || (_available[id / 8] & 1u << (id % 8)) == 0) {
             return nullptr;
         }
@@ -114,7 +114,7 @@ public:
     }
 
     /** Returns a const pointer to the data in this buffer with the given ID, or nullptr if no data exists. */
-    inline const T* find(const id id) const {
+    inline const T* find(id id) const {
         if (id >= N || (_available[id / 8] & 1u << (id % 8)) == 0) {
             return nullptr;
         }
@@ -122,7 +122,7 @@ public:
     }
 
     /** Returns whether this buffer has data associated with the given ID. */
-    inline bool contains(const id id) const {
+    inline bool contains(id id) const {
         if (id >= N) {
             return false;
         }
@@ -131,7 +131,7 @@ public:
 
     /** Clears this buffer. */
     inline size_t clear() {
-        const size_t count = _count;
+        size_t count = _count;
         for (size_t i = 0; i < N; ++i) {
             if ((_available[i / 8] & 1u << (i % 8)) != 0) {
                 reinterpret_cast<T*>(_buffer)[i].~T();
@@ -146,7 +146,7 @@ public:
     }
 
     /** Iterates through this buffer with the given function and returns whether the iteration successfully completed. */
-    inline bool foreach(bool(* const action)(T*)) {
+    inline bool foreach(bool(*action)(T*)) {
         size_t count = _count;
         for (id id = 0; id < N && count > 0; ++id) {
             if ((_available[id / 8] & 1u << (id % 8)) != 0) {
@@ -160,7 +160,7 @@ public:
     }
 
     /** Iterates through this buffer with the given const function and returns whether the iteration successfully completed. */
-    inline bool foreach(bool(* const action)(const T*)) const {
+    inline bool foreach(bool(*action)(const T*)) const {
         size_t count = _count;
         for (id id = 0; id < N && count > 0; ++id) {
             if ((_available[id / 8] & 1u << (id % 8)) != 0) {

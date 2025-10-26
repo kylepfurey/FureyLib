@@ -44,11 +44,11 @@ static inline name name##_new() {\
 }\
 \
 /** Inserts new data into the given buffer and returns its ID, or BUFFER_ERROR if the buffer is full. */\
-static inline buffer_id name##_insert(name *const self, const type data) {\
+static inline buffer_id name##_insert(name *self, type data) {\
     if (self == NULL || self->count >= size) {\
         return BUFFER_ERROR;\
     }\
-    const buffer_id id = self->next_id++;\
+    buffer_id id = self->next_id++;\
     self->buffer[id] = data;\
     self->available[id / 8] |= 1u << (id % 8);\
     ++self->count;\
@@ -59,7 +59,7 @@ static inline buffer_id name##_insert(name *const self, const type data) {\
 }\
 \
 /** Erases the data in the given buffer with the given ID and returns whether it was successful. */\
-static inline bool name##_erase(name *const self, const buffer_id id) {\
+static inline bool name##_erase(name *self, buffer_id id) {\
     if (self == NULL || id >= size || (self->available[id / 8] & 1u << (id % 8)) == 0) {\
         return false;\
     }\
@@ -71,7 +71,7 @@ static inline bool name##_erase(name *const self, const buffer_id id) {\
 }\
 \
 /** Returns a pointer to the data in the given buffer with the given ID, or NULL if no data exists. */\
-static inline type *name##_find(name *const self, const buffer_id id) {\
+static inline type *name##_find(name *self, buffer_id id) {\
     if (self == NULL || id >= size || (self->available[id / 8] & 1u << (id % 8)) == 0) {\
         return NULL;\
     }\
@@ -79,7 +79,7 @@ static inline type *name##_find(name *const self, const buffer_id id) {\
 }\
 \
 /** Returns a const pointer to the data in the given buffer with the given ID, or NULL if no data exists. */\
-static inline const type *name##_find_const(const name *const self, const buffer_id id) {\
+static inline const type *name##_find_const(const name *self, buffer_id id) {\
     if (self == NULL || id >= size || (self->available[id / 8] & 1u << (id % 8)) == 0) {\
         return NULL;\
     }\
@@ -87,7 +87,7 @@ static inline const type *name##_find_const(const name *const self, const buffer
 }\
 \
 /** Returns whether the given buffer has data associated with the given ID. */\
-static inline bool name##_contains(const name *const self, const buffer_id id) {\
+static inline bool name##_contains(const name *self, buffer_id id) {\
     if (self == NULL || id >= size) {\
         return false;\
     }\
@@ -95,17 +95,17 @@ static inline bool name##_contains(const name *const self, const buffer_id id) {
 }\
 \
 /** Clears the given buffer. */\
-static inline size_t name##_clear(name *const self) {\
+static inline size_t name##_clear(name *self) {\
     if (self == NULL) {\
         return 0;\
     }\
-    const size_t count = self->count;\
+    size_t count = self->count;\
     *self = (name){0};\
     return count;\
 }\
 \
 /** Iterates through the given buffer with the given function and returns whether the iteration successfully completed. */\
-static inline bool name##_foreach(name *const self, bool(*const action)(type*)) {\
+static inline bool name##_foreach(name *self, bool(*action)(type *)) {\
     if (self == NULL) {\
         return false;\
     }\
@@ -122,7 +122,7 @@ static inline bool name##_foreach(name *const self, bool(*const action)(type*)) 
 }\
 \
 /** Iterates through the given buffer with the given const function and returns whether the iteration successfully completed. */\
-static inline bool name##_foreach_const(const name *const self, bool(*const action)(const type*)) {\
+static inline bool name##_foreach_const(const name *self, bool(*action)(const type *)) {\
     if (self == NULL) {\
         return false;\
     }\

@@ -4,9 +4,6 @@
 
 const std = @import("std");
 
-
-// STRUCTURE
-
 /// Template structure script.
 pub const Struct = struct {
     // VARIABLES
@@ -63,4 +60,5 @@ pub const Struct = struct {
 
     // New methods here
 };
+
 

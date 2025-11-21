@@ -21,7 +21,7 @@ pub const Struct = struct {
 
     /// Initializes a new structure.
     pub fn init(x: f32, y: f32) Struct {
-        const self = Struct{
+        const self = Struct {
             .x = x,
             .y = y
         };
@@ -60,3 +60,4 @@ pub const Struct = struct {
 
     // New methods here
 };
+

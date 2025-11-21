@@ -16,13 +16,14 @@ pub const Struct = struct {
 
     // New variables here
 
+
     // CONSTRUCTORS AND DESTRUCTOR
 
     /// Initializes a new structure.
     pub fn init(x: f32, y: f32) Struct {
         const self = Struct{
             .x = x,
-            .y = y,
+            .y = y
         };
         return self;
     }
@@ -34,6 +35,7 @@ pub const Struct = struct {
         self.x = 0;
         self.y = 0;
     }
+
 
     // METHODS
 
@@ -58,4 +60,3 @@ pub const Struct = struct {
 
     // New methods here
 };
-

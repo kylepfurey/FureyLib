@@ -3,9 +3,10 @@
 
 --- Entry point of the program.
 function main (args)
-    -- New code here
 
     print("Hello, Dinner!")
+
+    -- New code here
 
     return 0
 end

@@ -60,5 +60,3 @@ pub const Struct = struct {
 
     // New methods here
 };
-
-

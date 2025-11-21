@@ -27,6 +27,8 @@ pub const Struct = struct {
         return self;
     }
 
+    // New constructors here
+
     /// Properly destroys the given structure.
     pub fn deinit(self: *Struct) void {
         self.x = 0;
@@ -56,3 +58,4 @@ pub const Struct = struct {
 
     // New methods here
 };
+

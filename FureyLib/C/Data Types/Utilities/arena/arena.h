@@ -29,7 +29,7 @@ offsetof(memblock, data)
 
 /** The maximum size in bytes of a memory arena. */
 #define ARENA_SIZE \
-4098
+4096
 
 /** The size of a byte segment in a memory arena. */
 #define ARENA_ALIGN \

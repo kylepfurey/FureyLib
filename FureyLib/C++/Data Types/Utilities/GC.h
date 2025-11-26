@@ -11,7 +11,7 @@
 #define GLOBAL_GC 1
 
 /** The minimum alignment of pointers to check for references. */
-#define GC_ALIGN (sizeof(void*))
+#define GC_ALIGN 1
 
 /** Manages dynamic memory and automatically frees when no references remain. */
 class GarbageCollector final {
@@ -202,3 +202,4 @@ static GarbageCollector GC;
 /** Deletes dynamic memory from the garbage collector. */
 #define delete GC -=
 #endif
+

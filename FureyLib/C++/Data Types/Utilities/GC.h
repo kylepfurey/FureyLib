@@ -177,14 +177,12 @@ public:
 	}
 
 	/** Returns whether the garbage collector manages the given dynamic memory. */
-	template<typename T>
-	bool IsTracked(const T* memory) const {
+	bool IsTracked(const void* memory) const {
 		return managed.count(memory);
 	}
 
 	/** Returns whether the garbage collector manages the given dynamic memory. */
-	template<typename T>
-	bool operator()(const T* memory) const {
+	bool operator()(const void* memory) const {
 		return IsTracked(memory);
 	}
 };
@@ -193,7 +191,7 @@ public:
 static GarbageCollector GC;
 
 /** Allocates and adds dynamic memory to the garbage collector. */
-#define gcnew GC += new
+#define gcnew GC += new 
 
 /** Deletes dynamic memory from the garbage collector. */
-#define gcdelete GC -=
+#define gcdelete GC -= 

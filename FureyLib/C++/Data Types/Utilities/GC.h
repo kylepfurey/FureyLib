@@ -7,9 +7,6 @@
 #include <unordered_map>
 #include <cstdint>
 
-/** Is there a global garbage collector? */
-#define GLOBAL_GC 1
-
 /** The minimum alignment of pointers to check for references. */
 #define GC_ALIGN 1
 
@@ -192,14 +189,11 @@ public:
 	}
 };
 
-#if GLOBAL_GC
 /** The global instance of the garbage collector. */
 static GarbageCollector GC;
 
 /** Allocates and adds dynamic memory to the garbage collector. */
-#define new GC += new
+#define gcnew GC += new
 
 /** Deletes dynamic memory from the garbage collector. */
-#define delete GC -=
-#endif
-
+#define gcdelete GC -=

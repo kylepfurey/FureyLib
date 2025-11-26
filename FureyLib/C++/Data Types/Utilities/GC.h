@@ -12,7 +12,6 @@
 
 /** Manages dynamic memory and automatically frees when no references remain. */
 class GarbageCollector final {
-
 	/** Concrete base class for dynamic memory. */
 	class GarbageBase {
 	public:
@@ -30,6 +29,7 @@ class GarbageCollector final {
 	/** Templated class for dynamic memory. */
 	template<typename T>
 	class Garbage final : public GarbageBase {
+		/** A pointer to the underlying dynamic memory. */
 		T* memory;
 
 	public:
@@ -51,7 +51,6 @@ class GarbageCollector final {
 	uint8_t* stackStart;
 
 public:
-
 	/** Constructor. */
 	GarbageCollector() {
 		Init();
@@ -93,20 +92,18 @@ public:
 	}
 
 	/** Deletes dynamic memory from the garbage collector. */
-	template<typename T>
-	bool Release(T* memory) {
-		if (!managed.count(static_cast<void*>(memory))) {
+	bool Free(void* memory) {
+		if (!managed.count(memory)) {
 			return false;
 		}
-		delete managed.at(static_cast<void*>(memory));
-		managed.erase(static_cast<void*>(memory));
+		delete managed.at(memory);
+		managed.erase(memory);
 		return true;
 	}
 
 	/** Deletes dynamic memory from the garbage collector. */
-	template<typename T>
-	bool operator-=(T* memory) {
-		return Release<T>(memory);
+	bool operator-=(void* memory) {
+		return Free(memory);
 	}
 
 	/** Deletes all unreferenced dynamic memory. */

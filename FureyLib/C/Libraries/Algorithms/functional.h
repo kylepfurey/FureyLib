@@ -5,11 +5,9 @@
 #ifndef FUNCTIONAL_H
 #define FUNCTIONAL_H
 
-#include <stdlib.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <string.h>
 #include <assert.h>
 
 /**
@@ -31,7 +29,7 @@ static inline T *map_##T(size_t n, const T *array, T(*transform)(const T *), T *
 \
 /**\
  * Iterates <array> and fills <out> with each elements that passes <predicate>.\
- * Returns the new size of <out>. \
+ * Returns the new size of <out>.\
  */\
 static inline size_t filter_##T(size_t n, const T *array, bool(*predicate)(const T *), T *out) {\
     assert(array != NULL);\
@@ -49,33 +47,60 @@ static inline size_t filter_##T(size_t n, const T *array, bool(*predicate)(const
 }\
 \
 /** Iterates <array> and returns the final value created by <accumulator>. */\
-static inline T reduce_##T(size_t n, const T *array, void(*accumulator)(T*, const T *)) {\
+static inline T reduce_##T(size_t n, const T *array, void(*accumulator)(T *, const T *), T start) {\
     assert(array != NULL);\
     assert(accumulator != NULL);\
-    T final;\
-    memset(&final, 0, sizeof(T));\
     for (size_t i = 0; i < n; ++i) {\
-        accumulator(&final, array + i);\
+        accumulator(&start, array + i);\
     }\
-    return final;\
+    return start;\
 }\
 \
-/** Iterates <array> and calls <action> on each element. */\
-static inline void foreach_##T(size_t n, T *array, void(*action)(T *)) {\
+/**\
+ * Iterates <array> and calls <action> on each element.\
+ * <action> returns whether the foreach should continue.\
+ * Returns whether element that stopped the loop or NULL.\
+ */\
+static inline T *foreach_##T(size_t n, T *array, bool(*action)(T *)) {\
     assert(array != NULL);\
     assert(action != NULL);\
     for (size_t i = 0; i < n; ++i) {\
-        action(array + i);\
+        T *elem = array + i;\
+        if (!action(elem)) {\
+            return elem;\
+        }\
     }\
+    return NULL;\
 }\
 \
-/** Iterates <array> and calls <action> on each element. */\
-static inline void foreach_##T##_const(size_t n, const T *array, void(*action)(const T *)) {\
+/**\
+ * Iterates <array> and calls <action> on each element.\
+ * <action> returns whether the foreach should continue.\
+ * Returns whether element that stopped the loop or NULL.\
+ */\
+static inline const T *foreach_##T##_const(size_t n, const T *array, bool(*action)(const T *)) {\
     assert(array != NULL);\
     assert(action != NULL);\
     for (size_t i = 0; i < n; ++i) {\
-        action(array + i);\
+        const T *elem = array + i;\
+        if (!action(elem)) {\
+            return elem;\
+        }\
     }\
+    return NULL;\
+}\
+\
+/** Reverses <array>. */\
+static inline T *reverse_##T(size_t n, T *array) {\
+    assert(array != NULL);\
+    size_t count = n / 2;\
+    for (size_t i = 0; i < count; ++i) {\
+        size_t j = n - i - 1;\
+        T temp = array[i];\
+        array[i] = array[j];\
+        array[j] = temp;\
+    }\
+    return array;\
 }
 
 #endif // FUNCTIONAL_H

@@ -44,6 +44,24 @@ class GarbageCollector final {
 		}
 	};
 
+	/** Templated class for dynamic memory arrays. */
+	template<typename T>
+	class GarbageArray final : public GarbageBase {
+		/** A pointer to the underlying dynamic memory array. */
+		T* array;
+
+	public:
+		/** Constructor. */
+		GarbageArray(size_t n, T* array) : GarbageBase(sizeof(T) * n), array(array) {
+		}
+
+		/** Destructor. */
+		~GarbageArray() final {
+			delete[] array;
+			array = nullptr;
+		}
+	};
+
 	/** The underlying memory of the garbage collector. */
 	std::unordered_map<void*, GarbageBase*> managed;
 
@@ -78,10 +96,10 @@ public:
 	/** Adds dynamic memory to the garbage collector. */
 	template<typename T>
 	T* Mark(T* memory) {
-		if (memory == nullptr || managed.count(static_cast<void*>(memory))) {
+		if (memory == nullptr || managed.count((void*)memory)) {
 			return memory;
 		}
-		managed.emplace(static_cast<void*>(memory), new Garbage<T>(memory));
+		managed.emplace((void*)memory, new Garbage<T>(memory));
 		return memory;
 	}
 
@@ -122,7 +140,7 @@ public:
 				uint8_t* begin = stackStart;
 				uint8_t* end = begin + static_cast<size_t>(stackEnd - stackStart) - sizeof(void*) + 1;
 				for (; begin < end; begin += GC_ALIGN) {
-					void* ref = *reinterpret_cast<void**>(begin);
+					void* ref = *(void**)begin;
 					if (ref != nullptr) {
 						marked.insert(ref);
 					}
@@ -132,7 +150,7 @@ public:
 				uint8_t* begin = stackEnd;
 				uint8_t* end = begin + static_cast<size_t>(stackStart - stackEnd) - sizeof(void*) + 1;
 				for (; begin < end; begin += GC_ALIGN) {
-					void* ref = *reinterpret_cast<void**>(begin);
+					void* ref = *(void**)begin;
 					if (ref != nullptr) {
 						marked.insert(ref);
 					}
@@ -144,10 +162,10 @@ public:
 		for (auto& memory : managed) {
 			void* address = memory.first;
 			GarbageBase* garbage = memory.second;
-			uint8_t* begin = reinterpret_cast<uint8_t*>(address);
+			uint8_t* begin = (uint8_t*)address;
 			uint8_t* end = begin + garbage->SIZE - sizeof(void*) + 1;
 			for (; begin < end; begin += GC_ALIGN) {
-				void* ref = *reinterpret_cast<void**>(begin);
+				void* ref = *(void**)begin;
 				if (ref != nullptr) {
 					marked.insert(ref);
 				}
@@ -174,13 +192,19 @@ public:
 	}
 
 	/** Returns whether the garbage collector manages the given dynamic memory. */
-	bool IsTracked(const void* memory) const {
-		return managed.count(memory);
+	template<typename T>
+	bool IsTracked(const T* memory) const {
+		return managed.count((void* const&)memory);
 	}
 
-	/** Returns whether the garbage collector manages the given dynamic memory. */
-	bool operator()(const void* memory) const {
-		return IsTracked(memory);
+	/** Adds a dynamic memory array to the garbage collector. */
+	template<typename T>
+	T* MarkArray(size_t n, T* memory) {
+		if (memory == nullptr || managed.count((void*)memory)) {
+			return memory;
+		}
+		managed.emplace((void*)memory, new GarbageArray<T>(n, memory));
+		return memory;
 	}
 };
 
@@ -192,3 +216,6 @@ static GarbageCollector GC;
 
 /** Deletes dynamic memory from the garbage collector. */
 #define gcdelete GC -= 
+
+/** Allocates and adds a dynamic memory array to the garbage collector. */
+#define gcarray(N, T) GC.MarkArray<T>(N, new T[N])

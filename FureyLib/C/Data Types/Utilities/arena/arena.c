@@ -1,5 +1,5 @@
 // .c
-// Memory Arena Struct
+// Memory Arena Structure
 // by Kyle Furey
 
 #include "arena.h"

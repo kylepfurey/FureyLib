@@ -1,5 +1,5 @@
 // .h
-// Memory Arena Struct
+// Memory Arena Structure
 // by Kyle Furey
 
 #ifndef ARENA_H

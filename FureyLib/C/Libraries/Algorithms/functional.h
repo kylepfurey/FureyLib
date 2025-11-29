@@ -6,101 +6,113 @@
 #define FUNCTIONAL_H
 
 #include <stddef.h>
-#include <stdint.h>
 #include <stdbool.h>
 #include <assert.h>
 
 /**
- * Declares higher-order functions for the given type:
+ * Declares named higher-order functions for the given array type:
  * map(), filter(), reduce(), and foreach().
  */
-#define DECLARE_FUNCTIONAL(T)\
+#define DECLARE_FUNCTIONAL_NAMED(T, typename)\
 \
-/** Iterates <array> and fills <out> with each element returned by <transform>. */\
-static inline T *map_##T(size_t n, const T *array, T(*transform)(const T *), T *out) {\
+/**\
+ * Iterates <array> and fills <out> with each element returned by <transform>.\
+ * Returns <out>. <out> cannot be NULL.\
+ */\
+static inline T *map_##typename(size_t n, const T *array, T(*transform)(T elem), T *out) {\
     assert(array != NULL);\
     assert(transform != NULL);\
     assert(out != NULL);\
     for (size_t i = 0; i < n; ++i) {\
-        out[i] = transform(array + i);\
+        out[i] = transform(array[i]);\
     }\
     return out;\
 }\
 \
 /**\
  * Iterates <array> and fills <out> with each elements that passes <predicate>.\
- * Returns the new size of <out>.\
+ * Returns the new size of <out>. <out> can be NULL.\
  */\
-static inline size_t filter_##T(size_t n, const T *array, bool(*predicate)(const T *), T *out) {\
+static inline size_t filter_##typename(size_t n, const T *array, bool(*predicate)(T elem), T *out) {\
     assert(array != NULL);\
     assert(predicate != NULL);\
     size_t count = 0;\
-    for (size_t i = 0; i < n; ++i) {\
-        if (predicate(array + i)) {\
-            ++count;\
-            if (out != NULL) {\
-                *out++ = array[i];\
+    if (out != NULL) {\
+        for (size_t i = 0; i < n; ++i) {\
+            if (predicate(array[i])) {\
+                out[count++] = array[i];\
             }\
+        }\
+        return count;\
+    }\
+    for (size_t i = 0; i < n; ++i) {\
+        if (predicate(array[i])) {\
+            ++count;\
         }\
     }\
     return count;\
 }\
 \
-/** Iterates <array> and returns the final value created by <accumulator>. */\
-static inline T reduce_##T(size_t n, const T *array, void(*accumulator)(T *, const T *), T start) {\
+/**\
+ * Iterates <array>, setting <start> to the result of <accumulator> with <start> and the current element.\
+ * Returns the final value created by <accumulator>.\
+ */\
+static inline T reduce_##typename(size_t n, const T *array, T(*accumulator)(T acc, T elem), T start) {\
     assert(array != NULL);\
     assert(accumulator != NULL);\
     for (size_t i = 0; i < n; ++i) {\
-        accumulator(&start, array + i);\
+        start = accumulator(start, array[i]);\
     }\
     return start;\
 }\
 \
 /**\
  * Iterates <array> and calls <action> on each element.\
- * <action> returns whether the foreach should continue.\
- * Returns whether element that stopped the loop or NULL.\
+ * <action> returns whether the loop should continue.\
+ * <out> is set to the element that stopped the loop.\
+ * Returns whether the loop successfully completed. <out> can be NULL. \
  */\
-static inline T *foreach_##T(size_t n, T *array, bool(*action)(T *)) {\
+static inline bool foreach_##typename(size_t n, const T *array, bool(*action)(T elem), T *out) {\
     assert(array != NULL);\
     assert(action != NULL);\
     for (size_t i = 0; i < n; ++i) {\
-        T *elem = array + i;\
-        if (!action(elem)) {\
-            return elem;\
+        if (!action(array[i])) {\
+            if (out != NULL) {\
+                *out = array[i];\
+            }\
+            return false;\
         }\
     }\
-    return NULL;\
+    return true;\
 }\
 \
 /**\
- * Iterates <array> and calls <action> on each element.\
- * <action> returns whether the foreach should continue.\
- * Returns whether element that stopped the loop or NULL.\
+ * Reverses <array> into <out>.\
+ * Returns <out>. <out> cannot be NULL.\
  */\
-static inline const T *foreach_##T##_const(size_t n, const T *array, bool(*action)(const T *)) {\
+static inline T *reverse_##typename(size_t n, const T *array, T *out) {\
     assert(array != NULL);\
-    assert(action != NULL);\
-    for (size_t i = 0; i < n; ++i) {\
-        const T *elem = array + i;\
-        if (!action(elem)) {\
-            return elem;\
+    assert(out != NULL);\
+    if (array != out) {\
+        for (size_t i = 0; i < n; ++i) {\
+            out[i] = array[n - i - 1];\
         }\
+        return out;\
     }\
-    return NULL;\
-}\
-\
-/** Reverses <array>. */\
-static inline T *reverse_##T(size_t n, T *array) {\
-    assert(array != NULL);\
     size_t count = n / 2;\
     for (size_t i = 0; i < count; ++i) {\
         size_t j = n - i - 1;\
-        T temp = array[i];\
-        array[i] = array[j];\
-        array[j] = temp;\
+        T temp = out[i];\
+        out[i] = out[j];\
+        out[j] = temp;\
     }\
-    return array;\
+    return out;\
 }
+
+/**
+ * Declares higher-order functions for the given array type:
+ * map(), filter(), reduce(), and foreach().
+ */
+#define DECLARE_FUNCTIONAL(T) DECLARE_FUNCTIONAL_NAMED(T, T)
 
 #endif // FUNCTIONAL_H

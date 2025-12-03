@@ -8,8 +8,8 @@
 // CONSTRUCTORS AND DESTRUCTOR
 
 // Initializes a new structure.
-my_struct my_struct_new(const float x, const float y) {
-	const my_struct self = {
+my_struct my_struct_new(float x, float y) {
+	my_struct self = {
 		x,
 		y
 	};
@@ -37,7 +37,7 @@ float my_struct_magnitude(const my_struct *self) {
 
 // Normalizes the given structure.
 my_struct *my_struct_normalize(my_struct *self) {
-	const float magnitude = my_struct_magnitude(self);
+	float magnitude = my_struct_magnitude(self);
 	if (magnitude == 0) {
 		return self;
 	}

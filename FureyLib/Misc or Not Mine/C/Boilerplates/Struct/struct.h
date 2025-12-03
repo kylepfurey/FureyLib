@@ -29,7 +29,7 @@ typedef struct {
 // CONSTRUCTORS AND DESTRUCTOR
 
 /** Initializes a new structure. */
-my_struct my_struct_new(const float x, const float y);
+my_struct my_struct_new(float x, float y);
 
 // New constructors here
 

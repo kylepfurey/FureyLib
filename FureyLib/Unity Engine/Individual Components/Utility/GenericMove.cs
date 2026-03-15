@@ -1,16 +1,17 @@
 // .cs
-// Generic Movement Component
+// Generic Move Component
 // by Kyle Furey
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Provides generic movement capabilities for a game object.
 /// </summary>
-public sealed class GenericMove : MonoBehaviour
+public class GenericMove : MonoBehaviour
 {
     // CLASSES
 
@@ -27,6 +28,7 @@ public sealed class GenericMove : MonoBehaviour
         public bool followPosition = true;
         public bool followRotation = true;
         public bool followScale = false;
+        public UnityEvent onReached = new UnityEvent();
         [NonSerialized]
         public float currentDelay = 0.0f;
     }
@@ -77,12 +79,12 @@ public sealed class GenericMove : MonoBehaviour
     // EVENTS
 
     /// <summary>
+    /// Binds updates to the stop motion update callback.<br/>
     /// Optionally destroys this game object after a set amount of time.
     /// </summary>
     private IEnumerator Start()
     {
-        // Set rigidbody
-        rigidbody = GetComponent<Rigidbody>();
+        TryGetComponent(out rigidbody);
 
         // Initialize path
         for (int i = 0; i < path.Count; ++i)
@@ -114,7 +116,7 @@ public sealed class GenericMove : MonoBehaviour
     }
 
     /// <summary>
-    /// Destroys owned path nodes.
+    /// Unbinds the stop motion callback and destroys owned path nodes.
     /// </summary>
     private void OnDestroy()
     {
@@ -162,7 +164,7 @@ public sealed class GenericMove : MonoBehaviour
                             position = node.smoothTime <= 0.0 ?
                                 Vector3.MoveTowards(position, node.target.transform.position, delta) :
                                 Vector3.SmoothDamp(position, node.target.transform.position, ref positionVelocity, node.smoothTime, node.speed * pathSpeedMultiplier, Time.deltaTime);
-                            if ((node.target.transform.position - position).sqrMagnitude > minDistance * minDistance)
+                            if (!position.IsNearby(node.target.transform.position, minDistance))
                             {
                                 nextNode = false;
                             }
@@ -191,7 +193,7 @@ public sealed class GenericMove : MonoBehaviour
                             scale = node.smoothTime <= 0.0 ?
                                 Vector3.MoveTowards(scale, node.target.transform.localScale, delta) :
                                 Vector3.SmoothDamp(scale, node.target.transform.localScale, ref scaleVelocity, node.smoothTime, node.speed * pathSpeedMultiplier, Time.deltaTime);
-                            if ((node.target.transform.localScale - scale).sqrMagnitude > minScale * minScale)
+                            if (!scale.IsNearby(node.target.transform.localScale, minScale))
                             {
                                 nextNode = false;
                             }
@@ -203,7 +205,11 @@ public sealed class GenericMove : MonoBehaviour
                         }
                         if (nextNode)
                         {
+                            position = transform.position;
+                            rotation = transform.rotation;
+                            scale = transform.localScale;
                             node.currentDelay = node.delay;
+                            node.onReached.Invoke();
                             ++pathIndex;
                         }
                     }
@@ -255,7 +261,7 @@ public sealed class GenericMove : MonoBehaviour
                             position = node.smoothTime <= 0.0 ?
                                 Vector3.MoveTowards(position, node.target.transform.position, delta) :
                                 Vector3.SmoothDamp(position, node.target.transform.position, ref positionVelocity, node.smoothTime, node.speed * pathSpeedMultiplier, Time.fixedDeltaTime);
-                            if ((node.target.transform.position - position).sqrMagnitude > minDistance * minDistance)
+                            if (!position.IsNearby(node.target.transform.position, minDistance))
                             {
                                 nextNode = false;
                             }
@@ -284,7 +290,7 @@ public sealed class GenericMove : MonoBehaviour
                             scale = node.smoothTime <= 0.0 ?
                                 Vector3.MoveTowards(scale, node.target.transform.localScale, delta) :
                                 Vector3.SmoothDamp(scale, node.target.transform.localScale, ref scaleVelocity, node.smoothTime, node.speed * pathSpeedMultiplier, Time.fixedDeltaTime);
-                            if ((node.target.transform.localScale - scale).sqrMagnitude > minScale * minScale)
+                            if (!scale.IsNearby(node.target.transform.localScale, minScale))
                             {
                                 nextNode = false;
                             }
@@ -296,7 +302,11 @@ public sealed class GenericMove : MonoBehaviour
                         }
                         if (nextNode)
                         {
+                            position = transform.position;
+                            rotation = transform.rotation;
+                            scale = transform.localScale;
                             node.currentDelay = node.delay;
+                            node.onReached.Invoke();
                             ++pathIndex;
                         }
                     }
@@ -311,5 +321,40 @@ public sealed class GenericMove : MonoBehaviour
             rigidbody.rotation = rotation; // rigidbody.position and rigidbody.rotation enables physics teleportation:
             rigidbody.position = position; // the rigidbody wont get stuck on collision unlike rigidbody.Move()
         }
+    }
+
+    /// <summary>
+    /// Flips the scale of this game object.
+    /// </summary>
+    public void Flip()
+    {
+        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+    }
+
+    /// <summary>
+    /// Flips the scale of this game object.
+    /// </summary>
+    public void Flip(Transform target)
+    {
+        target.localScale = new Vector3(-target.localScale.x, target.localScale.y, target.localScale.z);
+    }
+}
+
+/// <summary>
+/// Extension methods for GenericMove.
+/// </summary>
+public static class GenericMoveExtensions
+{
+    /// <summary>
+    /// The minimum distance to consider two vectors overlapping.
+    /// </summary>
+    public const float minOverlapDistance = 0.5f;
+
+    /// <summary>
+    /// Returns whether two Vector3's are considered overlapping by a specific distance.
+    /// </summary>
+    public static bool IsNearby(this Vector3 position, Vector3 otherPosition, float distance = minOverlapDistance)
+    {
+        return (otherPosition - position).sqrMagnitude <= distance * distance;
     }
 }

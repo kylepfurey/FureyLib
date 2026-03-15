@@ -3,7 +3,8 @@
 
 (module
   ;; JavaScript imports.
-  (import "env" "log" (func $log (param i32 i32)))
+  ;; console.log(i32 addr, i32 size)
+  (import "console" "log" (func $log (param i32 i32)))
 
   ;; Memory page for data.
   (memory (export "memory") 1)
@@ -13,9 +14,9 @@
 
   ;; Entry point of the program.
   (func $main (export "main")
-    i32.const 0   ;; Push pointer to string
-    i32.const 15  ;; Push size of string
-    call $log     ;; Call log
+    i32.const 0       ;; Push pointer to string
+    i32.const 15      ;; Push size of string
+    call $log         ;; Call log
     ;; New code here
   )
 

@@ -60,6 +60,7 @@ namespace UnityEngine
         void SendMessage(string methodName);
         void SendMessage(string methodName, object value, SendMessageOptions options);
         void SendMessage(string methodName, SendMessageOptions options);
+        void BroadcastMessage(string methodName, object parameter = null, SendMessageOptions options = SendMessageOptions.RequireReceiver);
         void BroadcastMessage(string methodName, object parameter);
         void BroadcastMessage(string methodName);
         void BroadcastMessage(string methodName, SendMessageOptions options);

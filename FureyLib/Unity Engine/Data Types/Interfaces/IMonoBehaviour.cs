@@ -92,4 +92,6 @@ namespace UnityEngine
         void StopCoroutine(string methodName);
         void StopAllCoroutines();
     }
+
+    public interface IScriptableObject : IObject { }
 }

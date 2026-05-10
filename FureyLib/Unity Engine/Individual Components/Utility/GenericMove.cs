@@ -205,9 +205,9 @@ public class GenericMove : MonoBehaviour
                         }
                         if (nextNode)
                         {
-                            position = transform.position;
-                            rotation = transform.rotation;
-                            scale = transform.localScale;
+                            position = node.target.transform.position;
+                            rotation = node.target.transform.rotation;
+                            scale = node.target.transform.localScale;
                             node.currentDelay = node.delay;
                             node.onReached.Invoke();
                             ++pathIndex;
@@ -302,9 +302,9 @@ public class GenericMove : MonoBehaviour
                         }
                         if (nextNode)
                         {
-                            position = transform.position;
-                            rotation = transform.rotation;
-                            scale = transform.localScale;
+                            position = node.target.transform.position;
+                            rotation = node.target.transform.rotation;
+                            scale = node.target.transform.localScale;
                             node.currentDelay = node.delay;
                             node.onReached.Invoke();
                             ++pathIndex;

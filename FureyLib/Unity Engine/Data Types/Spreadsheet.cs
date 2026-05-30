@@ -83,17 +83,17 @@ public class Spreadsheet : ScriptableObject
     /// <summary>
     /// The index of the category column.
     /// </summary>
-    const int CATEGORY_COLUMN = 0;
+    public const int CATEGORY_COLUMN = 0;
 
     /// <summary>
     /// The index of the name column.
     /// </summary>
-    const int NAME_COLUMN = 1;
+    public const int NAME_COLUMN = 1;
 
     /// <summary>
     /// A delimiter used to combine the first two columns into an ID.
     /// </summary>
-    const char ID_DELIMITER = '.';
+    public const char ID_DELIMITER = '.';
 
 
     // EDITOR

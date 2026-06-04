@@ -16,7 +16,7 @@ using UnityEditor;
 /// Each sheet should have matching column names and IDs.
 /// </summary>
 [CreateAssetMenu(fileName = "Spreadsheet", menuName = "Scriptable Objects/Spreadsheet")]
-public class Spreadsheet : ScriptableObject
+public sealed class Spreadsheet : ScriptableObject
 {
     // STRUCTS
 

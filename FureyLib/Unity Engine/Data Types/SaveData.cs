@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// Contains serialized save data.
 /// </summary>
+[Serializable]
 public sealed class SaveData
 {
     // FIELDS

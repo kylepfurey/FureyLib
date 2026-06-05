@@ -72,7 +72,8 @@ public sealed class SaveData
             try
             {
                 value = JsonConvert.DeserializeObject<T>(json);
-                return true;
+                if (value != null)
+                    return true;
             }
             catch { }
         }
@@ -86,6 +87,9 @@ public sealed class SaveData
     /// </summary>
     public bool Write<T>(string property, T value)
     {
+        if (value == null)
+            return false;
+
         string json;
         try
         {
@@ -110,5 +114,9 @@ public sealed class SaveData
     /// <summary>
     /// Converts save data into a JSON object.
     /// </summary>
-    public override string ToString() => JsonConvert.SerializeObject(properties);
+    public override string ToString()
+    {
+        string json = JsonConvert.SerializeObject(properties);
+        return json != null ? json : "{}";
+    }
 }

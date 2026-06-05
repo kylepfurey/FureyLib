@@ -49,6 +49,8 @@ public sealed class SaveData
         try
         {
             properties = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            if (properties == null)
+                properties = new Dictionary<string, string>();
         }
         catch
         {
@@ -88,15 +90,16 @@ public sealed class SaveData
         try
         {
             json = JsonConvert.SerializeObject(value);
+            if (json == null)
+                return false;
         }
         catch
         {
             return false;
         }
 
-        bool overwrite = properties.ContainsKey(property);
         properties[property] = json;
-        return overwrite;
+        return true;
     }
 
     /// <summary>

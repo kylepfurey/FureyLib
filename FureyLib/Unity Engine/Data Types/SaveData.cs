@@ -62,7 +62,7 @@ public sealed class SaveData
     // METHODS
 
     /// <summary>
-    /// Reasd properties from a save file.
+    /// Reads properties from a save file.
     /// </summary>
     public bool Read<T>(string property, out T value, T defaultValue = default(T))
     {

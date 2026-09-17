@@ -29,7 +29,9 @@ public class Spreadsheet : ScriptableObject
         delegate bool Parser<T>(string s, out T result) where T : struct;
         readonly T? Get<T>(string column, Parser<T> parser) where T : struct
         {
-            if (!parser(columns[column.Trim().ToLower()], out var result))
+            if (!columns.TryGetValue(column.Trim().ToLower(), out var str))
+                return null;
+            if (!parser(str, out var result))
                 return null;
             return result;
         }

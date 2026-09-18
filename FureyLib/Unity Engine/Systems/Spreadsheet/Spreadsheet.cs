@@ -36,9 +36,9 @@ public class Spreadsheet : ScriptableObject
             return result;
         }
 
-        public readonly bool Bool(string column, bool defaultValue = false) => GetAndParse(column, bool.TryParse, defaultValue);
-        public readonly int Int(string column, int defaultValue = 0) => GetAndParse(column, int.TryParse, defaultValue);
-        public readonly float Float(string column, float defaultValue = 0.0f) => GetAndParse(column, float.TryParse, defaultValue);
+        public readonly bool Bool(string column, bool defaultValue = false) => GetAndParse<bool>(column, bool.TryParse, defaultValue);
+        public readonly int Int(string column, int defaultValue = 0) => GetAndParse<int>(column, int.TryParse, defaultValue);
+        public readonly float Float(string column, float defaultValue = 0.0f) => GetAndParse<float>(column, float.TryParse, defaultValue);
         public readonly string String(string column, string defaultValue = "")
         {
             if (!columns.TryGetValue(column.Trim().ToLower(), out var result))

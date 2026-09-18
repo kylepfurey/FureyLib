@@ -46,10 +46,10 @@ public class Spreadsheet : ScriptableObject
             result = result.Trim();
             return result;
         }
-        public readonly string[] Array(string column)
+        public readonly string[] Array(string column, string[] defaultValue = null!)
         {
             if (!columns.TryGetValue(column.Trim().ToLower(), out var str))
-                return System.Array.Empty<string>();
+                return defaultValue ?? System.Array.Empty<string>();
             string[] result = str.Split(',');
             for (int i = 0; i < result.Length; ++i)
                 result[i] = result[i].Trim();

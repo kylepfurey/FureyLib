@@ -4,7 +4,6 @@
 
 // Place in Assets/Editor folder
 
-#nullable enable
 using System.IO;
 using UnityEditor;
 

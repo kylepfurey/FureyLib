@@ -61,7 +61,7 @@ public class Spreadsheet : ScriptableObject
     [SerializeField] Row[] rows;
 
     public Row this[int row] { get => rows[row]; }
-    public Row this[string id] { get => this[idToRow[id.Trim().ToLower()]]; }
+    public Row this[string id] { get => rows[idToRow[id.Trim().ToLower()]]; }
 
 #if UNITY_EDITOR
     public bool Deserialize(string json)

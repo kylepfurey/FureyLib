@@ -67,6 +67,7 @@ public class Spreadsheet : ScriptableObject
 #if UNITY_EDITOR
     public bool Deserialize(string json)
     {
+        idToRow.Clear();
         var rows = JsonConvert.DeserializeObject<Dictionary<string, string>[]>(json);
         if (rows == null)
             return false;

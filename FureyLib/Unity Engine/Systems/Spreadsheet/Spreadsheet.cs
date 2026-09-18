@@ -26,23 +26,23 @@ public class Spreadsheet : ScriptableObject
                 this.columns[pair.Key.Trim().ToLower()] = pair.Value;
         }
 
-        delegate bool Parser<T>(string s, out T result) where T : struct;
-        readonly T? Get<T>(string column, Parser<T> parser) where T : struct
+        delegate bool Parser<T>(string s, out T result);
+        readonly T GetAndParse<T>(string column, Parser<T> parser, T defaultValue)
         {
             if (!columns.TryGetValue(column.Trim().ToLower(), out var str))
-                return null;
+                return defaultValue;
             if (!parser(str, out var result))
-                return null;
+                return defaultValue;
             return result;
         }
 
-        public readonly bool? Bool(string column) => Get<bool>(column, bool.TryParse);
-        public readonly int? Int(string column) => Get<int>(column, int.TryParse);
-        public readonly float? Float(string column) => Get<float>(column, float.TryParse);
-        public readonly string String(string column)
+        public readonly bool Bool(string column, bool defaultValue = false) => GetAndParse(column, bool.TryParse, defaultValue);
+        public readonly int Int(string column, int defaultValue = 0) => GetAndParse(column, int.TryParse, defaultValue);
+        public readonly float Float(string column, float defaultValue = 0.0f) => GetAndParse(column, float.TryParse, defaultValue);
+        public readonly string String(string column, string defaultValue = "")
         {
             if (!columns.TryGetValue(column.Trim().ToLower(), out var result))
-                return string.Empty;
+                return defaultValue;
             result = result.Trim();
             return result;
         }
@@ -61,7 +61,7 @@ public class Spreadsheet : ScriptableObject
     [SerializeField] Row[] rows;
 
     public Row this[int row] { get => rows[row]; }
-    public Row this[string id] { get => rows[idToRow[id.Trim().ToLower()]]; }
+    public Row this[string id] { get => this[idToRow[id.Trim().ToLower()]]; }
 
 #if UNITY_EDITOR
     public bool Deserialize(string json)

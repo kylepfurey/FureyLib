@@ -2,7 +2,6 @@
 // Spreadsheet Scriptable Object
 // by Kyle Furey
 
-#nullable enable
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
@@ -46,7 +45,7 @@ public class Spreadsheet : ScriptableObject
             result = result.Trim();
             return result;
         }
-        public readonly string[] Array(string column, string[] defaultValue = null!)
+        public readonly string[] Array(string column, string[] defaultValue = null)
         {
             if (!columns.TryGetValue(column.Trim().ToLower(), out var str))
                 return defaultValue ?? System.Array.Empty<string>();

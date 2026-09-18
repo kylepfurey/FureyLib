@@ -60,6 +60,7 @@ public class Spreadsheet : ScriptableObject
     [SerializeField] Dictionary<string, int> idToRow;
     [SerializeField] Row[] rows;
 
+    public int Length => rows.Length;
     public Row this[int row] { get => rows[row]; }
     public Row this[string id] { get => rows[idToRow[id.Trim().ToLower()]]; }
 
